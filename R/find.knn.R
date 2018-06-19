@@ -10,20 +10,30 @@ find.knn <- function(X, k, get.index=TRUE, get.distance=TRUE, query=NULL, BPPARA
         precomputed <- precluster(X)
     }
 
-    if (!is.null(query)) {
+    self <- is.null(query) 
+    if (!self) {
         if (!query.transposed) {
             query <- t(query)
         }
         query <- as.matrix(query)
-        njobs <- ncol(query)
+        nobs <- ncol(query)
         reorder <- NULL
     } else {
-        njobs <- ncol(precomputed$X)
+        nobs <- ncol(precomputed$X)
         reorder <- precomputed$order
     }
 
+    # Protection against silliness when k is greater than (or for self-neighbors, equal to) the number of observations.
+    if (k > ncol(precomputed$X)) { 
+        k <- ncol(precomputed$X) 
+        if (self) {
+            k <- k-1L
+        }
+        warning("'k' capped at the number of observations")
+    }
+
     # Dividing jobs up for NN finding.
-    jobs <- .assign_jobs(njobs, BPPARAM)
+    jobs <- .assign_jobs(nobs, BPPARAM)
     collected <- bpmapply(FUN=.find_knn, start=jobs$start - 1L, end=jobs$end,
         MoreArgs=list(X=precomputed$X, centers=precomputed$clusters$centers, info=precomputed$clusters$info, k=k, query=query, get.index=get.index, get.distance=get.distance),
         BPPARAM=BPPARAM, SIMPLIFY=FALSE)
