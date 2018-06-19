@@ -7,19 +7,19 @@ precluster <- function(X, ...)
 # created 19 June 2018
 {
     N <- ceiling(sqrt(nrow(X)))
-    if (N==nrow(exprs)) { 
-        out <- list(cluster=seq_len(N), centers=used.exprs)
+    if (N==nrow(X)) { 
+        out <- list(cluster=seq_len(N), centers=X)
     } else { 
         tryCatch({
-            out <- suppressWarnings(kmeans(used.exprs, centers=N, ...))
+            out <- suppressWarnings(kmeans(X, centers=N, ...))
         }, error=function(e) {
         }, finally={
             # Protecting by adding jitter, if many observations are duplicated.
-            out <- suppressWarnings(kmeans(jitter(used.exprs), centers=N, ...))
+            out <- suppressWarnings(kmeans(jitter(X), centers=N, ...))
         })
     }
     
-    by.clust <- split(seq_len(nrow(exprs)), out$cluster)
+    by.clust <- split(seq_len(nrow(X)), out$cluster)
     accumulated <- 0L
     nclust <- length(by.clust) # should be N, but redefining just in case...
     clust.info <- new.X <- ordering <- vector("list", nclust)
@@ -27,8 +27,8 @@ precluster <- function(X, ...)
     # Compiling to something that can be quickly accessed at the C++ level.
     for (clust in seq_len(nclust)) {
         chosen <- by.clust[[clust]]
-        current.vals <- t(exprs[chosen,,drop=FALSE])
-        cur.dist <- sqrt(colSums((out$centers[clust,] - current.vals[used,,drop=FALSE])^2))
+        current.vals <- t(X[chosen,,drop=FALSE])
+        cur.dist <- sqrt(colSums((out$centers[clust,] - current.vals)^2))
 
         o <- order(cur.dist)
         new.X[[clust]] <- current.vals[,o,drop=FALSE]

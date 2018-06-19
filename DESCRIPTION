@@ -6,7 +6,7 @@ Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
         email="alun@wehi.edu.au"))
 Depends: R (>= 3.5), BiocParallel
 Imports: Rcpp
-Suggests: testthat, BiocStyle, knitr, rmarkdown
+Suggests: testthat, BiocStyle, knitr, rmarkdown, FNN
 biocViews: Clustering, Classification
 Description: Implements a fast k-nearest neighbour search based on 
     pre-clustering with the k-means algorithm.

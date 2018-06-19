@@ -27,7 +27,7 @@ SEXP find_knn(SEXP start, SEXP stop, SEXP X, SEXP clust_centers, SEXP clust_info
     const size_t total_obs=Query.ncol();
     const int Start=check_integer_scalar(start, "job start index");
     const int Stop=check_integer_scalar(stop, "job end index");
-    if (Start < 0 || Stop >= total_obs) {
+    if (Start < 0 || Stop > total_obs) {
         throw std::runtime_error("job indices out of range");
     }
     const size_t nobs=Stop-Start;
@@ -66,7 +66,9 @@ SEXP find_knn(SEXP start, SEXP stop, SEXP X, SEXP clust_centers, SEXP clust_info
         }
         if (store_neighbors) {
             std::copy(neighbors.begin(), neighbors.end(), oiIt);
-            oiIt+=NN;
+            for (size_t i=0; i<NN; ++i, ++oiIt) {
+                ++(*oiIt); // getting back to 1-indexed.
+            }
         }
     }
 
