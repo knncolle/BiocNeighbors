@@ -7,8 +7,10 @@ precluster <- function(X, ...)
 # created 19 June 2018
 {
     N <- ceiling(sqrt(nrow(X)))
-    if (N==nrow(X)) { 
+    if (N==nrow(X)) {
         out <- list(cluster=seq_len(N), centers=X)
+    } else if (ncol(X)==0L) {
+        out <- list(cluster=rep(1L, nrow(X)), centers=matrix(0, 1, 0))
     } else { 
         tryCatch({
             out <- suppressWarnings(kmeans(X, centers=N, ...))
@@ -23,6 +25,10 @@ precluster <- function(X, ...)
     accumulated <- 0L
     nclust <- length(by.clust) # should be N, but redefining just in case...
     clust.info <- new.X <- ordering <- vector("list", nclust)
+
+    # Adding stubs to ensure we get objects out of the intended type.
+    new.X[[1]] <- matrix(0, ncol(X), 0) 
+    ordering[[1]] <- integer(0)
 
     # Compiling to something that can be quickly accessed at the C++ level.
     for (clust in seq_len(nclust)) {

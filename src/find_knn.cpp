@@ -4,7 +4,7 @@
 SEXP find_knn(SEXP start, SEXP stop, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP nn, SEXP query, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
 
-    const size_t NN=check_integer_scalar(nn, "'k'");
+    const int NN=check_integer_scalar(nn, "'k'");
     if (NN<1) { 
         throw std::runtime_error("'k' must be positive");
     }
