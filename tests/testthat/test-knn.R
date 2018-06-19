@@ -2,6 +2,7 @@
 # library(kmknn); library(testthat); source("test-knn.R")
 
 library(FNN)
+set.seed(1001)
 test_that("find.knn() behaves correctly on simple inputs", {
     nobs <- 1000
     for (ndim in c(1, 5, 10, 20)) {
@@ -15,6 +16,7 @@ test_that("find.knn() behaves correctly on simple inputs", {
     }
 })
 
+set.seed(1002)
 test_that("find.knn() behaves correctly with queries", {
     ndata <- 1000
     nquery <- 100
@@ -32,6 +34,7 @@ test_that("find.knn() behaves correctly with queries", {
     }
 })
 
+set.seed(1003)
 test_that("find.knn() behaves correctly with alternative options", {
     nobs <- 1000
     ndim <- 10
@@ -62,6 +65,7 @@ test_that("find.knn() behaves correctly with alternative options", {
     expect_identical(outQ, outQ2)
 })
 
+set.seed(1004)
 test_that("find.knn() behaves correctly with silly inputs", {
     nobs <- 1000
     ndim <- 10

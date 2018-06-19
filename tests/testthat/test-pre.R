@@ -1,6 +1,7 @@
 # Tests precluster().
 # library(kmknn); library(testthat); source("test-pre.R")
 
+set.seed(20000)
 test_that("precluster() works as expected", {
     for (ndim in c(1, 5, 10, 20)) {
         for (nobs in c(500, 1000, 2000)) { 
@@ -29,6 +30,7 @@ test_that("precluster() works as expected", {
     }
 })
 
+set.seed(20001)
 test_that("precluster() behaves sensibly with silly inputs", {
     nobs <- 100L
     ndim <- 10L
