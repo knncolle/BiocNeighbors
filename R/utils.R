@@ -41,7 +41,7 @@
 }
 
 .combine_matrices <- function(collected, i, reorder=NULL) 
-# Combines NN-relateed matrix results across multiple cores.
+# Combines NN-related matrix results across multiple cores.
 {
     all.mat <- lapply(collected, "[[", i=i)
     out <- do.call(cbind, all.mat)
@@ -49,4 +49,13 @@
         out[,reorder] <- out
     }
     t(out)
+}
+
+.combine_lists <- function(collected, i, reorder=NULL) 
+# Combines neighbor related list results across mutliple cores.
+{
+    all.lists <- lapply(collected, "[[", i=i)
+    out <- unlist(all.lists, recursive=FALSE)
+    out[reorder] <- out
+    out
 }

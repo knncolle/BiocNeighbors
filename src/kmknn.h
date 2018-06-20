@@ -15,6 +15,8 @@ SEXP find_knn(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 SEXP query_knn(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP); 
 
+SEXP find_neighbors(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP); 
+
 }
 
 #endif 
