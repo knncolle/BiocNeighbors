@@ -27,9 +27,9 @@ queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=Ser
     if (!is.null(subset)) {
         job.id <- .subset_to_index(subset, query, byrow=FALSE)
         reorder <- order(job.id) # ordering so that queries are adjacent.
-        job.id <- job.id[o]
+        job.id <- job.id[reorder]
     } else {
-        job.id <- seq_len(ncol(X))
+        job.id <- seq_len(ncol(query))
         reorder <- NULL
     }
 
