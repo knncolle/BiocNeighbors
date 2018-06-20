@@ -27,7 +27,7 @@ findKNN <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam
 
         # Ordering so that queries are as adjacent as possible.
         reorder <- order(job.id)
-        job.id <- job.id[o]
+        job.id <- job.id[reorder]
     } else {
         job.id <- seq_len(nrow(X))
         reorder <- precomputed$order
