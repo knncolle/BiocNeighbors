@@ -1,6 +1,6 @@
 #' @export
-#' @importFrom BiocParallel SerialParam bpmapply
-find.knn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL)
+#' @importFrom BiocParallel SerialParam bplapply
+findKNN <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL)
 # Identifies nearest neighbours.
 #
 # written by Aaron Lun
@@ -20,12 +20,12 @@ find.knn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPara
     if (!is.null(subset)) { 
         indices <- .subset_to_index(subset, X, byrow=TRUE)
 
-        # getting position in reordered 'precomputed$X'.
+        # Getting position in reordered 'precomputed$X'.
         new.pos <- integer(length(precomputed$order))
         new.pos[precomputed$order] <- seq_along(new.pos)
         job.id <- new.pos[indices] 
 
-        # ordering so that queries are adjacent.
+        # Ordering so that queries are as adjacent as possible.
         reorder <- order(job.id)
         job.id <- job.id[o]
     } else {
@@ -57,15 +57,7 @@ find.knn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPara
     return(output)
 }
 
-.find_knn <- function(start, end, X, centers, info, k, query, get.index, get.distance) {
-    .Call(cxx_find_knn, start, end, X, centers, info, k, query, get.index, get.distance)
+.find_knn <- function(start, end, X, centers, info, k, get.index, get.distance) {
+    .Call(cxx_find_knn, start, end, X, centers, info, k, get.index, get.distance)
 }
 
-.combine_matrices <- function(collected, i, reorder=NULL) {
-    all.mat <- lapply(collected, "[[", i=i)
-    out <- do.call(cbind, all.mat)
-    if (!is.null(reorder)) { 
-        out[,reorder] <- out
-    }
-    t(out)
-}

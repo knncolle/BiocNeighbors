@@ -2,9 +2,6 @@
 .split_jobs <- function (jobs, BPPARAM) 
 # Assigns a vector of job indices to workers.
 # Returns a list of job indices, one per worker.
-#
-# written by Aaron Lun
-# created 19 June 2018
 {
     ncores <- bpworkers(BPPARAM)
     njobs <- length(jobs)
@@ -43,3 +40,13 @@
     return(out)
 }
 
+.combine_matrices <- function(collected, i, reorder=NULL) 
+# Combines NN-relateed matrix results across multiple cores.
+{
+    all.mat <- lapply(collected, "[[", i=i)
+    out <- do.call(cbind, all.mat)
+    if (!is.null(reorder)) { 
+        out[,reorder] <- out
+    }
+    t(out)
+}
