@@ -5,6 +5,9 @@ SEXP find_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, 
     BEGIN_RCPP
     auto searcher=generate_holder(X, clust_centers, clust_info);
     const double threshold=check_numeric_scalar(dist_thresh, "threshold");
+    if (threshold <= 0) {
+        throw std::runtime_error("threshold should be positive");
+    }
   
     // Figuring out which indices we're using.
     const size_t total_obs=searcher->get_nobs();
@@ -42,13 +45,20 @@ SEXP find_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, 
             out_idx[ix]=output;
         }
 
-        if (store_neighbors) {
+        if (store_distances) {
             const std::deque<double>& distances=searcher->get_distances();
             out_dist[ix]=Rcpp::NumericVector(distances.begin(), distances.end());
         }
         ++ix;
     }
 
-    return Rcpp::List::create(out_idx, out_dist);
+    Rcpp::List output(2, R_NilValue);
+    if (store_neighbors) {
+        output[0]=out_idx;
+    }   
+    if (store_distances) {
+        output[1]=out_dist;
+    }
+    return output;
     END_RCPP
 }
