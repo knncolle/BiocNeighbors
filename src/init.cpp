@@ -7,7 +7,8 @@
 extern "C" {
 
 static const R_CallMethodDef all_call_entries[] = {
-    REGISTER(find_knn, 9),
+    REGISTER(find_knn, 7),
+    REGISTER(query_knn, 8),
     {NULL, NULL, 0}
 };
 

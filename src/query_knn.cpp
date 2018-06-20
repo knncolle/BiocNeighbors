@@ -1,7 +1,7 @@
 #include "objects.h"
 #include "utils.h"
 
-SEXP find_knn(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP nn, SEXP get_index, SEXP get_distance) {
+SEXP query_knn(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP nn, SEXP query, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
 
     const int NN=check_integer_scalar(nn, "'k'");
@@ -11,8 +11,13 @@ SEXP find_knn(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP n
     auto searcher=generate_holder(X, clust_centers, clust_info);
     const size_t ndim=searcher->get_ndims();
 
-    // Figuring out which indices we're using.
-    const size_t total_obs=searcher->get_nobs();
+    // Examining the query matrix and checking it against the subset indices.
+    Rcpp::NumericMatrix Query(query);
+    if (Query.nrow()!=ndim) {
+        throw std::runtime_error("'query' and 'X' have different dimensionality");
+    }
+
+    const size_t total_obs=Query.ncol();
     const Rcpp::IntegerVector points(to_check);
     for (auto h : points) {
         if (h==NA_INTEGER || h < 0 || h > total_obs) {
@@ -39,7 +44,7 @@ SEXP find_knn(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP n
         
     // Iterating across cells, finding NNs and storing distances or neighbors.
     for (auto h : points) {
-        searcher->find_nearest_neighbors(h, NN, store_distances); 
+        searcher->find_nearest_neighbors(Query.begin() + ndim * h, NN, store_distances); 
         const std::deque<double>& distances=searcher->get_distances();
         const std::deque<size_t>& neighbors=searcher->get_neighbors();
 
