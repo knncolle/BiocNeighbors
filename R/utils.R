@@ -12,7 +12,7 @@
 
     output <- vector("list", ncores)
     for (i in seq_len(ncores)) {
-        idx <- starting[i] - 1L + seq_len(jobsize)
+        idx <- starting[i] - 1L + seq_len(jobsize[i])
         output[[i]] <- jobs[idx]
     }
     
@@ -30,10 +30,7 @@
         names(dummy) <- colnames(x) 
     }
 
-    if (!is.null(subset)) { 
-        dummy <- dummy[subset]
-    }
-    out <- unname(dummy)
+    out <- unname(dummy[subset])
     if (any(is.na(out))) {
         stop("'subset' indices out of range of 'x'")
     }
