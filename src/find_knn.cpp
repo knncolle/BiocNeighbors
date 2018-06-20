@@ -15,7 +15,7 @@ SEXP find_knn(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP n
     const size_t total_obs=searcher->get_nobs();
     const Rcpp::IntegerVector points(to_check);
     for (auto h : points) {
-        if (h==NA_INTEGER || h < 0 || h > total_obs) {
+        if (h==NA_INTEGER || h < 0 || h >= total_obs) {
             throw std::runtime_error("job indices out of range");
         }
     }
@@ -56,12 +56,12 @@ SEXP find_knn(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP n
     }
 
     Rcpp::List output(2, R_NilValue);
-    if (store_distances) {
-        output[1]=out_dist;
-    }
     if (store_neighbors) {
         output[0]=out_idx;
     }   
+    if (store_distances) {
+        output[1]=out_dist;
+    }
     return output;
     END_RCPP
 }
