@@ -1,5 +1,5 @@
 #' @export
-#' @importFrom BiocParallel SerialParam bplapply
+#' @importFrom BiocParallel SerialParam bpmapply
 findKNN <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL)
 # Identifies nearest neighbours.
 #
@@ -29,20 +29,20 @@ findKNN <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam
         reorder <- order(job.id)
         job.id <- job.id[o]
     } else {
-        job.id <- seq_len(ncol(X))
+        job.id <- seq_len(nrow(X))
         reorder <- precomputed$order
     }
 
-    # Dividing jobs up for NN finding.
+    # Dividing jobs up for NN finding (using bpmapply due to clash with 'X').
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
-    collected <- bplapply(jobs, FUN=.find_knn, 
-        X=precomputed$X, 
-        centers=precomputed$clusters$centers, 
-        info=precomputed$clusters$info, 
-        k=k,
-        get.index=get.index, 
-        get.distance=get.distance, 
-        BPPARAM=BPPARAM)
+    collected <- bpmapply(FUN=.find_knn, jobs,
+        MoreArgs=list(X=precomputed$X, 
+            centers=precomputed$clusters$centers, 
+            info=precomputed$clusters$info, 
+            k=k,
+            get.index=get.index, 
+            get.distance=get.distance), 
+        BPPARAM=BPPARAM, SIMPLIFY=FALSE)
 
     # Aggregating results across cores.
     output <- list()
@@ -57,7 +57,7 @@ findKNN <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam
     return(output)
 }
 
-.find_knn <- function(start, end, X, centers, info, k, get.index, get.distance) {
-    .Call(cxx_find_knn, start, end, X, centers, info, k, get.index, get.distance)
+.find_knn <- function(jobs, X, centers, info, k, get.index, get.distance) {
+    .Call(cxx_find_knn, jobs, X, centers, info, k, get.index, get.distance)
 }
 

@@ -1,5 +1,5 @@
 #' @importFrom BiocParallel bpworkers
-.split_jobs <- function (jobs, BPPARAM) 
+.assign_jobs <- function (jobs, BPPARAM) 
 # Assigns a vector of job indices to workers.
 # Returns a list of job indices, one per worker.
 {
