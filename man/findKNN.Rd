@@ -46,7 +46,7 @@ Note that the code here was originally derived from an implementation in the \pk
 A list is returned containing:
 \itemize{
     \item \code{index}, if \code{get.index=TRUE}.
-    This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{X}.
+    This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{X} or a subset thereof if \code{subset} is not \code{NULL}.
     The row for \eqn{i} contains the row indices of \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
     \item \code{distance}, if \code{get.distance=TRUE}.
     This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
