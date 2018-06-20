@@ -35,15 +35,15 @@ queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=Ser
 
     # Dividing jobs up for NN finding.
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
-    collected <- bplapply(jobs, FUN=.query_knn, 
-        X=precomputed$X, 
-        centers=precomputed$clusters$centers, 
-        info=precomputed$clusters$info, 
-        k=k,
-        query=query,
-        get.index=get.index, 
-        get.distance=get.distance, 
-        BPPARAM=BPPARAM)
+    collected <- bpmapply(jobs, FUN=.query_knn,
+        MoreArgs=list(X=precomputed$X, 
+            centers=precomputed$clusters$centers, 
+            info=precomputed$clusters$info, 
+            k=k,
+            query=query,
+            get.index=get.index, 
+            get.distance=get.distance), 
+        BPPARAM=BPPARAM, SIMPLIFY=FALSE)
 
     # Aggregating results across cores.
     output <- list()
@@ -58,6 +58,6 @@ queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=Ser
     return(output)
 }
 
-.query_knn <- function(start, end, X, centers, info, k, query, get.index, get.distance) {
-    .Call(cxx_query_knn, start, end, X, centers, info, k, query, get.index, get.distance)
+.query_knn <- function(jobs, X, centers, info, k, query, get.index, get.distance) {
+    .Call(cxx_query_knn, jobs, X, centers, info, k, query, get.index, get.distance)
 }
