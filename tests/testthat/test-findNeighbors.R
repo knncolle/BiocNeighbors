@@ -1,33 +1,34 @@
 # Tests findNeighbors().
 # library(kmknn); library(testthat); source("test-findNeighbors.R")
 
+REINFORCE <- function(out) {
+# Remember that the output indices are unordered, though the identities are constant.
+# Thus, we need to do some work to ensure that we get the same result.
+    O <- lapply(out$index, order)
+    re.index <- mapply(FUN="[", x=out$index, i=O)
+    re.dist <- mapply(FUN="[", x=out$distance, i=O)
+    list(index=re.index, distance=re.dist)
+}
+
+expect_identical_re <- function(left, right) {
+    expect_identical(REINFORCE(left), REINFORCE(right))
+}
+
 set.seed(1001)
 test_that("findNeighbors() behaves correctly on simple inputs", {
     nobs <- 1000
     for (ndim in c(1, 5, 10, 20)) {
         for (d in c(0.1, 0.5, 1)) {
-        library(kmknn); ndim <- 1; d <- 1; nobs <- 1000
             X <- matrix(runif(nobs * ndim), nrow=nobs)
     
             D <- unname(as.matrix(dist(X)))
             ind <- which(D <= d, arr.ind=TRUE)
             by.row <- split(ind[,2], ind[,1])
+            by.dist <- split(D[ind], ind[,1])
+            ref <- list(index=unname(by.row), distance=unname(by.dist))
 
             out <- findNeighbors(X, threshold=d)
-            expect_identical(length(by.row), length(out[[1]]))
-
-            for (i in seq_along(by.row)) {
-                ref.i <- by.row[[i]]
-                ref.d <- D[i,ref.i]
-                ref.o <- order(ref.i)
-
-                obs.i <- out$index[[i]]
-                obs.d <- out$distance[[i]]
-                obs.o <- order(obs.i)
-
-                expect_identical(ref.i[ref.o], obs.i[obs.o])                
-                expect_identical(ref.d[ref.o], obs.d[obs.o])                
-            }
+            expect_identical_re(out, ref)
         }
     }
 })
@@ -39,30 +40,23 @@ test_that("findNeighbors() works correctly with subsetting", {
     d <- 1
     X <- matrix(runif(nobs * ndim), nrow=nobs)
 
-    # Remember that the output indices are unordered, though the identities are constant.
-    # Thus, we need to set the seed to get the same result.
-    set.seed(123) 
     ref <- findNeighbors(X, threshold=d)
-
     i <- sample(nobs, 20)
-    set.seed(123)
     sub <- findNeighbors(X, threshold=d, subset=i)
-    expect_identical(sub$index, ref$index[i])
-    expect_identical(sub$distance, ref$distance[i])
+    expect_identical_re(sub$index, ref$index[i])
+    expect_identical_re(sub$distance, ref$distance[i])
 
     i <- rbinom(nobs, 1, 0.5) == 0L
-    set.seed(123)
     sub <- findNeighbors(X, threshold=d, subset=i)
-    expect_identical(sub$index, ref$index[i])
-    expect_identical(sub$distance, ref$distance[i])
+    expect_identical_re(sub$index, ref$index[i])
+    expect_identical_re(sub$distance, ref$distance[i])
 
     rownames(X) <- paste0("CELL", seq_len(nobs))
     i <- sample(rownames(X), 123)
-    set.seed(123)
     sub <- findNeighbors(X, threshold=d, subset=i)
     m <- match(i, rownames(X))
-    expect_identical(sub$index, ref$index[m])
-    expect_identical(sub$distance, ref$distance[m])
+    expect_identical_re(sub$index, ref$index[m])
+    expect_identical_re(sub$distance, ref$distance[m])
 })
 
 set.seed(1003)
@@ -71,26 +65,54 @@ test_that("findNeighbors() behaves correctly with alternative options", {
     ndim <- 10
     d <- 1
     X <- matrix(runif(nobs * ndim), nrow=nobs)
-
-    set.seed(234)
     out <- findNeighbors(X, threshold=d)
     
     # Checking what we extract.
-    set.seed(234)
     out2 <- findNeighbors(X, threshold=d, get.distance=FALSE)
     expect_identical(out2$distance, NULL)
-    expect_identical(out2$index, out$index)
+    expect_identical_re(out2$index, out$index)
 
-    set.seed(234)
     out3 <- findNeighbors(X, threshold=d, get.index=FALSE)
     expect_identical(out3$index, NULL)
-    expect_identical(out3$distance, out$distance)
+    expect_identical_re(out3$distance, out$distance)
   
     # Checking precomputation.
-    set.seed(234)
     pre <- precluster(X)
     out4 <- findNeighbors(X, threshold=d, precomputed=pre)
-    expect_identical(out4, out)
+    expect_identical_re(out4, out)
+})
+
+set.seed(10031)
+test_that("findNeighbors() raw output behaves correctly", {
+library(kmknn); library(testthat)
+    nobs <- 1001
+    ndim <- 8
+    d <- 1
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    pre <- precluster(X)
+    out <- findNeighbors(threshold=d, precomputed=pre, raw.index=TRUE)
+    ref <- findNeighbors(t(pre$data), threshold=d)
+    expect_identical_re(out, ref)
+
+    # Behaves with subsetting.
+    i <- sample(nobs, 20)
+    out <- findNeighbors(threshold=d, precomputed=pre, raw.index=TRUE, subset=i)
+    ref <- findNeighbors(t(pre$data), threshold=d, subset=i)
+    expect_identical_re(out, ref)
+
+    i <- rbinom(nobs, 1, 0.5) == 0L
+    out <- findNeighbors(threshold=d, precomputed=pre, raw.index=TRUE, subset=i)
+    ref <- findNeighbors(t(pre$data), threshold=d, subset=i)
+    expect_identical_re(out, ref)
+
+    # Adding row names.
+    rownames(X) <- paste0("CELL", seq_len(nobs))
+    preN <- precluster(X)
+    i <- sample(rownames(X), 30)
+    out <- findNeighbors(threshold=d, precomputed=preN, raw.index=TRUE, subset=i)
+    ref <- findNeighbors(t(preN$data), threshold=d, subset=i)
+    expect_identical_re(out, ref)
 })
 
 set.seed(1004)
