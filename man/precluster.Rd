@@ -14,7 +14,7 @@ precluster(X, ...)
 }
 
 \details{
-This function is automatically called by \code{\link{find.knn}}.
+This function is automatically called by \code{\link{findKNN}} and related functions. 
 However, it can be called directly by the user to save time if multiple queries are to be performed to the same \code{X}.
 }
 
@@ -38,7 +38,9 @@ Specifically, points in the same cluster are contiguous and ordered by increasin
 
 \seealso{
 \code{\link{kmeans}},
-\code{\link{find.knn}}
+\code{\link{findKNN}},
+\code{\link{queryKNN}},
+\code{\link{findNeighbors}}
 }
 
 \author{
