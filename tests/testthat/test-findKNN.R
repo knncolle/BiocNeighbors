@@ -61,10 +61,42 @@ test_that("findKNN() behaves correctly with alternative options", {
     expect_identical(out3$index, NULL)
     expect_identical(out3$distance, out$distance)
   
-    # Checking precomputation.
+    # Checking precomputation (does not need X).
     pre <- precluster(X)
-    out4 <- findKNN(X, k=k, precomputed=pre)
+    out4 <- findKNN(k=k, precomputed=pre)
     expect_identical(out4, out)
+})
+
+set.seed(10031)
+test_that("findKNN() raw output behaves correctly", {
+    nobs <- 1000
+    ndim <- 10
+    k <- 7
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+   
+    pre <- precluster(X)
+    out <- findKNN(k=k, precomputed=pre, raw.index=TRUE)
+    ref <- findKNN(t(pre$data), k=k)
+    expect_identical(out, ref)
+
+    # Behaves with subsetting.
+    i <- sample(nobs, 20)
+    out <- findKNN(k=k, precomputed=pre, raw.index=TRUE, subset=i)
+    ref <- findKNN(t(pre$data), k=k, subset=i)
+    expect_identical(out, ref)
+
+    i <- rbinom(nobs, 1, 0.5) == 0L
+    out <- findKNN(k=k, precomputed=pre, raw.index=TRUE, subset=i)
+    ref <- findKNN(t(pre$data), k=k, subset=i)
+    expect_identical(out, ref)
+
+    # Adding row names.
+    rownames(X) <- paste0("CELL", seq_len(nobs))
+    preN <- precluster(X)
+    i <- sample(rownames(X), 30)
+    out <- findKNN(k=k, precomputed=preN, raw.index=TRUE, subset=i)
+    ref <- findKNN(t(preN$data), k=k, subset=i)
+    expect_identical(out, ref)
 })
 
 set.seed(1004)

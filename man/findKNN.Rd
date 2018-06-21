@@ -6,7 +6,7 @@
 
 \usage{
 findKNN(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), 
-    precomputed=NULL, subset=NULL)
+    precomputed=NULL, subset=NULL, raw.index=FALSE)
 }
 
 \arguments{
@@ -17,6 +17,7 @@ findKNN(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
 \item{BPPARAM}{A BiocParallelParam object indicating how the search should be parallelized.}
 \item{precomputed}{The precomputed output of \code{\link{precluster}} on \code{X}.}
 \item{subset}{A vector indicating the rows of \code{X} for which the nearest neighbors should be identified.}
+\item{raw.index}{A logial scalar indicating whether raw column indices to \code{precomputed$data} should be returned.}
 }
 
 \details{
@@ -26,15 +27,19 @@ This clustering is then used to speed up the nearest neighbor search across \cod
 exploiting the triangle inequality between cluster centers, the query point and each point in the cluster to narrow the search space.
 
 By default, nearest neighbors are identified for all data points within \code{X}.
-If \code{subset} is not \code{NULL}, nearest neighbors are only detected for the points in the subset.
+If \code{subset} is specified, nearest neighbors are only detected for the points in the subset.
 This yields the same result as (but is more efficient than) subsetting the output matrices after running \code{findKNN} with \code{subset=NULL}.
 
 Turning off \code{get.index} or \code{get.distance} may provide a slight speed boost when these returned values are not of interest.
-Using \code{BPPARAM} will also split the search by query points, which usually provides a linear increase in speed.
+Using \code{BPPARAM} will also split the search by query points across multiple processes.
 
 If the function is to be called multiple times with the same \code{X} (e.g., with different \code{subset}), 
-it may be beneficial to use \code{\link{precluster}} directly to precompute the clustering.
-This can be re-used by supplying the output of \code{\link{precluster}} to \code{precomputed}, which often provides a substantial speed-up.
+it may be beneficial to call \code{\link{precluster}} outside of this function.
+The output can then be supplied to the \code{precomputed} argument across multiple calls to \code{findKNN}.
+
+Note that when \code{precomputed} is supplied, the value of \code{X} is ignored.
+Advanced users can also set \code{raw.index=TRUE}, which yields results equivalent to running \code{findKNN} on \code{t(precomputed$data)} directly.
+The output indices refer to \emph{columns} of \code{precomputed$data}, which may be more convenient when dealing with a common \code{precomputed} object. 
 
 Currently, only Euclidean distances are supported, but support may be added for other distance types depending on demand.
 It remains to be seen whether the speed-up achieved with k-means is still applicable to alternative distance metrics.
@@ -46,11 +51,15 @@ Note that the code here was originally derived from an implementation in the \pk
 A list is returned containing:
 \itemize{
     \item \code{index}, if \code{get.index=TRUE}.
-    This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{X} or a subset thereof if \code{subset} is not \code{NULL}.
+    This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{X}.
     The row for \eqn{i} contains the row indices of \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
     \item \code{distance}, if \code{get.distance=TRUE}.
     This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
 }
+
+If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
+
+If \code{raw.index=TRUE}, the values in \code{index} refer to \emph{columns} of \code{precomputed$data}.
 }
 
 \author{

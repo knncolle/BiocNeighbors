@@ -37,6 +37,15 @@
     return(out)
 }
 
+.order_to_index <- function(order) 
+# Convenience function to convert from a (used) ordering vector to an indexing vector.
+# Applying this returns an ordered sequence to its original state.    
+{
+    new.pos <- integer(length(order))
+    new.pos[order] <- seq_along(new.pos)
+    new.pos
+}
+
 .combine_matrices <- function(collected, i, reorder=NULL) 
 # Combines NN-related matrix results across multiple cores.
 {
