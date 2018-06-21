@@ -1,0 +1,26 @@
+citEntry(
+    entry = "article",
+    author="Xueyi Wang",
+    title="A fast exact k-nearest neighbors algorithm for high dimensional search using k-means clustering and triangle inequality",
+    journal="Proc Int Jt Conf Neural Netw",
+    year="2012",
+    volume="43",
+    number="6",
+    pages="2351--2358",
+    month="Feb",
+    textVersion = "Wang X (2012). A fast exact k-nearest neighbors algorithm for high dimensional search using k-means clustering and triangle inequality. Proc Int Jt Conf Neural Netw, 43, 6:2351-2358"
+)
+
+citEntry(
+    entry = "article",
+    author="Aaron T. L. Lun and Arianne C. Richard and John C. Marioni",
+    title="Testing for differential abundance in mass cytometry data",
+    journal="Nat. Methods",
+    year="2017",
+    volume="14",
+    number="7",
+    pages="707--709",
+    month="Jul",
+    textVersion = "Lun ATL, Richard AC, Marioni JC (2017). Testing for differential abundance in mass cytometry data. Nat. Methods, 14, 7:707-709"
+)
+
