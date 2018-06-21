@@ -1,9 +1,9 @@
-#' @importFrom BiocParallel bpworkers
+#' @importFrom BiocParallel bpnworkers
 .assign_jobs <- function (jobs, BPPARAM) 
 # Assigns a vector of job indices to workers.
 # Returns a list of job indices, one per worker.
 {
-    ncores <- bpworkers(BPPARAM)
+    ncores <- bpnworkers(BPPARAM)
     njobs <- length(jobs)
 
     starting <- as.integer(seq(1, njobs + 1, length.out = ncores + 1))
