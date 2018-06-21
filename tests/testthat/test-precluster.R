@@ -1,5 +1,5 @@
 # Tests precluster().
-# library(kmknn); library(testthat); source("test-pre.R")
+# library(kmknn); library(testthat); source("test-precluster.R")
 
 set.seed(20000)
 test_that("precluster() works as expected", {
@@ -8,9 +8,9 @@ test_that("precluster() works as expected", {
             X <- matrix(runif(nobs * ndim), nrow=nobs)
             
             out <- precluster(X)
-            expect_identical(rev(dim(out$X)), dim(X))
+            expect_identical(rev(dim(out$data)), dim(X))
             expect_identical(sort(out$order), seq_len(nobs))
-            expect_identical(out$X, t(X[out$order,]))
+            expect_identical(out$data, t(X[out$order,]))
 
             accounted <- logical(nobs)
             for (i in seq_along(out$clusters$info)) {
@@ -22,7 +22,7 @@ test_that("precluster() works as expected", {
                 accounted[idx] <- TRUE
 
                 # Oddly inaccurate, for some reason...
-                expect_equal(rowMeans(out$X[,idx,drop=FALSE]), unname(out$clusters$centers[,i]), tol=1e-4)
+                expect_equal(rowMeans(out$data[,idx,drop=FALSE]), unname(out$clusters$centers[,i]), tol=1e-4)
             }
 
             expect_true(all(accounted))
@@ -39,13 +39,13 @@ test_that("precluster() preserves dimension names", {
     colnames(X) <- paste0("DIM", seq_len(ndim))
 
     out <- precluster(X)
-    expect_identical(rownames(out$X), colnames(X))
-    expect_identical(colnames(out$X), rownames(X)[out$order])
+    expect_identical(rownames(out$data), colnames(X))
+    expect_identical(colnames(out$data), rownames(X)[out$order])
 
     # Still true if there are no cells.
     out <- precluster(X[0,,drop=FALSE])
-    expect_identical(rownames(out$X), colnames(X))
-    expect_identical(colnames(out$X), NULL)
+    expect_identical(rownames(out$data), colnames(X))
+    expect_identical(colnames(out$data), NULL)
 })
 
 set.seed(20001)
@@ -56,14 +56,14 @@ test_that("precluster() behaves sensibly with silly inputs", {
 
     # What happens when there are no cells.
     out <- precluster(X[0,,drop=FALSE])
-    expect_identical(dim(out$X), c(ndim, 0L))
+    expect_identical(dim(out$data), c(ndim, 0L))
     expect_identical(dim(out$clusters$centers), c(ndim, 0L))
     expect_identical(length(out$clusters$info), 0L)
     expect_identical(length(out$order), 0L)
 
     # What happens when there are no dimensions.
     out <- precluster(X[,0,drop=FALSE])
-    expect_identical(dim(out$X), c(0L, nobs))
+    expect_identical(dim(out$data), c(0L, nobs))
     expect_identical(dim(out$clusters$centers), c(0L, 1L))
     expect_identical(length(out$clusters$info), 1L)
     expect_identical(out$clusters$info[[1]][[1]], 0L)

@@ -8,8 +8,10 @@ precluster <- function(X, ...)
 {
     N <- ceiling(sqrt(nrow(X)))
     if (N==nrow(X)) {
+        # Every point is its own cluster.
         out <- list(cluster=seq_len(N), centers=X)
     } else if (ncol(X)==0L) {
+        # Every point is in the same cluster.           
         out <- list(cluster=rep(1L, nrow(X)), centers=matrix(0, 1, 0))
     } else { 
         tryCatch({
@@ -45,7 +47,7 @@ precluster <- function(X, ...)
         accumulated <- accumulated + length(o)
     }
    
-    return(list(X=do.call(cbind, new.X), 
+    return(list(data=do.call(cbind, new.X), 
                 clusters=list(centers=t(out$centers), info=clust.info),
                 order=unlist(ordering)))
 } 

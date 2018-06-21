@@ -21,7 +21,7 @@ However, it can be called directly by the user to save time if multiple queries 
 \value{
 A list containing:
 \itemize{
-\item \code{X}, a numeric matrix with points in the \emph{columns} and dimensions in the rows, i.e., transposed relative to the input.
+\item \code{data}, a numeric matrix with points in the \emph{columns} and dimensions in the rows, i.e., transposed relative to the input.
 Points have also been reordered to improve data locality during the nearest-neighbor search.
 Specifically, points in the same cluster are contiguous and ordered by increasing distance from the cluster center.
 \item \code{clusters}, itself a list containing:
