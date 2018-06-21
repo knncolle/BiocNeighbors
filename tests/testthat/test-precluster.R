@@ -30,6 +30,24 @@ test_that("precluster() works as expected", {
     }
 })
 
+set.seed(200001)
+test_that("precluster() preserves dimension names", {
+    nobs <- 1011
+    ndim <- 23
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    rownames(X) <- paste0("POINT", seq_len(nobs))
+    colnames(X) <- paste0("DIM", seq_len(ndim))
+
+    out <- precluster(X)
+    expect_identical(rownames(out$X), colnames(X))
+    expect_identical(colnames(out$X), rownames(X)[out$order])
+
+    # Still true if there are no cells.
+    out <- precluster(X[0,,drop=FALSE])
+    expect_identical(rownames(out$X), colnames(X))
+    expect_identical(colnames(out$X), NULL)
+})
+
 set.seed(20001)
 test_that("precluster() behaves sensibly with silly inputs", {
     nobs <- 100L

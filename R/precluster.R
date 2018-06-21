@@ -27,7 +27,7 @@ precluster <- function(X, ...)
     clust.info <- new.X <- ordering <- vector("list", nclust)
 
     # Adding stubs to ensure we get objects out of the intended type.
-    new.X[[1]] <- matrix(0, ncol(X), 0) 
+    new.X[[1]] <- t(X[0,,drop=FALSE])
     ordering[[1]] <- integer(0)
 
     # Compiling to something that can be quickly accessed at the C++ level.
