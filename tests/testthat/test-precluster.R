@@ -12,20 +12,27 @@ test_that("precluster() works as expected", {
             expect_identical(sort(out$order), seq_len(nobs))
             expect_identical(out$data, t(X[out$order,]))
 
+            Nclust <- length(out$clusters$info)
+            expect_identical(Nclust, as.integer(ceiling(sqrt(nobs))))
+
             accounted <- logical(nobs)
+            unsorted <- !logical(Nclust)
+            collected <- vector("list", Nclust)
+
             for (i in seq_along(out$clusters$info)) {
                 current <- out$clusters$info[[i]]
-                expect_false(is.unsorted(current[[2]]))
+                unsorted[i] <- is.unsorted(current[[2]])
 
                 idx <- current[[1]] + seq_along(current[[2]])
                 expect_true(!any(accounted[idx]))
                 accounted[idx] <- TRUE
 
-                # Oddly inaccurate, for some reason...
-                expect_equal(rowMeans(out$data[,idx,drop=FALSE]), unname(out$clusters$centers[,i]), tol=1e-4)
+                collected[[i]] <- rowMeans(out$data[,idx,drop=FALSE]) 
             }
 
             expect_true(all(accounted))
+            expect_true(!any(unsorted))
+            expect_equal(do.call(cbind, collected), unname(out$clusters$centers), tol=1e-4) # Oddly inaccurate, for some reason...
         }
     }
 })
