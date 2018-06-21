@@ -6,7 +6,7 @@
 
 \usage{
 queryKNN(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
-    precomputed=NULL, transposed=FALSE, subset=NULL)
+    precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE)
 }
 
 \arguments{
@@ -20,6 +20,7 @@ queryKNN(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
 \item{transposed}{A logical scalar indicating whether the \code{query} is transposed, 
 in which case \code{query} is assumed to contain dimensions in the rows and data points in the columns.}
 \item{subset}{A vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the nearest neighbors should be identified.}
+\item{raw.index}{A logial scalar indicating whether raw column indices to \code{precomputed$data} should be returned.}
 }
 
 \details{
@@ -28,25 +29,32 @@ This requires both \code{X} and \code{query} to have the same number of dimensio
 Moreover, the upper bound for \code{k} is set at the number of points in \code{X}.
 
 By default, nearest neighbors are identified for all data points within \code{query}.
-If \code{subset} is not \code{NULL}, nearest neighbors are only detected for the points in the subset.
-This yields the same result as (but is more efficient than) subsetting the output matrices after running \code{queryKNN} with \code{subset=NULL}.
+If \code{subset} is specified, nearest neighbors are only detected for the query points in the subset.
+This yields the same result as (but is more efficient than) subsetting the output matrices after running \code{queryKNN} on the full \code{query} (i.e., with \code{subset=NULL}).
 
-Turning off \code{get.index} or \code{get.distance} may provide a slight speed boost when these returned values are not of interest.
-Using \code{BPPARAM} will also split the search by query points, which usually provides a linear increase in speed.
+If \code{transposed=TRUE}, this function assumes that \code{query} is already transposed, which saves a bit of time by avoiding an unnecessary transposition.
+Turning off \code{get.index} or \code{get.distance} may also provide a slight speed boost when these returned values are not of interest.
+Using \code{BPPARAM} will also split the search by query points across multiple processes.
 
-If \code{transposed=TRUE}, this function assumes that \code{query} is already transposed, which saves a bit of time.
 If multiple queries are to be performed to the same \code{X}, it may be beneficial to use \code{\link{precluster}} directly to precompute the clustering.
+Note that when \code{precomputed} is supplied, the value of \code{X} is ignored.
+Advanced users can also set \code{raw.index=TRUE}, which yields results equivalent to running \code{queryKNN} with \code{X=t(precomputed$data)}.
+This may be useful when dealing with multiple queries to a common precomputed object.
 }
 
 \value{
 A list is returned containing:
 \itemize{
     \item \code{index}, if \code{get.index=TRUE}.
-    This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{query} or a subset thereof if \code{subset} is not \code{NULL}.
+    This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{query}.
     The row for \eqn{i} contains the row indices of \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
     \item \code{distance}, if \code{get.distance=TRUE}.
     This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
 }
+
+If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
+
+If \code{raw.index=TRUE}, the values in \code{index} refer to \emph{columns} of \code{precomputed$data}.
 }
 
 \author{

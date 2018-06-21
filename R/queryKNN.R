@@ -1,18 +1,18 @@
 #' @export
 #' @importFrom BiocParallel SerialParam bpmapply
-queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL)
-# Identifies nearest neighbours.
+queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE)
+# Identifies nearest neighbours in 'X' from a query set.
 #
 # written by Aaron Lun
 # created 19 June 2018
 {
-    if (is.null(precomputed)) {
-        precomputed <- precluster(X)
-    }
+    pre.out <- .setup_precluster(X, precomputed, raw.index)
+    precomputed <- pre.out$precomputed
+    X <- pre.out$X
 
-    # Protection against silliness when k is greater than (or for self-neighbors, equal to) the number of observations.
-    if (k > ncol(precomputed$X)) { 
-        k <- ncol(precomputed$X) 
+    # Protection against silliness when k is greater than the number of observations.
+    if (k > ncol(precomputed$data)) { 
+        k <- ncol(precomputed$data) 
         warning("'k' capped at the number of observations")
     }
 
@@ -36,7 +36,7 @@ queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=Ser
     # Dividing jobs up for NN finding.
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
     collected <- bpmapply(jobs, FUN=.query_knn,
-        MoreArgs=list(X=precomputed$X, 
+        MoreArgs=list(X=precomputed$data, 
             centers=precomputed$clusters$centers, 
             info=precomputed$clusters$info, 
             k=k,
@@ -49,7 +49,9 @@ queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=Ser
     output <- list()
     if (get.index) {
         neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
-        neighbors[] <- precomputed$order[neighbors]
+        if (!raw.index) {
+            neighbors[] <- precomputed$order[neighbors]
+        }
         output$index <- neighbors
     } 
     if (get.distance) {

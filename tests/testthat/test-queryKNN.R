@@ -71,12 +71,45 @@ test_that("queryKNN() behaves correctly with alternative options", {
   
     # Checking precomputation.
     pre <- precluster(X)
-    out4 <- queryKNN(X, Y, k=k, precomputed=pre) 
+    out4 <- queryKNN(query=Y, k=k, precomputed=pre) # no need for X!
     expect_identical(out4, out)
 
     # Checking transposition.
     out5 <- queryKNN(X, k=k, query=t(Y), transposed=TRUE)
     expect_identical(out5, out)
+})
+
+set.seed(10031)
+test_that("findKNN() raw output behaves correctly", {
+    nobs <- 1001
+    nquery <- 101
+    ndim <- 11
+    k <- 7
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+  	Y <- matrix(runif(nquery * ndim), nrow=nquery)
+ 
+    pre <- precluster(X)
+    out <- queryKNN(query=Y, k=k, precomputed=pre, raw.index=TRUE)
+    ref <- queryKNN(query=Y, X=t(pre$data), k=k)
+    expect_identical(out, ref)
+
+    # Behaves with subsetting.
+    i <- sample(nquery, 20)
+    out <- queryKNN(query=Y, k=k, precomputed=pre, raw.index=TRUE, subset=i)
+    ref <- queryKNN(query=Y, X=t(pre$data), k=k, subset=i)
+    expect_identical(out, ref)
+
+    i <- rbinom(nquery, 1, 0.5) == 0L
+    out <- queryKNN(query=Y, k=k, precomputed=pre, raw.index=TRUE, subset=i)
+    ref <- queryKNN(query=Y, X=t(pre$data), k=k, subset=i)
+    expect_identical(out, ref)
+
+    # Adding row names.
+    rownames(Y) <- paste0("CELL", seq_len(nquery))
+    i <- sample(rownames(Y), 30)
+    out <- queryKNN(query=Y, k=k, precomputed=pre, raw.index=TRUE, subset=i)
+    ref <- queryKNN(query=Y, X=t(pre$data), k=k, subset=i)
+    expect_identical(out, ref)
 })
 
 set.seed(1004)
