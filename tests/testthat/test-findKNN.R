@@ -121,4 +121,7 @@ test_that("findKNN() behaves correctly with silly inputs", {
     expect_identical(ncol(out$index), 20L)
     expect_identical(dim(out$index), dim(out$distance))
     expect_true(all(out$distance==0))
+
+    # What happens when we request raw.index without precomputed.
+    expect_error(findKNN(X, k=20, raw.index=TRUE), "not valid")
 })

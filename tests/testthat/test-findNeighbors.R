@@ -134,4 +134,7 @@ test_that("findNeighbors() behaves correctly with silly inputs", {
     out <- findNeighbors(X[,0], threshold=1)
     expect_identical(unique(out$index), list(seq_len(nobs)))
     expect_identical(unique(out$distance), list(numeric(nobs)))
+    
+    # What happens when we request raw.index without precomputed.
+    expect_error(findNeighbors(X, threshold=1, raw.index=TRUE), "not valid")
 })
