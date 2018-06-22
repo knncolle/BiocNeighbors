@@ -2,7 +2,7 @@
 \alias{findNeighbors}
 
 \title{Find all neighbors}
-\description{Find all neighboring data points within a certain distance.}
+\description{Find all neighboring data points within a certain distance with the KMKNN algorithm.}
 
 \usage{
 findNeighbors(X, threshold, get.index=TRUE, get.distance=TRUE, 

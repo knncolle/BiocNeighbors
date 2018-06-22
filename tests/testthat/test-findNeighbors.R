@@ -11,6 +11,10 @@ REINFORCE <- function(out) {
 }
 
 expect_identical_re <- function(left, right) {
+    expect_false(is.null(left$index))
+    expect_false(is.null(right$index))
+    expect_false(is.null(left$distance))
+    expect_false(is.null(right$distance))
     expect_identical(REINFORCE(left), REINFORCE(right))
 }
 
@@ -41,22 +45,21 @@ test_that("findNeighbors() works correctly with subsetting", {
     X <- matrix(runif(nobs * ndim), nrow=nobs)
 
     ref <- findNeighbors(X, threshold=d)
+    expect_true(length(unique(lengths(ref$index))) > 1L) # some variety; not all, not single.
+
     i <- sample(nobs, 20)
     sub <- findNeighbors(X, threshold=d, subset=i)
-    expect_identical_re(sub$index, ref$index[i])
-    expect_identical_re(sub$distance, ref$distance[i])
+    expect_identical_re(sub, lapply(ref, "[", i=i))
 
     i <- rbinom(nobs, 1, 0.5) == 0L
     sub <- findNeighbors(X, threshold=d, subset=i)
-    expect_identical_re(sub$index, ref$index[i])
-    expect_identical_re(sub$distance, ref$distance[i])
+    expect_identical_re(sub, lapply(ref, "[", i=i))
 
     rownames(X) <- paste0("CELL", seq_len(nobs))
     i <- sample(rownames(X), 123)
     sub <- findNeighbors(X, threshold=d, subset=i)
     m <- match(i, rownames(X))
-    expect_identical_re(sub$index, ref$index[m])
-    expect_identical_re(sub$distance, ref$distance[m])
+    expect_identical_re(sub, lapply(ref, "[", i=m))
 })
 
 set.seed(1003)
@@ -65,21 +68,22 @@ test_that("findNeighbors() behaves correctly with alternative options", {
     ndim <- 10
     d <- 1
     X <- matrix(runif(nobs * ndim), nrow=nobs)
-    out <- findNeighbors(X, threshold=d)
+    ref <- findNeighbors(X, threshold=d)
+    expect_true(length(unique(lengths(ref$index))) > 1L) # some variety; not all, not single.
     
     # Checking what we extract.
     out2 <- findNeighbors(X, threshold=d, get.distance=FALSE)
     expect_identical(out2$distance, NULL)
-    expect_identical_re(out2$index, out$index)
+    expect_identical(lapply(out2$index, sort), lapply(ref$index, sort))
 
     out3 <- findNeighbors(X, threshold=d, get.index=FALSE)
     expect_identical(out3$index, NULL)
-    expect_identical_re(out3$distance, out$distance)
+    expect_identical(lapply(out3$distance, sort), lapply(ref$distance, sort))
   
     # Checking precomputation.
     pre <- precluster(X)
     out4 <- findNeighbors(X, threshold=d, precomputed=pre)
-    expect_identical_re(out4, out)
+    expect_identical_re(out4, ref)
 })
 
 set.seed(10031)
@@ -94,6 +98,7 @@ library(kmknn); library(testthat)
     out <- findNeighbors(threshold=d, precomputed=pre, raw.index=TRUE)
     ref <- findNeighbors(t(pre$data), threshold=d)
     expect_identical_re(out, ref)
+    expect_true(length(unique(lengths(ref$index))) > 1L) # some variety; not all, not single.
 
     # Behaves with subsetting.
     i <- sample(nobs, 20)
