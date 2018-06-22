@@ -16,22 +16,10 @@ queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=Ser
         warning("'k' capped at the number of observations")
     }
 
-    # Examining the nature of the query.
-    if (!transposed) {
-        query <- t(query)
-    }
-    query <- as.matrix(query)
-    nobs <- ncol(query)
-
-    # Choosing indices.
-    if (!is.null(subset)) {
-        job.id <- .subset_to_index(subset, query, byrow=FALSE)
-        reorder <- order(job.id) # ordering so that queries are adjacent.
-        job.id <- job.id[reorder]
-    } else {
-        job.id <- seq_len(ncol(query))
-        reorder <- NULL
-    }
+    q.out <- .setup_query(query, transposed, subset)
+    query <- q.out$query        
+    job.id <- q.out$index
+    reorder <- q.out$reorder
 
     # Dividing jobs up for NN finding.
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
@@ -62,4 +50,24 @@ queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=Ser
 
 .query_knn <- function(jobs, X, centers, info, k, query, get.index, get.distance) {
     .Call(cxx_query_knn, jobs, X, centers, info, k, query, get.index, get.distance)
+}
+
+.setup_query <- function(query, transposed, subset) 
+# Convenience wrapper to set up the query.
+{
+    if (!transposed) {
+        query <- t(query)
+    }
+    query <- as.matrix(query)
+
+    # Choosing indices.
+    if (!is.null(subset)) {
+        job.id <- .subset_to_index(subset, query, byrow=FALSE)
+        reorder <- order(job.id) # ordering so that queries are adjacent.
+        job.id <- job.id[reorder]
+    } else {
+        job.id <- seq_len(ncol(query))
+        reorder <- NULL
+    }
+    return(list(query=query, index=job.id, reorder=reorder))
 }
