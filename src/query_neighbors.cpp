@@ -1,7 +1,7 @@
 #include "objects.h"
 #include "utils.h"
 
-SEXP query_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP nn, SEXP query, SEXP get_index, SEXP get_distance) {
+SEXP query_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP dist_thresh, SEXP query, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
     auto searcher=generate_holder(X, clust_centers, clust_info);
     const double threshold=check_numeric_scalar(dist_thresh, "threshold");
