@@ -1,5 +1,5 @@
-\name{queryKNN}
-\alias{queryKNN}
+\name{queryNeighbors}
+\alias{queryNeighbors}
 
 \title{Query neighbors}
 \description{Find all neighboring data points within a certain distance of a query point with the KMKNN algorithm.}
