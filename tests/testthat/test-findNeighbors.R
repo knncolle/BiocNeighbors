@@ -6,9 +6,6 @@ REINFORCE <- function(out) {
 # Thus, we need to do some work to ensure that we get the same result.
     O <- lapply(out$index, order)
     re.index <- mapply(FUN="[", x=out$index, i=O, SIMPLIFY=FALSE)
-    if (.Platform$OS.type=="windows") {
-        return(list(index=re.index))
-    }
     re.dist <- mapply(FUN="[", x=out$distance, i=O, SIMPLIFY=FALSE)
     list(index=re.index, distance=re.dist)
 }
@@ -18,7 +15,11 @@ expect_identical_re <- function(left, right) {
     expect_false(is.null(right$index))
     expect_false(is.null(left$distance))
     expect_false(is.null(right$distance))
-    expect_identical(REINFORCE(left), REINFORCE(right))
+
+    L <- REINFORCE(left)
+    R <- REINFORCE(right)
+    expect_identical(L$index, R$index)
+    expect_equal(L$distance, R$distance)
 }
 
 set.seed(1001)
@@ -89,6 +90,14 @@ test_that("findNeighbors() behaves correctly with alternative options", {
     pre <- precluster(X)
     out4 <- findNeighbors(X, threshold=d, precomputed=pre)
     expect_identical_re(out4, ref)
+})
+
+set.seed(10031)
+test_that("Assorted tests for exact equality across runs (for Windows debugging)", {
+    nobs <- 1000
+    ndim <- 10
+    d <- 1
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
 
     # Checking that we get the same results with the same seed, due to random k-means.
     set.seed(123)
@@ -96,6 +105,17 @@ test_that("findNeighbors() behaves correctly with alternative options", {
     set.seed(123)
     out2 <- findNeighbors(X, threshold=1)
     expect_equal(out1, out2)
+    expect_identical(out1, out2)
+
+    # Putting aside the seed, and checking whether the values are equal after reinforcement.
+    out1 <- findNeighbors(X, threshold=1)
+    out2 <- findNeighbors(X, threshold=1)
+
+    out1 <- REINFORCE(out1)
+    out2 <- REINFORCE(out2)
+
+    expect_equal(out1, out2)
+    expect_identical(out1, out2)
 })
 
 set.seed(10031)
