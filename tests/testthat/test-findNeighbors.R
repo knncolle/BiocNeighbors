@@ -91,38 +91,6 @@ test_that("findNeighbors() behaves correctly with alternative options", {
 })
 
 set.seed(10031)
-test_that("Assorted tests for exact equality across runs (for Windows debugging)", {
-    nobs <- 1000
-    ndim <- 10
-    d <- 1
-    X <- matrix(runif(nobs * ndim), nrow=nobs)
-
-    # Checking that we get the same results with the same seed, due to random k-means.
-    set.seed(123)
-    out1 <- findNeighbors(X, threshold=1)
-    set.seed(123)
-    out2 <- findNeighbors(X, threshold=1)
-    expect_equal(out1, out2)
-    expect_identical(out1, out2)
-
-    # Seeing what happens when sorting is applied. 
-    reout1 <- REINFORCE(out1)
-    reout2 <- REINFORCE(out2)
-    expect_equal(reout1, reout2)
-    expect_identical(reout1, reout2)
-
-    # Putting aside the seed, and checking whether the values are equal after reinforcement.
-    out1 <- findNeighbors(X, threshold=1)
-    out2 <- findNeighbors(X, threshold=1)
-
-    out1 <- REINFORCE(out1)
-    out2 <- REINFORCE(out2)
-
-    expect_equal(out1, out2)
-    expect_identical(out1, out2)
-})
-
-set.seed(10031)
 test_that("findNeighbors() raw output behaves correctly", {
 library(kmknn); library(testthat)
     nobs <- 1001
