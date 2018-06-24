@@ -89,6 +89,13 @@ test_that("findNeighbors() behaves correctly with alternative options", {
     pre <- precluster(X)
     out4 <- findNeighbors(X, threshold=d, precomputed=pre)
     expect_identical_re(out4, ref)
+
+    # Checking that we get the same results with the same seed, due to random k-means.
+    set.seed(123)
+    out1 <- findNeighbors(X, threshold=1)
+    set.seed(123)
+    out2 <- findNeighbors(X, threshold=1)
+    expect_equal(out1, out2)
 })
 
 set.seed(10031)
