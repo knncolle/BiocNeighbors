@@ -1,5 +1,5 @@
 Package: kmknn
-Version: 0.99.5
+Version: 0.99.6
 Date: 2018-06-24
 Title: k-Means for k-Nearest Neighbors
 Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),

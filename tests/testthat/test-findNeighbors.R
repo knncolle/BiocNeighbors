@@ -82,9 +82,7 @@ test_that("findNeighbors() behaves correctly with alternative options", {
 
     out3 <- findNeighbors(X, threshold=d, get.index=FALSE)
     expect_identical(out3$index, NULL)
-    if (.Platform$OS.type!="windows") {
-    expect_identical(lapply(out3$distance, sort), lapply(ref$distance, sort))
-    }
+    expect_equal(lapply(out3$distance, sort), lapply(ref$distance, sort))
   
     # Checking precomputation.
     pre <- precluster(X)
@@ -106,6 +104,12 @@ test_that("Assorted tests for exact equality across runs (for Windows debugging)
     out2 <- findNeighbors(X, threshold=1)
     expect_equal(out1, out2)
     expect_identical(out1, out2)
+
+    # Seeing what happens when sorting is applied. 
+    reout1 <- REINFORCE(out1)
+    reout2 <- REINFORCE(out2)
+    expect_equal(reout1, reout2)
+    expect_identical(reout1, reout2)
 
     # Putting aside the seed, and checking whether the values are equal after reinforcement.
     out1 <- findNeighbors(X, threshold=1)
