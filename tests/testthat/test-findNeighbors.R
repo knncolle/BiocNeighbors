@@ -6,7 +6,7 @@ REINFORCE <- function(out) {
 # Thus, we need to do some work to ensure that we get the same result.
     O <- lapply(out$index, order)
     re.index <- mapply(FUN="[", x=out$index, i=O, SIMPLIFY=FALSE)
-    if (.Platform$OS.type!="windows") {
+    if (.Platform$OS.type=="windows") {
         return(list(index=re.index))
     }
     re.dist <- mapply(FUN="[", x=out$distance, i=O, SIMPLIFY=FALSE)
@@ -104,8 +104,6 @@ library(kmknn); library(testthat)
     ref <- findNeighbors(t(pre$data), threshold=d)
     expect_identical_re(out, ref)
     expect_true(length(unique(lengths(ref$index))) > 1L) # some variety; not all, not single.
-
-    REINFORCE(out)
 
     # Behaves with subsetting.
     i <- sample(nobs, 20)
