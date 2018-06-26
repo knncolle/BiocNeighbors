@@ -3,16 +3,10 @@
 
 SEXP find_knn(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP nn, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
-
-    const int NN0=check_integer_scalar(nn, "'k'");
-    if (NN0<1) { 
-        throw std::runtime_error("'k' must be positive");
-    }
-    const size_t NN=NN0;
-
     auto searcher=generate_holder(X, clust_centers, clust_info);
 
-    // Figuring out which indices we're using.
+    // Checking NN's and indices.
+    const size_t NN=check_k(nn);
     const Rcpp::IntegerVector points=check_indices(to_check, searcher->get_nobs());
     const size_t nobs=points.size();
 

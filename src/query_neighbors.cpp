@@ -4,10 +4,7 @@
 SEXP query_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP dist_thresh, SEXP query, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
     auto searcher=generate_holder(X, clust_centers, clust_info);
-    const double threshold=check_numeric_scalar(dist_thresh, "threshold");
-    if (threshold <= 0) {
-        throw std::runtime_error("threshold should be positive");
-    }
+    const double threshold=check_distance(dist_thresh);
     const size_t ndim=searcher->get_ndims();
 
     // Examining the query matrix and checking it against the subset indices.

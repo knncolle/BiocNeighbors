@@ -4,10 +4,7 @@
 SEXP find_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP dist_thresh, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
     auto searcher=generate_holder(X, clust_centers, clust_info);
-    const double threshold=check_numeric_scalar(dist_thresh, "threshold");
-    if (threshold <= 0) {
-        throw std::runtime_error("threshold should be positive");
-    }
+    const double threshold=check_distance(dist_thresh);
   
     // Figuring out which indices we're using.
     const Rcpp::IntegerVector points=check_indices(to_check, searcher->get_nobs());

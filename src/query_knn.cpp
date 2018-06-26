@@ -3,15 +3,9 @@
 
 SEXP query_knn(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP nn, SEXP query, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
-
-    const int NN0=check_integer_scalar(nn, "'k'");
-    if (NN0<1) { 
-        throw std::runtime_error("'k' must be positive");
-    }
-    const size_t NN=NN0;
-
     auto searcher=generate_holder(X, clust_centers, clust_info);
     const size_t ndim=searcher->get_ndims();
+    const size_t NN=check_k(nn);
 
     // Examining the query matrix and checking it against the subset indices.
     Rcpp::NumericMatrix Query(query);

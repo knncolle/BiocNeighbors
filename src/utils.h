@@ -12,4 +12,8 @@ const char* check_string(Rcpp::RObject x, const char* thing);
 
 Rcpp::IntegerVector check_indices(Rcpp::RObject, size_t);
 
+size_t check_k(Rcpp::RObject);
+
+double check_distance(Rcpp::RObject);
+
 #endif

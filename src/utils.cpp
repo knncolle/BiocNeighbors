@@ -37,3 +37,19 @@ Rcpp::IntegerVector check_indices(Rcpp::RObject incoming, size_t total_obs) {
     }
     return points;
 }
+
+size_t check_k(Rcpp::RObject incoming) {
+    const int NN=check_integer_scalar(incoming, "'k'");
+    if (NN<1){
+        throw std::runtime_error("'k' must be positive");
+    }
+    return NN;
+}
+
+double check_distance(Rcpp::RObject incoming) {
+    const double threshold=check_numeric_scalar(incoming, "threshold");
+    if (threshold <= 0) {
+        throw std::runtime_error("threshold should be positive");
+    }
+    return threshold;
+}
