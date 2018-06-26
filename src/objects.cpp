@@ -29,7 +29,9 @@ std::deque<size_t>& naive_holder::get_neighbors () { return neighbors; }
 std::deque<double>& naive_holder::get_distances () { return distances; }
 
 void naive_holder::find_neighbors (size_t cell, double threshold, const bool dist) {
-    if (cell >= exprs.ncol()) { throw std::runtime_error("cell index out of range"); }
+    if (cell >= size_t(exprs.ncol())) { 
+        throw std::runtime_error("cell index out of range"); 
+    }
     auto curcol=exprs.column(cell);
     search_all(curcol.begin(), threshold, dist);
     return;
@@ -41,7 +43,9 @@ void naive_holder::find_neighbors (const double* current, double threshold, cons
 }
 
 void naive_holder::find_nearest_neighbors (size_t cell, size_t nn, const bool dist) {
-    if (cell >= exprs.ncol()) { throw std::runtime_error("cell index out of range"); }
+    if (cell >= size_t(exprs.ncol())) { 
+        throw std::runtime_error("cell index out of range"); 
+    }
     auto curcol=exprs.column(cell);
     search_nn(curcol.begin(), nn+1, dist);
 
@@ -64,8 +68,9 @@ void naive_holder::find_nearest_neighbors (const double* current, size_t nn, con
 
 double naive_holder::compute_sqdist(const double* x, const double* y) const {
     double out=0;
-    for (size_t m=0; m<exprs.nrow(); ++m) {
-        double tmp=x[m]-y[m];
+    const size_t NR=exprs.nrow();
+    for (size_t m=0; m<NR; ++m) {
+        const double tmp=x[m]-y[m];
         out+=tmp*tmp;
     }
     return out;
