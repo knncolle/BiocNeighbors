@@ -1,12 +1,13 @@
 Package: kmknn
-Version: 0.99.8
+Version: 0.99.9
 Date: 2018-06-26
 Title: k-Means for k-Nearest Neighbors
 Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
         email="alun@wehi.edu.au"))
 Depends: R (>= 3.5), BiocParallel
 Imports: Rcpp, DelayedArray, stats
-Suggests: testthat, BiocStyle, knitr, rmarkdown, FNN
+Suggests: testthat, BiocStyle, knitr, rmarkdown, FNN, scRNAseq,
+    scater
 biocViews: Clustering, Classification
 Description: Implements a k-nearest neighbor search based on 
     pre-clustering with the k-means algorithm, as described by
