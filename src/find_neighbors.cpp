@@ -10,13 +10,7 @@ SEXP find_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, 
     }
   
     // Figuring out which indices we're using.
-    const size_t total_obs=searcher->get_nobs();
-    const Rcpp::IntegerVector points(to_check);
-    for (auto h : points) {
-        if (h==NA_INTEGER || h < 0 || h >= total_obs) {
-            throw std::runtime_error("job indices out of range");
-        }
-    }
+    const Rcpp::IntegerVector points=check_indices(to_check, searcher->get_nobs());
     const size_t nobs=points.size();
 
     // Getting the output mode.

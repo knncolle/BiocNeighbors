@@ -28,3 +28,12 @@ const char* check_string(Rcpp::RObject x, const char* thing) {
     return CHAR(current.get_sexp());
 }
 
+Rcpp::IntegerVector check_indices(Rcpp::RObject incoming, size_t total_obs) {
+    const Rcpp::IntegerVector points(incoming);
+    for (auto h : points) {
+        if (h==NA_INTEGER || h < 0 || size_t(h) >= total_obs) {
+            throw std::runtime_error("job indices out of range");
+        }
+    }
+    return points;
+}

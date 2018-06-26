@@ -4,21 +4,16 @@
 SEXP find_knn(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP nn, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
 
-    const int NN=check_integer_scalar(nn, "'k'");
-    if (NN<1) { 
+    const int NN0=check_integer_scalar(nn, "'k'");
+    if (NN0<1) { 
         throw std::runtime_error("'k' must be positive");
     }
+    const size_t NN=NN0;
+
     auto searcher=generate_holder(X, clust_centers, clust_info);
-    const size_t ndim=searcher->get_ndims();
 
     // Figuring out which indices we're using.
-    const size_t total_obs=searcher->get_nobs();
-    const Rcpp::IntegerVector points(to_check);
-    for (auto h : points) {
-        if (h==NA_INTEGER || h < 0 || h >= total_obs) {
-            throw std::runtime_error("job indices out of range");
-        }
-    }
+    const Rcpp::IntegerVector points=check_indices(to_check, searcher->get_nobs());
     const size_t nobs=points.size();
 
     // Getting the output mode.

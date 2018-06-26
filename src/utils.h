@@ -10,4 +10,6 @@ double check_numeric_scalar(Rcpp::RObject x, const char* thing);
 
 const char* check_string(Rcpp::RObject x, const char* thing);
 
+Rcpp::IntegerVector check_indices(Rcpp::RObject, size_t);
+
 #endif

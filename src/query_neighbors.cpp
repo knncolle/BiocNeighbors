@@ -12,17 +12,11 @@ SEXP query_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info,
 
     // Examining the query matrix and checking it against the subset indices.
     Rcpp::NumericMatrix Query(query);
-    if (Query.nrow()!=ndim) {
+    if (size_t(Query.nrow())!=ndim) {
         throw std::runtime_error("'query' and 'X' have different dimensionality");
     }
 
-    const size_t total_obs=Query.ncol();
-    const Rcpp::IntegerVector points(to_check);
-    for (auto h : points) {
-        if (h==NA_INTEGER || h < 0 || h >= total_obs) {
-            throw std::runtime_error("job indices out of range");
-        }
-    }
+    const Rcpp::IntegerVector points=check_indices(to_check, Query.ncol());
     const size_t nobs=points.size();
 
     // Getting the output mode.
