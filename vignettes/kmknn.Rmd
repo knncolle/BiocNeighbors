@@ -166,6 +166,35 @@ out3 <- findNeighbors(precomputed=pre, threshold=2)
 Advanced users may also be interested in the `raw.index=` argument, which returns indices directly to the precomputed object rather than to `data`.
 This may be useful during package development where it is more convenient to work on the common precomputed object.
 
+# Use case with single-cell RNA-seq data
+
+To demonstrate a practical use of this package, let's have a look at a small single-cell RNA seq dataset from the `r Biocpkg("scRNAseq")` package.
+The `allen` dataset contains a subset of cells from a study of the mouse visual cortex [@tasic2016adult].
+
+```{r}
+library(scRNAseq)
+data(allen)
+```
+
+We use the `r Biocpkg("scater")` package [@mccarthy2017scater] to obtain the first 20 principal components of the log-normalized expression matrix.
+
+```{r}
+library(scater)
+sce <- as(allen, "SingleCellExperiment")
+sce <- normalize(sce, exprs_values="tophat_counts")
+sce <- runPCA(sce, ncomponents=50)
+dim(reducedDim(sce, "PCA"))
+```
+
+We can then identify cels that are nearest neighbors of each other using `findKNN()`.
+This is the basis of a number of procedures such as shared nearest-neighbors clustering [@xu2015identification] and mutual nearest neighbors batch correction [@haghverdi2018batch].
+
+```{r}
+nns <- findKNN(reducedDim(sce, "PCA"), k=10)
+head(nns$index)
+head(nns$distance)
+```
+
 # Session information
 
 ```{r}
