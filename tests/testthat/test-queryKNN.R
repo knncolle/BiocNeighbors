@@ -79,6 +79,27 @@ test_that("queryKNN() behaves correctly with alternative options", {
     expect_identical(out5, out)
 })
 
+set.seed(100301)
+test_that("queryKNN() behaves correctly with parallelization", {
+    nobs <- 1000
+    nquery <- 124
+    ndim <- 10
+    k <- 5
+
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    Y <- matrix(runif(nquery * ndim), nrow=nquery)
+    out <- queryKNN(X, Y, k=k)
+  
+    # Trying out different types of parallelization.
+    out1 <- queryKNN(X, Y, k=k, BPPARAM=MulticoreParam(2))
+    expect_identical(out$index, out1$index)
+    expect_identical(out$distance, out1$distance)
+
+    out2 <- queryKNN(X, Y, k=k, BPPARAM=SnowParam(3))
+    expect_identical(out$index, out2$index)
+    expect_identical(out$distance, out2$distance)
+})
+
 set.seed(10031)
 test_that("findKNN() raw output behaves correctly", {
     nobs <- 1001

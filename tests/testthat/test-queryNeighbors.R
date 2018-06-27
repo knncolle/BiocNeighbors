@@ -102,6 +102,26 @@ test_that("queryNeighbors() behaves correctly with alternative options", {
     expect_identical_re(out5, ref)
 })
 
+set.seed(100301)
+test_that("queryNeighbors() behaves correctly with parallelization", {
+    nobs <- 1001
+    nquery <- 101
+    ndim <- 11
+    d <- 1.5
+
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    Y <- matrix(runif(nquery * ndim), nrow=nquery)
+    ref <- queryNeighbors(X, Y, threshold=d)
+    expect_true(length(unique(lengths(ref$index))) > 1L) # some variety; not all, not single.
+  
+    # Trying out different types of parallelization.
+    out1 <- queryNeighbors(X, Y, threshold=d, BPPARAM=MulticoreParam(2))
+    expect_identical_re(out1, ref)
+
+    out2 <- queryNeighbors(X, Y, threshold=d, BPPARAM=SnowParam(3))
+    expect_identical_re(out2, ref)
+})
+
 set.seed(10031)
 test_that("queryNeighbors() raw output behaves correctly", {
     nobs <- 1001
@@ -115,7 +135,6 @@ test_that("queryNeighbors() raw output behaves correctly", {
     out <- queryNeighbors(query=Y, threshold=d, precomputed=pre, raw.index=TRUE)
     ref <- queryNeighbors(query=Y, X=t(pre$data), threshold=d)
     expect_identical_re(out, ref)
-    expect_true(length(unique(lengths(ref$index))) > 1L) # some variety; not all, not single.
 
     # Behaves with subsetting.
     i <- sample(nquery, 20)

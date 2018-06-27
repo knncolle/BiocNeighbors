@@ -90,9 +90,26 @@ test_that("findNeighbors() behaves correctly with alternative options", {
     expect_identical_re(out4, ref)
 })
 
+set.seed(100301)
+test_that("findNeighbors() behaves correctly with parallelization", {
+    nobs <- 1001
+    ndim <- 8
+    d <- 1
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    ref <- findNeighbors(X, threshold=d)
+    expect_true(length(unique(lengths(ref$index))) > 1L) # some variety; not all, not single.
+  
+    # Trying out different types of parallelization.
+    out1 <- findNeighbors(X, threshold=d, BPPARAM=MulticoreParam(2))
+    expect_identical_re(ref, out1)
+
+    out2 <- findNeighbors(X, threshold=d, BPPARAM=SnowParam(3))
+    expect_identical_re(ref, out2)
+})
+
 set.seed(10031)
 test_that("findNeighbors() raw output behaves correctly", {
-library(kmknn); library(testthat)
     nobs <- 1001
     ndim <- 8
     d <- 1
@@ -102,7 +119,6 @@ library(kmknn); library(testthat)
     out <- findNeighbors(threshold=d, precomputed=pre, raw.index=TRUE)
     ref <- findNeighbors(t(pre$data), threshold=d)
     expect_identical_re(out, ref)
-    expect_true(length(unique(lengths(ref$index))) > 1L) # some variety; not all, not single.
 
     # Behaves with subsetting.
     i <- sample(nobs, 20)
