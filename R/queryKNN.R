@@ -58,7 +58,9 @@ queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=Ser
     if (!transposed) {
         query <- t(query)
     }
-    query <- as.matrix(query)
+    if (!is.matrix(query)) {
+        query <- as.matrix(query)
+    }
 
     # Choosing indices.
     if (!is.null(subset)) {

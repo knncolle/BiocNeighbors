@@ -138,10 +138,14 @@ test_that("queryKNN() behaves correctly with silly inputs", {
     expect_true(all(out$distance==0))
 
     # What happens when the query is of a different dimension.
-    Y <- matrix(runif(nobs * ndim * 2), nrow=nobs)
-    expect_error(queryKNN(X, k=20, query=Y), "dimensionality")
+    Z <- matrix(runif(nobs * ndim * 2), nrow=nobs)
+    expect_error(queryKNN(X, k=20, query=Z), "dimensionality")
 
     # What happens when we request raw.index without precomputed.
     expect_error(queryKNN(X, Y, k=20, raw.index=TRUE), "not valid")
 
+    # What happens when the query is not, strictly a matrix.
+    AA <- data.frame(Y)
+    colnames(AA) <- NULL
+    expect_equal(queryKNN(X, Y, k=20), queryKNN(X, AA, k=20))
 })

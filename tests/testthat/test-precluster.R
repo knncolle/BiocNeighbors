@@ -76,4 +76,13 @@ test_that("precluster() behaves sensibly with silly inputs", {
     expect_identical(out$clusters$info[[1]][[1]], 0L)
     expect_identical(out$clusters$info[[1]][[2]], numeric(nobs))
     expect_identical(out$order, seq_len(nobs))
+
+    # We get the same result when 'X' is not, strictly, a matrix.
+    set.seed(1999)
+    ref <- precluster(X)
+    set.seed(1999)
+    Y <- data.frame(X, check.names=FALSE, fix.empty.names=FALSE)
+    colnames(Y) <- NULL
+    out <- precluster(Y)
+    expect_equal(ref, out)
 })

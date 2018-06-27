@@ -6,6 +6,10 @@ precluster <- function(X, ...)
 # written by Aaron Lun
 # created 19 June 2018
 {
+    if (!is.matrix(X)) {
+        X <- as.matrix(X)
+    }
+
     N <- ceiling(sqrt(nrow(X)))
     if (N==nrow(X)) {
         # Every point is its own cluster.

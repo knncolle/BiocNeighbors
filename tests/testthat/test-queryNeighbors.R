@@ -164,9 +164,14 @@ test_that("queryNeighbors() behaves correctly with silly inputs", {
     expect_identical(unique(out$distance), list(numeric(nobs)))
 
     # What happens when the query is of a different dimension.
-    Y <- matrix(runif(nobs * ndim * 2), nrow=nobs)
-    expect_error(queryNeighbors(X, threshold=1, query=Y), "dimensionality")
+    Z <- matrix(runif(nobs * ndim * 2), nrow=nobs)
+    expect_error(queryNeighbors(X, threshold=1, query=Z), "dimensionality")
 
     # What happens when we request raw.index without precomputed.
     expect_error(queryNeighbors(X, Y, threshold=1, raw.index=TRUE), "not valid")
+
+    # What happens when the query is not, strictly a matrix.
+    AA <- data.frame(Y)
+    colnames(AA) <- NULL
+    expect_identical_re(queryNeighbors(X, Y, threshold=1), queryNeighbors(X, AA, threshold=1))
 })
