@@ -40,6 +40,8 @@ If multiple queries are to be performed to the same \code{X}, it may be benefici
 Note that when \code{precomputed} is supplied, the value of \code{X} is ignored.
 Advanced users can also set \code{raw.index=TRUE}, which yields results equivalent to running \code{queryKNN} with \code{X=t(precomputed$data)}.
 This may be useful when dealing with multiple queries to a common precomputed object.
+
+See comments in \code{?\link{findKNN}} regarding the warnings when tied distances are observed.
 }
 
 \value{

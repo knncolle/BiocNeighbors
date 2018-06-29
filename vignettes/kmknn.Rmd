@@ -39,7 +39,7 @@ Only compute query-point distances for points where the triangle inequality hold
 4. Update $d$ with the new closest kth-nearest neighbor and repeat for the next cluster.
 
 The pre-clustering arranges the points in a manner that effectively reduces the search space, even in high-dimensional data.
-Note that, while `kmeans` itself is random, the k-nearest neighbors result is fully deterministic.
+Note that, while `kmeans` itself is random, the k-nearest neighbors result is fully deterministic^[Except in the presence of ties, see `?findKNN` for details.].
 
 The algorithm is implemented in a combination of R and C++, derived from code in `r Biocpkg("cydar")` [@lun2017testing].
 We observe 2-5-fold speed-ups in 20- to 50-dimensional data, compared to KD-trees in `r CRANpkg("FNN")` and `r CRANpkg("RANN")` (see https://github.com/LTLA/OkNN2018 for timings).

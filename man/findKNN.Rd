@@ -30,8 +30,9 @@ By default, nearest neighbors are identified for all data points within \code{X}
 If \code{subset} is specified, nearest neighbors are only detected for the points in the subset.
 This yields the same result as (but is more efficient than) subsetting the output matrices after running \code{findKNN} with \code{subset=NULL}.
 
-Turning off \code{get.index} or \code{get.distance} may provide a slight speed boost when these returned values are not of interest.
-Using \code{BPPARAM} will also split the search by query points across multiple processes.
+Turning off \code{get.index} or \code{get.distance} will not return the corresponding matrices in the output.
+This may provide a slight speed boost when these returned values are not of interest.
+Using \code{BPPARAM} will also split the search across multiple workers, which should increase speed proportionally (in theory) to the number of cores.
 
 If the function is to be called multiple times with the same \code{X} (e.g., with different \code{subset}), 
 it may be beneficial to call \code{\link{precluster}} outside of this function.
@@ -45,6 +46,18 @@ Currently, only Euclidean distances are supported, but support may be added for 
 It remains to be seen whether the speed-up achieved with k-means is still applicable to alternative distance metrics.
 
 Note that the code here was originally derived from an implementation in the \pkg{cydar} package (Lun \emph{et al.}, 2017).
+}
+
+\section{Note on random seeds}{
+In general, this function is fully deterministic, despite the use of a stochastic \code{\link{kmeans}} step in \code{\link{precluster}}.
+The only exception occurs when there are tied distances to neighbors, at which point the order and/or identity of the k-nearest neighboring points is not well-defined.
+
+A warning will be raised if ties are detected among the \code{k+1} nearest neighbors, as this indicates that the order/identity is arbitrary.
+Specifically, the output will depend on the ordering of points in the \code{\link{precluster}} output.
+
+Users should set the seed to guarantee consistent (albeit arbitrary) results across different runs of the function.
+Note, however, that the exact selection of tied points depends on the numerical precision of the system.
+Thus, even after setting a seed, there is no guarantee that the results will be reproducible across machines (especially Windows)!
 }
 
 \value{
