@@ -8,10 +8,10 @@ public:
     naive_holder(SEXP);
     virtual ~naive_holder();
    
-    void find_neighbors(size_t, double, const bool);
-    void find_neighbors(const double*, double, const bool);
-    void find_nearest_neighbors(size_t, size_t, const bool);
-    void find_nearest_neighbors(const double*, size_t, const bool);
+    void find_neighbors(size_t, double, const bool, const bool);
+    void find_neighbors(const double*, double, const bool, const bool);
+    void find_nearest_neighbors(size_t, size_t, const bool, const bool);
+    void find_nearest_neighbors(const double*, size_t, const bool, const bool);
     
     size_t get_nobs() const;
     size_t get_ndims() const;
@@ -25,11 +25,11 @@ protected:
 
     typedef std::priority_queue<std::pair<double, int> > nearest;
     nearest current_nearest;
-    void pqueue2deque(const bool);
+    void pqueue2deque(const bool, const bool);
 
     double compute_sqdist(const double*, const double*) const;
-    virtual void search_all(const double*, double, const bool);
-    virtual void search_nn (const double*, size_t, const bool);
+    virtual void search_all(const double*, double, const bool, const bool);
+    virtual void search_nn (const double*, size_t, const bool, const bool);
 
     double last_distance2;
     bool tie_warned;
@@ -45,8 +45,8 @@ protected:
     std::deque<int> clust_nobs;
     std::deque<Rcpp::NumericVector> clust_dist;
 
-    void search_all(const double*, double, const bool);
-    void search_nn (const double*, size_t, const bool);
+    void search_all(const double*, double, const bool, const bool);
+    void search_nn (const double*, size_t, const bool, const bool);
 };
 
 std::unique_ptr<naive_holder> generate_holder(SEXP, SEXP, SEXP); 

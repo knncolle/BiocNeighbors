@@ -27,7 +27,7 @@ SEXP find_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, 
     // Iterating across cells, finding NNs and storing distances or neighbors.
     size_t ix=0;
     for (auto h : points) {
-        searcher->find_neighbors(h, threshold, store_distances);
+        searcher->find_neighbors(h, threshold, store_neighbors, store_distances);
 
         if (store_neighbors) {
             const std::deque<size_t>& neighbors=searcher->get_neighbors();
