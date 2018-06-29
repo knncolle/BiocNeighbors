@@ -1,22 +1,9 @@
 #include "objects.h"
 #include "utils.h"
     
-typedef std::priority_queue<std::pair<double, int> > nearest;
-
-void pqueue2deque(nearest& collected_obs, std::deque<size_t>& final_obs, const bool dist, std::deque<double>& distances) {
-    while (!collected_obs.empty()) {
-        final_obs.push_front(collected_obs.top().second);
-        if (dist) {
-            distances.push_front(std::sqrt(collected_obs.top().first)); // rooting, as distances stored as squares.
-        }
-        collected_obs.pop();
-    }
-    return;
-}
-
 /****************** Naive search object *********************/
 
-naive_holder::naive_holder (SEXP ex) : exprs(ex) {}
+naive_holder::naive_holder (SEXP ex) : exprs(ex), last_distance2(R_NaReal), tie_warned(false) {}
 
 naive_holder::~naive_holder() { }
 
@@ -76,6 +63,34 @@ double naive_holder::compute_sqdist(const double* x, const double* y) const {
     return out;
 }
 
+void naive_holder::pqueue2deque(const bool dist) {
+    if (current_nearest.empty()) { 
+        return;
+    }
+
+    // Taking any value larger than the largest in 'current_nearest', if last_distance2 is NA.
+    double lastdist=(ISNA(last_distance2) ? current_nearest.top().first + 1 : std::sqrt(last_distance2));
+
+    while (!current_nearest.empty()) {
+        neighbors.push_front(current_nearest.top().second);
+
+        const double curdist=std::sqrt(current_nearest.top().first); // rooting, as distances stored as squares.
+        if (dist) {
+            distances.push_front(curdist);
+        }
+      
+        if (!tie_warned && lastdist - curdist < 0.00000001) { // Should always be decreasing, no need for abs().
+            tie_warned=true;
+            Rcpp::warning("tied distances detected in nearest-neighbor calculation");
+        } else {
+            lastdist=curdist;
+        }
+
+        current_nearest.pop();
+    }
+    return;
+}
+
 void naive_holder::search_all(const double* current, double threshold, const bool dist) {
     neighbors.clear();
     distances.clear();
@@ -112,13 +127,14 @@ void naive_holder::search_nn (const double* current, size_t nn, const bool dist)
         if (current_nearest.size() < nn || curdist2 < current_nearest.top().first) {
             current_nearest.push(std::make_pair(curdist2, c));
             if (current_nearest.size() > nn) { 
+                last_distance2=current_nearest.top().first;
                 current_nearest.pop();
             } 
         }
     }
 
     // Converts information to neighbors/distances. Also clears 'nearest'.
-    pqueue2deque(current_nearest, neighbors, dist, distances);
+    pqueue2deque(dist);
     return;
 } 
 
@@ -239,6 +255,7 @@ void convex_holder::search_nn(const double* current, size_t nn, const bool dist)
             if (current_nearest.size() < nn || dist2cell2 <= threshold2) {
                 current_nearest.push(std::make_pair(dist2cell2, cur_start + index));
                 if (current_nearest.size() > nn) { 
+                    last_distance2=current_nearest.top().first;
                     current_nearest.pop();
                 } 
                 if (current_nearest.size()==nn) {
@@ -250,7 +267,7 @@ void convex_holder::search_nn(const double* current, size_t nn, const bool dist)
     }
 
     // Converts information to neighbors/distances. Also clears 'nearest'.
-    pqueue2deque(current_nearest, neighbors, dist, distances);
+    pqueue2deque(dist);
     return;
 }  
 

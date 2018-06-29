@@ -16,32 +16,37 @@ public:
     size_t get_nobs() const;
     size_t get_ndims() const;
 
-    double compute_sqdist(const double*, const double*) const;    
-    virtual void search_all(const double*, double, const bool);
-    virtual void search_nn (const double*, size_t, const bool);
-
     std::deque<size_t>& get_neighbors ();
     std::deque<double>& get_distances ();
 protected:  
     const Rcpp::NumericMatrix exprs;
     std::deque<size_t> neighbors;
     std::deque<double> distances;
+
     typedef std::priority_queue<std::pair<double, int> > nearest;
     nearest current_nearest;
+    void pqueue2deque(const bool);
+
+    double compute_sqdist(const double*, const double*) const;
+    virtual void search_all(const double*, double, const bool);
+    virtual void search_nn (const double*, size_t, const bool);
+
+    double last_distance2;
+    bool tie_warned;
 };
 
 struct convex_holder : public naive_holder {
 public:
     convex_holder(SEXP, SEXP, SEXP);
     ~convex_holder();
-    void search_all(const double*, double, const bool);
-    void search_nn (const double*, size_t, const bool);
-
 protected:
     const Rcpp::NumericMatrix centers;
     std::deque<int> clust_start;
     std::deque<int> clust_nobs;
     std::deque<Rcpp::NumericVector> clust_dist;
+
+    void search_all(const double*, double, const bool);
+    void search_nn (const double*, size_t, const bool);
 };
 
 std::unique_ptr<naive_holder> generate_holder(SEXP, SEXP, SEXP); 
