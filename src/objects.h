@@ -25,11 +25,11 @@ protected:
 
     typedef std::priority_queue<std::pair<double, int> > nearest;
     nearest current_nearest;
-    void pqueue2deque(const bool, const bool);
+    void pqueue2deque(const bool, const bool, size_t);
 
     double compute_sqdist(const double*, const double*) const;
     virtual void search_all(const double*, double, const bool, const bool);
-    virtual void search_nn (const double*, size_t, const bool, const bool);
+    virtual void search_nn (const double*, size_t);
 
     double last_distance2;
     bool tie_warned;
@@ -46,7 +46,7 @@ protected:
     std::deque<Rcpp::NumericVector> clust_dist;
 
     void search_all(const double*, double, const bool, const bool);
-    void search_nn (const double*, size_t, const bool, const bool);
+    void search_nn (const double*, size_t);
 };
 
 std::unique_ptr<naive_holder> generate_holder(SEXP, SEXP, SEXP); 

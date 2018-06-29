@@ -34,22 +34,16 @@ void naive_holder::find_nearest_neighbors (size_t cell, size_t nn, const bool in
         throw std::runtime_error("cell index out of range"); 
     }
     auto curcol=exprs.column(cell);
-    search_nn(curcol.begin(), nn+1, index, dist);
+    search_nn(curcol.begin(), nn+1);
 
-    // Removing the cell itself, if it's in the NN range. Otherwise removing the last NN.
-    size_t i=0;
-    for (; i<neighbors.size()-1; ++i) {
-        if (neighbors[i]==cell) { break; }
-    }
-    neighbors.erase(neighbors.begin()+i);
-    if (dist) {
-        distances.erase(distances.begin()+i);
-    }
+    // Converts information to neighbors/distances. Also clears 'nearest'.
+    pqueue2deque(index, dist, cell);
     return;
 }
 
 void naive_holder::find_nearest_neighbors (const double* current, size_t nn, const bool index, const bool dist) {
-    search_nn(current, nn, index, dist);
+    search_nn(current, nn);
+    pqueue2deque(index, dist, exprs.ncol()); // impossible for any cell to have the exprs.ncol() index, so this effectively turns off 'self'.
     return;
 }
 
@@ -63,27 +57,34 @@ double naive_holder::compute_sqdist(const double* x, const double* y) const {
     return out;
 }
 
-void naive_holder::pqueue2deque(const bool index, const bool dist) {
+void naive_holder::pqueue2deque(const bool index, const bool dist, size_t self) {
     neighbors.clear();
     distances.clear();
     if (current_nearest.empty()) { 
         return;
     }
 
-    // Taking any value larger than the largest in 'current_nearest', if last_distance2 is NA.
+    // Distance needs to be square rooted as it is stored as a square.
+    // If NA, we tking any value larger than the largest in 'current_nearest', if last_distance2 is NA.
     double lastdist=(ISNA(last_distance2) ? current_nearest.top().first + 1 : std::sqrt(last_distance2));
 
     while (!current_nearest.empty()) {
+        if (current_nearest.top().second==self) {
+            current_nearest.pop();
+            continue;            
+        }
+
+        // Deciding what to store. Distances need to be rooted as they are stored as square roots.
         if (index) {
             neighbors.push_front(current_nearest.top().second);
         }
-
-        const double curdist=std::sqrt(current_nearest.top().first); // rooting, as distances stored as squares.
+        const double curdist=std::sqrt(current_nearest.top().first); 
         if (dist) {
             distances.push_front(curdist);
         }
-      
-        if (!tie_warned && lastdist - curdist < 0.00000001) { // Should always be decreasing, no need for abs().
+     
+        // Checking for ties with the last distance (should always be decreasing, no need for abs()).
+        if (!tie_warned && lastdist - curdist < 0.00000001) {
             tie_warned=true;
             Rcpp::warning("tied distances detected in nearest-neighbor calculation");
         } else {
@@ -119,7 +120,7 @@ void naive_holder::search_all(const double* current, double threshold, const boo
     return;
 } 
 
-void naive_holder::search_nn (const double* current, size_t nn, const bool index, const bool dist) {
+void naive_holder::search_nn (const double* current, size_t nn) { 
     const size_t& ndims=exprs.nrow();
     const size_t& nobs=exprs.ncol();
     const double* other=exprs.begin(); // iterator coerced to pointer.
@@ -135,9 +136,6 @@ void naive_holder::search_nn (const double* current, size_t nn, const bool index
             } 
         }
     }
-
-    // Converts information to neighbors/distances. Also clears 'nearest'.
-    pqueue2deque(index, dist);
     return;
 } 
 
@@ -209,7 +207,7 @@ void convex_holder::search_all (const double* current, double threshold, const b
     return;
 }  
 
-void convex_holder::search_nn(const double* current, size_t nn, const bool index, const bool dist) {
+void convex_holder::search_nn(const double* current, size_t nn) {
     const size_t& ndims=exprs.nrow();
     const size_t& ncenters=centers.ncol();
     const double* center_ptr=centers.begin();
@@ -268,9 +266,6 @@ void convex_holder::search_nn(const double* current, size_t nn, const bool index
             }
         }
     }
-
-    // Converts information to neighbors/distances. Also clears 'nearest'.
-    pqueue2deque(index, dist);
     return;
 }  
 
