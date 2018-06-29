@@ -259,7 +259,7 @@ void convex_holder::search_nn(const double* current, size_t nn) {
             /* The conditional expression below exploits the triangle inequality; it is equivalent to asking whether:
              *     threshold + maxdist < dist2center
              * where the TOLERANCE allows the condition to be 'false' upon ties with some numerical imprecision.
-             * All cells (if any) within this cluster with distances above lower_bd are potentially countable.
+             * All points (if any) within this cluster with distances above lower_bd are potentially countable.
              */
             const double lower_bd=dist2center - (threshold + TOLERANCE);
             if (maxdist < lower_bd) {
@@ -267,6 +267,10 @@ void convex_holder::search_nn(const double* current, size_t nn) {
             }
             firstcell=std::lower_bound(dIt, dIt+cur_nobs, lower_bd)-dIt;
 #if USE_UPPER
+            /* This exploits the reverse triangle inequality, to ignore points where:
+             *     threshold + dist2center < point-to-center distance
+             * with TOLERANCE to capture points that are equal with some numeric precision.
+             */
             upper_bd = (threshold + TOLERANCE) + dist2center;
 #endif
         }
@@ -290,7 +294,7 @@ void convex_holder::search_nn(const double* current, size_t nn) {
                 if (current_nearest.size()==nn) {
                     threshold2=current_nearest.top().first; // Shrinking the threshold, if an earlier NN has been found.
 #if USE_UPPER
-                    upper_bd=(std::sqrt(threshold2) + TOLERANCE) + dist2center;
+                    upper_bd=(std::sqrt(threshold2) + TOLERANCE) + dist2center; // see above for use of TOLERANCE.
 #endif
                 }
             } else if (ISNA(last_distance2) || dist2cell2 < last_distance2) {
