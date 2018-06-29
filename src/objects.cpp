@@ -57,7 +57,13 @@ double naive_holder::compute_sqdist(const double* x, const double* y) const {
     return out;
 }
 
-void naive_holder::pqueue2deque(const bool index, const bool dist, size_t self) {
+constexpr double TOLERANCE=0.00000001;
+
+void naive_holder::pqueue2deque(const bool index, const bool dist, size_t self) 
+/* Converts the nearest-neighbor queue into user-visible deque outputs.
+ * Also checks for ties via the reported 'last_distance2'.
+ */
+{
     neighbors.clear();
     distances.clear();
     if (current_nearest.empty()) { 
@@ -66,7 +72,7 @@ void naive_holder::pqueue2deque(const bool index, const bool dist, size_t self) 
 
     // Distance needs to be square rooted as it is stored as a square.
     // If NA, we tking any value larger than the largest in 'current_nearest', if last_distance2 is NA.
-    double lastdist=(ISNA(last_distance2) ? current_nearest.top().first + 1 : std::sqrt(last_distance2));
+    double lastdist=(ISNA(last_distance2) ? std::sqrt(current_nearest.top().first) + 1 : std::sqrt(last_distance2));
 
     while (!current_nearest.empty()) {
         if (current_nearest.top().second==self) {
@@ -84,7 +90,7 @@ void naive_holder::pqueue2deque(const bool index, const bool dist, size_t self) 
         }
      
         // Checking for ties with the last distance (should always be decreasing, no need for abs()).
-        if (!tie_warned && lastdist - curdist < 0.00000001) {
+        if (!tie_warned && lastdist - curdist < TOLERANCE) {
             tie_warned=true;
             Rcpp::warning("tied distances detected in nearest-neighbor calculation");
         } else {
@@ -105,9 +111,8 @@ void naive_holder::search_all(const double* current, double threshold, const boo
     const double* other=exprs.begin(); // iterator coerced to pointer.
     const double threshold2=threshold*threshold; // squaring.
 
-    double curdist2=0;
     for (size_t c=0; c<nobs; ++c, other+=ndims) {
-        curdist2=compute_sqdist(current, other);
+        const double curdist2=compute_sqdist(current, other);
         if (curdist2 <= threshold2) {
             if (index) {
                 neighbors.push_back(c);
@@ -124,16 +129,18 @@ void naive_holder::search_nn (const double* current, size_t nn) {
     const size_t& ndims=exprs.nrow();
     const size_t& nobs=exprs.ncol();
     const double* other=exprs.begin(); // iterator coerced to pointer.
+    last_distance2=R_NaReal;
 
-    double curdist2=0;
     for (size_t c=0; c<nobs; ++c, other+=ndims) {
-        curdist2=compute_sqdist(current, other);
+        const double curdist2=compute_sqdist(current, other);
         if (current_nearest.size() < nn || curdist2 < current_nearest.top().first) {
             current_nearest.push(std::make_pair(curdist2, c));
             if (current_nearest.size() > nn) { 
                 last_distance2=current_nearest.top().first;
                 current_nearest.pop();
             } 
+        } else if (ISNA(last_distance2) || curdist2 < last_distance2) {
+            last_distance2=curdist2;
         }
     }
     return;
@@ -212,6 +219,7 @@ void convex_holder::search_nn(const double* current, size_t nn) {
     const size_t& ncenters=centers.ncol();
     const double* center_ptr=centers.begin();
     double threshold2 = R_PosInf;
+    last_distance2=R_NaReal;
 
     /* Computing distances to all centers and sorting them.
      * The aim is to go through the nearest centers first, to get the shortest 'threshold' possible.
@@ -236,11 +244,17 @@ void convex_holder::search_nn(const double* current, size_t nn) {
         int firstcell=0;
 //        double upper_bd=R_PosInf;
         if (R_FINITE(threshold2)) {
-            const double threshold = std::sqrt(threshold2);
-            if (threshold + maxdist < dist2center) { continue; }
-
-            // Cells within this cluster are potentially countable; proceeding to count them
-            const double lower_bd=dist2center - threshold;
+            /* The conditional expression below exploits the triangle inequality; it is equivalent to asking whether:
+             * \[
+             *     threshold + maxdist <= dist2center
+             * \]
+             * where the TOLERANCE allows for some numerical imprecision (for tie detection via 'last_distance2').
+             * All cells (if any) within this cluster with distances above lower_bd are potentially countable.
+             */
+            const double lower_bd=dist2center - std::sqrt(threshold2) - TOLERANCE;
+            if (maxdist < lower_bd) { 
+                continue; 
+            }
             firstcell=std::lower_bound(dIt, dIt+cur_nobs, lower_bd)-dIt;
 //            upper_bd = threshold + dist2center;
         }
@@ -253,7 +267,7 @@ void convex_holder::search_nn(const double* current, size_t nn) {
 //            }
 
             const double dist2cell2=compute_sqdist(current, other_cell);                   
-            if (current_nearest.size() < nn || dist2cell2 <= threshold2) {
+            if (current_nearest.size() < nn || dist2cell2 < threshold2) {
                 current_nearest.push(std::make_pair(dist2cell2, cur_start + celldex));
                 if (current_nearest.size() > nn) { 
                     last_distance2=current_nearest.top().first;
@@ -263,6 +277,8 @@ void convex_holder::search_nn(const double* current, size_t nn) {
                     threshold2=current_nearest.top().first; // Shrinking the threshold, if an earlier NN has been found.
 //                    upper_bd=std::sqrt(threshold2) + dist2center;
                 } 
+            } else if (ISNA(last_distance2) || dist2cell2 < last_distance2) {
+                last_distance2=dist2cell2;
             }
         }
     }
