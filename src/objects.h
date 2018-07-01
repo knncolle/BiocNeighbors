@@ -25,7 +25,7 @@ protected:
 
     typedef std::priority_queue<std::pair<double, int> > nearest;
     nearest current_nearest;
-    void pqueue2deque(const bool, const bool, size_t);
+    void pqueue2deque(const bool, const bool, bool=false, size_t=0);
 
     double compute_sqdist(const double*, const double*) const;
     virtual void search_all(const double*, double, const bool, const bool);

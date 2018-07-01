@@ -37,13 +37,13 @@ void naive_holder::find_nearest_neighbors (size_t cell, size_t nn, const bool in
     search_nn(curcol.begin(), nn+1);
 
     // Converts information to neighbors/distances. Also clears 'nearest'.
-    pqueue2deque(index, dist, cell);
+    pqueue2deque(index, dist, true, cell);
     return;
 }
 
 void naive_holder::find_nearest_neighbors (const double* current, size_t nn, const bool index, const bool dist) {
     search_nn(current, nn);
-    pqueue2deque(index, dist, exprs.ncol()); // impossible for any cell to have the exprs.ncol() index, so this effectively turns off 'self'.
+    pqueue2deque(index, dist); 
     return;
 }
 
@@ -59,7 +59,7 @@ double naive_holder::compute_sqdist(const double* x, const double* y) const {
 
 constexpr double TOLERANCE=0.00000001;
 
-void naive_holder::pqueue2deque(const bool index, const bool dist, size_t self)
+void naive_holder::pqueue2deque(const bool index, const bool dist, bool discard_self, size_t self)
 /* Converts the nearest-neighbor queue into user-visible deque outputs.
  * Also checks for ties via the reported 'last_distance2'.
  */
@@ -73,10 +73,12 @@ void naive_holder::pqueue2deque(const bool index, const bool dist, size_t self)
     // Distance needs to be square rooted as it is stored as a square.
     // If NA, we tking any value larger than the largest in 'current_nearest', if last_distance2 is NA.
     double lastdist=(ISNA(last_distance2) ? std::sqrt(current_nearest.top().first) + 1 : std::sqrt(last_distance2));
+    bool found_self=false;
 
     while (!current_nearest.empty()) {
-        if (current_nearest.top().second==self) {
+        if (discard_self && size_t(current_nearest.top().second)==self) {
             current_nearest.pop();
+            found_self=true;
             continue;
         }
 
@@ -98,6 +100,16 @@ void naive_holder::pqueue2deque(const bool index, const bool dist, size_t self)
         }
 
         current_nearest.pop();
+    }
+
+    // Getting rid of the last entry to get the 'k' nearest neighbors, if 'self' was not in the queue.
+    if (discard_self && !found_self) {
+        if (index) { 
+            neighbors.pop_back();
+        }
+        if (dist) {
+            distances.pop_back();
+        }
     }
     return;
 }

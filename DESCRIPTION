@@ -1,6 +1,6 @@
 Package: kmknn
-Version: 0.99.12
-Date: 2018-06-29
+Version: 0.99.13
+Date: 2018-07-01
 Title: k-Means for k-Nearest Neighbors
 Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
         email="alun@wehi.edu.au"))
