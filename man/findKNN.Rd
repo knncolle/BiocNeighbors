@@ -35,12 +35,9 @@ This may provide a slight speed boost when these returned values are not of inte
 Using \code{BPPARAM} will also split the search across multiple workers, which should increase speed proportionally (in theory) to the number of cores.
 
 If the function is to be called multiple times with the same \code{X} (e.g., with different \code{subset}), 
-it may be beneficial to call \code{\link{precluster}} outside of this function.
-The output can then be supplied to the \code{precomputed} argument across multiple calls to \code{findKNN}.
-
-Note that when \code{precomputed} is supplied, the value of \code{X} is ignored.
-Advanced users can also set \code{raw.index=TRUE}, which yields results equivalent to running \code{findKNN} on \code{t(precomputed$data)} directly.
-The output indices refer to \emph{columns} of \code{precomputed$data}, which may be more convenient when dealing with a common \code{precomputed} object. 
+it may be faster to call \code{\link{precluster}} once externally, and pass the returned object to \code{\link{findKNN}} via the \code{precomputed} argument.
+This avoids unnecessary repeated k-means clustering and can provide a substantial speed-up.
+Note that when \code{precomputed} is supplied, the value of \code{X} is completely ignored.
 
 Currently, only Euclidean distances are supported, but support may be added for other distance types depending on demand.
 It remains to be seen whether the speed-up achieved with k-means is still applicable to alternative distance metrics.
@@ -61,6 +58,14 @@ In the presence of ties, the output will depend on the ordering of points in the
 Users should set the seed to guarantee consistent (albeit arbitrary) results across different runs of the function.
 Note, however, that the exact selection of tied points depends on the numerical precision of the system.
 Thus, even after setting a seed, there is no guarantee that the results will be reproducible across machines (especially Windows)!
+}
+
+\section{Returning raw indices}{
+Advanced users can also set \code{raw.index=TRUE}, which yields results equivalent to running \code{findKNN} on \code{t(precomputed$data)} directly.
+With this setting, the indices in the output \code{index} matrix refer to \emph{columns} of \code{precomputed$data}. 
+Similarly, the \code{subset} argument is assumed to refer to columns of \code{precomputed$data}.
+This may be more convenient when dealing with a common \code{precomputed} object across multiple calls to \code{\link{findKNN}}, 
+as it avoids the need to switch between the original ordering and that from \code{\link{precluster}}.
 }
 
 \value{
