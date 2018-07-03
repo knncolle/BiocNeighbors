@@ -57,7 +57,7 @@ double naive_holder::compute_sqdist(const double* x, const double* y) const {
     return out;
 }
 
-constexpr double TOLERANCE=0.00000001;
+constexpr double TOLERANCE=1.0000000001;
 
 void naive_holder::pqueue2deque(const bool index, const bool dist, bool discard_self, size_t self)
 /* Converts the nearest-neighbor queue into user-visible deque outputs.
@@ -91,8 +91,9 @@ void naive_holder::pqueue2deque(const bool index, const bool dist, bool discard_
             distances.push_front(curdist);
         }
 
-        // Checking for ties with the last distance (should always be decreasing, no need for abs()).
-        if (!tie_warned && lastdist - curdist < TOLERANCE) {
+        // Checking for ties with the last distance, using a relative TOLERANCE on the smaller distance.
+        // Distances should always be decreasing, so we know that 'curdist' is always the smaller.
+        if (!tie_warned && lastdist < curdist * TOLERANCE) {
             tie_warned=true;
             Rcpp::warning("tied distances detected in nearest-neighbor calculation");
         } else {
@@ -272,8 +273,11 @@ void convex_holder::search_nn(const double* current, size_t nn) {
              *     threshold + maxdist < dist2center
              * where the TOLERANCE allows the condition to be 'false' upon ties with some numerical imprecision.
              * All points (if any) within this cluster with distances above lower_bd are potentially countable.
+             *
+             * Multiplication of 'threshold' by 'TOLERANCE' mirrors the multiplication of 'curdist' above.
+             * 'threshold' is equivalent to the smaller distance, as we are looking for larger distances in 'dIt'.
              */
-            const double lower_bd=dist2center - (threshold + TOLERANCE);
+            const double lower_bd=dist2center - (threshold * TOLERANCE);
             if (maxdist < lower_bd) {
                 continue;
             }
@@ -283,7 +287,7 @@ void convex_holder::search_nn(const double* current, size_t nn) {
              *     threshold + dist2center < point-to-center distance
              * with TOLERANCE to capture points that are equal with some numeric precision.
              */
-            upper_bd = (threshold + TOLERANCE) + dist2center;
+            upper_bd = (threshold * TOLERANCE) + dist2center;
 #endif
         }
 
@@ -306,7 +310,7 @@ void convex_holder::search_nn(const double* current, size_t nn) {
                 if (current_nearest.size()==nn) {
                     threshold2=current_nearest.top().first; // Shrinking the threshold, if an earlier NN has been found.
 #if USE_UPPER
-                    upper_bd=(std::sqrt(threshold2) + TOLERANCE) + dist2center; // see above for use of TOLERANCE.
+                    upper_bd=(std::sqrt(threshold2) * TOLERANCE) + dist2center; // see above for use of TOLERANCE.
 #endif
                 }
             } else if (ISNA(last_distance2) || dist2cell2 < last_distance2) {
