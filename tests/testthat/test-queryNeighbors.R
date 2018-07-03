@@ -45,7 +45,7 @@ test_that("queryNeighbors() behaves correctly with queries", {
 })
 
 set.seed(1002)
-test_that("findNeighbors() works correctly with subsetting", {
+test_that("queryNeighbors() works correctly with subsetting", {
     nobs <- 1000
 	nquery <- 93
     ndim <- 21

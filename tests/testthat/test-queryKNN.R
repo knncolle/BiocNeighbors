@@ -21,7 +21,7 @@ test_that("queryKNN() behaves correctly with queries", {
 })
 
 set.seed(1002)
-test_that("findKNN() works correctly with subsetting", {
+test_that("queryKNN() works correctly with subsetting", {
     nobs <- 1000
 	nquery <- 93
     ndim <- 21
@@ -101,7 +101,7 @@ test_that("queryKNN() behaves correctly with parallelization", {
 })
 
 set.seed(10031)
-test_that("findKNN() raw output behaves correctly", {
+test_that("queryKNN() raw output behaves correctly", {
     nobs <- 1001
     nquery <- 101
     ndim <- 11
