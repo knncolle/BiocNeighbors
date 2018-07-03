@@ -48,13 +48,16 @@ It remains to be seen whether the speed-up achieved with k-means is still applic
 Note that the code here was originally derived from an implementation in the \pkg{cydar} package (Lun \emph{et al.}, 2017).
 }
 
-\section{Note on random seeds}{
+\section{Ties and random seeds}{
 In general, this function is fully deterministic, despite the use of a stochastic \code{\link{kmeans}} step in \code{\link{precluster}}.
 The only exception occurs when there are tied distances to neighbors, at which point the order and/or identity of the k-nearest neighboring points is not well-defined.
 
 A warning will be raised if ties are detected among the \code{k+1} nearest neighbors, as this indicates that the order/identity is arbitrary.
-Specifically, the output will depend on the ordering of points in the \code{\link{precluster}} output.
+Specifically, ties are detected when a larger distance is less than \code{(1 + 1e-10)}-fold of the smaller distance.
+This criterion tends to be somewhat conservative in the sense that it will warn users even if there is no problem (i.e., the distances are truly different).
+However, more accurate detection is difficult to achieve due to the vagaries of numerical precision across different machines.
 
+In the presence of ties, the output will depend on the ordering of points in the \code{\link{precluster}} output.
 Users should set the seed to guarantee consistent (albeit arbitrary) results across different runs of the function.
 Note, however, that the exact selection of tied points depends on the numerical precision of the system.
 Thus, even after setting a seed, there is no guarantee that the results will be reproducible across machines (especially Windows)!
