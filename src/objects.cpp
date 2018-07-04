@@ -93,7 +93,8 @@ void naive_holder::pqueue2deque(const bool index, const bool dist, bool discard_
 
         // Checking for ties with the last distance, using a relative TOLERANCE on the smaller distance.
         // Distances should always be decreasing, so we know that 'curdist' is always the smaller.
-        if (!tie_warned && lastdist < curdist * TOLERANCE) {
+        // We use '<=' to handle cases where both 'curdist' and 'lastdist' are zero.
+        if (!tie_warned && lastdist <= curdist * TOLERANCE) {
             tie_warned=true;
             Rcpp::warning("tied distances detected in nearest-neighbor calculation");
         } else {
@@ -272,10 +273,15 @@ void convex_holder::search_nn(const double* current, size_t nn) {
             /* The conditional expression below exploits the triangle inequality; it is equivalent to asking whether:
              *     threshold + maxdist < dist2center
              * where the TOLERANCE allows the condition to be 'false' upon ties with some numerical imprecision.
-             * All points (if any) within this cluster with distances above lower_bd are potentially countable.
+             * All points (if any) within this cluster with distances above 'lower_bd' are potentially countable.
              *
-             * Multiplication of 'threshold' by 'TOLERANCE' mirrors the multiplication of 'curdist' above.
-             * 'threshold' is equivalent to the smaller distance, as we are looking for larger distances in 'dIt'.
+             * Multiplication of 'threshold' by 'TOLERANCE' is only necessary for tie detection.
+             * Any extra points that are retained will not enter the n-nearest queue (aside from oddities due to numerical precision).
+             * These extra points may, however, update 'last_distance2', which is why we need to consider them.
+             *
+             * The multiplication itself mirrors the multiplication of 'curdist' above.
+             * 'threshold' is equivalent to the smaller distance, and we are looking for equal or larger distances in 'dIt' (hence, 'lower_bound').
+             * We use '<' to skip in the _absence_ of equality, which mirrors the use of '<=' above and avoids skipping distances of zero.
              */
             const double lower_bd=dist2center - (threshold * TOLERANCE);
             if (maxdist < lower_bd) {
