@@ -168,7 +168,7 @@ This may be useful during package development where it is more convenient to wor
 
 # Use case with single-cell RNA-seq data
 
-To demonstrate a practical use of this package, let's have a look at a small single-cell RNA seq dataset from the `r Biocpkg("scRNAseq")` package.
+To demonstrate a practical use of this package, let's have a look at a small single-cell RNA seq dataset from the `r Biocexptpkg("scRNAseq")` package.
 The `allen` dataset contains a subset of cells from a study of the mouse visual cortex [@tasic2016adult].
 
 ```{r}
