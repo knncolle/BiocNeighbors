@@ -1,21 +1,39 @@
 #include "objects.h"
 #include "utils.h"
+#define USE_UPPER 0
 
-/****************** Naive search object *********************/
+/****************** Constructor *********************/
 
-naive_holder::naive_holder (SEXP ex) : exprs(ex), last_distance2(R_NaReal), tie_warned(false) {}
+searcher::searcher(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen), last_distance2(R_NaReal), tie_warned(false) {
+    const size_t& ncenters=centers.ncol();
 
-naive_holder::~naive_holder() { }
+    Rcpp::List Info(info);
+    for (size_t i=0; i<ncenters; ++i) {
+        Rcpp::List current(Info[i]);
+        if (current.size()!=2) {
+            throw std::runtime_error("cluster information list elements must be of length 2");
+        }
 
-size_t naive_holder::get_nobs() const { return exprs.ncol(); }
+        clust_start.push_back(check_integer_scalar(current[0], "starting ID"));
 
-size_t naive_holder::get_ndims() const { return exprs.nrow(); }
+        const Rcpp::NumericVector distances(current[1]);
+        clust_dist.push_back(distances);
+        clust_nobs.push_back(distances.size());
+    }
+    return;
+}
 
-std::deque<size_t>& naive_holder::get_neighbors () { return neighbors; }
+/****************** Visible methods *********************/
 
-std::deque<double>& naive_holder::get_distances () { return distances; }
+size_t searcher::get_nobs() const { return exprs.ncol(); }
 
-void naive_holder::find_neighbors (size_t cell, double threshold, const bool index, const bool dist) {
+size_t searcher::get_ndims() const { return exprs.nrow(); }
+
+std::deque<size_t>& searcher::get_neighbors () { return neighbors; }
+
+std::deque<double>& searcher::get_distances () { return distances; }
+
+void searcher::find_neighbors (size_t cell, double threshold, const bool index, const bool dist) {
     if (cell >= size_t(exprs.ncol())) {
         throw std::runtime_error("cell index out of range");
     }
@@ -24,12 +42,12 @@ void naive_holder::find_neighbors (size_t cell, double threshold, const bool ind
     return;
 }
 
-void naive_holder::find_neighbors (const double* current, double threshold, const bool index, const bool dist) {
+void searcher::find_neighbors (const double* current, double threshold, const bool index, const bool dist) {
     search_all(current, threshold, index, dist);
     return;
 }
 
-void naive_holder::find_nearest_neighbors (size_t cell, size_t nn, const bool index, const bool dist) {
+void searcher::find_nearest_neighbors (size_t cell, size_t nn, const bool index, const bool dist) {
     if (cell >= size_t(exprs.ncol())) {
         throw std::runtime_error("cell index out of range");
     }
@@ -41,13 +59,13 @@ void naive_holder::find_nearest_neighbors (size_t cell, size_t nn, const bool in
     return;
 }
 
-void naive_holder::find_nearest_neighbors (const double* current, size_t nn, const bool index, const bool dist) {
+void searcher::find_nearest_neighbors (const double* current, size_t nn, const bool index, const bool dist) {
     search_nn(current, nn);
     pqueue2deque(index, dist); 
     return;
 }
 
-double naive_holder::compute_sqdist(const double* x, const double* y) const {
+double searcher::compute_sqdist(const double* x, const double* y) const {
     double out=0;
     const size_t NR=exprs.nrow();
     for (size_t m=0; m<NR; ++m) {
@@ -57,9 +75,11 @@ double naive_holder::compute_sqdist(const double* x, const double* y) const {
     return out;
 }
 
+/****************** Priority queue -> deque *********************/
+
 constexpr double TOLERANCE=1.0000000001;
 
-void naive_holder::pqueue2deque(const bool index, const bool dist, bool discard_self, size_t self)
+void searcher::pqueue2deque(const bool index, const bool dist, bool discard_self, size_t self)
 /* Converts the nearest-neighbor queue into user-visible deque outputs.
  * Also checks for ties via the reported 'last_distance2'.
  */
@@ -71,7 +91,7 @@ void naive_holder::pqueue2deque(const bool index, const bool dist, bool discard_
     }
 
     // Distance needs to be square rooted as it is stored as a square.
-    // If NA, we tking any value larger than the largest in 'current_nearest', if last_distance2 is NA.
+    // We take any value larger than the largest in 'current_nearest', if last_distance2 is NA.
     double lastdist=(ISNA(last_distance2) ? std::sqrt(current_nearest.top().first) + 1 : std::sqrt(last_distance2));
     bool found_self=false;
 
@@ -116,76 +136,9 @@ void naive_holder::pqueue2deque(const bool index, const bool dist, bool discard_
     return;
 }
 
-void naive_holder::search_all(const double* current, double threshold, const bool index, const bool dist) {
-    neighbors.clear();
-    distances.clear();
+/****************** Convex search methods *********************/
 
-    const size_t& ndims=exprs.nrow();
-    const size_t& nobs=exprs.ncol();
-    const double* other=exprs.begin(); // iterator coerced to pointer.
-    const double threshold2=threshold*threshold; // squaring.
-
-    for (size_t c=0; c<nobs; ++c, other+=ndims) {
-        const double curdist2=compute_sqdist(current, other);
-        if (curdist2 <= threshold2) {
-            if (index) {
-                neighbors.push_back(c);
-            }
-            if (dist) {
-                distances.push_back(std::sqrt(curdist2));
-            }
-        }
-    }
-    return;
-}
-
-void naive_holder::search_nn (const double* current, size_t nn) {
-    const size_t& ndims=exprs.nrow();
-    const size_t& nobs=exprs.ncol();
-    const double* other=exprs.begin(); // iterator coerced to pointer.
-    last_distance2=R_NaReal;
-
-    for (size_t c=0; c<nobs; ++c, other+=ndims) {
-        const double curdist2=compute_sqdist(current, other);
-        if (current_nearest.size() < nn || curdist2 < current_nearest.top().first) {
-            current_nearest.push(std::make_pair(curdist2, c));
-            if (current_nearest.size() > nn) {
-                last_distance2=current_nearest.top().first;
-                current_nearest.pop();
-            }
-        } else if (ISNA(last_distance2) || curdist2 < last_distance2) {
-            last_distance2=curdist2;
-        }
-    }
-    return;
-}
-
-/****************** Convex search object *********************/
-
-#define USE_UPPER 0
-
-convex_holder::convex_holder(SEXP ex, SEXP cen, SEXP info) : naive_holder(ex), centers(cen) {
-    const size_t& ncenters=centers.ncol();
-
-    Rcpp::List _info(info);
-    for (size_t i=0; i<ncenters; ++i) {
-        Rcpp::List current(_info[i]);
-        if (current.size()!=2) {
-            throw std::runtime_error("cluster information list elements must be of length 2");
-        }
-
-        clust_start.push_back(check_integer_scalar(current[0], "starting ID"));
-
-        const Rcpp::NumericVector distances(current[1]);
-        clust_dist.push_back(distances);
-        clust_nobs.push_back(distances.size());
-    }
-    return;
-}
-
-convex_holder::~convex_holder() { }
-
-void convex_holder::search_all (const double* current, double threshold, const bool index, const bool dist) {
+void searcher::search_all (const double* current, double threshold, const bool index, const bool dist) {
     neighbors.clear();
     distances.clear();
     const size_t& ndims=exprs.nrow();
@@ -236,7 +189,7 @@ void convex_holder::search_all (const double* current, double threshold, const b
     return;
 }
 
-void convex_holder::search_nn(const double* current, size_t nn) {
+void searcher::search_nn(const double* current, size_t nn) {
     const size_t& ndims=exprs.nrow();
     const size_t& ncenters=centers.ncol();
     const double* center_ptr=centers.begin();
@@ -326,14 +279,3 @@ void convex_holder::search_nn(const double* current, size_t nn) {
     }
     return;
 }
-
-/****************** Finder *********************/
-
-std::unique_ptr<naive_holder> generate_holder(SEXP coords, SEXP centers, SEXP clust_info) {
-    if (centers==R_NilValue || clust_info==R_NilValue) {
-        return std::unique_ptr<naive_holder>(new naive_holder(coords));
-    } else {
-        return std::unique_ptr<naive_holder>(new convex_holder(coords, centers, clust_info));
-    }
-}
-

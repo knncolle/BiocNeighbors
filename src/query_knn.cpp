@@ -3,8 +3,8 @@
 
 SEXP query_knn(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP nn, SEXP query, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
-    auto searcher=generate_holder(X, clust_centers, clust_info);
-    const size_t ndim=searcher->get_ndims();
+    searcher nn_finder(X, clust_centers, clust_info);
+    const size_t ndim=nn_finder.get_ndims();
     const size_t NN=check_k(nn);
 
     // Examining the query matrix and checking it against the subset indices.
@@ -34,9 +34,9 @@ SEXP query_knn(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP 
         
     // Iterating across cells, finding NNs and storing distances or neighbors.
     for (auto h : points) {
-        searcher->find_nearest_neighbors(Query.begin() + ndim * h, NN, store_neighbors, store_distances); 
-        const std::deque<double>& distances=searcher->get_distances();
-        const std::deque<size_t>& neighbors=searcher->get_neighbors();
+        nn_finder.find_nearest_neighbors(Query.begin() + ndim * h, NN, store_neighbors, store_distances); 
+        const std::deque<double>& distances=nn_finder.get_distances();
+        const std::deque<size_t>& neighbors=nn_finder.get_neighbors();
 
         if (store_distances) {
             std::copy(distances.begin(), distances.end(), odIt);

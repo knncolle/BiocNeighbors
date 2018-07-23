@@ -3,11 +3,11 @@
 
 SEXP find_knn(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP nn, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
-    auto searcher=generate_holder(X, clust_centers, clust_info);
+    searcher nn_finder(X, clust_centers, clust_info);
 
     // Checking NN's and indices.
     const size_t NN=check_k(nn);
-    const Rcpp::IntegerVector points=check_indices(to_check, searcher->get_nobs());
+    const Rcpp::IntegerVector points=check_indices(to_check, nn_finder.get_nobs());
     const size_t nobs=points.size();
 
     // Getting the output mode.
@@ -28,9 +28,9 @@ SEXP find_knn(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP n
         
     // Iterating across cells, finding NNs and storing distances or neighbors.
     for (auto h : points) {
-        searcher->find_nearest_neighbors(h, NN, store_neighbors, store_distances); 
-        const std::deque<double>& distances=searcher->get_distances();
-        const std::deque<size_t>& neighbors=searcher->get_neighbors();
+        nn_finder.find_nearest_neighbors(h, NN, store_neighbors, store_distances); 
+        const std::deque<double>& distances=nn_finder.get_distances();
+        const std::deque<size_t>& neighbors=nn_finder.get_neighbors();
 
         if (store_distances) {
             std::copy(distances.begin(), distances.end(), odIt);

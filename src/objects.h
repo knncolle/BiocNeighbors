@@ -3,11 +3,10 @@
 
 #include "kmknn.h"
 
-struct naive_holder {
+struct searcher {
 public:
-    naive_holder(SEXP);
-    virtual ~naive_holder();
-   
+    searcher(SEXP, SEXP, SEXP);
+
     void find_neighbors(size_t, double, const bool, const bool);
     void find_neighbors(const double*, double, const bool, const bool);
     void find_nearest_neighbors(size_t, size_t, const bool, const bool);
@@ -20,35 +19,28 @@ public:
     std::deque<double>& get_distances ();
 protected:  
     const Rcpp::NumericMatrix exprs;
+    double compute_sqdist(const double*, const double*) const;
+    
+    // Data members to store output.
     std::deque<size_t> neighbors;
     std::deque<double> distances;
+    void search_all(const double*, double, const bool, const bool);
+    void search_nn (const double*, size_t);
 
-    typedef std::priority_queue<std::pair<double, int> > nearest;
-    nearest current_nearest;
-    void pqueue2deque(const bool, const bool, bool=false, size_t=0);
-
-    double compute_sqdist(const double*, const double*) const;
-    virtual void search_all(const double*, double, const bool, const bool);
-    virtual void search_nn (const double*, size_t);
-
-    double last_distance2;
-    bool tie_warned;
-};
-
-struct convex_holder : public naive_holder {
-public:
-    convex_holder(SEXP, SEXP, SEXP);
-    ~convex_holder();
-protected:
+    // Cluster-related data members.
     const Rcpp::NumericMatrix centers;
     std::deque<int> clust_start;
     std::deque<int> clust_nobs;
     std::deque<Rcpp::NumericVector> clust_dist;
 
-    void search_all(const double*, double, const bool, const bool);
-    void search_nn (const double*, size_t);
-};
+    // Nearest-neighbor-related data members.
+    typedef std::priority_queue<std::pair<double, int> > nearest;
+    nearest current_nearest;
+    void pqueue2deque(const bool, const bool, bool=false, size_t=0);
 
-std::unique_ptr<naive_holder> generate_holder(SEXP, SEXP, SEXP); 
+    // Data members to deal with ties. 
+    double last_distance2;
+    bool tie_warned;
+};
 
 #endif
