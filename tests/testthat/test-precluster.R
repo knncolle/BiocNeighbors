@@ -77,6 +77,9 @@ test_that("precluster() behaves sensibly with silly inputs", {
     expect_identical(out$clusters$info[[1]][[2]], numeric(nobs))
     expect_identical(out$order, seq_len(nobs))
 
+    # Checking that it behaves without distinct data points.
+    expect_error(prec <- precluster(matrix(0, 10,10)), NA)
+
     # We get the same result when 'X' is not, strictly, a matrix.
     set.seed(1999)
     ref <- precluster(X)

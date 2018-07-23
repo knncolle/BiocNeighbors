@@ -1,5 +1,6 @@
 #' @export
 #' @importFrom stats kmeans
+#' @importFrom methods is
 precluster <- function(X, ...) 
 # Reorganizing the matrix 'x' for fast lookup via K-means clustering.
 #
@@ -18,13 +19,10 @@ precluster <- function(X, ...)
         # Every point is in the same cluster.           
         out <- list(cluster=rep(1L, nrow(X)), centers=matrix(0, 1, 0))
     } else { 
-        tryCatch({
-            out <- suppressWarnings(kmeans(X, centers=N, ...))
-        }, error=function(e) {
-        }, finally={
-            # Protecting by adding jitter, if many observations are duplicated.
+        out <- tryCatch(suppressWarnings(kmeans(X, centers=N, ...)), error=identity)
+        if (is(out, "error")) { 
             out <- suppressWarnings(kmeans(jitter(X), centers=N, ...))
-        })
+        }
     }
     
     by.clust <- split(seq_len(nrow(X)), out$cluster)
