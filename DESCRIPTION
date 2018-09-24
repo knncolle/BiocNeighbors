@@ -17,7 +17,7 @@ Description: Implements a k-nearest neighbor search based on
     within a given distance. Parallelization is achieved using
     the BiocParallel framework.
 License: GPL-3
-LinkingTo: Rcpp
+LinkingTo: Rcpp, RcppAnnoy
 VignetteBuilder: knitr
 SystemRequirements: C++11
 RoxygenNote: 6.0.1

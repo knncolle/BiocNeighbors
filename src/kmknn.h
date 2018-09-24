@@ -19,6 +19,10 @@ SEXP find_neighbors(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 SEXP query_neighbors(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP); 
 
+SEXP build_annoy(SEXP, SEXP, SEXP);
+
+SEXP find_annoy(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+
 }
 
 #endif 

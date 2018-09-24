@@ -11,6 +11,9 @@ static const R_CallMethodDef all_call_entries[] = {
     REGISTER(query_knn, 8),
     REGISTER(find_neighbors, 7),
     REGISTER(query_neighbors, 8),
+
+    REGISTER(build_annoy, 3),
+    REGISTER(find_annoy, 6),
     {NULL, NULL, 0}
 };
 
