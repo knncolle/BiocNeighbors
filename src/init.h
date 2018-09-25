@@ -17,6 +17,8 @@ SEXP build_annoy(SEXP, SEXP, SEXP);
 
 SEXP find_annoy(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
+SEXP query_annoy(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+
 }
 
 #endif 
