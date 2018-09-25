@@ -1,6 +1,6 @@
 #' @export
 #' @importFrom BiocParallel SerialParam bpmapply
-findKNN <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE)
+findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE)
 # Identifies nearest neighbours.
 #
 # written by Aaron Lun
