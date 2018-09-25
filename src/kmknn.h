@@ -1,28 +1,50 @@
-#ifndef CYDAR_H
-#define CYDAR_H
+#ifndef KMKNN_H
+#define KMKNN_H
 
 #include <stdexcept>
 #include <algorithm>
-#include <memory>
 #include <deque>
 #include <queue>
-
 #include "Rcpp.h"
 
-extern "C" {
+struct searcher {
+public:
+    searcher(SEXP, SEXP, SEXP);
 
-SEXP find_knn(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP); 
+    void find_neighbors(size_t, double, const bool, const bool);
+    void find_neighbors(const double*, double, const bool, const bool);
+    void find_nearest_neighbors(size_t, size_t, const bool, const bool);
+    void find_nearest_neighbors(const double*, size_t, const bool, const bool);
+    
+    size_t get_nobs() const;
+    size_t get_ndims() const;
 
-SEXP query_knn(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP); 
+    std::deque<size_t>& get_neighbors ();
+    std::deque<double>& get_distances ();
+protected:  
+    const Rcpp::NumericMatrix exprs;
+    double compute_sqdist(const double*, const double*) const;
+    
+    // Data members to store output.
+    std::deque<size_t> neighbors;
+    std::deque<double> distances;
+    void search_all(const double*, double, const bool, const bool);
+    void search_nn (const double*, size_t);
 
-SEXP find_neighbors(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP); 
+    // Cluster-related data members.
+    const Rcpp::NumericMatrix centers;
+    std::deque<int> clust_start;
+    std::deque<int> clust_nobs;
+    std::deque<Rcpp::NumericVector> clust_dist;
 
-SEXP query_neighbors(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP); 
+    // Nearest-neighbor-related data members.
+    typedef std::priority_queue<std::pair<double, int> > nearest;
+    nearest current_nearest;
+    void pqueue2deque(const bool, const bool, bool=false, size_t=0);
 
-SEXP build_annoy(SEXP, SEXP, SEXP);
+    // Data members to deal with ties. 
+    double last_distance2;
+    bool tie_warned;
+};
 
-SEXP find_annoy(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
-
-}
-
-#endif 
+#endif

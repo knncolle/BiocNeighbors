@@ -1,4 +1,4 @@
-#include "kmknn.h"
+#include "init.h"
 #include "annoylib.h"
 #include "kissrandom.h"
 #include "utils.h"
