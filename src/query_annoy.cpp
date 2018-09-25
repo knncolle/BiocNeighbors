@@ -1,7 +1,7 @@
 #include "init.h"
 #include "annoy.h"
 
-SEXP find_annoy (SEXP to_check, SEXP query, SEXP ndims, SEXP fname, SEXP nn, SEXP get_index, SEXP get_distance) {
+SEXP query_annoy (SEXP to_check, SEXP query, SEXP ndims, SEXP fname, SEXP nn, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
     const int Ndim=check_integer_scalar(ndims, "number of dimensions");
     annoyance obj(Ndim);
