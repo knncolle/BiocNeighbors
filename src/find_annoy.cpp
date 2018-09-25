@@ -1,31 +1,5 @@
 #include "init.h"
-#include "annoylib.h"
-#include "kissrandom.h"
-#include "utils.h"
-
-typedef AnnoyIndex<int, double, Euclidean, Kiss64Random> annoyance;
-
-SEXP build_annoy (SEXP mat, SEXP ntrees, SEXP fname) {
-    BEGIN_RCPP
-    Rcpp::NumericMatrix Mat(mat);
-    const int ndim=Mat.nrow();
-    const int ncells=Mat.ncol();
-
-    annoyance obj(ndim);
-    auto mIt=Mat.begin();
-    for (size_t i=0; i<ncells; ++i, mIt+=ndim) {
-        obj.add_item(i, mIt);
-    }
-        
-    const int Ntrees=check_integer_scalar(ntrees, "number of trees");
-    obj.build(Ntrees);
-
-    auto Fname=check_string(fname, "index file name");
-    obj.save(Fname.c_str());
-
-    return R_NilValue;
-    END_RCPP
-}
+#include "annoy.h"
 
 SEXP find_annoy (SEXP to_check, SEXP ndims, SEXP fname, SEXP nn, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
