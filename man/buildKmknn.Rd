@@ -1,11 +1,11 @@
-\name{precluster}
-\alias{precluster}
+\name{buildKmknn}
+\alias{buildKmknn}
 
 \title{Pre-cluster points with k-means}
 \description{Perform k-means clustering in preparation for a nearest-neighbors search.}
 
 \usage{
-precluster(X, ...)
+buildKmknn(X, ...)
 }
 
 \arguments{
@@ -14,7 +14,7 @@ precluster(X, ...)
 }
 
 \details{
-This function is automatically called by \code{\link{findKNN}} and related functions. 
+This function is automatically called by \code{\link{findKmknn}} and related functions. 
 However, it can be called directly by the user to save time if multiple queries are to be performed to the same \code{X}.
 }
 
@@ -38,8 +38,8 @@ Specifically, points in the same cluster are contiguous and ordered by increasin
 
 \seealso{
 \code{\link{kmeans}},
-\code{\link{findKNN}},
-\code{\link{queryKNN}},
+\code{\link{findKmknn}},
+\code{\link{queryKmknn}},
 \code{\link{findNeighbors}}
 }
 
@@ -49,7 +49,7 @@ Aaron Lun
 
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
-out <- precluster(Y)
+out <- buildKmknn(Y)
 str(out)
 }
 
