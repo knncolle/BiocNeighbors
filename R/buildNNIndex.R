@@ -1,6 +1,6 @@
 #' @export
 setMethod("buildNNIndex", c("ANY", "missing"), function(X, ..., BNPARAM) {
-    buildKmknn(X, ..., BNPARAM=BNPARAM)
+    buildNNIndex(X, ..., BNPARAM=BNPARAM)
 })
 
 #' @export
