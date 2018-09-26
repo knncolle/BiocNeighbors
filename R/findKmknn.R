@@ -6,26 +6,19 @@ findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
 # written by Aaron Lun
 # created 19 June 2018
 {
-    pre.out <- .setup_precluster(X, precomputed, raw.index)
-    precomputed <- pre.out$precomputed
-    X <- pre.out$X
+    precomputed <- .setup_precluster(X, precomputed, raw.index)
+    k <- .refine_k(k, precomputed, query=FALSE)
 
-    # Protection against silliness when k is greater than or equal to the number of observations.
-    if (k >= ncol(precomputed$data)) { 
-        k <- ncol(precomputed$data) - 1L
-        warning("'k' capped at the number of observations minus 1")
-    }
-
-    ind.out <- .setup_indices(X, precomputed, subset, raw.index)
+    ind.out <- .setup_indices(precomputed, subset, raw.index)
     job.id <- ind.out$index
     reorder <- ind.out$reorder
 
     # Dividing jobs up for NN finding (using bpmapply due to clash with 'X=').
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
     collected <- bpmapply(FUN=.find_knn, jobs,
-        MoreArgs=list(X=precomputed$data, 
-            centers=precomputed$clusters$centers, 
-            info=precomputed$clusters$info, 
+        MoreArgs=list(data=Kmknn_clustered_data(precomputed),
+            centers=Kmknn_cluster_centers(precomputed),
+            info=Kmknn_cluster_info(precomputed),
             k=k,
             get.index=get.index, 
             get.distance=get.distance), 
@@ -36,7 +29,7 @@ findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
     if (get.index) {
         neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
         if (!raw.index) {
-            neighbors[] <- precomputed$order[neighbors]
+            neighbors[] <- Kmknn_clustered_order(precomputed)[neighbors]
         }
         output$index <- neighbors
     } 
@@ -46,50 +39,62 @@ findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
     return(output)
 }
 
-.find_knn <- function(jobs, X, centers, info, k, get.index, get.distance) {
-    .Call(cxx_find_knn, jobs, X, centers, info, k, get.index, get.distance)
+.find_knn <- function(jobs, data, centers, info, k, get.index, get.distance) {
+    .Call(cxx_find_knn, jobs, data, centers, info, k, get.index, get.distance)
 }
 
-#' @importFrom DelayedArray DelayedArray t
 .setup_precluster <- function(X, precomputed, raw.index) 
-# Checks the input of various arguments related to preclustering.
+# Converts 'X' into 'precomputed' if the latter is NULL.
+# This quarantines 'X' from the rest of the function.
 {
     if (is.null(precomputed)) {
-        precomputed <- precluster(X)
         if (raw.index) {
             stop("'raw.index=TRUE' is not valid if 'precomputed=NULL'")
         }
-    } else {
-        X <- DelayedArray(precomputed$data)
-        if (raw.index) {
-            precomputed$order <- seq_along(precomputed$order) # Turning off any downstream reordering.
-        } else {
-            X <- X[,.order_to_index(precomputed$order),drop=FALSE]
-        }
-        X <- t(X)
+        precomputed <- buildKmknn(X)
     }
-    list(precomputed=precomputed, X=X)
+    precomputed
 }
 
-.setup_indices <- function(X, precomputed, subset, raw.index)
+.refine_k <- function(k, precomputed, query=FALSE)
+# Protection against silliness when k is greater than or equal to the number of observations (for self-searching),
+# or simply greater than the number of observation (for querying).
+{
+    if (!query) {
+        max <- nrow(precomputed) - 1L
+        msg <- " minus 1"
+    } else {
+        max <- nrow(precomputed)
+        msg <- ""
+    }
+
+    if (k > max) { 
+        k <- max
+        warning(paste0("'k' capped at the number of observations", msg))
+    }
+
+    k
+}
+
+.setup_indices <- function(precomputed, subset, raw.index)
 # Defining indices of interest, accounting for re-ordering.
 {
     if (!is.null(subset)) { 
-        indices <- .subset_to_index(subset, X, byrow=TRUE)
+        indices <- .subset_to_index(subset, precomputed, byrow=TRUE)
 
         # Getting position in reordered 'precomputed$data'.
-        new.pos <- .order_to_index(precomputed$order)
+        new.pos <- .order_to_index(Kmknn_clustered_order(precomputed))
         job.id <- new.pos[indices] 
 
         # Ordering so that queries are as adjacent as possible.
         reorder <- order(job.id)
         job.id <- job.id[reorder]
     } else {
-        job.id <- seq_len(ncol(precomputed$data))
+        job.id <- seq_len(nrow(precomputed))
         if (raw.index) {
             reorder <- NULL
         } else {
-            reorder <- precomputed$order
+            reorder <- Kmknn_clustered_order(precomputed)
         }
     }
 

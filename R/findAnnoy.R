@@ -8,20 +8,21 @@ findAnnoy <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
 {
     if (is.null(precomputed)) {
         precomputed <- buildAnnoy(X, ntrees=ntrees)
-        on.exit(unlink(precomputed))
+        on.exit(unlink(AnnoyIndex_path(precomputed)))
     }
 
     if (is.null(subset)) {
-        job.id <- seq_len(nrow(X))
+        job.id <- seq_len(nrow(precomputed))
     } else {
-        job.id <- .subset_to_index(subset, X, byrow=TRUE)
+        job.id <- .subset_to_index(subset, precomputed, byrow=TRUE)
     }
-
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
+
+    k <- .refine_k(k, precomputed, query=FALSE)
     collected <- bpmapply(FUN=.find_annoy, jobs,
-        MoreArgs=list(ndims=ncol(X), 
+        MoreArgs=list(ndims=ncol(precomputed), 
             k=k, 
-            fname=precomputed, 
+            fname=AnnoyIndex_path(precomputed), 
             get.index=get.index, 
             get.distance=get.distance), 
         BPPARAM=BPPARAM, SIMPLIFY=FALSE)
@@ -41,4 +42,3 @@ findAnnoy <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
 .find_annoy <- function(jobs, ndims, fname, k, get.index, get.distance) {
     .Call(cxx_find_annoy, jobs, ndims, fname, k, get.index, get.distance)
 }
-
