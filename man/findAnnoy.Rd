@@ -6,7 +6,7 @@
 
 \usage{
 findAnnoy(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), 
-    precomputed=NULL, subset=NULL, ntrees=50)
+    precomputed=NULL, subset=NULL, ...)
 }
 
 \arguments{
@@ -14,17 +14,17 @@ findAnnoy(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
 \item{k}{A positive integer scalar specifying the number of nearest neighbors to retrieve.}
 \item{get.index}{A logical scalar indicating whether the indices of the nearest neighbors should be recorded.}
 \item{get.distance}{A logical scalar indicating whether distances to the nearest neighbors should be recorded.}
-\item{BPPARAM}{A BiocParallelParam object indicating how the search should be parallelized.}
-\item{precomputed}{A string containing the file path of the index, returned by \code{\link{buildAnnoy}} on \code{X}.}
+\item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
+\item{precomputed}{An \linkS4class{AnnoyIndex} object from running \code{\link{buildAnnoy}} on \code{X}.}
 \item{subset}{A vector indicating the rows of \code{X} for which the nearest neighbors should be identified.}
-\item{ntrees}{Integer scalar specifying the number of trees to use in \code{\link{buildAnnoy}} if \code{precomputed=NULL}.}
+\item{...}{Further arguments to be passed to \code{\link{buildAnnoy}} if \code{precomputed=NULL}.}
 }
 
 \details{
-This function uses the Annoy method (see \url{https://github.com/spotify/annoy}) by Erik Bernhardsson to identify approximate k-nearest neighbors in high-dimensional data.
+This function uses the Annoy method (Approximate Nearest Neighbours Oh Yeah) by Erik Bernhardsson to identify approximate k-nearest neighbors in high-dimensional data.
 Briefly, a tree is constructed by using a random hyperplane to split the points at each internal node.
 For a given input data point, all points in the same leaf node are defined as a set of potential nearest neighbors.
-This is repeated across \code{ntrees} trees, and the union of all such sets is searched to identify the actual nearest neighbors.
+This is repeated across multiple trees, and the union of all such sets is searched to identify the actual nearest neighbors.
 
 By default, nearest neighbors are identified for all data points within \code{X}.
 If \code{subset} is specified, nearest neighbors are only detected for the points in the subset.
@@ -38,11 +38,6 @@ If the function is to be called multiple times with the same \code{X} (e.g., wit
 it may be faster to call \code{\link{buildAnnoy}} once externally, and pass the returned object to \code{findAnnoy} via the \code{precomputed} argument.
 This avoids unnecessary re-indexing and can provide a substantial speed-up.
 Note that when \code{precomputed} is supplied, the value of \code{X} is completely ignored.
-
-Currently, only Euclidean distances are supported, but support may be added for other distance types depending on demand.
-It remains to be seen whether the speed-up achieved with k-means is still applicable to alternative distance metrics.
-
-Note that the code here was originally derived from an implementation in the \pkg{cydar} package (Lun \emph{et al.}, 2017).
 }
 
 \value{
@@ -64,6 +59,12 @@ Aaron Lun
 
 \seealso{
 See \code{\link{buildAnnoy}} to construct the index files ahead of time.
+}
+
+\references{
+Bernhardsson E (2018).
+Annoy.
+\url{https://github.com/spotify/annoy}
 }
 
 \examples{

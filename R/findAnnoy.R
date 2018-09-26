@@ -1,13 +1,13 @@
 #' @export
 #' @importFrom BiocParallel SerialParam
-findAnnoy <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, ntrees=50)
+findAnnoy <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, ...)
 # Find nearest neighbors using the Annoy approximate nearest neighbors algorithm.
 # 
 # written by Aaron Lun
 # created 25 September 2018
 {
     if (is.null(precomputed)) {
-        precomputed <- buildAnnoy(X, ntrees=ntrees)
+        precomputed <- buildAnnoy(X, ...)
         on.exit(unlink(AnnoyIndex_path(precomputed)))
     }
 

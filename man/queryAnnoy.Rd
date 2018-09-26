@@ -6,7 +6,7 @@
 
 \usage{
 queryKNN(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
-    precomputed=NULL, transposed=FALSE, subset=NULL, ntrees=50)
+    precomputed=NULL, transposed=FALSE, subset=NULL, ...)
 }
 
 \arguments{
@@ -15,16 +15,16 @@ queryKNN(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
 \item{k}{A positive integer scalar specifying the number of nearest neighbors to retrieve.}
 \item{get.index}{A logical scalar indicating whether the indices of the nearest neighbors should be recorded.}
 \item{get.distance}{A logical scalar indicating whether distances to the nearest neighbors should be recorded.}
-\item{BPPARAM}{A BiocParallelParam object indicating how the search should be parallelized.}
-\item{precomputed}{A string containing the file path of the index, returned by \code{\link{buildAnnoy}} on \code{X}.}
+\item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
+\item{precomputed}{An \linkS4class{AnnoyIndex} object from running \code{\link{buildAnnoy}} on \code{X}.}
 \item{transposed}{A logical scalar indicating whether the \code{query} is transposed, 
 in which case \code{query} is assumed to contain dimensions in the rows and data points in the columns.}
 \item{subset}{A vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the nearest neighbors should be identified.}
-\item{ntrees}{Integer scalar specifying the number of trees to use in \code{\link{buildAnnoy}} if \code{precomputed=NULL}.}
+\item{...}{Further arguments to be passed to \code{\link{buildAnnoy}} if \code{precomputed=NULL}.}
 }
 
 \details{
-This function uses the same algorithm described in \code{\link{findKNN}} to identify points in \code{X} that are nearest neighbors of each point in \code{query}.
+This function uses the same algorithm described in \code{\link{findAnnoy}} to identify points in \code{X} that are nearest neighbors of each point in \code{query}.
 This requires both \code{X} and \code{query} to have the same number of dimensions.
 Moreover, the upper bound for \code{k} is set at the number of points in \code{X}.
 
@@ -36,7 +36,7 @@ If \code{transposed=TRUE}, this function assumes that \code{query} is already tr
 Turning off \code{get.index} or \code{get.distance} may also provide a slight speed boost when these returned values are not of interest.
 Using \code{BPPARAM} will also split the search by query points across multiple processes.
 
-If multiple queries are to be performed to the same \code{X}, it may be beneficial to use \code{\link{precluster}} directly to precompute the clustering.
+If multiple queries are to be performed to the same \code{X}, it may be beneficial to use \code{\link{buildAnnoy}} directly to precompute the clustering.
 Note that when \code{precomputed} is supplied, the value of \code{X} is ignored.
 }
 
@@ -58,8 +58,9 @@ Aaron Lun
 }
 
 \seealso{
-\code{\link{precluster}},
-\code{\link{findKNN}}    
+\code{\link{buildAnnoy}} to build the index beforehand.
+
+\code{\link{findAnnoy}} to identify k-NNs within \code{X}. 
 }
 
 \examples{

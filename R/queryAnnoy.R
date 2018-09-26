@@ -1,13 +1,13 @@
 #' @export
 #' @importFrom BiocParallel SerialParam bpmapply
-queryAnnoy <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, ntrees=50)
+queryAnnoy <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, ...)
 # Identifies nearest neighbours in 'X' from a query set.
 #
 # written by Aaron Lun
 # created 19 June 2018
 {
     if (is.null(precomputed)) {
-        precomputed <- buildAnnoy(X, ntrees=ntrees)
+        precomputed <- buildAnnoy(X, ...)
         on.exit(unlink(AnnoyIndex_path(precomputed)))
     }
 
