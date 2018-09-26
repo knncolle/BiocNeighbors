@@ -15,10 +15,10 @@ findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
 
     # Dividing jobs up for NN finding (using bpmapply due to clash with 'X=').
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
-    collected <- bpmapply(FUN=.find_knn, jobs,
-        MoreArgs=list(data=Kmknn_clustered_data(precomputed),
-            centers=Kmknn_cluster_centers(precomputed),
-            info=Kmknn_cluster_info(precomputed),
+    collected <- bpmapply(FUN=.find_kmknn, jobs,
+        MoreArgs=list(data=KmknnIndex_clustered_data(precomputed),
+            centers=KmknnIndex_cluster_centers(precomputed),
+            info=KmknnIndex_cluster_info(precomputed),
             k=k,
             get.index=get.index, 
             get.distance=get.distance), 
@@ -29,7 +29,7 @@ findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
     if (get.index) {
         neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
         if (!raw.index) {
-            neighbors[] <- Kmknn_clustered_order(precomputed)[neighbors]
+            neighbors[] <- KmknnIndex_clustered_order(precomputed)[neighbors]
         }
         output$index <- neighbors
     } 
@@ -39,8 +39,8 @@ findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
     return(output)
 }
 
-.find_knn <- function(jobs, data, centers, info, k, get.index, get.distance) {
-    .Call(cxx_find_knn, jobs, data, centers, info, k, get.index, get.distance)
+.find_kmknn <- function(jobs, data, centers, info, k, get.index, get.distance) {
+    .Call(cxx_find_kmknn, jobs, data, centers, info, k, get.index, get.distance)
 }
 
 .setup_precluster <- function(X, precomputed, raw.index, ...) 

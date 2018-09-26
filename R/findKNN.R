@@ -15,7 +15,7 @@ setMethod("findKNN", c("ANY", "BiocNeighborIndex", "missing"), function(X, ..., 
 
 #' @export
 setMethod("findKNN", c("ANY", "NULL", "KmknnParam"), function(X, ..., BNINDEX, BNPARAM) {
-    do.call(findKmknn, c(list(X=X, ...), Kmknn_kmeans_args(BNPARAM)))
+    do.call(findKmknn, c(list(X=X, ...), KmknnParam_kmeans_args(BNPARAM)))
 })
 
 #' @export
