@@ -5,7 +5,7 @@ Title: k-Means for k-Nearest Neighbors
 Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
         email="alun@wehi.edu.au"))
 Depends: R (>= 3.5), BiocParallel
-Imports: Rcpp, DelayedArray, stats, methods
+Imports: Rcpp, S4Vectors, stats, methods
 Suggests: testthat, BiocStyle, knitr, rmarkdown, FNN, scRNAseq,
     scater
 biocViews: Clustering, Classification
@@ -20,4 +20,4 @@ License: GPL-3
 LinkingTo: Rcpp, RcppAnnoy
 VignetteBuilder: knitr
 SystemRequirements: C++11
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
