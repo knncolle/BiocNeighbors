@@ -8,20 +8,10 @@ queryAnnoy <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=S
 {
     if (is.null(precomputed)) {
         precomputed <- buildAnnoy(X, ntrees=ntrees)
-        on.exit(unlink(precomputed))
+        on.exit(unlink(AnnoyIndex_path(precomputed)))
     }
 
-    if (is.null(subset)) {
-        job.id <- seq_len(nrow(X))
-    } else {
-        job.id <- .subset_to_index(subset, X, byrow=TRUE)
-    }
-
-	# Protection against silliness when k is greater than the number of observations.
-    if (k > ncol(X)) { 
-        k <- ncol(X) 
-        warning("'k' capped at the number of observations")
-    }
+    k <- .refine_k(k, precomputed, query=TRUE)
 
     q.out <- .setup_query(query, transposed, subset)
     query <- q.out$query        
@@ -31,8 +21,8 @@ queryAnnoy <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=S
     # Dividing jobs up for NN finding.
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
     collected <- bpmapply(jobs, FUN=.query_annoy,
-        MoreArgs=list(ndims=ncol(X),
-			fname=precomputed,
+        MoreArgs=list(ndims=ncol(precomputed),
+			fname=AnnoyIndex_path(precomputed),
             k=k,
             query=query,
             get.index=get.index, 

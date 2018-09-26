@@ -6,15 +6,8 @@ queryKmknn <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=S
 # written by Aaron Lun
 # created 19 June 2018
 {
-    pre.out <- .setup_precluster(X, precomputed, raw.index)
-    precomputed <- pre.out$precomputed
-    X <- pre.out$X
-
-    # Protection against silliness when k is greater than the number of observations.
-    if (k > ncol(precomputed$data)) { 
-        k <- ncol(precomputed$data) 
-        warning("'k' capped at the number of observations")
-    }
+    precomputed <- .setup_precluster(X, precomputed, raw.index)
+    k <- .refine_k(k, precomputed, query=TRUE)
 
     q.out <- .setup_query(query, transposed, subset)
     query <- q.out$query        
@@ -23,10 +16,10 @@ queryKmknn <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=S
 
     # Dividing jobs up for NN finding.
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
-    collected <- bpmapply(jobs, FUN=.query_knn,
-        MoreArgs=list(X=precomputed$data, 
-            centers=precomputed$clusters$centers, 
-            info=precomputed$clusters$info, 
+    collected <- bpmapply(jobs, FUN=.query_kmknn,
+        MoreArgs=list(data=KmknnIndex_clustered_data(precomputed),
+            centers=KmknnIndex_cluster_centers(precomputed),
+            info=KmknnIndex_cluster_info(precomputed),
             k=k,
             query=query,
             get.index=get.index, 
@@ -38,7 +31,7 @@ queryKmknn <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=S
     if (get.index) {
         neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
         if (!raw.index) {
-            neighbors[] <- precomputed$order[neighbors]
+            neighbors[] <- KmknnIndex_clustered_order(precomputed)[neighbors]
         }
         output$index <- neighbors
     } 
@@ -48,8 +41,8 @@ queryKmknn <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=S
     return(output)
 }
 
-.query_knn <- function(jobs, X, centers, info, k, query, get.index, get.distance) {
-    .Call(cxx_query_knn, jobs, X, centers, info, k, query, get.index, get.distance)
+.query_kmknn <- function(jobs, data, centers, info, k, query, get.index, get.distance) {
+    .Call(cxx_query_kmknn, jobs, data, centers, info, k, query, get.index, get.distance)
 }
 
 .setup_query <- function(query, transposed, subset) 
