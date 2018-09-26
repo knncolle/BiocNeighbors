@@ -1,8 +1,8 @@
-\name{queryKNN}
-\alias{queryKNN}
+\name{queryAnnoy}
+\alias{queryAnnoy}
 
 \title{Query nearest neighbors}
-\description{Use the KMKNN algorithm to query a dataset for nearest neighbors of points in another dataset.}
+\description{Use the Annoy algorithm to query a dataset for nearest neighbors of points in another dataset.}
 
 \usage{
 queryKNN(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
