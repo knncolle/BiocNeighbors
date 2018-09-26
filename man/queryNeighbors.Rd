@@ -7,7 +7,7 @@
 \usage{
 queryNeighbors(X, query, threshold, get.index=TRUE, get.distance=TRUE, 
     BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL,
-    raw.index=FALSE)
+    raw.index=FALSE, ...)
 }
 
 \arguments{
@@ -16,12 +16,13 @@ queryNeighbors(X, query, threshold, get.index=TRUE, get.distance=TRUE,
 \item{threshold}{A positive numeric scalar specifying the maximum distance at which a point is considered a neighbor.}
 \item{get.index}{A logical scalar indicating whether the indices of the neighbors should be recorded.}
 \item{get.distance}{A logical scalar indicating whether distances to the neighbors should be recorded.}
-\item{BPPARAM}{A BiocParallelParam object indicating how the search should be parallelized.}
-\item{precomputed}{The precomputed output of \code{\link{precluster}} on \code{X}.}
+\item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
+\item{precomputed}{A \linkS4class{KmknnIndex} object from running \code{\link{buildKmknn}} on \code{X}.}
 \item{transposed}{A logical scalar indicating whether the \code{query} is transposed, 
 in which case \code{query} is assumed to contain dimensions in the rows and data points in the columns.}
 \item{subset}{A vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the neighbors should be identified.}
 \item{raw.index}{A logial scalar indicating whether raw column indices to \code{precomputed$data} should be returned.}
+\item{...}{Further arguments to pass to \code{\link{buildKmknn}} if \code{precomputed=NULL}.}
 }
 
 \details{
@@ -64,8 +65,7 @@ Aaron Lun
 }
 
 \seealso{
-\code{\link{precluster}},
-\code{\link{findNeighbors}}
+\code{\link{buildKmknn}} to build an index ahead of time.
 }
 
 \examples{
