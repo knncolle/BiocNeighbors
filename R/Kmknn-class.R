@@ -1,7 +1,7 @@
 #' @export
 #' @importFrom methods new
-KmknnParam <- function() {
-    new("KmknnParam")
+KmknnParam <- function(...) {
+    new("KmknnParam", kmeans.args=list(...))
 }
 
 #' @export

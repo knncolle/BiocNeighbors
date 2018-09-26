@@ -1,3 +1,10 @@
+# Getter methods for KmknnParam.
+
+#' @export
+KmknnParam_kmeans_args <- function(x) {
+    x@kmeans.args
+}
+
 # Getter methods for AnnoyParam.
 
 #' @export

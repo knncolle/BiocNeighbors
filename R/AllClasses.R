@@ -4,7 +4,7 @@
 setClass("BiocNeighborParam", contains="VIRTUAL")
 
 #' @export
-setClass("KmknnParam", contains="BiocNeighborParam")
+setClass("KmknnParam", contains="BiocNeighborParam", slots=c(kmeans.args="list"))
 
 #' @export
 setClass("AnnoyParam", contains="BiocNeighborParam", slots=c(ntrees="integer", dir="character")) 
