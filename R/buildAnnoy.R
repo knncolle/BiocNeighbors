@@ -1,5 +1,5 @@
 #' @export
-buildAnnoy <- function(X, ntrees=50, fname=tempfile()) 
+buildAnnoy <- function(X, ntrees=50, directory=tempdir(), fname=tempfile(tmpdir=directory, fileext=".idx")) 
 # Builds an Annoy index at the specified path.
 # 
 # written by Aaron Lun
