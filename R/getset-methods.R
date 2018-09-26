@@ -7,7 +7,7 @@ AnnoyParam_ntrees <- function(x) {
 
 #' @export
 AnnoyParam_directory <- function(x) {
-    x@directory
+    x@dir
 }
 
 # Getter methods for KmknnIndex
