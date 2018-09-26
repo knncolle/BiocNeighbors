@@ -20,7 +20,7 @@ setMethod("queryKNN", c("ANY", "KmknnIndex", "KmknnParam"), function(X, ..., BNI
 
 #' @export
 setMethod("queryKNN", c("ANY", "NULL", "KmknnParam"), function(X, ..., BNINDEX, BNPARAM) {
-    queryKmknn(X=X, ...)
+    do.call(queryKmknn, c(list(X=X, ...), KmknnParam_kmeans_args(BNPARAM)))
 })
 
 #' @export
@@ -35,7 +35,7 @@ setMethod("queryKNN", c("ANY", "AnnoyIndex", "AnnoyParam"), function(X, ..., BNI
 
 #' @export
 setMethod("queryKNN", c("ANY", "NULL", "AnnoyParam"), function(X, ..., BNINDEX, BNPARAM) {
-    queryAnnoy(X=X, ...)
+    queryAnnoy(X=X, ..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM))
 })
 
 #' @export
