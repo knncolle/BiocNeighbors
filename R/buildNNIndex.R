@@ -1,4 +1,9 @@
 #' @export
+setMethod("buildNNIndex", c("ANY", "missing"), function(X, ..., BNPARAM) {
+    buildKmknn(X, ..., BNPARAM=BNPARAM)
+})
+
+#' @export
 setMethod("buildNNIndex", c("ANY", "KmknnParam"), function(X, ..., BNPARAM) {
     buildKmknn(X, ...)
 })

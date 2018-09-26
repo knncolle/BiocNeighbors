@@ -1,4 +1,19 @@
 #' @export
+setMethod("findKNN", c("ANY", "missing", "missing"), function(X, ..., BNINDEX, BNPARAM) {
+    findKNN(X, ..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
+
+#' @export
+setMethod("findKNN", c("ANY", "missing", "BiocNeighborParam"), function(X, ..., BNINDEX, BNPARAM) {
+    findKNN(X, ..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
+
+#' @export
+setMethod("findKNN", c("ANY", "BiocNeighborIndex", "missing"), function(X, ..., BNINDEX, BNPARAM) {
+    findKNN(X, ..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
+
+#' @export
 setMethod("findKNN", c("ANY", "NULL", "KmknnParam"), function(X, ..., BNINDEX, BNPARAM) {
     findKmknn(X=X, ...)
 })
