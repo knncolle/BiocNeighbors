@@ -37,14 +37,27 @@ SEXP find_annoy (SEXP to_check, SEXP ndims, SEXP fname, SEXP nn, SEXP get_index,
 
     // Running through all points.
     for (auto c : chosen) {
-        obj.get_nns_by_item(c, K, -1, iptr, dptr);
+        obj.get_nns_by_item(c, K + 1, -1, iptr, dptr); // +1, as it forgets to discard 'self'.
+
+        size_t counter=0;
+        auto dIt=dptr->begin();
+        for (auto iIt=iptr->begin(); iIt!=iptr->end(); ++iIt, ++dIt) {
+            if ((*iIt)!=c) {
+                if (store_neighbors) {
+                    *(oiIt+counter)=*iIt+1; // getting back to 1-based indexing.
+                }
+                if (store_distances) {
+                    *(odIt+counter)=*dIt;
+                }
+                ++counter;
+            }
+        }
+
         if (store_neighbors) {
-            std::copy(iptr->begin(), iptr->end(), oiIt);
             iptr->clear();
             oiIt+=K;
         }
         if (store_distances) {
-            std::copy(dptr->begin(), dptr->end(), odIt);
             dptr->clear();
             odIt+=K;
         }
