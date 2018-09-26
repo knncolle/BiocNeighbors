@@ -24,8 +24,8 @@ setValidity2("AnnoyParam", function(object) {
 
 #' @export
 #' @importFrom methods new
-AnnoyIndex <- function(path, dim) {
-    new("AnnoyIndex", path=path, Dims=dim)
+AnnoyIndex <- function(path, dim, NAMES=NULL) {
+    new("AnnoyIndex", path=path, Dims=dim, NAMES=NAMES)
 }
 
 #' @importFrom S4Vectors setValidity2
@@ -40,6 +40,11 @@ setValidity2("AnnoyIndex", function(object) {
     path <- AnnoyIndex_path(object)
     if (length(path)!=1L) {
         msg <- c(msg, "'path' should be a string")
+    }
+
+    NAMES <- rownames(object)
+    if (!is.null(NAMES) && length(NAMES)!=nrow(object)) {
+        msg <- c(msg, "length of non-NULL 'NAMES' is not equal to the number of rows")
     }
 
     if (length(msg)) return(msg)

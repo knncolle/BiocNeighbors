@@ -6,8 +6,8 @@ KmknnParam <- function() {
 
 #' @export
 #' @importFrom methods new
-KmknnIndex <- function(data, centers, info, order) {
-    new("KmknnIndex", data=data, centers=centers, info=info, order=order)
+KmknnIndex <- function(data, centers, info, order, NAMES=NULL) {
+    new("KmknnIndex", data=data, centers=centers, info=info, order=order, NAMES=NAMES)
 }
 
 #' @importFrom S4Vectors setValidity2
@@ -28,6 +28,11 @@ setValidity2("KmknnIndex", function(object) {
     order <- KmknnIndex_clustered_order(object)
     if (length(order)!=ncol(data)) {
         msg <- c(msg, "number of observations is not consistent between 'data' and 'order'")
+    }
+
+    NAMES <- rownames(object)
+    if (!is.null(NAMES) && length(NAMES)!=nrow(object)) {
+        msg <- c(msg, "length of non-NULL 'NAMES' is not equal to the number of rows")
     }
 
     if (length(msg)) return(msg)

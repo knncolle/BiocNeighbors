@@ -12,7 +12,8 @@ setClass("AnnoyParam", contains="BiocNeighborParam", slots=c(ntrees="integer", d
 # Defines the BiocNeighborIndex class and derivatives.
 
 #' @export
-setClass("BiocNeighborIndex", contains="VIRTUAL")
+#' @importClassesFrom S4Vectors character_OR_NULL
+setClass("BiocNeighborIndex", contains="VIRTUAL", slots=c(NAMES="character_OR_NULL"))
 
 #' @export
 setClass("KmknnIndex", contains="BiocNeighborIndex", slots=c(data="matrix", centers="matrix", info="list", order="integer"))

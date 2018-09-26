@@ -10,6 +10,13 @@ AnnoyParam_directory <- function(x) {
     x@dir
 }
 
+# Getter methods for BiocNeighborIndex
+
+#' @export
+setMethod("dimnames", "BiocNeighborIndex", function(x) {
+    list(x@NAMES, NULL) 
+})
+
 # Getter methods for KmknnIndex
 
 #' @export

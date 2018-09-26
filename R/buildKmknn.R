@@ -49,5 +49,5 @@ buildKmknn <- function(X, ...)
         accumulated <- accumulated + length(o)
     }
    
-    KmknnIndex(data=do.call(cbind, new.X), centers=t(out$centers), info=clust.info,  order=unlist(ordering))
+    KmknnIndex(data=do.call(cbind, new.X), centers=t(out$centers), info=clust.info, order=unlist(ordering), NAMES=rownames(X))
 } 

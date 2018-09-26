@@ -9,5 +9,5 @@ buildAnnoy <- function(X, ntrees=50, fname=tempfile())
         X <- as.matrix(X)
     }
     .Call(cxx_build_annoy, t(X), ntrees, fname) 
-    AnnoyIndex(path=fname, dim=dim(X))
+    AnnoyIndex(path=fname, dim=dim(X), NAMES=rownames(X))
 }
