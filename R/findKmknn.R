@@ -1,12 +1,12 @@
 #' @export
 #' @importFrom BiocParallel SerialParam bpmapply
-findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE)
+findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, ...)
 # Identifies nearest neighbours.
 #
 # written by Aaron Lun
 # created 19 June 2018
 {
-    precomputed <- .setup_precluster(X, precomputed, raw.index)
+    precomputed <- .setup_precluster(X, precomputed, raw.index, ...)
     k <- .refine_k(k, precomputed, query=FALSE)
 
     ind.out <- .setup_indices(precomputed, subset, raw.index)
@@ -43,7 +43,7 @@ findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
     .Call(cxx_find_knn, jobs, data, centers, info, k, get.index, get.distance)
 }
 
-.setup_precluster <- function(X, precomputed, raw.index) 
+.setup_precluster <- function(X, precomputed, raw.index, ...) 
 # Converts 'X' into 'precomputed' if the latter is NULL.
 # This quarantines 'X' from the rest of the function.
 {
@@ -51,7 +51,7 @@ findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
         if (raw.index) {
             stop("'raw.index=TRUE' is not valid if 'precomputed=NULL'")
         }
-        precomputed <- buildKmknn(X)
+        precomputed <- buildKmknn(X, ...)
     }
     precomputed
 }

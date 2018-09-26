@@ -2,7 +2,7 @@
 \alias{buildKmknn}
 
 \title{Pre-cluster points with k-means}
-\description{Perform k-means clustering in preparation for a nearest-neighbors search.}
+\description{Perform k-means clustering in preparation for a KMKNN nearest-neighbors search.}
 
 \usage{
 buildKmknn(X, ...)
