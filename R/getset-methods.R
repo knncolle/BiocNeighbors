@@ -32,7 +32,9 @@ KmknnIndex_clustered_order <- function(x) {
     x@order
 }
 
-setMethod("dim", "KmknnIndex", function(x) { rev(dim(get_data(x))) }) # reversed, as matrix was transposed.
+setMethod("dim", "KmknnIndex", function(x) { 
+    rev(dim(KmknnIndex_clustered_data(x))) # reversed, as matrix was transposed.
+}) 
 
 # Getter methods for AnnoyIndex
 
