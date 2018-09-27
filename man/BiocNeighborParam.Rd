@@ -2,6 +2,8 @@
 \alias{BiocNeighborParam-class}
 \docType{class}
 
+\alias{show,BiocNeighborParam-method}
+
 \title{The BiocNeighborParam class}
 \description{A virtual class for specifying the type of nearest-neighbor search algorithm and associated parameters.}
 
@@ -15,6 +17,12 @@ There are 2 concrete subclasses:
 
 These objects hold parameters specifying how each algorithm should be run on an arbitrary data set.
 See the associated documentation pages for more details.
+}
+
+\section{Methods}{
+\describe{
+\item{\code{show(object)}:}{Display the class of a BiocNeighborParam \code{object}.}
+}
 }
 
 \seealso{

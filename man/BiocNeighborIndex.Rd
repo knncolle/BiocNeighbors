@@ -2,6 +2,9 @@
 \alias{BiocNeighborIndex-class}
 \docType{class}
 
+\alias{show,BiocNeighborIndex-method}
+\alias{dimnames,BiocNeighborIndex-method}
+
 \title{The BiocNeighborIndex class}
 \description{A virtual class for indexing structures of different nearest-neighbor search algorithms.}
 
@@ -13,8 +16,15 @@ There are 2 concrete subclasses:
     \item{}{\code{\link{AnnoyIndex}}: approximate nearest-neighbor search with the Annoy algorithm.}
 }
 
-These objects hold parameters specifying how each algorithm should be run on an arbitrary data set.
-See the associated documentation pages for more details.
+These objects hold indexing structures for a given data set - see the associated documentation pages for more details.
+It also retains information about the dimensionality of the input data as well as the sample names.
+}
+
+\section{Methods}{
+\describe{
+    \item{\code{show(object)}:}{Display the class and dimensions of a BiocNeighborIndex \code{object}.}
+    \item{\code{dimnames(x)}:}{Display the dimension names of a BiocNeighborIndex \code{x}.}
+}
 }
 
 \seealso{
