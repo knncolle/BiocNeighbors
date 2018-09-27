@@ -5,7 +5,7 @@
 \description{Use the Annoy algorithm to query a dataset for nearest neighbors of points in another dataset.}
 
 \usage{
-queryKNN(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
+queryAnnoy(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
     precomputed=NULL, transposed=FALSE, subset=NULL, ...)
 }
 
