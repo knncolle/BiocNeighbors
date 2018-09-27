@@ -17,19 +17,19 @@
 \usage{
 KmknnIndex(data, centers, info, order, NAMES=NULL)
 
-KmknnIndex_clustered_data(object)
+KmknnIndex_clustered_data(x)
 
-KmknnIndex_cluster_centers(object)
+KmknnIndex_cluster_centers(x)
 
-KmknnIndex_cluster_info(object)
+KmknnIndex_cluster_info(x)
 
-KmknnIndex_clustered_order(object)
+KmknnIndex_clustered_order(x)
 
 \S4method{show}{KmknnIndex}(object)
 
-\S4method{dim}{KmknnIndex}(object)
+\S4method{dim}{KmknnIndex}(x)
 
-\S4method{dimnames}{KmknnIndex}(object)
+\S4method{dimnames}{KmknnIndex}(x)
 }
 
 \arguments{
@@ -38,7 +38,7 @@ KmknnIndex_clustered_order(object)
     \item{info}{A list of statistics for each cluster.}
     \item{order}{An integer vector of length equal to \code{ncol(data)}, specifying the order of observations.}
     \item{NAMES}{A character vector of sample names or \code{NULL}.}
-    \item{object}{A KmknnIndex object.}
+    \item{x, object}{A KmknnIndex object.}
 }
 
 \details{

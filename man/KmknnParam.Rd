@@ -10,14 +10,14 @@
 \usage{
 KmknnParam(...)
 
-KmknnParam_kmeans_args(object)
+KmknnParam_kmeans_args(x)
 
 \S4method{show}{KmknnParam}(object)
 }
 
 \arguments{
     \item{...}{Arguments to be passed to \code{\link{kmeans}}.}
-    \item{object}{A KmknnParam object.}
+    \item{x, object}{A KmknnParam object.}
 }
 
 \details{

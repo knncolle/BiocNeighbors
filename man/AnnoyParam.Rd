@@ -11,9 +11,9 @@
 \usage{
 AnnoyParam(ntrees=50, directory=tempdir())
 
-AnnoyParam_ntrees(object)
+AnnoyParam_ntrees(x)
 
-AnnoyParam_directory(object)
+AnnoyParam_directory(x)
 
 \S4method{show}{AnnoyParam}(object)
 }
@@ -21,7 +21,7 @@ AnnoyParam_directory(object)
 \arguments{
     \item{ntrees}{Integer scalar, number of trees to use for index generation.}
     \item{directory}{String specifying the directory in which to save the index.}
-    \item{object}{A AnnoyParam object.}
+    \item{x, object}{A AnnoyParam object.}
 }
 
 \details{

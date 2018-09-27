@@ -6,10 +6,7 @@
 \alias{dim,AnnoyIndex-method}
 \alias{dimnames,AnnoyIndex-method}
 
-\alias{AnnoyIndex_clustered_data}
-\alias{AnnoyIndex_cluster_centers}
-\alias{AnnoyIndex_cluster_info}
-\alias{AnnoyIndex_clustered_order}
+\alias{AnnoyIndex_path}
 
 \title{The AnnoyIndex class}
 \description{A class to hold indexing structures for the Annoy algorithm for approximate nearest neighbor identification.}
@@ -17,20 +14,20 @@
 \usage{
 AnnoyIndex(path, dim, NAMES=NULL)
 
-AnnoyIndex_path(object)
+AnnoyIndex_path(x)
 
 \S4method{show}{AnnoyIndex}(object)
 
-\S4method{dim}{AnnoyIndex}(object)
+\S4method{dim}{AnnoyIndex}(x)
 
-\S4method{dimnames}{AnnoyIndex}(object)
+\S4method{dimnames}{AnnoyIndex}(x)
 }
 
 \arguments{
     \item{path}{A string specifying the path to the index file.}
     \item{dim}{An integer vector of length 2, specifying the dimensions of the data used to construct the index.}
     \item{NAMES}{A character vector of sample names or \code{NULL}.}
-    \item{object}{A AnnoyIndex object.}
+    \item{x, object}{A AnnoyIndex object.}
 }
 
 \details{
