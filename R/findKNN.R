@@ -1,44 +1,49 @@
 #' @export
-setMethod("findKNN", c("ANY", "missing", "missing"), function(X, ..., BNINDEX, BNPARAM) {
-    findKNN(X, ..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+setMethod("findKNN", c("missing", "missing"), function(..., BNINDEX, BNPARAM) {
+    findKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
 })
 
 #' @export
-setMethod("findKNN", c("ANY", "missing", "BiocNeighborParam"), function(X, ..., BNINDEX, BNPARAM) {
-    findKNN(X, ..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+setMethod("findKNN", c("missing", "BiocNeighborParam"), function(..., BNINDEX, BNPARAM) {
+    findKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
 })
 
 #' @export
-setMethod("findKNN", c("ANY", "BiocNeighborIndex", "missing"), function(X, ..., BNINDEX, BNPARAM) {
-    findKNN(X, ..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+setMethod("findKNN", c("BiocNeighborIndex", "missing"), function(..., BNINDEX, BNPARAM) {
+    findKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
 })
 
 #' @export
-setMethod("findKNN", c("ANY", "NULL", "KmknnParam"), function(X, ..., BNINDEX, BNPARAM) {
-    do.call(findKmknn, c(list(X=X, ...), KmknnParam_kmeans_args(BNPARAM)))
+setMethod("findKNN", c("NULL", "NULL"), function(..., BNINDEX, BNPARAM) {
+    findKNN(..., BNINDEX=BNINDEX, BNPARAM=KmknnParam())        
 })
 
 #' @export
-setMethod("findKNN", c("ANY", "KmknnIndex", "KmknnParam"), function(X, ..., BNINDEX, BNPARAM) {
-    findKmknn(X=X, precomputed=BNINDEX, ...)
+setMethod("findKNN", c("NULL", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
+    do.call(findKmknn, c(list(...), KmknnParam_kmeans_args(BNPARAM)))
 })
 
 #' @export
-setMethod("findKNN", c("ANY", "KmknnIndex", "NULL"), function(X, ..., BNINDEX, BNPARAM) {
-    findKmknn(X=X, precomputed=BNINDEX, ...)
+setMethod("findKNN", c("KmknnIndex", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
+    findKmknn(..., precomputed=BNINDEX)
 })
 
 #' @export
-setMethod("findKNN", c("ANY", "NULL", "AnnoyParam"), function(X, ..., BNINDEX, BNPARAM) {
-    findAnnoy(X=X, ..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM))
+setMethod("findKNN", c("KmknnIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+    findKmknn(..., precomputed=BNINDEX)
 })
 
 #' @export
-setMethod("findKNN", c("ANY", "AnnoyIndex", "AnnoyParam"), function(X, ..., BNINDEX, BNPARAM) {
-    findAnnoy(X=X, precomputed=BNINDEX, ...)
+setMethod("findKNN", c("NULL", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
+    findAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM))
 })
 
 #' @export
-setMethod("findKNN", c("ANY", "AnnoyIndex", "NULL"), function(X, ..., BNINDEX, BNPARAM) {
-    findAnnoy(X=X, precomputed=BNINDEX, ...)
+setMethod("findKNN", c("AnnoyIndex", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
+    findAnnoy(..., precomputed=BNINDEX)
+})
+
+#' @export
+setMethod("findKNN", c("AnnoyIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+    findAnnoy(..., precomputed=BNINDEX)
 })

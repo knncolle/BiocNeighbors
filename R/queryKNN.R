@@ -1,44 +1,49 @@
 #' @export
-setMethod("queryKNN", c("ANY", "missing", "missing"), function(X, ..., BNINDEX, BNPARAM) {
-    queryKNN(X, ..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+setMethod("queryKNN", c("missing", "missing"), function(..., BNINDEX, BNPARAM) {
+    queryKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
 })
 
 #' @export
-setMethod("queryKNN", c("ANY", "missing", "BiocNeighborParam"), function(X, ..., BNINDEX, BNPARAM) {
-    queryKNN(X, ..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+setMethod("queryKNN", c("missing", "BiocNeighborParam"), function(..., BNINDEX, BNPARAM) {
+    queryKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
 })
 
 #' @export
-setMethod("queryKNN", c("ANY", "BiocNeighborIndex", "missing"), function(X, ..., BNINDEX, BNPARAM) {
-    queryKNN(X, ..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+setMethod("queryKNN", c("BiocNeighborIndex", "missing"), function(..., BNINDEX, BNPARAM) {
+    queryKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
 })
 
 #' @export
-setMethod("queryKNN", c("ANY", "KmknnIndex", "KmknnParam"), function(X, ..., BNINDEX, BNPARAM) {
-    queryKmknn(X=X, precomputed=BNINDEX, ...)
+setMethod("queryKNN", c("NULL", "NULL"), function(..., BNINDEX, BNPARAM) {
+    queryKNN(..., BNINDEX=BNINDEX, BNPARAM=KmknnParam())
 })
 
 #' @export
-setMethod("queryKNN", c("ANY", "NULL", "KmknnParam"), function(X, ..., BNINDEX, BNPARAM) {
-    do.call(queryKmknn, c(list(X=X, ...), KmknnParam_kmeans_args(BNPARAM)))
+setMethod("queryKNN", c("KmknnIndex", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
+    queryKmknn(..., precomputed=BNINDEX)
 })
 
 #' @export
-setMethod("queryKNN", c("ANY", "KmknnIndex", "NULL"), function(X, ..., BNINDEX, BNPARAM) {
-    queryKmknn(X=X, precomputed=BNINDEX, ...)
+setMethod("queryKNN", c("NULL", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
+    do.call(queryKmknn, c(list(...), KmknnParam_kmeans_args(BNPARAM)))
 })
 
 #' @export
-setMethod("queryKNN", c("ANY", "AnnoyIndex", "AnnoyParam"), function(X, ..., BNINDEX, BNPARAM) {
-    queryAnnoy(X=X, precomputed=BNINDEX, ...)
+setMethod("queryKNN", c("KmknnIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+    queryKmknn(..., precomputed=BNINDEX)
 })
 
 #' @export
-setMethod("queryKNN", c("ANY", "NULL", "AnnoyParam"), function(X, ..., BNINDEX, BNPARAM) {
-    queryAnnoy(X=X, ..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM))
+setMethod("queryKNN", c("AnnoyIndex", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
+    queryAnnoy(..., precomputed=BNINDEX)
 })
 
 #' @export
-setMethod("queryKNN", c("ANY", "AnnoyIndex", "NULL"), function(X, ..., BNINDEX, BNPARAM) {
-    queryAnnoy(X=X, precomputed=BNINDEX, ...)
+setMethod("queryKNN", c("NULL", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
+    queryAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM))
+})
+
+#' @export
+setMethod("queryKNN", c("AnnoyIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+    queryAnnoy(..., precomputed=BNINDEX)
 })

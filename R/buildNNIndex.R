@@ -1,14 +1,19 @@
 #' @export
-setMethod("buildNNIndex", c("ANY", "missing"), function(X, ..., BNPARAM) {
-    buildNNIndex(X, ..., BNPARAM=BNPARAM)
+setMethod("buildNNIndex", "missing", function(..., BNPARAM) {
+    buildNNIndex(..., BNPARAM=BNPARAM)
 })
 
 #' @export
-setMethod("buildNNIndex", c("ANY", "KmknnParam"), function(X, ..., BNPARAM) {
-    do.call(buildKmknn, c(list(X=X, ...), KmknnParam_kmeans_args(BNPARAM)))
+setMethod("buildNNIndex", "NULL", function(..., BNPARAM) {
+    buildNNIndex(..., BNPARAM=KmknnParam())
 })
 
 #' @export
-setMethod("buildNNIndex", c("ANY", "AnnoyParam"), function(X, ..., BNPARAM) {
-    buildAnnoy(X, ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM), ...)
+setMethod("buildNNIndex", "KmknnParam", function(..., BNPARAM) {
+    do.call(buildKmknn, c(list(...), KmknnParam_kmeans_args(BNPARAM)))
+})
+
+#' @export
+setMethod("buildNNIndex", "AnnoyParam", function(..., BNPARAM) {
+    buildAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM))
 })
