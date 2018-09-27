@@ -20,7 +20,7 @@ queryKmknn(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam()
 \item{transposed}{A logical scalar indicating whether the \code{query} is transposed, 
 in which case \code{query} is assumed to contain dimensions in the rows and data points in the columns.}
 \item{subset}{A vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the nearest neighbors should be identified.}
-\item{raw.index}{A logial scalar indicating whether raw column indices to \code{precomputed$data} should be returned.}
+\item{raw.index}{A logical scalar indicating whether column indices to the reordered data in \code{precomputed} should be directly returned.}
 \item{...}{Further arguments to pass to \code{\link{buildKmknn}} if \code{precomputed=NULL}.}
 }
 
@@ -39,7 +39,7 @@ Using \code{BPPARAM} will also split the search by query points across multiple 
 
 If multiple queries are to be performed to the same \code{X}, it may be beneficial to use \code{\link{buildKmknn}} directly to precompute the clustering.
 Note that when \code{precomputed} is supplied, the value of \code{X} is ignored.
-Advanced users can also set \code{raw.index=TRUE}, which yields results equivalent to running \code{queryKmknn} with \code{X=t(precomputed$data)}.
+Advanced users can also set \code{raw.index=TRUE}, which returns indices of neighbors in the reordered data set in \code{precomputed}.
 This may be useful when dealing with multiple queries to a common precomputed object.
 
 See comments in \code{?\link{findKmknn}} regarding the warnings when tied distances are observed.
@@ -57,7 +57,7 @@ A list is returned containing:
 
 If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
 
-If \code{raw.index=TRUE}, the values in \code{index} refer to \emph{columns} of \code{precomputed$data}.
+If \code{raw.index=TRUE}, the values in \code{index} refer to \emph{columns} of \code{\link{KmknnIndex_clustered_data}(precomputed)}.
 }
 
 \author{

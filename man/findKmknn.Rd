@@ -17,7 +17,7 @@ findKmknn(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
 \item{precomputed}{A \linkS4class{KmknnIndex} object returned from running \code{\link{buildKmknn}} on \code{X}.}
 \item{subset}{A vector indicating the rows of \code{X} for which the nearest neighbors should be identified.}
-\item{raw.index}{A logial scalar indicating whether raw column indices to \code{precomputed$data} should be returned.}
+\item{raw.index}{A logical scalar indicating whether column indices to the reordered data in \code{precomputed} should be directly returned.}
 \item{...}{Further arguments to pass to \code{\link{buildKmknn}} if \code{precomputed=NULL}.}
 }
 
@@ -67,9 +67,9 @@ where \code{PRE} is the output of \code{\link{KmknnIndex_clustered_data}(precomp
 With this setting, the indices in the output \code{index} matrix refer to \emph{columns} of \code{PRE}.
 Similarly, the \code{subset} argument is assumed to refer to columns of \code{PRE}.
 
-This setting may be more convenient when dealing with a common \code{precomputed} object across multiple calls to \code{\link{findKmknn}}. 
-It avoids the need to switch between the original ordering and that from \code{\link{buildKmknn}}.
-This may be desirable if the re-ordered data in \code{precomputed} is used elsewhere, e.g., for plotting.
+This setting may be more convenient when the reordered data in \code{precomputed} is used elsewhere, e.g., for plotting.
+With \code{raw.index=TRUE}, users avoid the need to switch between the original ordering and that from \code{\link{buildKmknn}}.
+Of course, it is also the user's responsibility to be aware of the reordering in downstream applications.
 }
 
 \value{
