@@ -62,11 +62,14 @@ Thus, even after setting a seed, there is no guarantee that the results will be 
 }
 
 \section{Returning raw indices}{
-Advanced users can also set \code{raw.index=TRUE}, which yields results equivalent to running \code{findKmknn} on \code{t(precomputed$data)} directly.
-With this setting, the indices in the output \code{index} matrix refer to \emph{columns} of \code{precomputed$data}. 
-Similarly, the \code{subset} argument is assumed to refer to columns of \code{precomputed$data}.
-This may be more convenient when dealing with a common \code{precomputed} object across multiple calls to \code{\link{findKmknn}}, 
-as it avoids the need to switch between the original ordering and that from \code{\link{buildKmknn}}.
+Advanced users can also set \code{raw.index=TRUE}, which yields results equivalent to running \code{findKmknn} on \code{t(PRE)} directly, 
+where \code{PRE} is the output of \code{\link{KmknnIndex_clustered_data}(precomputed)}.
+With this setting, the indices in the output \code{index} matrix refer to \emph{columns} of \code{PRE}.
+Similarly, the \code{subset} argument is assumed to refer to columns of \code{PRE}.
+
+This setting may be more convenient when dealing with a common \code{precomputed} object across multiple calls to \code{\link{findKmknn}}. 
+It avoids the need to switch between the original ordering and that from \code{\link{buildKmknn}}.
+This may be desirable if the re-ordered data in \code{precomputed} is used elsewhere, e.g., for plotting.
 }
 
 \value{
@@ -81,7 +84,7 @@ A list is returned containing:
 
 If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
 
-If \code{raw.index=TRUE}, the values in \code{index} refer to \emph{columns} of \code{precomputed$data}.
+If \code{raw.index=TRUE}, the values in \code{index} refer to \emph{columns} of \code{\link{KmknnIndex_clustered_data}(precomputed)}.
 }
 
 \author{
