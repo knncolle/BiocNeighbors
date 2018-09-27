@@ -23,7 +23,7 @@ findNeighbors(X, threshold, get.index=TRUE, get.distance=TRUE,
 }
 
 \details{
-This function uses the same algorithm described in \code{\link{findKNN}} to identify all points in \code{X} that within \code{threshold} of each point in \code{X}.
+This function uses the same algorithm described in \code{\link{findKmknn}} to identify all points in \code{X} that within \code{threshold} of each point in \code{X}.
 For Euclidean distances, this is equivalent to identifying all points in a hypersphere centered around the point of interest.
 
 By default, a search is performed for each data point in \code{X}, but it can be limited to a specified subset of points with \code{subset}.
@@ -32,9 +32,9 @@ This yields the same result as (but is more efficient than) subsetting the outpu
 Turning off \code{get.index} or \code{get.distance} may provide a slight speed boost when these returned values are not of interest.
 Using \code{BPPARAM} will also split the search by query points, which usually provides a linear increase in speed.
 
-If multiple queries are to be performed to the same \code{X}, it may be beneficial to use \code{\link{precluster}} directly and pass the result to \code{precomputed}.
-In such cases, it is also possible to set \code{raw.index=TRUE} to obtain the same result as calling \code{findNeighbors} on \code{t(precomputed$data)},
-though this will change both the nature of the output \code{index} and the interpretation of \code{subset} - see \code{?\link{findKNN}} for details.
+If multiple queries are to be performed to the same \code{X}, it may be beneficial to use \code{\link{buildKmknn}} directly and pass the result to \code{precomputed}.
+In such cases, it is also possible to set \code{raw.index=TRUE} to obtain indices of neighbors in the reordered data set in \code{precomputed},
+though this will change both the nature of the output \code{index} and the interpretation of \code{subset} - see \code{?\link{findKmknn}} for details.
 }
 
 \value{
@@ -51,7 +51,7 @@ A list is returned containing:
 
 If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
 
-If \code{raw.index=TRUE}, the values in \code{index} refer to \emph{columns} of \code{precomputed$data}.
+If \code{raw.index=TRUE}, the values in \code{index} refer to \emph{columns} of \code{\link{KmknnIndex_clustered_data}(precomputed)}.
 }
 
 \author{

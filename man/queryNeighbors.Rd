@@ -26,7 +26,7 @@ in which case \code{query} is assumed to contain dimensions in the rows and data
 }
 
 \details{
-This function uses the same algorithm described in \code{\link{findKNN}} to identify points in \code{X} that are neighbors 
+This function uses the same algorithm described in \code{\link{findKmknn}} to identify points in \code{X} that are neighbors 
 (i.e., within a distance \code{threshold}) of each point in \code{query}.
 This requires both \code{X} and \code{query} to have the same number of dimensions.
 
@@ -38,8 +38,8 @@ If \code{transposed=TRUE}, this function assumes that \code{query} is already tr
 Turning off \code{get.index} or \code{get.distance} may also provide a slight speed boost when these returned values are not of interest.
 Using \code{BPPARAM} will also split the search by query points across multiple processes.
 
-If multiple queries are to be performed to the same \code{X}, it may be beneficial to use \code{\link{precluster}} directly to precompute the clustering.
-Advanced users can also set \code{raw.index=TRUE}, which yields results equivalent to running \code{queryKNN} with \code{X=t(precomputed$data)}.
+If multiple queries are to be performed to the same \code{X}, it may be beneficial to use \code{\link{buildKmknn}} directly to precompute the clustering.
+Advanced users can also set \code{raw.index=TRUE}, which returns indices of neighbors in the reordered data set in \code{precomputed}.
 This may be useful when dealing with multiple queries to a common precomputed object.
 }
 
@@ -57,7 +57,7 @@ A list is returned containing:
 
 If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
 
-If \code{raw.index=TRUE}, the values in \code{index} refer to \emph{columns} of \code{precomputed$data}.
+If \code{raw.index=TRUE}, the values in \code{index} refer to \emph{columns} of \code{\link{KmknnIndex_clustered_data}(precomputed)}.
 }
 
 \author{
