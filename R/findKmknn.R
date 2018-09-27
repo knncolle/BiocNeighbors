@@ -80,11 +80,17 @@ findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
 # Defining indices of interest, accounting for re-ordering.
 {
     if (!is.null(subset)) { 
-        indices <- .subset_to_index(subset, precomputed, byrow=TRUE)
-
-        # Getting position in reordered 'precomputed$data'.
-        new.pos <- .order_to_index(KmknnIndex_clustered_order(precomputed))
-        job.id <- new.pos[indices] 
+        if (raw.index) {
+            # For raw indices, get the actual ordering of names for match()ing.
+            dummy <- precomputed
+            dummy@NAMES <- dummy@NAMES[dummy@order]
+            job.id <- .subset_to_index(subset, dummy, byrow=TRUE)
+        } else {
+            # Getting position of subset indices in the reordered set of points.
+            new.pos <- .order_to_index(KmknnIndex_clustered_order(precomputed))
+            indices <- .subset_to_index(subset, precomputed, byrow=TRUE)
+            job.id <- new.pos[indices]
+        }
 
         # Ordering so that queries are as adjacent as possible.
         reorder <- order(job.id)
