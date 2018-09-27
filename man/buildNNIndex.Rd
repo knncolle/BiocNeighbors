@@ -1,25 +1,24 @@
 \name{buildNNIndex}
 \alias{buildNNIndex}
+\docType{methods}
 
-\alias{buildNNIndex,ANY,missing-method}
-\alias{buildNNIndex,ANY,KmknnParam-method}
-\alias{buildNNIndex,ANY,AnnoyParam-method}
+\alias{buildNNIndex,missing-method}
+\alias{buildNNIndex,NULL-method}
+\alias{buildNNIndex,KmknnParam-method}
+\alias{buildNNIndex,AnnoyParam-method}
 
 \title{Build a nearest-neighbor index}
 \description{Build indices for nearest-neighbor searching with different algorithms.}
 
 \usage{
-\S4method{buildNNIndex}{ANY,missing}(X, ..., BNPARAM)
-
-\S4method{buildNNIndex}{ANY,KmknnParam}(X, ..., BNPARAM)
-
-\S4method{buildNNIndex}{ANY,AnnoyParam}(X, ..., BNPARAM)
+buildNNIndex(..., BNPARAM=NULL)
 }
 
 \arguments{
-\item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
-\item{...}{Further arguments to be passed to individual methods.}
-\item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.}
+\item{...}{Further arguments to be passed to individual methods.
+The mandatory argument for all methods is \code{X}, a numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
+\item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.
+This defaults to a \linkS4class{KmknnParam} object if \code{NULL}.}
 }
 
 \details{

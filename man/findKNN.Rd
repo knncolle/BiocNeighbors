@@ -1,30 +1,34 @@
 \name{findKNN}
 \alias{findKNN}
+\docType{methods}
 
-\alias{findKNN,ANY,missing,missing-method}
-\alias{findKNN,ANY,BiocNeighborIndex,missing-method}
-\alias{findKNN,ANY,missing,BiocNeighborParam-method}
+\alias{findKNN,missing,missing-method}
+\alias{findKNN,BiocNeighborIndex,missing-method}
+\alias{findKNN,missing,BiocNeighborParam-method}
 
-\alias{findKNN,ANY,NULL,KmknnParam-method}
-\alias{findKNN,ANY,KmknnIndex,NULL-method}
-\alias{findKNN,ANY,KmknnIndex,KmknnParam-method}
+\alias{findKNN,NULL,NULL-method}
 
-\alias{findKNN,ANY,NULL,AnnoyParam-method}
-\alias{findKNN,ANY,AnnoyIndex,NULL-method}
-\alias{findKNN,ANY,AnnoyIndex,AnnoyParam-method}
+\alias{findKNN,NULL,KmknnParam-method}
+\alias{findKNN,KmknnIndex,NULL-method}
+\alias{findKNN,KmknnIndex,KmknnParam-method}
+
+\alias{findKNN,NULL,AnnoyParam-method}
+\alias{findKNN,AnnoyIndex,NULL-method}
+\alias{findKNN,AnnoyIndex,AnnoyParam-method}
 
 \title{Find k-nearest neighbors}
 \description{Find the k-nearest neighbors for each point in a data set, using exact or approximate algorithms.}
 
 \usage{
-findKNN(X, ..., BNINDEX=NULL, BNPARAM=KmknnParam())
+findKNN(..., BNINDEX=NULL, BNPARAM=NULL)
 }
 
 \arguments{
-    \item{X}{A numeric data matrix where rows are points and columns are dimensions.}
     \item{...}{Further arguments to pass to specific methods, including:
         \itemize{
+            \item \code{X}, a numeric data matrix where rows are points and columns are dimensions.
             \item \code{k}, an integer scalar for the number of nearest neighbors.
+            This is the only strictly mandatory parameter.
             \item \code{subset}, a vector specifying the subset of points in \code{X} to search.
             \item \code{get.index}, a logical scalar indicating whether to return row indices of the neighbors.
             \item \code{get.distance}, a logical scalar indicating whether to return distances to neighbors.
@@ -52,6 +56,9 @@ If \code{subset} is not \code{NULL}, each row of the above matrices refers to a 
 The class of \code{BNINDEX} and \code{BNPARAM} will determine whether dispatch is performed to \code{\link{findKmknn}} or \code{\link{findAnnoy}}.
 Only one of these arguments needs to be defined to resolve dispatch.
 However, if both are defined, they cannot specify different algorithms.
+
+If \code{BNINDEX} is supplied, \code{X} does not need to be specified.
+In fact, any value of \code{X} will be ignored as all necessary information for the search is already present in \code{BNINDEX}.
 }
 
 \author{
