@@ -1,15 +1,15 @@
 ---
-title: Detecting nearest neighbors using the kmknn package
+title: Detecting exact nearest neighbors with KMKNN
 author: 
 - name: Aaron Lun
   affiliation: Cancer Research UK Cambridge Institute, Cambridge, United Kingdom
-date: "Revised: 24 June 2018"
+date: "Revised: 27 September 2018"
 output:
   BiocStyle::html_document:
     toc_float: true
 package: kmknn 
 vignette: >
-  %\VignetteIndexEntry{Detecting nearest neighbors using kmknn}
+  %\VignetteIndexEntry{1. Detecting exact nearest neighbors}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}    
 bibliography: ref.bib  
@@ -23,7 +23,7 @@ library(kmknn)
 
 # Introduction
 
-The `r Biocpkg("kmknn")` package provides an implementation of the k-means for k-nearest neighbors algorithm, as described by @wang2012fast.
+The `r Biocpkg("kmknn")` package provides an implementation of the k-means for k-nearest neighbors (KMKNN) algorithm, as described by @wang2012fast.
 For a dataset with $N$ points, the pre-training is done as follows:
 
 1. Apply k-means clustering to all points, partitioning the data into $\sqrt{N}$ clusters.
@@ -48,15 +48,19 @@ This is consistent with results from @wang2012fast.
 # Identifying k-nearest neighbors
 
 The most obvious application is to perform a k-nearest neighbors search.
-The `findKNN()` function expects a numeric matrix as input with data points as the rows and variables/dimensions as the columns.
 We'll mock up an example here with a hypercube of points, for which we want to identify the 10 nearest neighbors for each point.
 
 ```{r}
 nobs <- 10000
 ndim <- 20
 data <- matrix(runif(nobs*ndim), ncol=ndim)
+```
+    
+The `findKNN()` method expects a numeric matrix as input with data points as the rows and variables/dimensions as the columns.
+We indicate that we want to use the KMKNN algorithm by setting `BNPARAM=KmknnParam()` (which is also the default, so this is not strictly necessary here).
 
-fout <- findKNN(data, k=10)
+```{r}
+fout <- findKNN(data, k=10, BNPARAM=KmknnParam())
 head(fout$index)
 head(fout$distance)
 ```
@@ -79,14 +83,18 @@ Note that the reported neighbors are sorted by distance.
 # Querying k-nearest neighbors
 
 Another application is to identify the k-nearest neighbors in one dataset based on query points in another dataset.
-This is achieved using the `queryKNN()` function:
+Again, we mock up a small data set:
 
 ```{r}
 nquery <- 1000
 ndim <- 20
 query <- matrix(runif(nquery*ndim), ncol=ndim)
+```
+    
+We then use the `queryKNN()` function to identify the 5 nearest neighbors in `data` for each point in `query`.
 
-qout <- queryKNN(data, query, k=5)
+```{r}
+qout <- queryKNN(data, query, k=5, BNPARAM=KmknnParam())
 head(qout$index)
 head(qout$distance)
 ```
@@ -153,47 +161,26 @@ This will save some time and memory.
 names(findKNN(data, k=2, get.distance=FALSE))
 ```
 
-For multiple queries to a constant `data`, the pre-clustering can be performed in a separate step with `precluster()`.
-The result can then be passed to multiple calls, avoiding the overhead of repeated clustering.
+It is also simple to speed up functions by parallelizing the calculations with the `r Biocpkg("BiocParallel")` framework.
 
 ```{r}
-pre <- precluster(data)
-out1 <- findKNN(precomputed=pre, k=5)
-out2 <- queryKNN(precomputed=pre, query=query, k=2)
+out <- findKNN(data, k=10, BPPARAM=MulticoreParam(3))
+```
+
+For multiple queries to a constant `data`, the pre-clustering can be performed in a separate step with `buildNNIndex()`.
+The result can then be passed to multiple calls, avoiding the overhead of repeated clustering^[The algorithm type is automatically determined when `BNINDEX` is specified, so there is no need to also specify `BNPARAM` in the later functions.].
+
+```{r}
+pre <- buildNNIndex(data, BNPARAM=KmknnParam())
+out1 <- findKNN(BNINDEX=pre, k=5)
+out2 <- queryKNN(BNINDEX=pre, query=query, k=2)
+
+# Slightly different argument for findNeighbors:   
 out3 <- findNeighbors(precomputed=pre, threshold=2)
 ```
 
 Advanced users may also be interested in the `raw.index=` argument, which returns indices directly to the precomputed object rather than to `data`.
-This may be useful during package development where it is more convenient to work on the common precomputed object.
-
-# Use case with single-cell RNA-seq data
-
-To demonstrate a practical use of this package, let's have a look at a small single-cell RNA seq dataset from the `r Biocexptpkg("scRNAseq")` package.
-The `allen` dataset contains a subset of cells from a study of the mouse visual cortex [@tasic2016adult].
-
-```{r}
-library(scRNAseq)
-data(allen)
-```
-
-We use the `r Biocpkg("scater")` package [@mccarthy2017scater] to obtain the first 20 principal components of the log-normalized expression matrix.
-
-```{r}
-library(scater)
-sce <- as(allen, "SingleCellExperiment")
-sce <- normalize(sce, exprs_values="tophat_counts")
-sce <- runPCA(sce, ncomponents=50)
-dim(reducedDim(sce, "PCA"))
-```
-
-We can then identify cels that are nearest neighbors of each other using `findKNN()`.
-This is the basis of a number of procedures such as shared nearest-neighbors clustering [@xu2015identification] and mutual nearest neighbors batch correction [@haghverdi2018batch].
-
-```{r}
-nns <- findKNN(reducedDim(sce, "PCA"), k=10)
-head(nns$index)
-head(nns$distance)
-```
+This may be useful inside package functions where it may be more convenient to work on a common precomputed object.
 
 # Session information
 
