@@ -85,7 +85,7 @@ test_that("findNeighbors() behaves correctly with alternative options", {
     expect_equal(lapply(out3$distance, sort), lapply(ref$distance, sort))
   
     # Checking precomputation.
-    pre <- precluster(X)
+    pre <- buildKmknn(X)
     out4 <- findNeighbors(X, threshold=d, precomputed=pre)
     expect_identical_re(out4, ref)
 })
@@ -115,28 +115,28 @@ test_that("findNeighbors() raw output behaves correctly", {
     d <- 1
     X <- matrix(runif(nobs * ndim), nrow=nobs)
 
-    pre <- precluster(X)
+    pre <- buildKmknn(X)
     out <- findNeighbors(threshold=d, precomputed=pre, raw.index=TRUE)
-    ref <- findNeighbors(t(pre$data), threshold=d)
+    ref <- findNeighbors(t(KmknnIndex_clustered_data(pre)), threshold=d)
     expect_identical_re(out, ref)
 
     # Behaves with subsetting.
     i <- sample(nobs, 20)
     out <- findNeighbors(threshold=d, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- findNeighbors(t(pre$data), threshold=d, subset=i)
+    ref <- findNeighbors(t(KmknnIndex_clustered_data(pre)), threshold=d, subset=i)
     expect_identical_re(out, ref)
 
     i <- rbinom(nobs, 1, 0.5) == 0L
     out <- findNeighbors(threshold=d, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- findNeighbors(t(pre$data), threshold=d, subset=i)
+    ref <- findNeighbors(t(KmknnIndex_clustered_data(pre)), threshold=d, subset=i)
     expect_identical_re(out, ref)
 
     # Adding row names.
     rownames(X) <- paste0("CELL", seq_len(nobs))
-    preN <- precluster(X)
+    preN <- buildKmknn(X)
     i <- sample(rownames(X), 30)
     out <- findNeighbors(threshold=d, precomputed=preN, raw.index=TRUE, subset=i)
-    ref <- findNeighbors(t(preN$data), threshold=d, subset=i)
+    ref <- findNeighbors(t(KmknnIndex_clustered_data(preN)), threshold=d, subset=i)
     expect_identical_re(out, ref)
 })
 
