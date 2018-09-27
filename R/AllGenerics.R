@@ -1,10 +1,10 @@
 # Defines common generics for all BiocNeighborParam classes.
 
 #' @export
-setGeneric("buildNNIndex", signature=c("X", "BNPARAM"), function(X, ..., BNPARAM=KmknnParam()) standardGeneric("buildNNIndex"))
+setGeneric("buildNNIndex", signature=c("BNPARAM"), function(..., BNPARAM=NULL) standardGeneric("buildNNIndex"))
 
 #' @export
-setGeneric("findKNN", signature=c("X", "BNINDEX", "BNPARAM"), function(X, ..., BNINDEX=NULL, BNPARAM=KmknnParam()) standardGeneric("findKNN"))
+setGeneric("findKNN", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX=NULL, BNPARAM=NULL) standardGeneric("findKNN"))
 
 #' @export
-setGeneric("queryKNN", signature=c("X", "BNINDEX", "BNPARAM"), function(X, ..., BNINDEX=NULL, BNPARAM=KmknnParam()) standardGeneric("queryKNN"))
+setGeneric("queryKNN", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX=NULL, BNPARAM=NULL) standardGeneric("queryKNN"))
