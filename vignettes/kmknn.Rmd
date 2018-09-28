@@ -7,7 +7,7 @@ date: "Revised: 27 September 2018"
 output:
   BiocStyle::html_document:
     toc_float: true
-package: kmknn 
+package: BiocNeighbors 
 vignette: >
   %\VignetteIndexEntry{1. Detecting exact nearest neighbors}
   %\VignetteEngine{knitr::rmarkdown}
@@ -18,12 +18,12 @@ bibliography: ref.bib
 ```{r, echo=FALSE, results="hide", message=FALSE}
 require(knitr)
 opts_chunk$set(error=FALSE, message=FALSE, warning=FALSE)
-library(kmknn)
+library(BiocNeighbors)
 ```
 
 # Introduction
 
-The `r Biocpkg("kmknn")` package provides an implementation of the k-means for k-nearest neighbors (KMKNN) algorithm, as described by @wang2012fast.
+The `r Biocpkg("BiocNeighbors")` package provides an implementation of the k-means for k-nearest neighbors (KMKNN) algorithm, as described by @wang2012fast.
 For a dataset with $N$ points, the pre-training is done as follows:
 
 1. Apply k-means clustering to all points, partitioning the data into $\sqrt{N}$ clusters.

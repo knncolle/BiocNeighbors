@@ -7,7 +7,7 @@ date: "Revised: 27 September 2018"
 output:
   BiocStyle::html_document:
     toc_float: true
-package: kmknn 
+package: BiocNeighbors 
 vignette: >
   %\VignetteIndexEntry{2. Detecting approximate nearest neighbors}
   %\VignetteEngine{knitr::rmarkdown}
@@ -18,13 +18,13 @@ bibliography: ref.bib
 ```{r, echo=FALSE, results="hide", message=FALSE}
 require(knitr)
 opts_chunk$set(error=FALSE, message=FALSE, warning=FALSE)
-library(kmknn)
+library(BiocNeighbors)
 ```
 
 # Introduction
 
-The `r Biocpkg("kmknn")` package provides an implementation of the [Annoy](https://github.com/spotify/annoy) (Approximate Nearest Neighbors Oh Yeah) method based on C++ code in the `CRANpkg("RcppAnnoy")` package.
-The aim is to provide an approximate method to complement the exact KMKNN algorithm `r Biocpkg("kmknn", vignette="kmknn.html", label="described previously")`.
+The `r Biocpkg("BiocNeighbors")` package provides an implementation of the [Annoy](https://github.com/spotify/annoy) (Approximate Nearest Neighbors Oh Yeah) method based on C++ code in the `CRANpkg("RcppAnnoy")` package.
+The aim is to provide an approximate method to complement the exact KMKNN algorithm `r Biocpkg("BiocNeighbors", vignette="kmknn.html", label="described previously")`.
 Indeed, it is straightforward to switch from one algorithm to another by simply changing the `BNPARAM` argument in `findKNN` and `queryKNN`.
 
 Briefly, the Annoy method works by building a tree where a random hyperplane partitions points into two child groups at each internal node.

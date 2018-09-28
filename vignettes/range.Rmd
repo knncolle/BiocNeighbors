@@ -7,7 +7,7 @@ date: "Revised: 28 September 2018"
 output:
   BiocStyle::html_document:
     toc_float: true
-package: kmknn 
+package: BiocNeighbors 
 vignette: >
   %\VignetteIndexEntry{3. Detecting neighbors within range}
   %\VignetteEngine{knitr::rmarkdown}
@@ -18,7 +18,7 @@ bibliography: ref.bib
 ```{r, echo=FALSE, results="hide", message=FALSE}
 require(knitr)
 opts_chunk$set(error=FALSE, message=FALSE, warning=FALSE)
-library(kmknn)
+library(BiocNeighbors)
 ```
 
 # Identifying all neighbors within range
