@@ -68,13 +68,15 @@ For example:
 - `BPPARAM` to parallelize the calculations across multiple workers.
 - `BNINDEX` to build the forest once for a given data set and re-use it across calls.
 
-    ```{r}
-    pre <- buildNNIndex(data, BNPARAM=AnnoyParam())
-    out1 <- findKNN(BNINDEX=pre, k=5)
-    out2 <- queryKNN(BNINDEX=pre, query=query, k=2)
-    ```
+The use of a pre-built `BNINDEX` is illustrated below:
 
-Users are referred to the documentation of each function for specific details.
+```{r}
+pre <- buildNNIndex(data, BNPARAM=AnnoyParam())
+out1 <- findKNN(BNINDEX=pre, k=5)
+out2 <- queryKNN(BNINDEX=pre, query=query, k=2)
+```
+
+Users are referred to the documentation of each function for specific details on the available arguments.
 
 # Saving the index files
 
