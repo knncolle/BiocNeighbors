@@ -114,37 +114,6 @@ qout$distance[3,]
 
 Again, the reported neighbors are sorted by distance.
 
-# Identifying all neighbors within range
-
-Another application is to identify all neighboring points within a certain (Euclidean) distance of the current point.
-This is done using the `findNeighbors()` function:
-
-```{r}
-fout <- findNeighbors(data, threshold=1)
-head(fout$index)
-head(fout$distance)
-```
-
-Each entry of the `index` list corresponds to a point in `data` and contains the row indices in `data` that are within `threshold`.
-For example, the 3rd point in `data` has the following neighbors:
-
-```{r}
-fout$index[[3]]
-```
-
-... with the following distances to those neighbors:
-
-```{r}
-fout$distance[[3]]
-```
-
-Note that, for this function, the reported neighbors are _not_ sorted by distance.
-The order of the output is completely arbitrary and will vary depending on the random seed.
-However, the identity of the neighbors is fully deterministic.
-
-The `queryNeighbors()` function is also provided for identifying all points within a certain distance of a query point.
-This is analogous to `queryKNN()` for identifying the nearest neighbors of a query.
-
 # Further options
 
 Users can perform the search for a subset of query points using the `subset=` argument.
@@ -174,9 +143,6 @@ The result can then be passed to multiple calls, avoiding the overhead of repeat
 pre <- buildNNIndex(data, BNPARAM=KmknnParam())
 out1 <- findKNN(BNINDEX=pre, k=5)
 out2 <- queryKNN(BNINDEX=pre, query=query, k=2)
-
-# Slightly different argument for findNeighbors:   
-out3 <- findNeighbors(precomputed=pre, threshold=2)
 ```
 
 Advanced users may also be interested in the `raw.index=` argument, which returns indices directly to the precomputed object rather than to `data`.
