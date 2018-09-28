@@ -40,7 +40,7 @@ SEXP find_annoy (SEXP to_check, SEXP ndims, SEXP fname, SEXP nn, SEXP get_index,
         obj.get_nns_by_item(c, K + 1, -1, iptr, dptr); // +1, as it forgets to discard 'self'.
 
         size_t counter=0;
-        for (size_t idx=0; idx<kept_index.size() && counter < K; ++idx) {
+        for (size_t idx=0; idx<kept_index.size() && counter < K; ++idx) { // protect against API returning more/less NNs.
             if (kept_index[idx]!=c) {
                 if (store_neighbors) {
                     *(oiIt+counter)=kept_index[idx]+1; // getting back to 1-based indexing.
@@ -52,8 +52,8 @@ SEXP find_annoy (SEXP to_check, SEXP ndims, SEXP fname, SEXP nn, SEXP get_index,
             }
         }
 
+        kept_index.clear();
         if (store_neighbors) {
-            kept_index.clear();
             oiIt+=K;
         }
         if (store_distances) {

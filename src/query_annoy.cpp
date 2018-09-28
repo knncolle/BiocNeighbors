@@ -50,12 +50,13 @@ SEXP query_annoy (SEXP to_check, SEXP query, SEXP ndims, SEXP fname, SEXP nn, SE
 
         if (store_neighbors) {
             std::copy(kept_index.begin(), kept_index.begin() + limit, oiIt);
-            iptr->clear();
             oiIt+=K;
         }
+        kept_index.clear();
+
         if (store_distances) {
             std::copy(kept_dist.begin(), kept_dist.end() + limit, odIt);
-            dptr->clear();
+            kept_dist.clear();
             odIt+=K;
         }
     }
