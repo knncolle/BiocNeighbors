@@ -8,6 +8,7 @@ test_that("buildKmknn() works as expected", {
             X <- matrix(runif(nobs * ndim), nrow=nobs)
             
             out <- buildKmknn(X)
+            expect_identical(dim(out), dim(X))
             expect_identical(rev(dim(KmknnIndex_clustered_data(out))), dim(X))
             expect_identical(sort(KmknnIndex_clustered_order(out)), seq_len(nobs))
             expect_identical(KmknnIndex_clustered_data(out), t(X[KmknnIndex_clustered_order(out),]))
@@ -46,6 +47,7 @@ test_that("buildKmknn() preserves dimension names", {
     colnames(X) <- paste0("DIM", seq_len(ndim))
 
     out <- buildKmknn(X)
+    expect_identical(rownames(out), rownames(X))
     expect_identical(rownames(KmknnIndex_clustered_data(out)), colnames(X))
     expect_identical(colnames(KmknnIndex_clustered_data(out)), rownames(X)[KmknnIndex_clustered_order(out)])
 
@@ -53,6 +55,7 @@ test_that("buildKmknn() preserves dimension names", {
     out <- buildKmknn(X[0,,drop=FALSE])
     expect_identical(rownames(KmknnIndex_clustered_data(out)), colnames(X))
     expect_identical(colnames(KmknnIndex_clustered_data(out)), NULL)
+    expect_identical(rownames(out), NULL)
 })
 
 set.seed(20001)
