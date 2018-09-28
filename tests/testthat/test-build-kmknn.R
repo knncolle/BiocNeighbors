@@ -1,5 +1,5 @@
 # Tests buildKmknn().
-# library(kmknn); library(testthat); source("test-build-kmknn.R")
+# library(BiocNeighbors); library(testthat); source("test-build-kmknn.R")
 
 set.seed(20000)
 test_that("buildKmknn() works as expected", {

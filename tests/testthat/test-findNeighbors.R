@@ -1,5 +1,5 @@
 # Tests findNeighbors().
-# library(kmknn); library(testthat); source("test-findNeighbors.R")
+# library(BiocNeighbors); library(testthat); source("test-findNeighbors.R")
 
 REINFORCE <- function(out) {
 # Remember that the output indices are unordered, though the identities are constant.

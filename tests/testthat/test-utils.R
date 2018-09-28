@@ -1,5 +1,5 @@
 # Tests the utilities.
-# library(kmknn); library(testthat); source("test-utils.R")
+# library(BiocNeighbors); library(testthat); source("test-utils.R")
 
 set.seed(80000)
 test_that("worker job assignment works correctly", {

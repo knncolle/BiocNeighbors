@@ -1,5 +1,5 @@
 # Tests queryKmknn().
-# library(kmknn); library(testthat); source("test-query-kmknn.R")
+# library(BiocNeighbors); library(testthat); source("test-query-kmknn.R")
 
 library(FNN)
 set.seed(1001)

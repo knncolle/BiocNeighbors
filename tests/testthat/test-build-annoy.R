@@ -1,5 +1,5 @@
 # Tests buildAnnoy().
-# library(kmknn); library(testthat); source("test-build-annoy.R")
+# library(BiocNeighbors); library(testthat); source("test-build-annoy.R")
 
 set.seed(250000)
 test_that("buildAnnoy() works as expected", {

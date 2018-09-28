@@ -1,5 +1,5 @@
 # Tests findAnnoy().
-# library(kmknn); library(testthat); source("test-find-annoy.R")
+# library(BiocNeighbors); library(testthat); source("test-find-annoy.R")
 
 library(RcppAnnoy)
 REFFUN <- function(X, k, ntrees=50) {

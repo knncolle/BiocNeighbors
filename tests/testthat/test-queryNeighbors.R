@@ -1,5 +1,5 @@
 # Tests queryNeighbors().
-# library(kmknn); library(testthat); source("test-queryNeighbors.R")
+# library(BiocNeighbors); library(testthat); source("test-queryNeighbors.R")
 
 REINFORCE <- function(out) {
     O <- lapply(out$index, order)

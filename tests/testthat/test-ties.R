@@ -1,5 +1,5 @@
 # This tests the behaviour of findKmknn's C++ code for detecting ties.
-# library(kmknn); library(testthat); source("test-ties.R")
+# library(BiocNeighbors); library(testthat); source("test-ties.R")
 
 test_that("ties within the set of nearest neighbors triggers errors", {
     # '1' and '3' are tied when compared to '2'.
