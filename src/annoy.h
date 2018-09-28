@@ -5,6 +5,8 @@
 #include "kissrandom.h"
 #include "utils.h"
 
-typedef AnnoyIndex<int, double, Euclidean, Kiss64Random> annoyance;
+typedef float ANNOYTYPE;
+
+typedef AnnoyIndex<int, ANNOYTYPE, Euclidean, Kiss64Random> annoyance;
 
 #endif

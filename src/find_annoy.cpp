@@ -29,36 +29,35 @@ SEXP find_annoy (SEXP to_check, SEXP ndims, SEXP fname, SEXP nn, SEXP get_index,
                                 
     std::vector<int> kept_index;
     kept_index.reserve(K);
-    std::vector<double> kept_dist;
+    std::vector<ANNOYTYPE> kept_dist;
     kept_dist.reserve(K);
 
-    auto iptr=(store_neighbors ? &kept_index : NULL);
+    auto iptr=&kept_index;
     auto dptr=(store_distances ? &kept_dist : NULL);
 
     // Running through all points.
-    for (auto c : chosen) {
+    for (auto c : chosen) { 
         obj.get_nns_by_item(c, K + 1, -1, iptr, dptr); // +1, as it forgets to discard 'self'.
 
         size_t counter=0;
-        auto dIt=dptr->begin();
-        for (auto iIt=iptr->begin(); iIt!=iptr->end(); ++iIt, ++dIt) {
-            if ((*iIt)!=c) {
+        for (size_t idx=0; idx<kept_index.size() && counter < K; ++idx) {
+            if (kept_index[idx]!=c) {
                 if (store_neighbors) {
-                    *(oiIt+counter)=*iIt+1; // getting back to 1-based indexing.
+                    *(oiIt+counter)=kept_index[idx]+1; // getting back to 1-based indexing.
                 }
                 if (store_distances) {
-                    *(odIt+counter)=*dIt;
+                    *(odIt+counter)=kept_dist[idx];
                 }
                 ++counter;
             }
         }
 
         if (store_neighbors) {
-            iptr->clear();
+            kept_index.clear();
             oiIt+=K;
         }
         if (store_distances) {
-            dptr->clear();
+            kept_dist.clear();
             odIt+=K;
         }
     }

@@ -8,9 +8,11 @@ SEXP build_annoy (SEXP mat, SEXP ntrees, SEXP fname) {
     const int ncells=Mat.ncol();
 
     annoyance obj(ndim);
+    std::vector<ANNOYTYPE> tmp(ndim);
     auto mIt=Mat.begin();
     for (size_t i=0; i<ncells; ++i, mIt+=ndim) {
-        obj.add_item(i, mIt);
+        std::copy(mIt, mIt+ndim, tmp.begin());
+        obj.add_item(i, tmp.data());
     }
         
     const int Ntrees=check_integer_scalar(ntrees, "number of trees");

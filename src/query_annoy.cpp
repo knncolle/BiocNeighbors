@@ -33,23 +33,28 @@ SEXP query_annoy (SEXP to_check, SEXP query, SEXP ndims, SEXP fname, SEXP nn, SE
                                 
     std::vector<int> kept_index;
     kept_index.reserve(K);
-    std::vector<double> kept_dist;
+    std::vector<ANNOYTYPE> kept_dist;
     kept_dist.reserve(K);
 
-    auto iptr=(store_neighbors ? &kept_index : NULL);
+    auto iptr=&kept_index;
     auto dptr=(store_distances ? &kept_dist : NULL);
 
     // Running through all points.
+    std::vector<ANNOYTYPE> tmp(Ndim);
     for (auto c : points) {
         auto qIt=Query.begin() + c * Ndim;
-        obj.get_nns_by_vector(qIt, K, -1, iptr, dptr);
+        std::copy(qIt, qIt+Ndim, tmp.begin());
+
+        obj.get_nns_by_vector(tmp.data(), K, -1, iptr, dptr);
+        const size_t limit=std::min(K, kept_index.size()); // as the API can yield < K elements.
+
         if (store_neighbors) {
-            std::copy(iptr->begin(), iptr->end(), oiIt);
+            std::copy(kept_index.begin(), kept_index.begin() + limit, oiIt);
             iptr->clear();
             oiIt+=K;
         }
         if (store_distances) {
-            std::copy(dptr->begin(), dptr->end(), odIt);
+            std::copy(kept_dist.begin(), kept_dist.end() + limit, odIt);
             dptr->clear();
             odIt+=K;
         }
