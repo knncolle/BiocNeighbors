@@ -49,13 +49,14 @@ SEXP query_annoy (SEXP to_check, SEXP query, SEXP ndims, SEXP fname, SEXP nn, SE
         const size_t limit=std::min(K, kept_index.size()); // as the API can yield < K elements.
 
         if (store_neighbors) {
+            for (auto& x : kept_index) { ++x; } // getting back to 1-based indexing.
             std::copy(kept_index.begin(), kept_index.begin() + limit, oiIt);
             oiIt+=K;
         }
         kept_index.clear();
 
         if (store_distances) {
-            std::copy(kept_dist.begin(), kept_dist.end() + limit, odIt);
+            std::copy(kept_dist.begin(), kept_dist.begin() + limit, odIt);
             kept_dist.clear();
             odIt+=K;
         }
