@@ -1,4 +1,5 @@
-#include "objects.h"
+#include "init.h"
+#include "kmknn.h"
 #include "utils.h"
 
 SEXP query_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP dist_thresh, SEXP query, SEXP get_index, SEXP get_distance) {

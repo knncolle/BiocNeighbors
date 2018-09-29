@@ -1,5 +1,5 @@
 # Tests queryNeighbors().
-# library(kmknn); library(testthat); source("test-queryNeighbors.R")
+# library(BiocNeighbors); library(testthat); source("test-query-neighbors.R")
 
 REINFORCE <- function(out) {
     O <- lapply(out$index, order)
@@ -93,7 +93,7 @@ test_that("queryNeighbors() behaves correctly with alternative options", {
     expect_equal(lapply(out3$distance, sort), lapply(ref$distance, sort))
   
     # Checking precomputation.
-    pre <- precluster(X)
+    pre <- buildKmknn(X)
     out4 <- queryNeighbors(query=Y, threshold=d, precomputed=pre) # no need for X!
     expect_identical_re(out4, ref)
 
@@ -131,27 +131,27 @@ test_that("queryNeighbors() raw output behaves correctly", {
     X <- matrix(runif(nobs * ndim), nrow=nobs)
   	Y <- matrix(runif(nquery * ndim), nrow=nquery)
  
-    pre <- precluster(X)
+    pre <- buildKmknn(X)
     out <- queryNeighbors(query=Y, threshold=d, precomputed=pre, raw.index=TRUE)
-    ref <- queryNeighbors(query=Y, X=t(pre$data), threshold=d)
+    ref <- queryNeighbors(query=Y, X=t(KmknnIndex_clustered_data(pre)), threshold=d)
     expect_identical_re(out, ref)
 
     # Behaves with subsetting.
     i <- sample(nquery, 20)
     out <- queryNeighbors(query=Y, threshold=d, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- queryNeighbors(query=Y, X=t(pre$data), threshold=d, subset=i)
+    ref <- queryNeighbors(query=Y, X=t(KmknnIndex_clustered_data(pre)), threshold=d, subset=i)
     expect_identical_re(out, ref)
 
     i <- rbinom(nquery, 1, 0.5) == 0L
     out <- queryNeighbors(query=Y, threshold=d, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- queryNeighbors(query=Y, X=t(pre$data), threshold=d, subset=i)
+    ref <- queryNeighbors(query=Y, X=t(KmknnIndex_clustered_data(pre)), threshold=d, subset=i)
     expect_identical_re(out, ref)
 
     # Adding row names.
     rownames(Y) <- paste0("CELL", seq_len(nquery))
     i <- sample(rownames(Y), 30)
     out <- queryNeighbors(query=Y, threshold=d, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- queryNeighbors(query=Y, X=t(pre$data), threshold=d, subset=i)
+    ref <- queryNeighbors(query=Y, X=t(KmknnIndex_clustered_data(pre)), threshold=d, subset=i)
     expect_identical_re(out, ref)
 })
 

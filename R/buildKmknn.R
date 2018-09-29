@@ -1,7 +1,7 @@
 #' @export
 #' @importFrom stats kmeans
 #' @importFrom methods is
-precluster <- function(X, ...) 
+buildKmknn <- function(X, ...) 
 # Reorganizing the matrix 'x' for fast lookup via K-means clustering.
 #
 # written by Aaron Lun
@@ -49,9 +49,5 @@ precluster <- function(X, ...)
         accumulated <- accumulated + length(o)
     }
    
-    return(list(data=do.call(cbind, new.X), 
-                clusters=list(centers=t(out$centers), info=clust.info),
-                order=unlist(ordering)))
+    KmknnIndex(data=do.call(cbind, new.X), centers=t(out$centers), info=clust.info, order=unlist(ordering), NAMES=rownames(X))
 } 
-
-

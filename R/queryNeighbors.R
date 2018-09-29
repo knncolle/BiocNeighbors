@@ -1,14 +1,12 @@
 #' @export
 #' @importFrom BiocParallel SerialParam bpmapply
-queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE)
+queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, ...)
 # Identifies nearest neighbours in 'X' from a query set.
 #
 # written by Aaron Lun
 # created 22 June 2018
 {
-    pre.out <- .setup_precluster(X, precomputed, raw.index)
-    precomputed <- pre.out$precomputed
-    X <- pre.out$X
+    precomputed <- .setup_precluster(X, precomputed, raw.index, ...)
 
     q.out <- .setup_query(query, transposed, subset)
     query <- q.out$query        
@@ -18,9 +16,9 @@ queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRU
     # Dividing jobs up for NN finding.
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
     collected <- bpmapply(jobs, FUN=.query_neighbors,
-        MoreArgs=list(X=precomputed$data, 
-            centers=precomputed$clusters$centers, 
-            info=precomputed$clusters$info, 
+        MoreArgs=list(data=KmknnIndex_clustered_data(precomputed),
+            centers=KmknnIndex_cluster_centers(precomputed),
+            info=KmknnIndex_cluster_info(precomputed),
             threshold=threshold,
             query=query,
             get.index=get.index, 
@@ -32,7 +30,8 @@ queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRU
     if (get.index) {
         neighbors <- .combine_lists(collected, i=1, reorder=reorder)
         if (!raw.index) {
-            neighbors <- lapply(neighbors, FUN=function(i) precomputed$order[i])
+            preorder <- KmknnIndex_clustered_order(precomputed)
+            neighbors <- lapply(neighbors, FUN=function(i) preorder[i])
         }
         output$index <- neighbors
     } 
@@ -42,6 +41,6 @@ queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRU
     return(output)
 }
 
-.query_neighbors <- function(jobs, X, centers, info, threshold, query, get.index, get.distance) {
-    .Call(cxx_query_neighbors, jobs, X, centers, info, threshold, query, get.index, get.distance)
+.query_neighbors <- function(jobs, data, centers, info, threshold, query, get.index, get.distance) {
+    .Call(cxx_query_neighbors, jobs, data, centers, info, threshold, query, get.index, get.distance)
 }

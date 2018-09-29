@@ -1,7 +1,8 @@
-#include "objects.h"
+#include "kmknn.h"
+#include "init.h"
 #include "utils.h"
 
-SEXP query_knn(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP nn, SEXP query, SEXP get_index, SEXP get_distance) {
+SEXP query_kmknn(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP nn, SEXP query, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
     searcher nn_finder(X, clust_centers, clust_info);
     const size_t ndim=nn_finder.get_ndims();

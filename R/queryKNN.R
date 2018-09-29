@@ -1,75 +1,49 @@
 #' @export
-#' @importFrom BiocParallel SerialParam bpmapply
-queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE)
-# Identifies nearest neighbours in 'X' from a query set.
-#
-# written by Aaron Lun
-# created 19 June 2018
-{
-    pre.out <- .setup_precluster(X, precomputed, raw.index)
-    precomputed <- pre.out$precomputed
-    X <- pre.out$X
+setMethod("queryKNN", c("missing", "missing"), function(..., BNINDEX, BNPARAM) {
+    queryKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
 
-    # Protection against silliness when k is greater than the number of observations.
-    if (k > ncol(precomputed$data)) { 
-        k <- ncol(precomputed$data) 
-        warning("'k' capped at the number of observations")
-    }
+#' @export
+setMethod("queryKNN", c("missing", "BiocNeighborParam"), function(..., BNINDEX, BNPARAM) {
+    queryKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
 
-    q.out <- .setup_query(query, transposed, subset)
-    query <- q.out$query        
-    job.id <- q.out$index
-    reorder <- q.out$reorder
+#' @export
+setMethod("queryKNN", c("BiocNeighborIndex", "missing"), function(..., BNINDEX, BNPARAM) {
+    queryKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
 
-    # Dividing jobs up for NN finding.
-    jobs <- .assign_jobs(job.id - 1L, BPPARAM)
-    collected <- bpmapply(jobs, FUN=.query_knn,
-        MoreArgs=list(X=precomputed$data, 
-            centers=precomputed$clusters$centers, 
-            info=precomputed$clusters$info, 
-            k=k,
-            query=query,
-            get.index=get.index, 
-            get.distance=get.distance), 
-        BPPARAM=BPPARAM, SIMPLIFY=FALSE)
+#' @export
+setMethod("queryKNN", c("NULL", "NULL"), function(..., BNINDEX, BNPARAM) {
+    queryKNN(..., BNINDEX=BNINDEX, BNPARAM=KmknnParam())
+})
 
-    # Aggregating results across cores.
-    output <- list()
-    if (get.index) {
-        neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
-        if (!raw.index) {
-            neighbors[] <- precomputed$order[neighbors]
-        }
-        output$index <- neighbors
-    } 
-    if (get.distance) {
-        output$distance <- .combine_matrices(collected, i=2, reorder=reorder)
-    }
-    return(output)
-}
+#' @export
+setMethod("queryKNN", c("KmknnIndex", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
+    queryKmknn(..., precomputed=BNINDEX)
+})
 
-.query_knn <- function(jobs, X, centers, info, k, query, get.index, get.distance) {
-    .Call(cxx_query_knn, jobs, X, centers, info, k, query, get.index, get.distance)
-}
+#' @export
+setMethod("queryKNN", c("NULL", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
+    do.call(queryKmknn, c(list(...), KmknnParam_kmeans_args(BNPARAM)))
+})
 
-.setup_query <- function(query, transposed, subset) 
-# Convenience wrapper to set up the query.
-{
-    if (!transposed) {
-        query <- t(query)
-    }
-    if (!is.matrix(query)) {
-        query <- as.matrix(query)
-    }
+#' @export
+setMethod("queryKNN", c("KmknnIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+    queryKmknn(..., precomputed=BNINDEX)
+})
 
-    # Choosing indices.
-    if (!is.null(subset)) {
-        job.id <- .subset_to_index(subset, query, byrow=FALSE)
-        reorder <- order(job.id) # ordering so that queries are adjacent.
-        job.id <- job.id[reorder]
-    } else {
-        job.id <- seq_len(ncol(query))
-        reorder <- NULL
-    }
-    return(list(query=query, index=job.id, reorder=reorder))
-}
+#' @export
+setMethod("queryKNN", c("AnnoyIndex", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
+    queryAnnoy(..., precomputed=BNINDEX)
+})
+
+#' @export
+setMethod("queryKNN", c("NULL", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
+    queryAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM))
+})
+
+#' @export
+setMethod("queryKNN", c("AnnoyIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+    queryAnnoy(..., precomputed=BNINDEX)
+})

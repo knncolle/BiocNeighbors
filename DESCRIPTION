@@ -1,23 +1,24 @@
-Package: kmknn
-Version: 0.99.16
-Date: 2018-07-23
-Title: k-Means for k-Nearest Neighbors
+Package: BiocNeighbors
+Version: 0.99.17
+Date: 2018-09-29
+Title: Nearest Neighbor Detection for Bioconductor Packages
 Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
         email="alun@wehi.edu.au"))
 Depends: R (>= 3.5), BiocParallel
-Imports: Rcpp, DelayedArray, stats, methods
-Suggests: testthat, BiocStyle, knitr, rmarkdown, FNN, scRNAseq,
-    scater
+Imports: Rcpp, S4Vectors, stats, methods
+Suggests: testthat, BiocStyle, knitr, rmarkdown, FNN, RcppAnnoy
 biocViews: Clustering, Classification
-Description: Implements a k-nearest neighbor search based on 
-    pre-clustering with the k-means algorithm, as described by
-    Wang (2012). This is faster than conventional kd-trees for
-    neighbor searching in higher (> 20) dimensional data. 
-    Functions are also provided to search for all neighbors 
-    within a given distance. Parallelization is achieved using
+Description: Implements exact and approximate methods for nearest neighbor 
+    detection, in a framework that allows them to be easily switched within 
+    Bioconductor packages or workflows. The exact algorithm is implemented 
+    using pre-clustering with the k-means algorithm, as described by Wang 
+    (2012). This is faster than conventional kd-trees for neighbor searching 
+    in higher (> 20) dimensional data. The approximate method uses the Annoy 
+    algorithm. Functions are also provided to search for all neighbors within
+    a given distance. Parallelization is achieved for all methods using 
     the BiocParallel framework.
 License: GPL-3
-LinkingTo: Rcpp
+LinkingTo: Rcpp, RcppAnnoy
 VignetteBuilder: knitr
 SystemRequirements: C++11
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

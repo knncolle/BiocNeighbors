@@ -1,3 +1,3 @@
 library(testthat)
-library(kmknn)
-test_check("kmknn")
+library(BiocNeighbors)
+test_check("BiocNeighbors")
