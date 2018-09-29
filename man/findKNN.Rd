@@ -6,6 +6,8 @@
 \alias{findKNN,BiocNeighborIndex,missing-method}
 \alias{findKNN,missing,BiocNeighborParam-method}
 
+\alias{findKNN,missing,NULL-method}
+\alias{findKNN,NULL,missing-method}
 \alias{findKNN,NULL,NULL-method}
 
 \alias{findKNN,NULL,KmknnParam-method}

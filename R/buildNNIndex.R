@@ -1,3 +1,7 @@
+####################
+# Further dispatch #
+####################
+
 #' @export
 setMethod("buildNNIndex", "missing", function(..., BNPARAM) {
     buildNNIndex(..., BNPARAM=BNPARAM)
@@ -7,6 +11,10 @@ setMethod("buildNNIndex", "missing", function(..., BNPARAM) {
 setMethod("buildNNIndex", "NULL", function(..., BNPARAM) {
     buildNNIndex(..., BNPARAM=KmknnParam())
 })
+
+####################
+# Specific methods #
+####################
 
 #' @export
 setMethod("buildNNIndex", "KmknnParam", function(..., BNPARAM) {

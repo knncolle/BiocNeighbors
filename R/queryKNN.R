@@ -1,3 +1,7 @@
+####################
+# Further dispatch #
+####################
+
 #' @export
 setMethod("queryKNN", c("missing", "missing"), function(..., BNINDEX, BNPARAM) {
     queryKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
@@ -14,9 +18,23 @@ setMethod("queryKNN", c("BiocNeighborIndex", "missing"), function(..., BNINDEX, 
 })
 
 #' @export
+setMethod("queryKNN", c("NULL", "missing"), function(..., BNINDEX, BNPARAM) {
+    queryKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
+
+#' @export
+setMethod("queryKNN", c("missing", "NULL"), function(..., BNINDEX, BNPARAM) {
+    queryKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
+
+#' @export
 setMethod("queryKNN", c("NULL", "NULL"), function(..., BNINDEX, BNPARAM) {
     queryKNN(..., BNINDEX=BNINDEX, BNPARAM=KmknnParam())
 })
+
+####################
+# Specific methods #
+####################
 
 #' @export
 setMethod("queryKNN", c("KmknnIndex", "KmknnParam"), function(..., BNINDEX, BNPARAM) {

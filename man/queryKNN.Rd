@@ -6,6 +6,8 @@
 \alias{queryKNN,BiocNeighborIndex,missing-method}
 \alias{queryKNN,missing,BiocNeighborParam-method}
 
+\alias{queryKNN,NULL,missing-method}
+\alias{queryKNN,missing,NULL-method}
 \alias{queryKNN,NULL,NULL-method}
 
 \alias{queryKNN,NULL,KmknnParam-method}
