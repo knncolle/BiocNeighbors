@@ -10,7 +10,7 @@ SEXP build_annoy (SEXP mat, SEXP ntrees, SEXP fname) {
     annoyance obj(ndim);
     std::vector<ANNOYTYPE> tmp(ndim);
     auto mIt=Mat.begin();
-    for (size_t i=0; i<ncells; ++i, mIt+=ndim) {
+    for (int i=0; i<ncells; ++i, mIt+=ndim) {
         std::copy(mIt, mIt+ndim, tmp.begin());
         obj.add_item(i, tmp.data());
     }
