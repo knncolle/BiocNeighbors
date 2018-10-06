@@ -3,11 +3,13 @@
 
 set.seed(250000)
 test_that("buildAnnoy() works as expected", {
+    tmp.dir <- dirname(file.path(tempdir(), ".")) # convert Windows back slash to forward slash.
+
     for (ndim in c(1, 5, 10)) {
         for (nobs in c(500, 1000, 2000)) { 
             X <- matrix(runif(nobs * ndim), nrow=nobs)
             out <- buildAnnoy(X)
-            expect_identical(dirname(AnnoyIndex_path(out)), tempdir())
+            expect_identical(dirname(AnnoyIndex_path(out)), tmp.dir)
             expect_identical(dim(out), dim(X))
         }
     }
