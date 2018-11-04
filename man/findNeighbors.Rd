@@ -12,7 +12,8 @@ findNeighbors(X, threshold, get.index=TRUE, get.distance=TRUE,
 
 \arguments{
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
-\item{threshold}{A positive numeric scalar specifying the maximum distance at which a point is considered a neighbor.}
+\item{threshold}{A positive numeric scalar specifying the maximum distance at which a point is considered a neighbor.
+Alternatively, a vector containing a different distance threshold for each point.}
 \item{get.index}{A logical scalar indicating whether the indices of the neighbors should be recorded.}
 \item{get.distance}{A logical scalar indicating whether distances to the neighbors should be recorded.}
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
@@ -28,6 +29,10 @@ For Euclidean distances, this is equivalent to identifying all points in a hyper
 
 By default, a search is performed for each data point in \code{X}, but it can be limited to a specified subset of points with \code{subset}.
 This yields the same result as (but is more efficient than) subsetting the output matrices after running \code{findNeighbors} with \code{subset=NULL}.
+
+If \code{threshold} is a vector, each entry is assumed to specify a (possibly different) threshold for each point in \code{X}.
+If \code{subset} is also specified, each entry is assumed to specify a threshold for each point in \code{subset}.
+An error will be raised if \code{threshold} is a vector of incorrect length.
 
 Turning off \code{get.index} or \code{get.distance} may provide a slight speed boost when these returned values are not of interest.
 Using \code{BPPARAM} will also split the search by query points, which usually provides a linear increase in speed.

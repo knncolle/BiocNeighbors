@@ -13,7 +13,8 @@ queryNeighbors(X, query, threshold, get.index=TRUE, get.distance=TRUE,
 \arguments{
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
 \item{query}{A numeric matrix of query points, containing different data points in the rows but the same number and ordering of dimensions in the columns.}
-\item{threshold}{A positive numeric scalar specifying the maximum distance at which a point is considered a neighbor.}
+\item{threshold}{A positive numeric scalar specifying the maximum distance at which a point is considered a neighbor.
+Alternatively, a vector containing a different distance threshold for each query point.}
 \item{get.index}{A logical scalar indicating whether the indices of the neighbors should be recorded.}
 \item{get.distance}{A logical scalar indicating whether distances to the neighbors should be recorded.}
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
@@ -33,6 +34,10 @@ This requires both \code{X} and \code{query} to have the same number of dimensio
 By default, neighbors are identified for all data points within \code{query}.
 If \code{subset} is specified, neighbors are only detected for the query points in the subset.
 This yields the same result as (but is more efficient than) subsetting the output matrices after running \code{queryNeighbors} on the full \code{query} (i.e., with \code{subset=NULL}).
+
+If \code{threshold} is a vector, each entry is assumed to specify a (possibly different) threshold for each point in \code{query}.
+If \code{subset} is also specified, each entry is assumed to specify a threshold for each point in \code{subset}.
+An error will be raised if \code{threshold} is a vector of incorrect length.
 
 If \code{transposed=TRUE}, this function assumes that \code{query} is already transposed, which saves a bit of time by avoiding an unnecessary transposition.
 Turning off \code{get.index} or \code{get.distance} may also provide a slight speed boost when these returned values are not of interest.
