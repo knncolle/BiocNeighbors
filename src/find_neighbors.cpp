@@ -26,9 +26,8 @@ SEXP find_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, 
     }
 
     // Iterating across cells, finding NNs and storing distances or neighbors.
-    size_t ix=0;
-    for (auto h : points) {
-        n_finder.find_neighbors(h, thresholds[ix], store_neighbors, store_distances);
+    for (size_t ix=0; ix<nobs; ++ix) {
+        n_finder.find_neighbors(points[ix], thresholds[ix], store_neighbors, store_distances);
 
         if (store_neighbors) {
             const std::deque<size_t>& neighbors=n_finder.get_neighbors();
@@ -41,7 +40,6 @@ SEXP find_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, 
             const std::deque<double>& distances=n_finder.get_distances();
             out_dist[ix]=Rcpp::NumericVector(distances.begin(), distances.end());
         }
-        ++ix;
     }
 
     Rcpp::List output(2, R_NilValue);
