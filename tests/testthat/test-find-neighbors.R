@@ -140,6 +140,36 @@ test_that("findNeighbors() raw output behaves correctly", {
     expect_identical_re(out, ref)
 })
 
+set.seed(10032)
+test_that("findNeighbors() behaves with variable distances", {
+    nobs <- 1021
+    ndim <- 8
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    available <- c(0.5, 1, 2)
+    chosen <- sample(length(available), nobs, replace=TRUE)
+    d <- available[chosen]
+
+    out <- findNeighbors(X, threshold=d)
+    for (a in seq_along(available)) {
+        current <- chosen==a
+        expect_identical_re(lapply(out, "[", i=current), 
+            findNeighbors(X, threshold=available[a], subset=current))
+    }
+
+    # Handles subsetting.
+    scrambled <- sample(nobs, 100)
+    out2 <- findNeighbors(X, threshold=d[scrambled], subset=scrambled)
+    expect_identical_re(out2, lapply(out, "[", i=scrambled))
+
+    scrambled <- rbinom(nobs, 1, 0.5)==1
+    out2 <- findNeighbors(X, threshold=d[scrambled], subset=scrambled)
+    expect_identical_re(out2, lapply(out, "[", i=scrambled))
+
+    # Handles parallelization.
+    expect_identical_re(out, findNeighbors(X, threshold=d, BPPARAM=MulticoreParam(3)))
+})
+
 set.seed(1004)
 test_that("findNeighbors() behaves correctly with silly inputs", {
     nobs <- 1000
@@ -154,6 +184,9 @@ test_that("findNeighbors() behaves correctly with silly inputs", {
     out <- findNeighbors(X[0,], threshold=1)
     expect_equal(out$index, list())
     expect_equal(out$distance, list())
+
+    # What happens when 'threshold' is not of appropriate length.
+    expect_error(findNeighbors(X, threshold=0:1), "should be equal to")
 
     # What happens when there are no dimensions.
     out <- findNeighbors(X[,0], threshold=1)

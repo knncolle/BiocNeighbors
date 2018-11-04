@@ -155,6 +155,38 @@ test_that("queryNeighbors() raw output behaves correctly", {
     expect_identical_re(out, ref)
 })
 
+set.seed(10032)
+test_that("queryNeighbors() behaves with variable distances", {
+    nobs <- 1021
+    nquery <- 121
+    ndim <- 8
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+    available <- c(0.5, 1, 2)
+    chosen <- sample(length(available), nquery, replace=TRUE)
+    d <- available[chosen]
+
+    out <- queryNeighbors(X, Y, threshold=d)
+    for (a in seq_along(available)) {
+        current <- chosen==a
+        expect_identical_re(lapply(out, "[", i=current), 
+            queryNeighbors(X, Y, threshold=available[a], subset=current))
+    }
+
+    # Handles subsetting.
+    scrambled <- sample(nquery, 40)
+    out2 <- queryNeighbors(X, Y, threshold=d[scrambled], subset=scrambled)
+    expect_identical_re(out2, lapply(out, "[", i=scrambled))
+
+    scrambled <- rbinom(nquery, 1, 0.5)==1
+    out2 <- queryNeighbors(X, Y, threshold=d[scrambled], subset=scrambled)
+    expect_identical_re(out2, lapply(out, "[", i=scrambled))
+
+    # Handles parallelization.
+    expect_identical_re(out, queryNeighbors(X, Y, threshold=d, BPPARAM=MulticoreParam(3)))
+})
+
 set.seed(1004)
 test_that("queryNeighbors() behaves correctly with silly inputs", {
     nobs <- 1000
@@ -166,6 +198,9 @@ test_that("queryNeighbors() behaves correctly with silly inputs", {
     # What happens when the threshold is not positive.
     expect_error(queryNeighbors(X, Y, threshold=0), "positive")
     expect_error(queryNeighbors(X, Y, threshold=-1), "positive")
+
+    # What happens when 'threshold' is not of appropriate length.
+    expect_error(findNeighbors(X, threshold=0:1), "should be equal to")
 
     # What happens when there are no points in the data.
     out <- queryNeighbors(X[0,,drop=FALSE], Y, threshold=1)
