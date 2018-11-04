@@ -10,10 +10,10 @@ double check_numeric_scalar(Rcpp::RObject x, const char* thing);
 
 std::string check_string(Rcpp::RObject x, const char* thing);
 
-Rcpp::IntegerVector check_indices(Rcpp::RObject, size_t);
+Rcpp::IntegerVector check_indices(Rcpp::IntegerVector, size_t);
 
 size_t check_k(Rcpp::RObject);
 
-double check_distance(Rcpp::RObject);
+Rcpp::NumericVector check_distances(Rcpp::NumericVector, size_t);
 
 #endif

@@ -5,7 +5,6 @@
 SEXP query_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP dist_thresh, SEXP query, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
     searcher n_finder(X, clust_centers, clust_info);
-    const double threshold=check_distance(dist_thresh);
     const size_t ndim=n_finder.get_ndims();
 
     // Examining the query matrix and checking it against the subset indices.
@@ -16,6 +15,7 @@ SEXP query_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info,
 
     const Rcpp::IntegerVector points=check_indices(to_check, Query.ncol());
     const size_t nobs=points.size();
+    const Rcpp::NumericVector thresholds=check_distances(dist_thresh, nobs);
 
     // Getting the output mode.
     const bool store_neighbors=check_logical_scalar(get_index, "'get.index'");
@@ -34,7 +34,7 @@ SEXP query_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info,
     // Iterating across cells, finding NNs and storing distances or neighbors.
     size_t ix=0;
     for (auto h : points) {
-        n_finder.find_neighbors(Query.begin() + ndim * h, threshold, store_neighbors, store_distances); 
+        n_finder.find_neighbors(Query.begin() + ndim * h, thresholds[ix], store_neighbors, store_distances); 
 
         if (store_neighbors) {
             const std::deque<size_t>& neighbors=n_finder.get_neighbors();

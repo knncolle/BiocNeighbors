@@ -28,14 +28,13 @@ std::string check_string(Rcpp::RObject x, const char* thing) {
     return Rcpp::as<std::string>(SEXP(x));
 }
 
-Rcpp::IntegerVector check_indices(Rcpp::RObject incoming, size_t total_obs) {
-    const Rcpp::IntegerVector points(incoming);
-    for (auto h : points) {
+Rcpp::IntegerVector check_indices(Rcpp::IntegerVector incoming, size_t total_obs) {
+    for (auto h : incoming) {
         if (h==NA_INTEGER || h < 0 || size_t(h) >= total_obs) {
             throw std::runtime_error("job indices out of range");
         }
     }
-    return points;
+    return incoming;
 }
 
 size_t check_k(Rcpp::RObject incoming) {
@@ -46,10 +45,14 @@ size_t check_k(Rcpp::RObject incoming) {
     return NN;
 }
 
-double check_distance(Rcpp::RObject incoming) {
-    const double threshold=check_numeric_scalar(incoming, "threshold");
-    if (threshold <= 0) {
-        throw std::runtime_error("threshold should be positive");
+Rcpp::NumericVector check_distances(Rcpp::NumericVector incoming, size_t N) {
+    if (incoming.size()!=N) {
+        throw std::runtime_error("length of distance vector should be equal to number of points");
     }
-    return threshold;
+    for (auto threshold : incoming) {
+        if (threshold <= 0) {
+            throw std::runtime_error("threshold should be positive");
+        }
+    }
+    return incoming;
 }
