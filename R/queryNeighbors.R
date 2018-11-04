@@ -13,13 +13,27 @@ queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRU
     job.id <- q.out$index
     reorder <- q.out$reorder
 
+    # Allow for variable thresholds across query points. 
+    if (length(threshold)==1) {
+        thresholds <- rep(threshold, length.out=length(job.id))
+    } else if (length(threshold)!=length(job.id)) {
+        stop("length of 'threshold' should be equal to number of points specified in 'subset'")
+    } else {
+        thresholds <- threshold
+        if (!is.null(reorder)) {
+            thresholds <- thresholds[reorder]
+        }
+    }
+
     # Dividing jobs up for NN finding.
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
-    collected <- bpmapply(jobs, FUN=.query_neighbors,
+    thresholds <- .assign_jobs(thresholds, BPPARAM)
+
+    collected <- bpmapply(FUN=.query_neighbors,
+        jobs=jobs, threshold=thresholds,
         MoreArgs=list(data=KmknnIndex_clustered_data(precomputed),
             centers=KmknnIndex_cluster_centers(precomputed),
             info=KmknnIndex_cluster_info(precomputed),
-            threshold=threshold,
             query=query,
             get.index=get.index, 
             get.distance=get.distance), 
