@@ -9,9 +9,15 @@ REFFUN <- function(X, k, ntrees=50) {
     }
     a$build(ntrees)
 
+    # Saving and then reloading.
+    tmploc <- tempfile()
+    a$save(tmploc)
+    b <- new(AnnoyEuclidean, ncol(X))
+    b$load(tmploc)
+
     collected.dex <- collected.dist <- vector("list", nrow(X))
     for (i in seq_len(nrow(X))) {
-        available <- a$getNNsByItem(i-1L, k+1) + 1L
+        available <- b$getNNsByItem(i-1L, k+1) + 1L
         available <- setdiff(available, i) # ignore self.
         available <- head(available, k)
 
