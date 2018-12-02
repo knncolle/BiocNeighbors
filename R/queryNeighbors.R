@@ -6,7 +6,7 @@ queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRU
 # written by Aaron Lun
 # created 22 June 2018
 {
-    precomputed <- .setup_precluster(X, precomputed, raw.index, ...)
+    precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildKmknn, ...)
 
     q.out <- .setup_query(query, transposed, subset)
     query <- q.out$query        

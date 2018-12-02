@@ -6,8 +6,8 @@ findNeighbors <- function(X, threshold, get.index=TRUE, get.distance=TRUE, BPPAR
 # written by Aaron Lun
 # created 20 June 2018
 {
-    precomputed <- .setup_precluster(X, precomputed, raw.index, ...)
-    ind.out <- .setup_indices(precomputed, subset, raw.index)
+    precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildKmknn, ...)
+    ind.out <- .setup_indices(precomputed, subset, raw.index, orderFUN=KmknnIndex_clustered_order)
     job.id <- ind.out$index
     reorder <- ind.out$reorder
 
