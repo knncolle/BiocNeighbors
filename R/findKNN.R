@@ -52,6 +52,21 @@ setMethod("findKNN", c("KmknnIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
 })
 
 #' @export
+setMethod("findKNN", c("NULL", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
+    findVptree(...)
+})
+
+#' @export
+setMethod("findKNN", c("VptreeIndex", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
+    findVptree(..., precomputed=BNINDEX)
+})
+
+#' @export
+setMethod("findKNN", c("VptreeIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+    findVptree(..., precomputed=BNINDEX)
+})
+
+#' @export
 setMethod("findKNN", c("NULL", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
     findAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM))
 })

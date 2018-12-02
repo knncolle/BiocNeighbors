@@ -22,6 +22,11 @@ setMethod("buildNNIndex", "KmknnParam", function(..., BNPARAM) {
 })
 
 #' @export
+setMethod("buildNNIndex", "VptreeParam", function(..., BNPARAM) {
+    buildVptree(...)
+})
+
+#' @export
 setMethod("buildNNIndex", "AnnoyParam", function(..., BNPARAM) {
     buildAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM))
 })
