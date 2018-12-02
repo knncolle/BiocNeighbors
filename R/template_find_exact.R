@@ -81,7 +81,7 @@
             job.id <- .subset_to_index(subset, dummy, byrow=TRUE)
         } else {
             # Getting position of subset indices in the reordered set of points.
-            new.pos <- .order_to_index(cur.order(precomputed))
+            new.pos <- .order_to_index(cur.order)
             indices <- .subset_to_index(subset, precomputed, byrow=TRUE)
             job.id <- new.pos[indices]
         }
