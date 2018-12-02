@@ -14,6 +14,10 @@
 \alias{findKNN,KmknnIndex,NULL-method}
 \alias{findKNN,KmknnIndex,KmknnParam-method}
 
+\alias{findKNN,NULL,VptreeParam-method}
+\alias{findKNN,VptreeIndex,NULL-method}
+\alias{findKNN,VptreeIndex,VptreeParam-method}
+
 \alias{findKNN,NULL,AnnoyParam-method}
 \alias{findKNN,AnnoyIndex,NULL-method}
 \alias{findKNN,AnnoyIndex,AnnoyParam-method}
@@ -68,7 +72,9 @@ Aaron Lun
 }
 
 \seealso{
-\code{\link{findKmknn}} and \code{\link{findAnnoy}} for specific methods.
+\code{\link{findKmknn}},
+\code{\link{findVptree}},
+and \code{\link{findAnnoy}} for specific methods.
 }
 
 \examples{

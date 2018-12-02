@@ -5,6 +5,7 @@
 \alias{buildNNIndex,missing-method}
 \alias{buildNNIndex,NULL-method}
 \alias{buildNNIndex,KmknnParam-method}
+\alias{buildNNIndex,VptreeParam-method}
 \alias{buildNNIndex,AnnoyParam-method}
 
 \title{Build a nearest-neighbor index}
@@ -36,7 +37,9 @@ Aaron Lun
 }
 
 \seealso{
-\code{\link{buildKmknn}} and \code{\link{buildAnnoy}} for specific methods. 
+\code{\link{buildKmknn}},
+\code{\link{buildVptree}},
+and \code{\link{buildAnnoy}} for specific methods. 
 }
 
 \examples{

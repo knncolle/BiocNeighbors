@@ -14,6 +14,10 @@
 \alias{queryKNN,KmknnIndex,NULL-method}
 \alias{queryKNN,KmknnIndex,KmknnParam-method}
 
+\alias{queryKNN,NULL,VptreeParam-method}
+\alias{queryKNN,VptreeIndex,NULL-method}
+\alias{queryKNN,VptreeIndex,VptreeParam-method}
+
 \alias{queryKNN,NULL,AnnoyParam-method}
 \alias{queryKNN,AnnoyIndex,NULL-method}
 \alias{queryKNN,AnnoyIndex,AnnoyParam-method}
@@ -70,7 +74,9 @@ Aaron Lun
 }
 
 \seealso{
-\code{\link{queryKmknn}} and \code{\link{queryAnnoy}} for specific methods.
+\code{\link{queryKmknn}}, 
+\code{\link{queryVptree}},
+and \code{\link{queryAnnoy}} for specific methods.
 }
 
 \examples{
