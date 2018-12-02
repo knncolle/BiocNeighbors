@@ -68,7 +68,7 @@ VptreeIndex_order <- function(x) {
 }
 
 setMethod("dim", "VptreeIndex", function(x) { 
-    rev(dim(Vptree_data(x))) # reversed, as matrix was transposed.
+    rev(dim(VptreeIndex_data(x))) # reversed, as matrix was transposed.
 }) 
 
 # Getter methods for AnnoyIndex
