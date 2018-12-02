@@ -50,6 +50,27 @@ setMethod("dim", "KmknnIndex", function(x) {
     rev(dim(KmknnIndex_clustered_data(x))) # reversed, as matrix was transposed.
 }) 
 
+# Getter methods for VptreeIndex
+
+#' @export
+VptreeIndex_data <- function(x) {
+    x@data
+}
+
+#' @export
+VptreeIndex_nodes <- function(x) {
+    x@nodes
+}
+
+#' @export
+VptreeIndex_order <- function(x) {
+    x@order
+}
+
+setMethod("dim", "KmknnIndex", function(x) { 
+    rev(dim(Vptree_data(x))) # reversed, as matrix was transposed.
+}) 
+
 # Getter methods for AnnoyIndex
 
 #' @export

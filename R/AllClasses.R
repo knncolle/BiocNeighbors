@@ -7,6 +7,9 @@ setClass("BiocNeighborParam", contains="VIRTUAL")
 setClass("KmknnParam", contains="BiocNeighborParam", slots=c(kmeans.args="list"))
 
 #' @export
+setClass("VptreeParam", contains="BiocNeighborParam")
+
+#' @export
 setClass("AnnoyParam", contains="BiocNeighborParam", slots=c(ntrees="integer", dir="character")) 
 
 # Defines the BiocNeighborIndex class and derivatives.
@@ -17,6 +20,9 @@ setClass("BiocNeighborIndex", contains="VIRTUAL", slots=c(NAMES="character_OR_NU
 
 #' @export
 setClass("KmknnIndex", contains="BiocNeighborIndex", slots=c(data="matrix", centers="matrix", info="list", order="integer"))
+
+#' @export
+setClass("VptreeIndex", contains="BiocNeighborIndex", slots=c(data="matrix", order="integer", nodes="list"))
 
 #' @export
 setClass("AnnoyIndex", contains="BiocNeighborIndex", slots=c(path="character", Dims="integer"))
