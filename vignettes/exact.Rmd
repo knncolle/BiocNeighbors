@@ -1,9 +1,9 @@
 ---
-title: Detecting exact nearest neighbors with KMKNN
+title: Detecting exact nearest neighbors 
 author: 
 - name: Aaron Lun
   affiliation: Cancer Research UK Cambridge Institute, Cambridge, United Kingdom
-date: "Revised: 27 September 2018"
+date: "Revised: 2 December 2018"
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -23,27 +23,16 @@ library(BiocNeighbors)
 
 # Introduction
 
-The `r Biocpkg("BiocNeighbors")` package provides an implementation of the k-means for k-nearest neighbors (KMKNN) algorithm, as described by @wang2012fast.
-For a dataset with $N$ points, the pre-training is done as follows:
+The `r Biocpkg("BiocNeighbors")` package implements a few algorithms for exact nearest neighbor searching:
 
-1. Apply k-means clustering to all points, partitioning the data into $\sqrt{N}$ clusters.
-2. Compute the distance from each data point to its cluster center.
-3. Store the cluster identities and distances.
+- The k-means for k-nearest neighbors (KMKNN) algorithm [@wang2012fast] uses k-means clustering to create an index.
+Within each cluster, the distance of each of that cluster's points to the cluster center are computed and used to sort all points.
+Given a query point, the distance to each cluster center is determined and the triangle inequality is applied to determine which points in each cluster warrant a full distance calculation.
+- The vantage point (VP) tree algorithm [@yianilos1993data] involves constructing a tree where each node is located at a data point and is associated with a subset of neighboring points.
+Each node progressively partitions points into two subsets that are either closer or further to the node than a given threshold. 
+Given a query point, the triangle inequality is applied at each node in the tree to determine if the child nodes warrant searching.
 
-For each query point, identification of the nearest neighbors is done as follows:
-
-1. Start with a threshold distance $d$ to the current kth-nearest neighbor (this can be set with arbitrary points).
-2. Compute the distance from the query to each cluster center.
-3. For any given cluster center, apply the triangle inequality on the query-center distance, the center-point distances and $d$.
-Only compute query-point distances for points where the triangle inequality holds.
-4. Update $d$ with the new closest kth-nearest neighbor and repeat for the next cluster.
-
-The pre-clustering arranges the points in a manner that effectively reduces the search space, even in high-dimensional data.
-Note that, while `kmeans` itself is random, the k-nearest neighbors result is fully deterministic^[Except in the presence of ties, see `?findKNN` for details.].
-
-The algorithm is implemented in a combination of R and C++, derived from code in `r Biocpkg("cydar")` [@lun2017testing].
-We observe 2-5-fold speed-ups in 20- to 50-dimensional data, compared to KD-trees in `r CRANpkg("FNN")` and `r CRANpkg("RANN")` (see https://github.com/LTLA/OkNN2018 for timings).
-This is consistent with results from @wang2012fast.
+Both methods involve a component of randomness during index construction, though the k-nearest neighbors result is fully deterministic^[Except in the presence of ties, see `?findKNN` for details.].
 
 # Identifying k-nearest neighbors
 
@@ -58,6 +47,7 @@ data <- matrix(runif(nobs*ndim), ncol=ndim)
     
 The `findKNN()` method expects a numeric matrix as input with data points as the rows and variables/dimensions as the columns.
 We indicate that we want to use the KMKNN algorithm by setting `BNPARAM=KmknnParam()` (which is also the default, so this is not strictly necessary here).
+We could use a VP tree instead by setting `BNPARAM=VptreeParam()`.
 
 ```{r}
 fout <- findKNN(data, k=10, BNPARAM=KmknnParam())
