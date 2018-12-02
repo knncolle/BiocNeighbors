@@ -15,6 +15,8 @@ static const R_CallMethodDef all_call_entries[] = {
     REGISTER(build_annoy, 3),
     REGISTER(find_annoy, 6),
     REGISTER(query_annoy, 7),
+
+    REGISTER(build_vptree, 1),
     {NULL, NULL, 0}
 };
 

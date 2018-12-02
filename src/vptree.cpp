@@ -4,16 +4,30 @@ DataPoint::DataPoint() : ptr(NULL), index(-1) {}
     
 DataPoint::DataPoint (int i, const double* p) : ptr(p), index(i) {}
 
-VpTree::VpTree(Rcpp::NumericMatrix vals) : reference(vals), ndim(vals.nrow()) {
-    const int nelements=reference.ncol();
-    items.reserve(nelements);
-    const double * ptr = reference.begin();
-    for (int i=0; i<nelements; ++i, ptr+=ndim) {
-        items.push_back(DataPoint(i, ptr));
+VpTree::VpTree(Rcpp::NumericMatrix vals) : ndim(vals.nrow()) {
+    const int nelements=vals.ncol();
+    {
+        items.reserve(nelements);
+        const double * ptr = vals.begin();
+        for (int i=0; i<nelements; ++i, ptr+=ndim) {
+            items.push_back(DataPoint(i, ptr));
+        }
+
+        Rcpp::RNGScope rnger;
+        buildFromPoints(0, nelements);
     }
 
-    Rcpp::RNGScope rnger;
-    buildFromPoints(0, nelements);
+    // Reordering points in the reference.
+    reference=Rcpp::NumericMatrix(ndim, nelements);
+    {
+        double* ptr=reference.begin();
+        for (auto& I : items) {
+            auto curcol=vals.column(I.index);
+            std::copy(curcol.begin(), curcol.end(), ptr);
+            I.ptr=ptr;
+            ptr+=ndim;
+        }
+    }
     return;
 }
 
@@ -123,7 +137,8 @@ VpTree::VpTree(Rcpp::List saved) {
             if (i < 0 || i>= nelements) {
                 throw std::runtime_error("VP tree item indices out of range");
             }
-            items.push_back(DataPoint(i, ptr+i*ndim));
+            items.push_back(DataPoint(i, ptr));
+            ptr+=ndim;
         }
     }
 

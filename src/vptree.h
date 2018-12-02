@@ -22,6 +22,7 @@ class VpTree {
 public:    
     VpTree(Rcpp::List);
     VpTree(Rcpp::NumericMatrix); 
+    Rcpp::List save();
 private:
     int ndim;
     Rcpp::NumericMatrix reference;
@@ -39,7 +40,6 @@ private:
     std::deque<Node> nodes;
 
     int buildFromPoints(int, int);
-    Rcpp::List save();
 };
 
 #endif
