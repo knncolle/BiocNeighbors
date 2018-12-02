@@ -137,7 +137,7 @@ VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::IntegerVector item_index, Rcpp::L
         items.reserve(nelements);
         const double* ptr=reference.begin();
         for (auto i : item_index) {
-            if (i < 0 || i>= nelements) {
+            if (i < 1 || i > nelements) {
                 throw std::runtime_error("VP tree item indices out of range");
             }
             items.push_back(DataPoint(i-1, ptr));
@@ -167,17 +167,15 @@ VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::IntegerVector item_index, Rcpp::L
             curnode.right=node_right[i];
 
             if (curnode.index < 0 || curnode.index >= nnodes ||
-                    curnode.left < 0 || curnode.left >= nnodes ||
-                    curnode.right < 0 || curnode.right >= nnodes) {
+                    (curnode.left != LEAF_MARKER && (curnode.left < 0 || curnode.left >= nnodes)) ||
+                    (curnode.right != LEAF_MARKER && (curnode.right < 0 || curnode.right >= nnodes))
+                    ) {
                 throw std::runtime_error("VP tree node indices out of range");
             }
 
             curnode.threshold=node_thresholds[i];
         }
     }
-    
-    Rcpp::RNGScope rnger;
-    buildFromPoints(0, nelements);
     return;
 }
 

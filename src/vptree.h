@@ -56,8 +56,7 @@ private:
     double tau;
 
     struct HeapItem {
-        HeapItem( int index, double dist) :
-        index(index), dist(dist) {}
+        HeapItem(int index, double dist) : index(index), dist(dist) {}
         int index;
         double dist;
         bool operator<(const HeapItem& o) const {
