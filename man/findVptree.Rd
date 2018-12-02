@@ -6,7 +6,7 @@
 
 \usage{
 findVptree(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), 
-    precomputed=NULL, subset=NULL, raw.index=FALSE, ...)
+    precomputed=NULL, subset=NULL, raw.index=FALSE)
 }
 
 \arguments{
@@ -63,7 +63,7 @@ A list is returned containing:
 
 If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
 
-If \code{raw.index=TRUE}, the values in \code{index} refer to \emph{columns} of \code{\link{VptreeIndex_clustered_data}(precomputed)}.
+If \code{raw.index=TRUE}, the values in \code{index} refer to \emph{columns} of \code{\link{VptreeIndex_data}(precomputed)}.
 }
 
 \author{

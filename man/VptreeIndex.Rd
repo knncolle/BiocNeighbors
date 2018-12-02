@@ -11,7 +11,7 @@
 \description{A class to hold the vantage point tree for exact nearest neighbor identification.}
 
 \usage{
-VptreeIndex(data, order, nodes, NAMES=NULL)
+VptreeIndex(data, nodes, order, NAMES=NULL)
 
 VptreeIndex_data(x)
 
@@ -24,9 +24,10 @@ VptreeIndex_order(x)
 
 \arguments{
     \item{data}{A numeric matrix with data points in columns and dimensions in rows.}
-    \item{order}{An integer vector of length equal to \code{ncol(data)}, specifying the order of observations.}
     \item{nodes}{A list of vectors specifying the structure of the VP tree.}
+    \item{order}{An integer vector of length equal to \code{ncol(data)}, specifying the order of observations.}
     \item{NAMES}{A character vector of sample names or \code{NULL}.}
+    \item{x}{A VptreeIndex object.}
 }
 
 \details{
