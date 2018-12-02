@@ -24,8 +24,8 @@ public:
     VpTree(Rcpp::NumericMatrix, Rcpp::List);
     Rcpp::List save();
 
-    void find_nearest_neighbors(int, int, bool, bool);
-    void find_nearest_neighbors(const double*, int, bool, bool);
+    void find_nearest_neighbors(size_t, int, const bool, const bool);
+    void find_nearest_neighbors(const double*, int, const bool, const bool);
 
     int get_nobs() const;
     int get_ndims() const;
@@ -55,16 +55,8 @@ private:
     std::deque<double> distances;
     double tau;
 
-    struct HeapItem {
-        HeapItem(int index, double dist) : index(index), dist(dist) {}
-        int index;
-        double dist;
-        bool operator<(const HeapItem& o) const {
-            return dist < o.dist;
-        }
-    };
-    void search_nn(const double*, int, bool, bool, bool, int);
-    void search(int, const double*, int, std::priority_queue<HeapItem>&);
+    std::priority_queue<std::pair<double, int> > nearest;
+    void search(int, const double*, int);
 };
 
 #endif

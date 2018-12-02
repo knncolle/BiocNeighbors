@@ -38,12 +38,9 @@ protected:
     std::deque<Rcpp::NumericVector> clust_dist;
 
     // Nearest-neighbor-related data members.
-    typedef std::priority_queue<std::pair<double, int> > nearest;
-    nearest current_nearest;
-    void pqueue2deque(const bool, const bool, bool=false, size_t=0);
+    std::priority_queue<std::pair<double, int> > nearest;
 
     // Data members to deal with ties. 
-    double last_distance2;
     bool tie_warned;
 };
 

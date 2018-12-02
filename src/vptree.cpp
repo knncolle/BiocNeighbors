@@ -1,4 +1,5 @@
 #include "vptree.h"
+#include "queue2deque.h"
 
 DataPoint::DataPoint() : ptr(NULL), index(-1) {}
     
@@ -161,58 +162,25 @@ VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data) : reference(vals)
 
 /***** Methods to search the VP tree for nearest neighbors *****/
 
-void VpTree::find_nearest_neighbors (int cell, int k, bool index, bool dist) {
+void VpTree::find_nearest_neighbors (size_t cell, int k, const bool index, const bool dist) {
     if (cell >= reference.ncol()) {
         throw std::runtime_error("cell index out of range");
     }
-    auto curcol=reference.column(cell);
-    search_nn(curcol.begin(), k+1, index, dist, true, cell);
-    return;
-}
-
-void VpTree::find_nearest_neighbors (const double* current, int k, bool index, bool dist) {
-    search_nn(current, k, index, dist, false, 0);
-    return;
-}
-
-
-void VpTree::search_nn(const double* target, int k, bool index, bool dist, bool discard_self, int self) {
-    // Use a priority queue to store intermediate results.
-    std::priority_queue<HeapItem> heap;
     tau = DBL_MAX;
-    search(0, target, k, heap);
-
-    neighbors.clear(); 
-    distances.clear();
-    bool found_self=false;
-    while(!heap.empty()) {
-        if (discard_self && heap.top().index==self) {
-            found_self=true;
-            heap.pop();
-            continue;
-        }
-        if (index) {
-            neighbors.push_front(heap.top().index);
-        }
-        if (dist) {
-            distances.push_front(heap.top().dist);
-        }
-	    heap.pop();
-    }
-
-    // Removing last element if we found self. 
-    if (discard_self && !found_self) {
-        if (index) { 
-            neighbors.pop_back();
-        }
-        if (dist) {
-            distances.pop_back();
-        }
-    }
+    auto curcol=reference.column(cell);
+    search(0, curcol.begin(), k+1);
+    queue2deque(nearest, neighbors, distances, index, dist, true, cell);
     return;
 }
 
-void VpTree::search(int curnode_index, const double* target, int k, std::priority_queue<HeapItem>& heap) {
+void VpTree::find_nearest_neighbors (const double* current, int k, const bool index, const bool dist) {
+    tau = DBL_MAX;
+    search(0, current, k);
+    queue2deque(nearest, neighbors, distances, index, dist, false, size_t(0));
+    return;
+}
+
+void VpTree::search(int curnode_index, const double* target, int k) {
     if(curnode_index == LEAF_MARKER) { // indicates that we're done here
         return;
     }
@@ -223,14 +191,14 @@ void VpTree::search(int curnode_index, const double* target, int k, std::priorit
 
     // If current node within radius tau
     if (dist < tau) {
-        if (heap.size() == k) {
-            heap.pop(); // remove furthest node from result list (if we already have k results)
+        if (nearest.size() == k) {
+            nearest.pop(); // remove furthest node from result list (if we already have k results)
         }
 
-        heap.push(HeapItem(curnode.index, dist)); // add current node to result list
+        nearest.push(std::make_pair(dist, curnode.index)); // add current node to result list
 
-        if (heap.size() == k) {
-            tau = heap.top().dist; // update value of tau (farthest point in result list)
+        if (nearest.size() == k) {
+            tau = nearest.top().first; // update value of tau (farthest point in result list)
         }
     }
     
@@ -242,21 +210,21 @@ void VpTree::search(int curnode_index, const double* target, int k, std::priorit
     // If the target lies within the radius of ball
     if (dist < curnode.threshold) {
         if (dist - tau <= curnode.threshold) {         // if there can still be neighbors inside the ball, recursively search left child first
-            search(curnode.left, target, k, heap);
+            search(curnode.left, target, k);
         }
         
         if (dist + tau >= curnode.threshold) {         // if there can still be neighbors outside the ball, recursively search right child
-            search(curnode.right, target, k, heap);
+            search(curnode.right, target, k);
         }
     
     // If the target lies outsize the radius of the ball
     } else {
         if (dist + tau >= curnode.threshold) {         // if there can still be neighbors outside the ball, recursively search right child first
-            search(curnode.right, target, k, heap);
+            search(curnode.right, target, k);
         }
         
         if (dist - tau <= curnode.threshold) {         // if there can still be neighbors inside the ball, recursively search left child
-            search(curnode.left, target, k, heap);
+            search(curnode.left, target, k);
         }
     }
 }
