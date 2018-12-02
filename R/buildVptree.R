@@ -9,7 +9,8 @@ buildVptree <- function(X)
         X <- as.matrix(X)
     }
 
-    out <- .Call(cxx_build_vptree, t(X))
-    colnames(out[[1]]) <- rownames(X)[out[[2]]] # for consistency when subsetting raw indices.
-    VptreeIndex(data=out[[1]], order=out[[2]], nodes=out[-(1:2)], NAMES=rownames(X))
+    tX <- t(X)
+    out <- .Call(cxx_build_vptree, tX)
+    ordering <- out[[1]]
+    VptreeIndex(data=tX[,ordering,drop=FALSE], order=ordering, nodes=out[-1], NAMES=rownames(X))
 }

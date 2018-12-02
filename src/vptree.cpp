@@ -16,29 +16,16 @@ std::deque<double>& VpTree::get_distances () { return distances; }
 
 /***** Methods to build the VP tree *****/
 
-VpTree::VpTree(Rcpp::NumericMatrix vals) : ndim(vals.nrow()) {
+VpTree::VpTree(Rcpp::NumericMatrix vals) : reference(vals), ndim(vals.nrow()) {
     const int nelements=vals.ncol();
-    {
-        items.reserve(nelements);
-        const double * ptr = vals.begin();
-        for (int i=0; i<nelements; ++i, ptr+=ndim) {
-            items.push_back(DataPoint(i, ptr));
-        }
-
-        Rcpp::RNGScope rnger;
-        buildFromPoints(0, nelements);
+    items.reserve(nelements);
+    const double * ptr = vals.begin();
+    for (int i=0; i<nelements; ++i, ptr+=ndim) {
+        items.push_back(DataPoint(i, ptr));
     }
 
-    // Reordering points in the reference.
-    reference=Rcpp::NumericMatrix(ndim, nelements);
-    {
-        double* ptr=reference.begin();
-        for (auto& I : items) {
-            std::copy(I.ptr, I.ptr+ndim, ptr);
-            I.ptr=ptr;
-            ptr+=ndim;
-        }
-    }
+    Rcpp::RNGScope rnger;
+    buildFromPoints(0, nelements);
     return;
 }
 
@@ -124,24 +111,17 @@ Rcpp::List VpTree::save() {
         ++niIt; ++nlIt; ++nrIt; ++ntIt;
     }
     
-    return Rcpp::List::create(reference, item_index, node_index, node_left, node_right, node_thresholds);
+    return Rcpp::List::create(item_index, node_index, node_left, node_right, node_thresholds);
 }
 
-VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::IntegerVector item_index, Rcpp::List node_data) : reference(vals), ndim(vals.nrow()) {
+VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data) : reference(vals), ndim(vals.nrow()) {
     const int nelements=reference.ncol();
-    { // Filling the item index.
-        if (nelements!=item_index.size()) {
-            throw std::runtime_error("VP tree item index vector length is not equal to number of elements");
-        }
 
+    { // Filling the item index.
         items.reserve(nelements);
         const double* ptr=reference.begin();
-        for (auto i : item_index) {
-            if (i < 1 || i > nelements) {
-                throw std::runtime_error("VP tree item indices out of range");
-            }
-            items.push_back(DataPoint(i-1, ptr));
-            ptr+=ndim;
+        for (int i=0; i<nelements; ++i, ptr+=ndim) {
+            items.push_back(DataPoint(i, ptr));
         }
     }
 

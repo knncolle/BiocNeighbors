@@ -21,7 +21,7 @@ struct DataPoint {
 class VpTree {
 public:    
     VpTree(Rcpp::NumericMatrix); 
-    VpTree(Rcpp::NumericMatrix, Rcpp::IntegerVector, Rcpp::List);
+    VpTree(Rcpp::NumericMatrix, Rcpp::List);
     Rcpp::List save();
 
     void find_nearest_neighbors(int, int, bool, bool);
