@@ -1,9 +1,9 @@
-#ifndef TEMPLATE_FIND_EXACT_H
-#define TEMPLATE_FIND_EXACT_H
+#ifndef FIND_EXACT_H
+#define FIND_EXACT_H
 #include "utils.h"
 
 template <class Searcher>
-SEXP template_find_exact(Searcher& finder, SEXP to_check, SEXP nn, SEXP get_index, SEXP get_distance) {
+SEXP find_exact(Searcher& finder, SEXP to_check, SEXP nn, SEXP get_index, SEXP get_distance) {
     // Checking NN's and indices.
     const size_t NN=check_k(nn);
     const Rcpp::IntegerVector points=check_indices(to_check, finder.get_nobs());
