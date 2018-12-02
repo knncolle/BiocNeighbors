@@ -23,6 +23,8 @@ SEXP build_vptree(SEXP);
 
 SEXP find_vptree(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
+SEXP query_vptree(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+
 }
 
 #endif 
