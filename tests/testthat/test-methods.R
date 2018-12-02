@@ -22,6 +22,10 @@ test_that("buildNNIndex dispatches correctly", {
     ref <- buildKmknn(X, iter.max=20)
     expect_equal(out, ref)
 
+    # Handles Vptree.
+    out <- buildNNIndex(X, BNPARAM=VptreeParam())
+    expect_s4_class(out, "VptreeIndex")
+
     # Handles Annoy:
     out <- buildNNIndex(X, BNPARAM=AnnoyParam())
     expect_s4_class(out, "AnnoyIndex")
@@ -46,6 +50,21 @@ test_that("findKNN dispatches correctly for KMKNN", {
     expect_equal(out1, out6)
     expect_equal(out1, out7)
     expect_equal(out1, out8)
+})
+
+test_that("findKNN dispatches correctly for VP trees", {
+    # Equivalent calls to Kmknn:
+    out1 <- findKNN(X, k=10, BNINDEX=buildVptree(X)) 
+    out2 <- findKNN(X, k=10, BNPARAM=VptreeParam()) 
+    out3 <- findKNN(X, k=10, BNPARAM=VptreeParam(), BNINDEX=buildVptree(X)) 
+    expect_equal(out1, out2)
+    expect_equal(out1, out3)
+
+    # Testing the behaviour of the NULL methods.
+    out4 <- findKNN(X, k=10, BNINDEX=NULL, BNPARAM=VptreeParam())
+    out5 <- findKNN(X, k=10, BNINDEX=buildVptree(X), BNPARAM=NULL)
+    expect_equal(out1, out4)
+    expect_equal(out1, out5)
 })
 
 test_that("findKNN dispatches correctly for Annoy", {
@@ -98,6 +117,21 @@ test_that("queryKNN dispatches correctly for KMKNN", {
     expect_equal(out1, out6)
     expect_equal(out1, out7)
     expect_equal(out1, out8)
+})
+
+test_that("queryKNN dispatches correctly for VP trees", {
+    # Equivalent calls to Kmknn:
+    out1 <- queryKNN(X, Y, k=10, BNINDEX=buildKmknn(X)) 
+    out2 <- queryKNN(X, Y, k=10, BNPARAM=KmknnParam()) 
+    out3 <- queryKNN(X, Y, k=10, BNPARAM=KmknnParam(), BNINDEX=buildKmknn(X)) 
+    expect_equal(out1, out2)
+    expect_equal(out1, out3)
+
+    # Testing the behaviour of the NULL methods.
+    out4 <- queryKNN(X, Y, k=10, BNINDEX=NULL, BNPARAM=KmknnParam())
+    out5 <- queryKNN(X, Y, k=10, BNINDEX=buildKmknn(X), BNPARAM=NULL)
+    expect_equal(out1, out4)
+    expect_equal(out1, out5)
 })
 
 test_that("queryKNN dispatches correctly for Annoy", {
