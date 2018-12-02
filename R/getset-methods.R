@@ -67,7 +67,7 @@ VptreeIndex_order <- function(x) {
     x@order
 }
 
-setMethod("dim", "KmknnIndex", function(x) { 
+setMethod("dim", "VptreeIndex", function(x) { 
     rev(dim(Vptree_data(x))) # reversed, as matrix was transposed.
 }) 
 
