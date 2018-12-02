@@ -32,10 +32,12 @@ test_that("buildVptree() preserves dimension names", {
 
     out <- buildVptree(X)
     expect_identical(rownames(out), rownames(X))
+    expect_identical(rownames(KmknnIndex_clustered_data(out)), colnames(X))
     expect_identical(colnames(VptreeIndex_data(out)), rownames(X)[VptreeIndex_order(out)])
 
     # Still true if there are no cells.
     out <- buildVptree(X[0,,drop=FALSE])
+    expect_identical(rownames(KmknnIndex_clustered_data(out)), colnames(X))
     expect_identical(colnames(VptreeIndex_data(out)), NULL)
     expect_identical(rownames(out), NULL)
 })
@@ -68,5 +70,6 @@ test_that("buildVptree() behaves sensibly with silly inputs", {
     Y <- data.frame(X, check.names=FALSE, fix.empty.names=FALSE)
     colnames(Y) <- NULL
     out <- buildVptree(Y)
+    dimnames(out@data) <- NULL # fix not-quite-empty dimnames.
     expect_equal(ref, out)
 })
