@@ -23,8 +23,15 @@ public:
     VpTree(Rcpp::NumericMatrix); 
     VpTree(Rcpp::NumericMatrix, Rcpp::IntegerVector, Rcpp::List);
     Rcpp::List save();
+
     void find_nearest_neighbors(int, int, bool, bool);
     void find_nearest_neighbors(const double*, int, bool, bool);
+
+    int get_nobs() const;
+    int get_ndims() const;
+
+    std::deque<size_t>& get_neighbors ();
+    std::deque<double>& get_distances ();
 private:
     int ndim;
     Rcpp::NumericMatrix reference;

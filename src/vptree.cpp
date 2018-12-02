@@ -4,6 +4,16 @@ DataPoint::DataPoint() : ptr(NULL), index(-1) {}
     
 DataPoint::DataPoint (int i, const double* p) : ptr(p), index(i) {}
 
+/***** Getter methods *****/
+
+int VpTree::get_nobs() const { return reference.ncol(); }
+
+int VpTree::get_ndims() const { return reference.nrow(); }
+
+std::deque<size_t>& VpTree::get_neighbors () { return neighbors; }
+
+std::deque<double>& VpTree::get_distances () { return distances; }
+
 /***** Methods to build the VP tree *****/
 
 VpTree::VpTree(Rcpp::NumericMatrix vals) : ndim(vals.nrow()) {
@@ -24,8 +34,7 @@ VpTree::VpTree(Rcpp::NumericMatrix vals) : ndim(vals.nrow()) {
     {
         double* ptr=reference.begin();
         for (auto& I : items) {
-            auto curcol=vals.column(I.index);
-            std::copy(curcol.begin(), curcol.end(), ptr);
+            std::copy(I.ptr, I.ptr+ndim, ptr);
             I.ptr=ptr;
             ptr+=ndim;
         }
@@ -232,10 +241,10 @@ void VpTree::search(int curnode_index, const double* target, int k, std::priorit
     
     // Compute distance between target and current node
     const auto& curnode=nodes[curnode_index];
-    double dist = euclidean_dist2(items[curnode.index].ptr, target, ndim);
+    double dist = std::sqrt(euclidean_dist2(items[curnode.index].ptr, target, ndim));
 
     // If current node within radius tau
-    if(dist < tau) {
+    if (dist < tau) {
         if (heap.size() == k) {
             heap.pop(); // remove furthest node from result list (if we already have k results)
         }
