@@ -40,8 +40,8 @@ protected:
     // Nearest-neighbor-related data members.
     std::priority_queue<std::pair<double, int> > nearest;
 
-    // Data members to deal with ties. 
-    bool tie_warned;
+    // Deal with ties.
+    bool diagnose_ties;
 };
 
 #endif

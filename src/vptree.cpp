@@ -1,5 +1,6 @@
 #include "vptree.h"
 #include "queue2deque.h"
+#include "utils.h"
 
 DataPoint::DataPoint() : ptr(NULL), index(-1) {}
     
@@ -17,7 +18,7 @@ std::deque<double>& VpTree::get_distances () { return distances; }
 
 /***** Methods to build the VP tree *****/
 
-VpTree::VpTree(Rcpp::NumericMatrix vals) : reference(vals), ndim(vals.nrow()) {
+VpTree::VpTree(Rcpp::NumericMatrix vals) : reference(vals), ndim(vals.nrow()), diagnose_ties(true) {
     const int nelements=vals.ncol();
     items.reserve(nelements);
     const double * ptr = vals.begin();
@@ -115,7 +116,7 @@ Rcpp::List VpTree::save() {
     return Rcpp::List::create(item_index, node_index, node_left, node_right, node_thresholds);
 }
 
-VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data) : reference(vals), ndim(vals.nrow()) {
+VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data) : reference(vals), ndim(vals.nrow()), diagnose_ties(true) {
     const int nelements=reference.ncol();
 
     { // Filling the item index.
@@ -168,15 +169,17 @@ void VpTree::find_nearest_neighbors (size_t cell, int k, const bool index, const
     }
     tau = DBL_MAX;
     auto curcol=reference.column(cell);
-    search(0, curcol.begin(), k+1);
-    queue2deque(nearest, neighbors, distances, index, dist, true, cell);
+    search(0, curcol.begin(), k + 1 + diagnose_ties);
+    queue2deque(nearest, neighbors, distances, index, dist || diagnose_ties, true, cell);
+    check_ties(diagnose_ties, neighbors, distances, k);
     return;
 }
 
 void VpTree::find_nearest_neighbors (const double* current, int k, const bool index, const bool dist) {
     tau = DBL_MAX;
-    search(0, current, k);
-    queue2deque(nearest, neighbors, distances, index, dist, false, size_t(0));
+    search(0, current, k + diagnose_ties);
+    queue2deque(nearest, neighbors, distances, index, dist || diagnose_ties, false, size_t(0));
+    check_ties(diagnose_ties, neighbors, distances, k);
     return;
 }
 

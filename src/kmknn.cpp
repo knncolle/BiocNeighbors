@@ -6,7 +6,7 @@
 
 /****************** Constructor *********************/
 
-searcher::searcher(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen), tie_warned(false) {
+searcher::searcher(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen), diagnose_ties(true) {
     const size_t& ncenters=centers.ncol();
 
     Rcpp::List Info(info);
@@ -54,17 +54,22 @@ void searcher::find_nearest_neighbors (size_t cell, size_t nn, const bool index,
         throw std::runtime_error("cell index out of range");
     }
     auto curcol=exprs.column(cell);
-    search_nn(curcol.begin(), nn+1);
+    search_nn(curcol.begin(), nn + 1 + diagnose_ties);
     
-    queue2deque(nearest, neighbors, distances, index, dist, true, cell);
-    for (auto& d : distances) { d=std::sqrt(d); } // distances in queue are squared.
+    queue2deque(nearest, neighbors, distances, index, dist || diagnose_ties, true, cell);
+    for (auto& d : distances) { d=std::sqrt(d); } // distances in 'nearest' are squared.
+
+    check_ties(diagnose_ties, neighbors, distances, nn);
     return;
 }
 
 void searcher::find_nearest_neighbors (const double* current, size_t nn, const bool index, const bool dist) {
-    search_nn(current, nn);
-    queue2deque(nearest, neighbors, distances, index, dist, false, size_t(0));
-    for (auto& d : distances) { d=std::sqrt(d); }
+    search_nn(current, nn + diagnose_ties);
+    
+    queue2deque(nearest, neighbors, distances, index, dist || diagnose_ties, false, size_t(0));
+    for (auto& d : distances) { d=std::sqrt(d); } // distances in 'nearest' are squared.
+
+    check_ties(diagnose_ties, neighbors, distances, nn);
     return;
 }
 

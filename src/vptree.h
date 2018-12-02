@@ -57,6 +57,8 @@ private:
 
     std::priority_queue<std::pair<double, int> > nearest;
     void search(int, const double*, int);
+
+    bool diagnose_ties;
 };
 
 #endif
