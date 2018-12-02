@@ -20,8 +20,8 @@ struct DataPoint {
 
 class VpTree {
 public:    
-    VpTree(Rcpp::List);
     VpTree(Rcpp::NumericMatrix); 
+    VpTree(Rcpp::NumericMatrix, Rcpp::IntegerVector, Rcpp::List);
     Rcpp::List save();
 private:
     int ndim;

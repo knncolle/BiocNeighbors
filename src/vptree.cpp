@@ -92,7 +92,7 @@ Rcpp::List VpTree::save() {
     Rcpp::IntegerVector item_index(items.size());
     auto iiIt=item_index.begin();
     for (auto& I : items) { 
-        (*iiIt)=I.index; 
+        (*iiIt)=I.index + 1; 
         ++iiIt;
     }
 
@@ -116,17 +116,9 @@ Rcpp::List VpTree::save() {
     return Rcpp::List::create(reference, item_index, node_index, node_left, node_right, node_thresholds);
 }
 
-VpTree::VpTree(Rcpp::List saved) {
-    if (saved.size()!=6) {
-        throw std::runtime_error("VP tree index list must have 6 elements");
-    }
-    
-    reference=Rcpp::NumericMatrix(Rcpp::RObject(saved[0]));
-    ndim=reference.nrow();
+VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::IntegerVector item_index, Rcpp::List node_data) : reference(vals), ndim(vals.nrow()) {
     const int nelements=reference.ncol();
-   
     { // Filling the item index.
-        Rcpp::IntegerVector item_index=saved[1];
         if (nelements!=item_index.size()) {
             throw std::runtime_error("VP tree item index vector length is not equal to number of elements");
         }
@@ -137,16 +129,20 @@ VpTree::VpTree(Rcpp::List saved) {
             if (i < 0 || i>= nelements) {
                 throw std::runtime_error("VP tree item indices out of range");
             }
-            items.push_back(DataPoint(i, ptr));
+            items.push_back(DataPoint(i-1, ptr));
             ptr+=ndim;
         }
     }
 
     { // Filling the node index.
-        Rcpp::IntegerVector node_index=saved[2];
-        Rcpp::IntegerVector node_left=saved[3];
-        Rcpp::IntegerVector node_right=saved[4];
-        Rcpp::NumericVector node_thresholds=saved[5];
+        if (node_data.size()!=4) {
+            throw std::runtime_error("VP tree index list must have 4 elements");
+        }
+    
+        Rcpp::IntegerVector node_index=node_data[0];
+        Rcpp::IntegerVector node_left=node_data[1];
+        Rcpp::IntegerVector node_right=node_data[2];
+        Rcpp::NumericVector node_thresholds=node_data[3];
 
         const int nnodes=node_index.size();
         if (node_left.size()!=nnodes || node_right.size()!=nnodes || node_thresholds.size()!=nnodes) {
