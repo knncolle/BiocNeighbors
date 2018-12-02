@@ -1,4 +1,3 @@
-#' @export
 #' @importFrom BiocParallel SerialParam bpmapply
 .template_query_exact <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, 
     buildFUN, searchFUN, searchArgsFUN, orderFUN, ...)
