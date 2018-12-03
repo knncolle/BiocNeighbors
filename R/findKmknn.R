@@ -7,7 +7,7 @@ findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
 # created 19 June 2018
 {
     .template_find_exact(X, k, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, raw.index=raw.index, 
-        buildFUN=buildKmknn, searchFUN=.find_kmknn, searchArgsFUN=.find_kmknn_args, orderFUN=KmknnIndex_clustered_order, ...) 
+        buildFUN=buildKmknn, searchFUN=.find_kmknn, searchArgsFUN=.find_kmknn_args, ...) 
 }
 
 .find_kmknn <- function(jobs, data, centers, info, k, get.index, get.distance) {
@@ -15,7 +15,6 @@ findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
 }
 
 .find_kmknn_args <- function(precomputed) {
-    list(data=KmknnIndex_clustered_data(precomputed),
-        centers=KmknnIndex_cluster_centers(precomputed),
+    list(centers=KmknnIndex_cluster_centers(precomputed),
         info=KmknnIndex_cluster_info(precomputed))
 }

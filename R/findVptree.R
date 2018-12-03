@@ -7,7 +7,7 @@ findVptree <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPa
 # created 19 June 2018
 {
     .template_find_exact(X, k, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, raw.index=raw.index, 
-        buildFUN=buildVptree, searchFUN=.find_vptree, searchArgsFUN=.find_vptree_args, orderFUN=VptreeIndex_order) 
+        buildFUN=buildVptree, searchFUN=.find_vptree, searchArgsFUN=.find_vptree_args)
 }
 
 .find_vptree <- function(jobs, data, nodes, k, get.index, get.distance) {
@@ -15,6 +15,5 @@ findVptree <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPa
 }
 
 .find_vptree_args <- function(precomputed) {
-    list(data=VptreeIndex_data(precomputed),
-        nodes=VptreeIndex_nodes(precomputed))
+    list(nodes=VptreeIndex_nodes(precomputed))
 }

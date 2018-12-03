@@ -1,6 +1,6 @@
 #' @importFrom BiocParallel SerialParam bpmapply
 .template_range_query_exact <- function(X, query, threshold, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE,
-    buildFUN, searchFUN, searchArgsFUN, orderFUN, ...)
+    buildFUN, searchFUN, searchArgsFUN, ...)
 # Identifies nearest neighbours in 'X' from a query set.
 #
 # written by Aaron Lun
@@ -39,7 +39,7 @@
     if (get.index) {
         neighbors <- .combine_lists(collected, i=1, reorder=reorder)
         if (!raw.index) {
-            preorder <- orderFUN(precomputed)
+            preorder <- bnorder(precomputed)
             neighbors <- lapply(neighbors, FUN=function(i) preorder[i])
         }
         output$index <- neighbors

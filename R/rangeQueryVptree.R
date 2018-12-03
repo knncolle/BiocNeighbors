@@ -8,7 +8,7 @@ rangeQueryVptree <- function(X, query, threshold, get.index=TRUE, get.distance=T
 {
     .template_range_query_exact(X, query, threshold, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, precomputed=precomputed, 
         transposed=transposed, subset=subset, raw.index=raw.index, 
-        buildFUN=buildVptree, searchFUN=.range_query_vptree, searchArgsFUN=.find_vptree_args, orderFUN=VptreeIndex_order) 
+        buildFUN=buildVptree, searchFUN=.range_query_vptree, searchArgsFUN=.find_vptree_args)
 }
 
 .range_query_vptree <- function(jobs, data, nodes, threshold, query, get.index, get.distance) {

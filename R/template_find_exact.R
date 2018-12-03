@@ -1,6 +1,6 @@
 #' @importFrom BiocParallel SerialParam bpmapply
 .template_find_exact <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, 
-    buildFUN, searchFUN, searchArgsFUN, orderFUN, ...)
+    buildFUN, searchFUN, searchArgsFUN, ...)
 # Provides an R template for different methods for exact neighbor searching,
 # assuming that all of them involve rearranging columns in the index.
 #
@@ -10,14 +10,14 @@
     precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildFUN, ...)
     k <- .refine_k(k, precomputed, query=FALSE)
 
-    ind.out <- .setup_indices(precomputed, subset, raw.index, orderFUN=orderFUN)
+    ind.out <- .setup_indices(precomputed, subset, raw.index)
     job.id <- ind.out$index
     reorder <- ind.out$reorder
 
     # Dividing jobs up for NN finding (using bpmapply due to clash with 'X=').
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
     collected <- bpmapply(FUN=searchFUN, jobs,
-        MoreArgs=c(searchArgsFUN(precomputed), list(k=k, get.index=get.index, get.distance=get.distance)), 
+        MoreArgs=c(searchArgsFUN(precomputed), list(data=bndata(precomputed), k=k, get.index=get.index, get.distance=get.distance)), 
         BPPARAM=BPPARAM, SIMPLIFY=FALSE)
 
     # Aggregating results across cores.
@@ -25,7 +25,7 @@
     if (get.index) {
         neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
         if (!raw.index) {
-            neighbors[] <- orderFUN(precomputed)[neighbors]
+            neighbors[] <- bnorder(precomputed)[neighbors]
         }
         output$index <- neighbors
     } 
@@ -68,19 +68,18 @@
     k
 }
 
-.setup_indices <- function(precomputed, subset, raw.index, orderFUN)
+.setup_indices <- function(precomputed, subset, raw.index)
 # Defining indices of interest, accounting for re-ordering.
 {
-    cur.order <- orderFUN(precomputed)
     if (!is.null(subset)) { 
         if (raw.index) {
             # For raw indices, get the actual ordering of names for match()ing.
             dummy <- precomputed
-            dummy@NAMES <- dummy@NAMES[cur.order]
+            dummy@NAMES <- dummy@NAMES[bnorder(precomputed)]
             job.id <- .subset_to_index(subset, dummy, byrow=TRUE)
         } else {
             # Getting position of subset indices in the reordered set of points.
-            new.pos <- .order_to_index(cur.order)
+            new.pos <- .order_to_index(bnorder(precomputed))
             indices <- .subset_to_index(subset, precomputed, byrow=TRUE)
             job.id <- new.pos[indices]
         }
@@ -93,7 +92,7 @@
         if (raw.index) {
             reorder <- NULL
         } else {
-            reorder <- cur.order
+            reorder <- bnorder(precomputed)
         }
     }
 

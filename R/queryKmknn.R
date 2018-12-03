@@ -8,7 +8,7 @@ queryKmknn <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=S
 {
     .template_query_exact(X, query, k, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, precomputed=precomputed, 
         transposed=transposed, subset=subset, raw.index=raw.index, 
-        buildFUN=buildKmknn, searchFUN=.query_kmknn, searchArgsFUN=.find_kmknn_args, orderFUN=KmknnIndex_clustered_order, ...) 
+        buildFUN=buildKmknn, searchFUN=.query_kmknn, searchArgsFUN=.find_kmknn_args, ...) 
 }
 
 .query_kmknn <- function(jobs, data, centers, info, k, query, get.index, get.distance) {

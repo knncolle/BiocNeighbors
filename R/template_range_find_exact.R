@@ -1,13 +1,13 @@
 #' @importFrom BiocParallel SerialParam bpmapply
 .template_range_find_exact <- function(X, threshold, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, 
-    buildFUN, searchFUN, searchArgsFUN, orderFUN, ...)
+    buildFUN, searchFUN, searchArgsFUN, ...)
 # Template to identify neighbours within 'threshold' distance.
 #
 # written by Aaron Lun
 # created 20 June 2018
 {
     precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildFUN, ...)
-    ind.out <- .setup_indices(precomputed, subset, raw.index, orderFUN=orderFUN)
+    ind.out <- .setup_indices(precomputed, subset, raw.index)
     job.id <- ind.out$index
     reorder <- ind.out$reorder
 
@@ -37,7 +37,7 @@
     if (get.index) {
         neighbors <- .combine_lists(collected, i=1, reorder=reorder)
         if (!raw.index) {
-            preorder <- orderFUN(precomputed)
+            preorder <- bnorder(precomputed)
             neighbors <- lapply(neighbors, FUN=function(i) preorder[i])
         }
         output$index <- neighbors
