@@ -114,25 +114,25 @@ test_that("rangeQueryKmknn() raw output behaves correctly", {
  
     pre <- buildKmknn(X)
     out <- rangeQueryKmknn(query=Y, threshold=d, precomputed=pre, raw.index=TRUE)
-    ref <- rangeQueryKmknn(query=Y, X=t(KmknnIndex_clustered_data(pre)), threshold=d)
+    ref <- rangeQueryKmknn(query=Y, X=t(bndata(pre)), threshold=d)
     expect_identical_re(out, ref)
 
     # Behaves with subsetting.
     i <- sample(nquery, 20)
     out <- rangeQueryKmknn(query=Y, threshold=d, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- rangeQueryKmknn(query=Y, X=t(KmknnIndex_clustered_data(pre)), threshold=d, subset=i)
+    ref <- rangeQueryKmknn(query=Y, X=t(bndata(pre)), threshold=d, subset=i)
     expect_identical_re(out, ref)
 
     i <- rbinom(nquery, 1, 0.5) == 0L
     out <- rangeQueryKmknn(query=Y, threshold=d, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- rangeQueryKmknn(query=Y, X=t(KmknnIndex_clustered_data(pre)), threshold=d, subset=i)
+    ref <- rangeQueryKmknn(query=Y, X=t(bndata(pre)), threshold=d, subset=i)
     expect_identical_re(out, ref)
 
     # Adding row names.
     rownames(Y) <- paste0("CELL", seq_len(nquery))
     i <- sample(rownames(Y), 30)
     out <- rangeQueryKmknn(query=Y, threshold=d, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- rangeQueryKmknn(query=Y, X=t(KmknnIndex_clustered_data(pre)), threshold=d, subset=i)
+    ref <- rangeQueryKmknn(query=Y, X=t(bndata(pre)), threshold=d, subset=i)
     expect_identical_re(out, ref)
 })
 

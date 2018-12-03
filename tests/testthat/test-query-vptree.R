@@ -111,25 +111,25 @@ test_that("queryVptree() raw output behaves correctly", {
  
     pre <- buildVptree(X)
     out <- queryVptree(query=Y, k=k, precomputed=pre, raw.index=TRUE)
-    ref <- queryVptree(query=Y, X=t(VptreeIndex_data(pre)), k=k)
+    ref <- queryVptree(query=Y, X=t(bndata(pre)), k=k)
     expect_identical(out, ref)
 
     # Behaves with subsetting.
     i <- sample(nquery, 20)
     out <- queryVptree(query=Y, k=k, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- queryVptree(query=Y, X=t(VptreeIndex_data(pre)), k=k, subset=i)
+    ref <- queryVptree(query=Y, X=t(bndata(pre)), k=k, subset=i)
     expect_identical(out, ref)
 
     i <- rbinom(nquery, 1, 0.5) == 0L
     out <- queryVptree(query=Y, k=k, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- queryVptree(query=Y, X=t(VptreeIndex_data(pre)), k=k, subset=i)
+    ref <- queryVptree(query=Y, X=t(bndata(pre)), k=k, subset=i)
     expect_identical(out, ref)
 
     # Adding row names.
     rownames(Y) <- paste0("CELL", seq_len(nquery))
     i <- sample(rownames(Y), 30)
     out <- queryVptree(query=Y, k=k, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- queryVptree(query=Y, X=t(VptreeIndex_data(pre)), k=k, subset=i)
+    ref <- queryVptree(query=Y, X=t(bndata(pre)), k=k, subset=i)
     expect_identical(out, ref)
 })
 

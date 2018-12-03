@@ -95,18 +95,18 @@ test_that("findVptree() raw output behaves correctly", {
    
     pre <- buildVptree(X)
     out <- findVptree(k=k, precomputed=pre, raw.index=TRUE)
-    ref <- findVptree(t(VptreeIndex_data(pre)), k=k)
+    ref <- findVptree(t(bndata(pre)), k=k)
     expect_identical(out, ref)
 
     # Behaves with subsetting.
     i <- sample(nobs, 20)
     out <- findVptree(k=k, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- findVptree(t(VptreeIndex_data(pre)), k=k, subset=i)
+    ref <- findVptree(t(bndata(pre)), k=k, subset=i)
     expect_identical(out, ref)
 
     i <- rbinom(nobs, 1, 0.5) == 0L
     out <- findVptree(k=k, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- findVptree(t(VptreeIndex_data(pre)), k=k, subset=i)
+    ref <- findVptree(t(bndata(pre)), k=k, subset=i)
     expect_identical(out, ref)
 
     # Adding row names.
@@ -114,7 +114,7 @@ test_that("findVptree() raw output behaves correctly", {
     preN <- buildVptree(X)
     i <- sample(rownames(X), 30)
     out <- findVptree(k=k, precomputed=preN, raw.index=TRUE, subset=i)
-    ref <- findVptree(t(VptreeIndex_data(preN)), k=k, subset=i)
+    ref <- findVptree(t(bndata(preN)), k=k, subset=i)
     expect_identical(out, ref)
 })
 

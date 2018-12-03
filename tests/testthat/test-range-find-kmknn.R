@@ -96,18 +96,18 @@ test_that("rangeFindKmknn() raw output behaves correctly", {
 
     pre <- buildKmknn(X)
     out <- rangeFindKmknn(threshold=d, precomputed=pre, raw.index=TRUE)
-    ref <- rangeFindKmknn(t(KmknnIndex_clustered_data(pre)), threshold=d)
+    ref <- rangeFindKmknn(t(bndata(pre)), threshold=d)
     expect_identical_re(out, ref)
 
     # Behaves with subsetting.
     i <- sample(nobs, 20)
     out <- rangeFindKmknn(threshold=d, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- rangeFindKmknn(t(KmknnIndex_clustered_data(pre)), threshold=d, subset=i)
+    ref <- rangeFindKmknn(t(bndata(pre)), threshold=d, subset=i)
     expect_identical_re(out, ref)
 
     i <- rbinom(nobs, 1, 0.5) == 0L
     out <- rangeFindKmknn(threshold=d, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- rangeFindKmknn(t(KmknnIndex_clustered_data(pre)), threshold=d, subset=i)
+    ref <- rangeFindKmknn(t(bndata(pre)), threshold=d, subset=i)
     expect_identical_re(out, ref)
 
     # Adding row names.
@@ -115,7 +115,7 @@ test_that("rangeFindKmknn() raw output behaves correctly", {
     preN <- buildKmknn(X)
     i <- sample(rownames(X), 30)
     out <- rangeFindKmknn(threshold=d, precomputed=preN, raw.index=TRUE, subset=i)
-    ref <- rangeFindKmknn(t(KmknnIndex_clustered_data(preN)), threshold=d, subset=i)
+    ref <- rangeFindKmknn(t(bndata(preN)), threshold=d, subset=i)
     expect_identical_re(out, ref)
 })
 

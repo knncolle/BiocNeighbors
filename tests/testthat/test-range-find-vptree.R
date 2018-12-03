@@ -96,18 +96,18 @@ test_that("rangeFindVptree() raw output behaves correctly", {
 
     pre <- buildVptree(X)
     out <- rangeFindVptree(threshold=d, precomputed=pre, raw.index=TRUE)
-    ref <- rangeFindVptree(t(VptreeIndex_data(pre)), threshold=d)
+    ref <- rangeFindVptree(t(bndata(pre)), threshold=d)
     expect_identical_re(out, ref)
 
     # Behaves with subsetting.
     i <- sample(nobs, 20)
     out <- rangeFindVptree(threshold=d, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- rangeFindVptree(t(VptreeIndex_data(pre)), threshold=d, subset=i)
+    ref <- rangeFindVptree(t(bndata(pre)), threshold=d, subset=i)
     expect_identical_re(out, ref)
 
     i <- rbinom(nobs, 1, 0.5) == 0L
     out <- rangeFindVptree(threshold=d, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- rangeFindVptree(t(VptreeIndex_data(pre)), threshold=d, subset=i)
+    ref <- rangeFindVptree(t(bndata(pre)), threshold=d, subset=i)
     expect_identical_re(out, ref)
 
     # Adding row names.
@@ -115,7 +115,7 @@ test_that("rangeFindVptree() raw output behaves correctly", {
     preN <- buildVptree(X)
     i <- sample(rownames(X), 30)
     out <- rangeFindVptree(threshold=d, precomputed=preN, raw.index=TRUE, subset=i)
-    ref <- rangeFindVptree(t(VptreeIndex_data(preN)), threshold=d, subset=i)
+    ref <- rangeFindVptree(t(bndata(preN)), threshold=d, subset=i)
     expect_identical_re(out, ref)
 })
 

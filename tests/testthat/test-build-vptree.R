@@ -9,9 +9,9 @@ test_that("buildVptree() works as expected", {
             
             out <- buildVptree(X)
             expect_identical(dim(out), dim(X))
-            expect_identical(rev(dim(VptreeIndex_data(out))), dim(X))
-            expect_identical(sort(VptreeIndex_order(out)), seq_len(nobs))
-            expect_identical(VptreeIndex_data(out), t(X[VptreeIndex_order(out),]))
+            expect_identical(rev(dim(bndata(out))), dim(X))
+            expect_identical(sort(bnorder(out)), seq_len(nobs))
+            expect_identical(bndata(out), t(X[bnorder(out),]))
 
             node.data <- VptreeIndex_nodes(out)
             expect_identical(sort(node.data[[1]]), seq_len(nobs)-1L)
@@ -32,13 +32,13 @@ test_that("buildVptree() preserves dimension names", {
 
     out <- buildVptree(X)
     expect_identical(rownames(out), rownames(X))
-    expect_identical(rownames(KmknnIndex_clustered_data(out)), colnames(X))
-    expect_identical(colnames(VptreeIndex_data(out)), rownames(X)[VptreeIndex_order(out)])
+    expect_identical(rownames(bndata(out)), colnames(X))
+    expect_identical(colnames(bndata(out)), rownames(X)[bnorder(out)])
 
     # Still true if there are no cells.
     out <- buildVptree(X[0,,drop=FALSE])
-    expect_identical(rownames(KmknnIndex_clustered_data(out)), colnames(X))
-    expect_identical(colnames(VptreeIndex_data(out)), NULL)
+    expect_identical(rownames(bndata(out)), colnames(X))
+    expect_identical(colnames(bndata(out)), NULL)
     expect_identical(rownames(out), NULL)
 })
 
@@ -50,14 +50,14 @@ test_that("buildVptree() behaves sensibly with silly inputs", {
 
     # What happens when there are no cells.
     out <- buildVptree(X[0,,drop=FALSE])
-    expect_identical(dim(VptreeIndex_data(out)), c(ndim, 0L))
-    expect_identical(length(VptreeIndex_order(out)), 0L)
+    expect_identical(dim(bndata(out)), c(ndim, 0L))
+    expect_identical(length(bnorder(out)), 0L)
     expect_identical(lengths(VptreeIndex_nodes(out)), integer(4))
 
     # What happens when there are no dimensions.
     out <- buildVptree(X[,0,drop=FALSE])
-    expect_identical(dim(VptreeIndex_data(out)), c(0L, nobs))
-    expect_identical(sort(VptreeIndex_order(out)), seq_len(nobs)) # arbitrary ordering.
+    expect_identical(dim(bndata(out)), c(0L, nobs))
+    expect_identical(sort(bnorder(out)), seq_len(nobs)) # arbitrary ordering.
     expect_identical(lengths(VptreeIndex_nodes(out)), rep(nobs, 4))
 
     # Checking that it behaves without distinct data points.
