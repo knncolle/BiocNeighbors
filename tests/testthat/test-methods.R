@@ -1,5 +1,5 @@
 # Tests for correct dispatch with S4 methods.
-# library(BiocNeighbors); library(testthat); source("test-methods.R")
+# library(BiocNeighbors); library(testthat); source("setup.R"); source("test-methods.R")
 
 set.seed(100)
 nobs <- 1000
@@ -30,6 +30,8 @@ test_that("buildNNIndex dispatches correctly", {
     out <- buildNNIndex(X, BNPARAM=AnnoyParam())
     expect_s4_class(out, "AnnoyIndex")
 })
+
+#######################################
 
 test_that("findKNN dispatches correctly for KMKNN", {
     # Equivalent calls to Kmknn:
@@ -93,6 +95,8 @@ test_that("Illegal findKNN signatures fail", {
     expect_error(findKNN(X, BNPARAM=AnnoyParam(), BNINDEX=buildKmknn(X)), "unable to find an inherited method")
     expect_error(findKNN(X, BNPARAM=KmknnParam(), BNINDEX=buildAnnoy(X)), "unable to find an inherited method")
 })
+
+#######################################
 
 set.seed(101)
 nquery <- 500
@@ -160,3 +164,95 @@ test_that("Illegal queryKNN signatures fail", {
     expect_error(queryKNN(X, BNPARAM=AnnoyParam(), BNINDEX=buildKmknn(X)), "unable to find an inherited method")
     expect_error(queryKNN(X, BNPARAM=KmknnParam(), BNINDEX=buildAnnoy(X)), "unable to find an inherited method")
 })
+
+#######################################
+
+test_that("findNeighbors dispatches correctly for KMKNN", {
+    # Equivalent calls to Kmknn:
+    out1 <- findNeighbors(X, threshold=1) 
+    out2 <- findNeighbors(X, threshold=1, BNINDEX=buildKmknn(X)) 
+    out3 <- findNeighbors(X, threshold=1, BNPARAM=KmknnParam()) 
+    out4 <- findNeighbors(X, threshold=1, BNPARAM=KmknnParam(), BNINDEX=buildKmknn(X)) 
+    expect_identical_re(out1, out2)
+    expect_identical_re(out1, out3)
+    expect_identical_re(out1, out4)
+
+    # Testing the behaviour of the NULL methods.
+    out5 <- findNeighbors(X, threshold=1, BNINDEX=NULL)
+    out6 <- findNeighbors(X, threshold=1, BNPARAM=NULL)
+    out7 <- findNeighbors(X, threshold=1, BNINDEX=NULL, BNPARAM=KmknnParam())
+    out8 <- findNeighbors(X, threshold=1, BNINDEX=buildKmknn(X), BNPARAM=NULL)
+    expect_identical_re(out1, out5)
+    expect_identical_re(out1, out6)
+    expect_identical_re(out1, out7)
+    expect_identical_re(out1, out8)
+})
+
+test_that("findNeighbors dispatches correctly for VP trees", {
+    # Equivalent calls to Kmknn:
+    out1 <- findNeighbors(X, threshold=1, BNINDEX=buildVptree(X)) 
+    out2 <- findNeighbors(X, threshold=1, BNPARAM=VptreeParam()) 
+    out3 <- findNeighbors(X, threshold=1, BNPARAM=VptreeParam(), BNINDEX=buildVptree(X)) 
+    expect_identical_re(out1, out2)
+    expect_identical_re(out1, out3)
+
+    # Testing the behaviour of the NULL methods.
+    out4 <- findNeighbors(X, threshold=1, BNINDEX=NULL, BNPARAM=VptreeParam())
+    out5 <- findNeighbors(X, threshold=1, BNINDEX=buildVptree(X), BNPARAM=NULL)
+    expect_identical_re(out1, out4)
+    expect_identical_re(out1, out5)
+})
+
+test_that("Illegal findNeighbors signatures fail", {
+    expect_error(findNeighbors(X, BNPARAM=VptreeParam(), BNINDEX=buildKmknn(X)), "unable to find an inherited method")
+    expect_error(findNeighbors(X, BNPARAM=KmknnParam(), BNINDEX=buildVptree(X)), "unable to find an inherited method")
+})
+
+#######################################
+
+set.seed(101)
+nquery <- 500
+Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+test_that("queryNeighbors dispatches correctly for KMNeighbors", {
+    # Equivalent calls to Kmknn:
+    out1 <- queryNeighbors(X, Y, threshold=1) 
+    out2 <- queryNeighbors(X, Y, threshold=1, BNINDEX=buildKmknn(X)) 
+    out3 <- queryNeighbors(X, Y, threshold=1, BNPARAM=KmknnParam()) 
+    out4 <- queryNeighbors(X, Y, threshold=1, BNPARAM=KmknnParam(), BNINDEX=buildKmknn(X)) 
+    expect_identical_re(out1, out2)
+    expect_identical_re(out1, out3)
+    expect_identical_re(out1, out4)
+
+    # Testing the behaviour of the NULL methods.
+    out5 <- queryNeighbors(X, Y, threshold=1, BNINDEX=NULL)
+    out6 <- queryNeighbors(X, Y, threshold=1, BNPARAM=NULL)
+    out7 <- queryNeighbors(X, Y, threshold=1, BNINDEX=NULL, BNPARAM=KmknnParam())
+    out8 <- queryNeighbors(X, Y, threshold=1, BNINDEX=buildKmknn(X), BNPARAM=NULL)
+    expect_identical_re(out1, out5)
+    expect_identical_re(out1, out6)
+    expect_identical_re(out1, out7)
+    expect_identical_re(out1, out8)
+})
+
+test_that("queryNeighbors dispatches correctly for VP trees", {
+    # Equivalent calls to Kmknn:
+    out1 <- queryNeighbors(X, Y, threshold=1, BNINDEX=buildKmknn(X)) 
+    out2 <- queryNeighbors(X, Y, threshold=1, BNPARAM=KmknnParam()) 
+    out3 <- queryNeighbors(X, Y, threshold=1, BNPARAM=KmknnParam(), BNINDEX=buildKmknn(X)) 
+    expect_identical_re(out1, out2)
+    expect_identical_re(out1, out3)
+
+    # Testing the behaviour of the NULL methods.
+    out4 <- queryNeighbors(X, Y, threshold=1, BNINDEX=NULL, BNPARAM=KmknnParam())
+    out5 <- queryNeighbors(X, Y, threshold=1, BNINDEX=buildKmknn(X), BNPARAM=NULL)
+    expect_identical_re(out1, out4)
+    expect_identical_re(out1, out5)
+})
+
+test_that("Illegal queryNeighbors signatures fail", {
+    expect_error(queryNeighbors(X, BNPARAM=VptreeParam(), BNINDEX=buildKmknn(X)), "unable to find an inherited method")
+    expect_error(queryNeighbors(X, BNPARAM=KmknnParam(), BNINDEX=buildVptree(X)), "unable to find an inherited method")
+})
+
+
