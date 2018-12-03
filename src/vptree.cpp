@@ -241,14 +241,18 @@ void VpTree::find_neighbors (size_t cell, double threshold, const bool index, co
         throw std::runtime_error("cell index out of range");
     }
     auto curcol=reference.column(cell);
-    search_all(0, curcol.begin(), threshold, index, dist);
+    if (!nodes.empty()) {
+        search_all(0, curcol.begin(), threshold, index, dist);
+    }
     return;
 }
 
 void VpTree::find_neighbors (const double* current, double threshold, const bool index, const bool dist) {
     neighbors.clear();
     distances.clear();
-    search_all(0, current, threshold, index, dist);
+    if (!nodes.empty()) {
+        search_all(0, current, threshold, index, dist);
+    }
     return;
 }
 
