@@ -49,7 +49,3 @@
     }
     return(output)
 }
-
-.query_neighbors <- function(jobs, data, centers, info, threshold, query, get.index, get.distance) {
-    .Call(cxx_query_neighbors, jobs, data, centers, info, threshold, query, get.index, get.distance)
-}
