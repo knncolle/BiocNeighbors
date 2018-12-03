@@ -23,7 +23,7 @@ library(BiocNeighbors)
 
 # Identifying all neighbors within range
 
-Another application of the KMKNN algorithm is to identify all neighboring points within a certain (Euclidean) distance of the current point.
+Another application of the KMKNN or VP tree algorithms is to identify all neighboring points within a certain (Euclidean) distance of the current point.
 We first mock up some data:
 
 ```{r}
@@ -91,7 +91,7 @@ For example:
 Note that the argument for a precomputed index is `precomputed`:
 
 ```{r}
-pre <- buildNNIndex(data, BNPARAM=KmknnParam())
+pre <- buildIndex(data, BNPARAM=KmknnParam())
 fout.pre <- findNeighbors(precomputed=pre, threshold=1)
 qout.pre <- queryNeighbors(precomputed=pre, query=query, threshold=1)
 ```

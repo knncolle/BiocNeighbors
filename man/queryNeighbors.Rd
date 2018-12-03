@@ -1,68 +1,68 @@
 \name{queryNeighbors}
 \alias{queryNeighbors}
+\docType{methods}
 
-\title{Query neighbors}
-\description{Find all neighboring data points within a certain distance of a query point with the KMKNN algorithm.}
+\alias{queryNeighbors,missing,missing-method}
+\alias{queryNeighbors,BiocNeighborIndex,missing-method}
+\alias{queryNeighbors,missing,BiocNeighborParam-method}
+
+\alias{queryNeighbors,NULL,missing-method}
+\alias{queryNeighbors,missing,NULL-method}
+\alias{queryNeighbors,NULL,NULL-method}
+
+\alias{queryNeighbors,NULL,KmknnParam-method}
+\alias{queryNeighbors,KmknnIndex,NULL-method}
+\alias{queryNeighbors,KmknnIndex,KmknnParam-method}
+
+\alias{queryNeighbors,NULL,VptreeParam-method}
+\alias{queryNeighbors,VptreeIndex,NULL-method}
+\alias{queryNeighbors,VptreeIndex,VptreeParam-method}
+
+\title{Query all neighbors}
+\description{Find all neighbors in one data set that are in range of each point in another query data set, using exact or approximate algorithms.}
 
 \usage{
-queryNeighbors(X, query, threshold, get.index=TRUE, get.distance=TRUE, 
-    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL,
-    raw.index=FALSE, ...)
+queryNeighbors(..., BNINDEX=NULL, BNPARAM=NULL)
 }
 
 \arguments{
-\item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
-\item{query}{A numeric matrix of query points, containing different data points in the rows but the same number and ordering of dimensions in the columns.}
-\item{threshold}{A positive numeric scalar specifying the maximum distance at which a point is considered a neighbor.
-Alternatively, a vector containing a different distance threshold for each query point.}
-\item{get.index}{A logical scalar indicating whether the indices of the neighbors should be recorded.}
-\item{get.distance}{A logical scalar indicating whether distances to the neighbors should be recorded.}
-\item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
-\item{precomputed}{A \linkS4class{KmknnIndex} object from running \code{\link{buildKmknn}} on \code{X}.}
-\item{transposed}{A logical scalar indicating whether the \code{query} is transposed, 
-in which case \code{query} is assumed to contain dimensions in the rows and data points in the columns.}
-\item{subset}{A vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the neighbors should be identified.}
-\item{raw.index}{A logial scalar indicating whether raw column indices to \code{precomputed$data} should be returned.}
-\item{...}{Further arguments to pass to \code{\link{buildKmknn}} if \code{precomputed=NULL}.}
-}
-
-\details{
-This function uses the same algorithm described in \code{\link{findKmknn}} to identify points in \code{X} that are neighbors 
-(i.e., within a distance \code{threshold}) of each point in \code{query}.
-This requires both \code{X} and \code{query} to have the same number of dimensions.
-
-By default, neighbors are identified for all data points within \code{query}.
-If \code{subset} is specified, neighbors are only detected for the query points in the subset.
-This yields the same result as (but is more efficient than) subsetting the output matrices after running \code{queryNeighbors} on the full \code{query} (i.e., with \code{subset=NULL}).
-
-If \code{threshold} is a vector, each entry is assumed to specify a (possibly different) threshold for each point in \code{query}.
-If \code{subset} is also specified, each entry is assumed to specify a threshold for each point in \code{subset}.
-An error will be raised if \code{threshold} is a vector of incorrect length.
-
-If \code{transposed=TRUE}, this function assumes that \code{query} is already transposed, which saves a bit of time by avoiding an unnecessary transposition.
-Turning off \code{get.index} or \code{get.distance} may also provide a slight speed boost when these returned values are not of interest.
-Using \code{BPPARAM} will also split the search by query points across multiple processes.
-
-If multiple queries are to be performed to the same \code{X}, it may be beneficial to use \code{\link{buildKmknn}} directly to precompute the clustering.
-Advanced users can also set \code{raw.index=TRUE}, which returns indices of neighbors in the reordered data set in \code{precomputed}.
-This may be useful when dealing with multiple queries to a common precomputed object.
+    \item{...}{Further arguments to pass to specific methods, including:
+        \itemize{
+            \item \code{X}, a numeric data matrix where rows are points and columns are dimensions.
+            \item \code{threshold}, a numeric scalar or vector specifying the maximum distance for considering neighbors.
+            \item \code{k}, an integer scalar for the number of nearest neighbors.
+            \item \code{subset}, a vector specifying the subset of points in \code{X} to search.
+            \item \code{get.index}, a logical scalar indicating whether to return row indices of the neighbors.
+            \item \code{get.distance}, a logical scalar indicating whether to return distances to neighbors.
+            \item \code{BPPARAM}, a \linkS4class{BiocParallelParam} object for parallelization.
+            \item \code{transposed}, a logical scalar indicating whether \code{query} is transposed, i.e., with columns as points.
+        }
+        Of these, only \code{query} and \code{k} are strictly mandatory.
+    }
+    \item{BNINDEX}{A \linkS4class{BiocNeighborIndex} object, or \code{NULL}.}
+    \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object, or \code{NULL} if \code{BININDEX} is supplied.}
 }
 
 \value{
 A list is returned containing:
 \itemize{
     \item \code{index}, if \code{get.index=TRUE}.
-        This is a list of integer vectors where each entry corresponds to a point (denoted here as \eqn{i}) in \code{query}.
-        The vector for \eqn{i} contains the set of row indices of all points in \code{X} that lie within \code{threshold} of point \eqn{i}.
-        Points in each vector are not ordered, and \eqn{i} will always be included in its own set.
+    This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{query}.
+    The row for \eqn{i} contains the row indices of \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
     \item \code{distance}, if \code{get.distance=TRUE}.
-        This is a list of numeric vectors where each entry corresponds to a point (as above) and contains the distances of the neighbors from \eqn{i}.
-        Elements of each vector in \code{distance} match to elements of the corresponding vector in \code{index}.
+    This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
 }
 
 If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
+}
 
-If \code{raw.index=TRUE}, the values in \code{index} refer to \emph{columns} of \code{\link{KmknnIndex_clustered_data}(precomputed)}.
+\details{
+The class of \code{BNINDEX} and \code{BNPARAM} will determine dispatch to specific methods.
+Only one of these arguments needs to be defined to resolve dispatch.
+However, if both are defined, they cannot specify different algorithms.
+
+If \code{BNINDEX} is supplied, \code{X} does not need to be specified.
+In fact, any value of \code{X} will be ignored as all necessary information for the search is already present in \code{BNINDEX}.
 }
 
 \author{
@@ -70,13 +70,22 @@ Aaron Lun
 }
 
 \seealso{
-\code{\link{buildKmknn}} to build an index ahead of time.
+\code{\link{rangeQueryKmknn}} and  
+\code{\link{rangeQueryVptree}} for specific methods.
 }
 
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
-Z <- matrix(rnorm(20000), ncol=20)
-out <- queryNeighbors(Y, query=Z, threshold=1)
-head(out$index)
-head(out$distance)
+Z <- matrix(rnorm(10000), ncol=20)
+k.out <- queryNeighbors(Y, Z, threshold=1)
+v.out <- queryNeighbors(Y, Z, threshold=1, BNPARAM=VptreeParam())
+
+k.dex <- buildKmknn(Y)
+k.out2 <- queryNeighbors(Y,Z,  threshold=1, BNINDEX=k.dex, BNPARAM=NULL)
+k.out3 <- queryNeighbors(Y,Z,  threshold=1, BNINDEX=k.dex, BNPARAM=KmknnParam())
+
+v.dex <- buildVptree(Y)
+v.out2 <- queryNeighbors(Y,Z,  threshold=1, BNINDEX=v.dex, BNPARAM=NULL)
+v.out3 <- queryNeighbors(Y,Z,  threshold=1, BNINDEX=v.dex, BNPARAM=VptreeParam())
 }
+

@@ -95,18 +95,18 @@ test_that("findKmknn() raw output behaves correctly", {
    
     pre <- buildKmknn(X)
     out <- findKmknn(k=k, precomputed=pre, raw.index=TRUE)
-    ref <- findKmknn(t(KmknnIndex_clustered_data(pre)), k=k)
+    ref <- findKmknn(t(bndata(pre)), k=k)
     expect_identical(out, ref)
 
     # Behaves with subsetting.
     i <- sample(nobs, 20)
     out <- findKmknn(k=k, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- findKmknn(t(KmknnIndex_clustered_data(pre)), k=k, subset=i)
+    ref <- findKmknn(t(bndata(pre)), k=k, subset=i)
     expect_identical(out, ref)
 
     i <- rbinom(nobs, 1, 0.5) == 0L
     out <- findKmknn(k=k, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- findKmknn(t(KmknnIndex_clustered_data(pre)), k=k, subset=i)
+    ref <- findKmknn(t(bndata(pre)), k=k, subset=i)
     expect_identical(out, ref)
 
     # Adding row names.
@@ -114,7 +114,7 @@ test_that("findKmknn() raw output behaves correctly", {
     preN <- buildKmknn(X)
     i <- sample(rownames(X), 30)
     out <- findKmknn(k=k, precomputed=preN, raw.index=TRUE, subset=i)
-    ref <- findKmknn(t(KmknnIndex_clustered_data(preN)), k=k, subset=i)
+    ref <- findKmknn(t(bndata(preN)), k=k, subset=i)
     expect_identical(out, ref)
 })
 

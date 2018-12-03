@@ -1,60 +1,67 @@
+####################
+# Further dispatch #
+####################
+
 #' @export
-#' @importFrom BiocParallel SerialParam bpmapply
-queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, ...)
-# Identifies nearest neighbours in 'X' from a query set.
-#
-# written by Aaron Lun
-# created 22 June 2018
-{
-    precomputed <- .setup_precluster(X, precomputed, raw.index, ...)
+setMethod("queryNeighbors", c("missing", "missing"), function(..., BNINDEX, BNPARAM) {
+    queryNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
 
-    q.out <- .setup_query(query, transposed, subset)
-    query <- q.out$query        
-    job.id <- q.out$index
-    reorder <- q.out$reorder
+#' @export
+setMethod("queryNeighbors", c("missing", "BiocNeighborParam"), function(..., BNINDEX, BNPARAM) {
+    queryNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
 
-    # Allow for variable thresholds across query points. 
-    if (length(threshold)==1) {
-        thresholds <- rep(threshold, length.out=length(job.id))
-    } else if (length(threshold)!=length(job.id)) {
-        stop("length of 'threshold' should be equal to number of points specified in 'subset'")
-    } else {
-        thresholds <- threshold
-        if (!is.null(reorder)) {
-            thresholds <- thresholds[reorder]
-        }
-    }
+#' @export
+setMethod("queryNeighbors", c("BiocNeighborIndex", "missing"), function(..., BNINDEX, BNPARAM) {
+    queryNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
 
-    # Dividing jobs up for NN finding.
-    jobs <- .assign_jobs(job.id - 1L, BPPARAM)
-    thresholds <- .assign_jobs(thresholds, BPPARAM)
+#' @export
+setMethod("queryNeighbors", c("NULL", "missing"), function(..., BNINDEX, BNPARAM) {
+    queryNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
 
-    collected <- bpmapply(FUN=.query_neighbors,
-        jobs=jobs, threshold=thresholds,
-        MoreArgs=list(data=KmknnIndex_clustered_data(precomputed),
-            centers=KmknnIndex_cluster_centers(precomputed),
-            info=KmknnIndex_cluster_info(precomputed),
-            query=query,
-            get.index=get.index, 
-            get.distance=get.distance), 
-        BPPARAM=BPPARAM, SIMPLIFY=FALSE)
+#' @export
+setMethod("queryNeighbors", c("missing", "NULL"), function(..., BNINDEX, BNPARAM) {
+    queryNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
 
-    # Aggregating results across cores.
-    output <- list()
-    if (get.index) {
-        neighbors <- .combine_lists(collected, i=1, reorder=reorder)
-        if (!raw.index) {
-            preorder <- KmknnIndex_clustered_order(precomputed)
-            neighbors <- lapply(neighbors, FUN=function(i) preorder[i])
-        }
-        output$index <- neighbors
-    } 
-    if (get.distance) {
-        output$distance <- .combine_lists(collected, i=2, reorder=reorder)
-    }
-    return(output)
-}
+#' @export
+setMethod("queryNeighbors", c("NULL", "NULL"), function(..., BNINDEX, BNPARAM) {
+    queryNeighbors(..., BNINDEX=BNINDEX, BNPARAM=KmknnParam())
+})
 
-.query_neighbors <- function(jobs, data, centers, info, threshold, query, get.index, get.distance) {
-    .Call(cxx_query_neighbors, jobs, data, centers, info, threshold, query, get.index, get.distance)
-}
+####################
+# Specific methods #
+####################
+
+#' @export
+setMethod("queryNeighbors", c("KmknnIndex", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
+    rangeQueryKmknn(..., precomputed=BNINDEX)
+})
+
+#' @export
+setMethod("queryNeighbors", c("NULL", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
+    do.call(rangeQueryKmknn, c(list(...), KmknnParam_kmeans_args(BNPARAM)))
+})
+
+#' @export
+setMethod("queryNeighbors", c("KmknnIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+    rangeQueryKmknn(..., precomputed=BNINDEX)
+})
+
+#' @export
+setMethod("queryNeighbors", c("VptreeIndex", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
+    rangeQueryVptree(..., precomputed=BNINDEX)
+})
+
+#' @export
+setMethod("queryNeighbors", c("NULL", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
+    rangeQueryVptree(...)
+})
+
+#' @export
+setMethod("queryNeighbors", c("VptreeIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+    rangeQueryVptree(..., precomputed=BNINDEX)
+})

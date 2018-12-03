@@ -1,57 +1,67 @@
+####################
+# Further dispatch #
+####################
+
 #' @export
-#' @importFrom BiocParallel SerialParam bpmapply
-findNeighbors <- function(X, threshold, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, ...)
-# Identifies neighbours within 'threshold' distance.
-#
-# written by Aaron Lun
-# created 20 June 2018
-{
-    precomputed <- .setup_precluster(X, precomputed, raw.index, ...)
-    ind.out <- .setup_indices(precomputed, subset, raw.index)
-    job.id <- ind.out$index
-    reorder <- ind.out$reorder
+setMethod("findNeighbors", c("missing", "missing"), function(..., BNINDEX, BNPARAM) {
+    findNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
 
-    # Allow for variable thresholds across data points.
-    if (length(threshold)==1) {
-        thresholds <- rep(threshold, length.out=length(job.id))
-    } else if (length(threshold)!=length(job.id)) {
-        stop("length of 'threshold' should be equal to number of points specified in 'subset'")
-    } else {
-        thresholds <- threshold
-        if (!is.null(reorder)) {
-            thresholds <- thresholds[reorder]
-        }
-    }
+#' @export
+setMethod("findNeighbors", c("missing", "BiocNeighborParam"), function(..., BNINDEX, BNPARAM) {
+    findNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
 
-    # Dividing jobs up for NN finding.
-    jobs <- .assign_jobs(job.id - 1L, BPPARAM)
-    thresholds <- .assign_jobs(thresholds, BPPARAM)
+#' @export
+setMethod("findNeighbors", c("BiocNeighborIndex", "missing"), function(..., BNINDEX, BNPARAM) {
+    findNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
 
-    collected <- bpmapply(FUN=.find_neighbors, 
-        jobs=jobs, threshold=thresholds,
-        MoreArgs=list(data=KmknnIndex_clustered_data(precomputed),
-            centers=KmknnIndex_cluster_centers(precomputed),
-            info=KmknnIndex_cluster_info(precomputed),
-            get.index=get.index, 
-            get.distance=get.distance), 
-        BPPARAM=BPPARAM, SIMPLIFY=FALSE)
+#' @export
+setMethod("findNeighbors", c("NULL", "missing"), function(..., BNINDEX, BNPARAM) {
+    findNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
 
-    # Aggregating results across cores.
-    output <- list()
-    if (get.index) {
-        neighbors <- .combine_lists(collected, i=1, reorder=reorder)
-        if (!raw.index) {
-            preorder <- KmknnIndex_clustered_order(precomputed)
-            neighbors <- lapply(neighbors, FUN=function(i) preorder[i])
-        }
-        output$index <- neighbors
-    } 
-    if (get.distance) {
-        output$distance <- .combine_lists(collected, i=2, reorder=reorder)
-    }
-    return(output)
-}
+#' @export
+setMethod("findNeighbors", c("missing", "NULL"), function(..., BNINDEX, BNPARAM) {
+    findNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
+})
 
-.find_neighbors <- function(jobs, data, centers, info, threshold, get.index, get.distance) {
-    .Call(cxx_find_neighbors, jobs, data, centers, info, threshold, get.index, get.distance)
-}
+#' @export
+setMethod("findNeighbors", c("NULL", "NULL"), function(..., BNINDEX, BNPARAM) {
+    findNeighbors(..., BNINDEX=BNINDEX, BNPARAM=KmknnParam())        
+})
+
+####################
+# Specific methods #
+####################
+
+#' @export
+setMethod("findNeighbors", c("NULL", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
+    do.call(rangeFindKmknn, c(list(...), KmknnParam_kmeans_args(BNPARAM)))
+})
+
+#' @export
+setMethod("findNeighbors", c("KmknnIndex", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
+    rangeFindKmknn(..., precomputed=BNINDEX)
+})
+
+#' @export
+setMethod("findNeighbors", c("KmknnIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+    rangeFindKmknn(..., precomputed=BNINDEX)
+})
+
+#' @export
+setMethod("findNeighbors", c("NULL", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
+    rangeFindVptree(...)
+})
+
+#' @export
+setMethod("findNeighbors", c("VptreeIndex", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
+    rangeFindVptree(..., precomputed=BNINDEX)
+})
+
+#' @export
+setMethod("findNeighbors", c("VptreeIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+    rangeFindVptree(..., precomputed=BNINDEX)
+})

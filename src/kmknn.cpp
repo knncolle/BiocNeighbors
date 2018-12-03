@@ -1,10 +1,12 @@
 #include "kmknn.h"
 #include "utils.h"
+#include "queue2deque.h"
+
 #define USE_UPPER 0
 
 /****************** Constructor *********************/
 
-searcher::searcher(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen), last_distance2(R_NaReal), tie_warned(false) {
+searcher::searcher(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen), diagnose_ties(true) {
     const size_t& ncenters=centers.ncol();
 
     Rcpp::List Info(info);
@@ -52,16 +54,22 @@ void searcher::find_nearest_neighbors (size_t cell, size_t nn, const bool index,
         throw std::runtime_error("cell index out of range");
     }
     auto curcol=exprs.column(cell);
-    search_nn(curcol.begin(), nn+1);
+    search_nn(curcol.begin(), nn + 1 + diagnose_ties);
+    
+    queue2deque(nearest, neighbors, distances, index, dist || diagnose_ties, true, cell);
+    for (auto& d : distances) { d=std::sqrt(d); } // distances in 'nearest' are squared.
 
-    // Converts information to neighbors/distances. Also clears 'nearest'.
-    pqueue2deque(index, dist, true, cell);
+    check_ties(diagnose_ties, neighbors, distances, nn);
     return;
 }
 
 void searcher::find_nearest_neighbors (const double* current, size_t nn, const bool index, const bool dist) {
-    search_nn(current, nn);
-    pqueue2deque(index, dist); 
+    search_nn(current, nn + diagnose_ties);
+    
+    queue2deque(nearest, neighbors, distances, index, dist || diagnose_ties, false, size_t(0));
+    for (auto& d : distances) { d=std::sqrt(d); } // distances in 'nearest' are squared.
+
+    check_ties(diagnose_ties, neighbors, distances, nn);
     return;
 }
 
@@ -73,67 +81,6 @@ double searcher::compute_sqdist(const double* x, const double* y) const {
         out+=tmp*tmp;
     }
     return out;
-}
-
-/****************** Priority queue -> deque *********************/
-
-constexpr double TOLERANCE=1.0000000001;
-
-void searcher::pqueue2deque(const bool index, const bool dist, bool discard_self, size_t self)
-/* Converts the nearest-neighbor queue into user-visible deque outputs.
- * Also checks for ties via the reported 'last_distance2'.
- */
-{
-    neighbors.clear();
-    distances.clear();
-    if (current_nearest.empty()) {
-        return;
-    }
-
-    // Distance needs to be square rooted as it is stored as a square.
-    // We take any value larger than the largest in 'current_nearest', if last_distance2 is NA.
-    double lastdist=(ISNA(last_distance2) ? std::sqrt(current_nearest.top().first) + 1 : std::sqrt(last_distance2));
-    bool found_self=false;
-
-    while (!current_nearest.empty()) {
-        if (discard_self && size_t(current_nearest.top().second)==self) {
-            current_nearest.pop();
-            found_self=true;
-            continue;
-        }
-
-        // Deciding what to store. Distances need to be rooted as they are stored as square roots.
-        if (index) {
-            neighbors.push_front(current_nearest.top().second);
-        }
-        const double curdist=std::sqrt(current_nearest.top().first);
-        if (dist) {
-            distances.push_front(curdist);
-        }
-
-        // Checking for ties with the last distance, using a relative TOLERANCE on the smaller distance.
-        // Distances should always be decreasing, so we know that 'curdist' is always the smaller.
-        // We use '<=' to handle cases where both 'curdist' and 'lastdist' are zero.
-        if (!tie_warned && lastdist <= curdist * TOLERANCE) {
-            tie_warned=true;
-            Rcpp::warning("tied distances detected in nearest-neighbor calculation");
-        } else {
-            lastdist=curdist;
-        }
-
-        current_nearest.pop();
-    }
-
-    // Getting rid of the last entry to get the 'k' nearest neighbors, if 'self' was not in the queue.
-    if (discard_self && !found_self) {
-        if (index) { 
-            neighbors.pop_back();
-        }
-        if (dist) {
-            distances.pop_back();
-        }
-    }
-    return;
 }
 
 /****************** Convex search methods *********************/
@@ -194,7 +141,6 @@ void searcher::search_nn(const double* current, size_t nn) {
     const size_t& ncenters=centers.ncol();
     const double* center_ptr=centers.begin();
     double threshold2 = R_PosInf;
-    last_distance2=R_NaReal;
 
     /* Computing distances to all centers and sorting them.
      * The aim is to go through the nearest centers first, to get the shortest 'threshold' possible.
@@ -225,18 +171,9 @@ void searcher::search_nn(const double* current, size_t nn) {
 
             /* The conditional expression below exploits the triangle inequality; it is equivalent to asking whether:
              *     threshold + maxdist < dist2center
-             * where the TOLERANCE allows the condition to be 'false' upon ties with some numerical imprecision.
              * All points (if any) within this cluster with distances above 'lower_bd' are potentially countable.
-             *
-             * Multiplication of 'threshold' by 'TOLERANCE' is only necessary for tie detection.
-             * Any extra points that are retained will not enter the n-nearest queue (aside from oddities due to numerical precision).
-             * These extra points may, however, update 'last_distance2', which is why we need to consider them.
-             *
-             * The multiplication itself mirrors the multiplication of 'curdist' above.
-             * 'threshold' is equivalent to the smaller distance, and we are looking for equal or larger distances in 'dIt' (hence, 'lower_bound').
-             * We use '<' to skip in the _absence_ of equality, which mirrors the use of '<=' above and avoids skipping distances of zero.
              */
-            const double lower_bd=dist2center - (threshold * TOLERANCE);
+            const double lower_bd=dist2center - threshold;
             if (maxdist < lower_bd) {
                 continue;
             }
@@ -244,9 +181,8 @@ void searcher::search_nn(const double* current, size_t nn) {
 #if USE_UPPER
             /* This exploits the reverse triangle inequality, to ignore points where:
              *     threshold + dist2center < point-to-center distance
-             * with TOLERANCE to capture points that are equal with some numeric precision.
              */
-            upper_bd = (threshold * TOLERANCE) + dist2center;
+            upper_bd = threshold + dist2center;
 #endif
         }
 
@@ -260,20 +196,17 @@ void searcher::search_nn(const double* current, size_t nn) {
 #endif
 
             const double dist2cell2=compute_sqdist(current, other_cell);
-            if (current_nearest.size() < nn || dist2cell2 < threshold2) {
-                current_nearest.push(std::make_pair(dist2cell2, cur_start + celldex));
-                if (current_nearest.size() > nn) {
-                    last_distance2=current_nearest.top().first;
-                    current_nearest.pop();
+            if (nearest.size() < nn || dist2cell2 < threshold2) {
+                nearest.push(std::make_pair(dist2cell2, cur_start + celldex));
+                if (nearest.size() > nn) {
+                    nearest.pop();
                 }
-                if (current_nearest.size()==nn) {
-                    threshold2=current_nearest.top().first; // Shrinking the threshold, if an earlier NN has been found.
+                if (nearest.size()==nn) {
+                    threshold2=nearest.top().first; // Shrinking the threshold, if an earlier NN has been found.
 #if USE_UPPER
-                    upper_bd=(std::sqrt(threshold2) * TOLERANCE) + dist2center; // see above for use of TOLERANCE.
+                    upper_bd=std::sqrt(threshold2) + dist2center; 
 #endif
                 }
-            } else if (ISNA(last_distance2) || dist2cell2 < last_distance2) {
-                last_distance2=dist2cell2;
             }
         }
     }

@@ -1,108 +1,20 @@
 #' @export
-#' @importFrom BiocParallel SerialParam bpmapply
+#' @importFrom BiocParallel SerialParam 
 findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, ...)
-# Identifies nearest neighbours.
+# Identifies nearest neighbours with the Kmknn algorithm.
 #
 # written by Aaron Lun
 # created 19 June 2018
 {
-    precomputed <- .setup_precluster(X, precomputed, raw.index, ...)
-    k <- .refine_k(k, precomputed, query=FALSE)
-
-    ind.out <- .setup_indices(precomputed, subset, raw.index)
-    job.id <- ind.out$index
-    reorder <- ind.out$reorder
-
-    # Dividing jobs up for NN finding (using bpmapply due to clash with 'X=').
-    jobs <- .assign_jobs(job.id - 1L, BPPARAM)
-    collected <- bpmapply(FUN=.find_kmknn, jobs,
-        MoreArgs=list(data=KmknnIndex_clustered_data(precomputed),
-            centers=KmknnIndex_cluster_centers(precomputed),
-            info=KmknnIndex_cluster_info(precomputed),
-            k=k,
-            get.index=get.index, 
-            get.distance=get.distance), 
-        BPPARAM=BPPARAM, SIMPLIFY=FALSE)
-
-    # Aggregating results across cores.
-    output <- list()
-    if (get.index) {
-        neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
-        if (!raw.index) {
-            neighbors[] <- KmknnIndex_clustered_order(precomputed)[neighbors]
-        }
-        output$index <- neighbors
-    } 
-    if (get.distance) {
-        output$distance <- .combine_matrices(collected, i=2, reorder=reorder)
-    }
-    return(output)
+    .template_find_exact(X, k, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, raw.index=raw.index, 
+        buildFUN=buildKmknn, searchFUN=.find_kmknn, searchArgsFUN=.find_kmknn_args, ...) 
 }
 
 .find_kmknn <- function(jobs, data, centers, info, k, get.index, get.distance) {
     .Call(cxx_find_kmknn, jobs, data, centers, info, k, get.index, get.distance)
 }
 
-.setup_precluster <- function(X, precomputed, raw.index, ...) 
-# Converts 'X' into 'precomputed' if the latter is NULL.
-# This quarantines 'X' from the rest of the function.
-{
-    if (is.null(precomputed)) {
-        if (raw.index) {
-            stop("'raw.index=TRUE' is not valid if 'precomputed=NULL'")
-        }
-        precomputed <- buildKmknn(X, ...)
-    }
-    precomputed
-}
-
-.refine_k <- function(k, precomputed, query=FALSE)
-# Protection against silliness when k is greater than or equal to the number of observations (for self-searching),
-# or simply greater than the number of observation (for querying).
-{
-    if (!query) {
-        max <- nrow(precomputed) - 1L
-        msg <- " minus 1"
-    } else {
-        max <- nrow(precomputed)
-        msg <- ""
-    }
-
-    if (k > max) { 
-        k <- max
-        warning(paste0("'k' capped at the number of observations", msg))
-    }
-
-    k
-}
-
-.setup_indices <- function(precomputed, subset, raw.index)
-# Defining indices of interest, accounting for re-ordering.
-{
-    if (!is.null(subset)) { 
-        if (raw.index) {
-            # For raw indices, get the actual ordering of names for match()ing.
-            dummy <- precomputed
-            dummy@NAMES <- dummy@NAMES[dummy@order]
-            job.id <- .subset_to_index(subset, dummy, byrow=TRUE)
-        } else {
-            # Getting position of subset indices in the reordered set of points.
-            new.pos <- .order_to_index(KmknnIndex_clustered_order(precomputed))
-            indices <- .subset_to_index(subset, precomputed, byrow=TRUE)
-            job.id <- new.pos[indices]
-        }
-
-        # Ordering so that queries are as adjacent as possible.
-        reorder <- order(job.id)
-        job.id <- job.id[reorder]
-    } else {
-        job.id <- seq_len(nrow(precomputed))
-        if (raw.index) {
-            reorder <- NULL
-        } else {
-            reorder <- KmknnIndex_clustered_order(precomputed)
-        }
-    }
-
-    list(index=job.id, reorder=reorder)
+.find_kmknn_args <- function(precomputed) {
+    list(centers=KmknnIndex_cluster_centers(precomputed),
+        info=KmknnIndex_cluster_info(precomputed))
 }

@@ -24,18 +24,13 @@ setValidity2("AnnoyParam", function(object) {
 
 #' @export
 #' @importFrom methods new
-AnnoyIndex <- function(path, dim, NAMES=NULL) {
-    new("AnnoyIndex", path=path, Dims=dim, NAMES=NAMES)
+AnnoyIndex <- function(data, path, NAMES=NULL) {
+    new("AnnoyIndex", data=data, path=path, NAMES=NAMES)
 }
 
 #' @importFrom S4Vectors setValidity2
 setValidity2("AnnoyIndex", function(object) {
     msg <- character(0)
-
-    Dims <- dim(object)
-    if (length(Dims)!=2L && any(Dims < 0L)) {
-        msg <- c(msg, "'dim' should contain two non-negative integers")
-    }
 
     path <- AnnoyIndex_path(object)
     if (length(path)!=1L) {

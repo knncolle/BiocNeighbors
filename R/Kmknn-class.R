@@ -14,7 +14,7 @@ KmknnIndex <- function(data, centers, info, order, NAMES=NULL) {
 setValidity2("KmknnIndex", function(object) {
     msg <- character(0)
 
-    data <- KmknnIndex_clustered_data(object)
+    data <- bndata(object)
     centers <- KmknnIndex_cluster_centers(object)
     if (nrow(data)!=nrow(centers)) {
         msg <- c(msg, "dimensionality is not consistent between 'data' and 'centers") 
@@ -25,7 +25,7 @@ setValidity2("KmknnIndex", function(object) {
         msg <- c(msg, "number of clusters is not consistent between 'centers' and 'info'")
     }
 
-    order <- KmknnIndex_clustered_order(object)
+    order <- bnorder(object)
     if (length(order)!=ncol(data)) {
         msg <- c(msg, "number of observations is not consistent between 'data' and 'order'")
     }

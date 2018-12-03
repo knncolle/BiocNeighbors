@@ -52,6 +52,21 @@ setMethod("queryKNN", c("KmknnIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
 })
 
 #' @export
+setMethod("queryKNN", c("VptreeIndex", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
+    queryVptree(..., precomputed=BNINDEX)
+})
+
+#' @export
+setMethod("queryKNN", c("NULL", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
+    queryVptree(...)
+})
+
+#' @export
+setMethod("queryKNN", c("VptreeIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+    queryVptree(..., precomputed=BNINDEX)
+})
+
+#' @export
 setMethod("queryKNN", c("AnnoyIndex", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
     queryAnnoy(..., precomputed=BNINDEX)
 })

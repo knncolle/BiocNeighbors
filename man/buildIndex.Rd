@@ -1,17 +1,18 @@
-\name{buildNNIndex}
-\alias{buildNNIndex}
+\name{buildIndex}
+\alias{buildIndex}
 \docType{methods}
 
-\alias{buildNNIndex,missing-method}
-\alias{buildNNIndex,NULL-method}
-\alias{buildNNIndex,KmknnParam-method}
-\alias{buildNNIndex,AnnoyParam-method}
+\alias{buildIndex,missing-method}
+\alias{buildIndex,NULL-method}
+\alias{buildIndex,KmknnParam-method}
+\alias{buildIndex,VptreeParam-method}
+\alias{buildIndex,AnnoyParam-method}
 
 \title{Build a nearest-neighbor index}
 \description{Build indices for nearest-neighbor searching with different algorithms.}
 
 \usage{
-buildNNIndex(..., BNPARAM=NULL)
+buildIndex(..., BNPARAM=NULL)
 }
 
 \arguments{
@@ -23,6 +24,8 @@ This defaults to a \linkS4class{KmknnParam} object if \code{NULL}.}
 
 \details{
 Supplying a \linkS4class{KmknnParam} object as \code{BNPARAM} will dispatch to \code{\link{buildKmknn}}.
+
+Supplying a \linkS4class{VptreeParam} object as \code{BNPARAM} will dispatch to \code{\link{buildVptree}}.
 
 Supplying an \linkS4class{AnnoyParam} object as \code{BNPARAM} will dispatch to \code{\link{buildAnnoy}}.
 }
@@ -36,11 +39,13 @@ Aaron Lun
 }
 
 \seealso{
-\code{\link{buildKmknn}} and \code{\link{buildAnnoy}} for specific methods. 
+\code{\link{buildKmknn}},
+\code{\link{buildVptree}},
+and \code{\link{buildAnnoy}} for specific methods. 
 }
 
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
-(k.out <- buildNNIndex(Y))
-(a.out <- buildNNIndex(Y, BNPARAM=AnnoyParam()))
+(k.out <- buildIndex(Y))
+(a.out <- buildIndex(Y, BNPARAM=AnnoyParam()))
 }

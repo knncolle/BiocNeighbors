@@ -9,9 +9,9 @@ test_that("buildKmknn() works as expected", {
             
             out <- buildKmknn(X)
             expect_identical(dim(out), dim(X))
-            expect_identical(rev(dim(KmknnIndex_clustered_data(out))), dim(X))
-            expect_identical(sort(KmknnIndex_clustered_order(out)), seq_len(nobs))
-            expect_identical(KmknnIndex_clustered_data(out), t(X[KmknnIndex_clustered_order(out),]))
+            expect_identical(rev(dim(bndata(out))), dim(X))
+            expect_identical(sort(bnorder(out)), seq_len(nobs))
+            expect_identical(bndata(out), t(X[bnorder(out),]))
 
             Nclust <- length(KmknnIndex_cluster_info(out))
             expect_identical(Nclust, as.integer(ceiling(sqrt(nobs))))
@@ -28,7 +28,7 @@ test_that("buildKmknn() works as expected", {
                 expect_true(!any(accounted[idx]))
                 accounted[idx] <- TRUE
 
-                collected[[i]] <- rowMeans(KmknnIndex_clustered_data(out)[,idx,drop=FALSE]) 
+                collected[[i]] <- rowMeans(bndata(out)[,idx,drop=FALSE]) 
             }
 
             expect_true(all(accounted))
@@ -48,13 +48,13 @@ test_that("buildKmknn() preserves dimension names", {
 
     out <- buildKmknn(X)
     expect_identical(rownames(out), rownames(X))
-    expect_identical(rownames(KmknnIndex_clustered_data(out)), colnames(X))
-    expect_identical(colnames(KmknnIndex_clustered_data(out)), rownames(X)[KmknnIndex_clustered_order(out)])
+    expect_identical(rownames(bndata(out)), colnames(X))
+    expect_identical(colnames(bndata(out)), rownames(X)[bnorder(out)])
 
     # Still true if there are no cells.
     out <- buildKmknn(X[0,,drop=FALSE])
-    expect_identical(rownames(KmknnIndex_clustered_data(out)), colnames(X))
-    expect_identical(colnames(KmknnIndex_clustered_data(out)), NULL)
+    expect_identical(rownames(bndata(out)), colnames(X))
+    expect_identical(colnames(bndata(out)), NULL)
     expect_identical(rownames(out), NULL)
 })
 
@@ -66,19 +66,19 @@ test_that("buildKmknn() behaves sensibly with silly inputs", {
 
     # What happens when there are no cells.
     out <- buildKmknn(X[0,,drop=FALSE])
-    expect_identical(dim(KmknnIndex_clustered_data(out)), c(ndim, 0L))
+    expect_identical(dim(bndata(out)), c(ndim, 0L))
     expect_identical(dim(KmknnIndex_cluster_centers(out)), c(ndim, 0L))
     expect_identical(length(KmknnIndex_cluster_info(out)), 0L)
-    expect_identical(length(KmknnIndex_clustered_order(out)), 0L)
+    expect_identical(length(bnorder(out)), 0L)
 
     # What happens when there are no dimensions.
     out <- buildKmknn(X[,0,drop=FALSE])
-    expect_identical(dim(KmknnIndex_clustered_data(out)), c(0L, nobs))
+    expect_identical(dim(bndata(out)), c(0L, nobs))
     expect_identical(dim(KmknnIndex_cluster_centers(out)), c(0L, 1L))
     expect_identical(length(KmknnIndex_cluster_info(out)), 1L)
     expect_identical(KmknnIndex_cluster_info(out)[[1]][[1]], 0L)
     expect_identical(KmknnIndex_cluster_info(out)[[1]][[2]], numeric(nobs))
-    expect_identical(KmknnIndex_clustered_order(out), seq_len(nobs))
+    expect_identical(bnorder(out), seq_len(nobs))
 
     # Checking that it behaves without distinct data points.
     expect_error(prec <- buildKmknn(matrix(0, 10,10)), NA)

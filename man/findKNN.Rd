@@ -14,6 +14,10 @@
 \alias{findKNN,KmknnIndex,NULL-method}
 \alias{findKNN,KmknnIndex,KmknnParam-method}
 
+\alias{findKNN,NULL,VptreeParam-method}
+\alias{findKNN,VptreeIndex,NULL-method}
+\alias{findKNN,VptreeIndex,VptreeParam-method}
+
 \alias{findKNN,NULL,AnnoyParam-method}
 \alias{findKNN,AnnoyIndex,NULL-method}
 \alias{findKNN,AnnoyIndex,AnnoyParam-method}
@@ -55,7 +59,7 @@ If \code{subset} is not \code{NULL}, each row of the above matrices refers to a 
 }
 
 \details{
-The class of \code{BNINDEX} and \code{BNPARAM} will determine whether dispatch is performed to \code{\link{findKmknn}} or \code{\link{findAnnoy}}.
+The class of \code{BNINDEX} and \code{BNPARAM} will determine dispatch to specific methods.
 Only one of these arguments needs to be defined to resolve dispatch.
 However, if both are defined, they cannot specify different algorithms.
 
@@ -68,7 +72,9 @@ Aaron Lun
 }
 
 \seealso{
-\code{\link{findKmknn}} and \code{\link{findAnnoy}} for specific methods.
+\code{\link{findKmknn}},
+\code{\link{findVptree}},
+and \code{\link{findAnnoy}} for specific methods.
 }
 
 \examples{
