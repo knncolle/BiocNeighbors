@@ -8,3 +8,9 @@ setGeneric("findKNN", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX=N
 
 #' @export
 setGeneric("queryKNN", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX=NULL, BNPARAM=NULL) standardGeneric("queryKNN"))
+
+#' @export
+setGeneric("findNeighbors", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX=NULL, BNPARAM=NULL) standardGeneric("findNeighbors"))
+
+#' @export
+setGeneric("queryNeighbors", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX=NULL, BNPARAM=NULL) standardGeneric("queryNeighbors"))
