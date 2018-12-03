@@ -1,39 +1,35 @@
-\name{findKNN}
-\alias{findKNN}
+\name{findNeighbors}
+\alias{findNeighbors}
 \docType{methods}
 
-\alias{findKNN,missing,missing-method}
-\alias{findKNN,BiocNeighborIndex,missing-method}
-\alias{findKNN,missing,BiocNeighborParam-method}
+\alias{findNeighbors,missing,missing-method}
+\alias{findNeighbors,BiocNeighborIndex,missing-method}
+\alias{findNeighbors,missing,BiocNeighborParam-method}
 
-\alias{findKNN,missing,NULL-method}
-\alias{findKNN,NULL,missing-method}
-\alias{findKNN,NULL,NULL-method}
+\alias{findNeighbors,missing,NULL-method}
+\alias{findNeighbors,NULL,missing-method}
+\alias{findNeighbors,NULL,NULL-method}
 
-\alias{findKNN,NULL,KmknnParam-method}
-\alias{findKNN,KmknnIndex,NULL-method}
-\alias{findKNN,KmknnIndex,KmknnParam-method}
+\alias{findNeighbors,NULL,KmknnParam-method}
+\alias{findNeighbors,KmknnIndex,NULL-method}
+\alias{findNeighbors,KmknnIndex,KmknnParam-method}
 
-\alias{findKNN,NULL,VptreeParam-method}
-\alias{findKNN,VptreeIndex,NULL-method}
-\alias{findKNN,VptreeIndex,VptreeParam-method}
+\alias{findNeighbors,NULL,VptreeParam-method}
+\alias{findNeighbors,VptreeIndex,NULL-method}
+\alias{findNeighbors,VptreeIndex,VptreeParam-method}
 
-\alias{findKNN,NULL,AnnoyParam-method}
-\alias{findKNN,AnnoyIndex,NULL-method}
-\alias{findKNN,AnnoyIndex,AnnoyParam-method}
-
-\title{Find k-nearest neighbors}
-\description{Find the k-nearest neighbors for each point in a data set, using exact or approximate algorithms.}
+\title{Find all neighbors in range}
+\description{Find all neighbors within a given distance for each point in a data set, using exact or approximate algorithms.}
 
 \usage{
-findKNN(..., BNINDEX=NULL, BNPARAM=NULL)
+findNeighbors(..., BNINDEX=NULL, BNPARAM=NULL)
 }
 
 \arguments{
     \item{...}{Further arguments to pass to specific methods, including:
         \itemize{
             \item \code{X}, a numeric data matrix where rows are points and columns are dimensions.
-            \item \code{k}, an integer scalar for the number of nearest neighbors.
+            \item \code{threshold}, a numeric scalar or vector specifying the maximum distance for considering neighbors.
             This is the only strictly mandatory parameter.
             \item \code{subset}, a vector specifying the subset of points in \code{X} to search.
             \item \code{get.index}, a logical scalar indicating whether to return row indices of the neighbors.
@@ -59,7 +55,7 @@ If \code{subset} is not \code{NULL}, each row of the above matrices refers to a 
 }
 
 \details{
-The class of \code{BNINDEX} and \code{BNPARAM} will determine dispatch to specific methods.
+The class of \code{BNINDEX} and \code{BNPARAM} will determine the dispatch to specific functions.
 Only one of these arguments needs to be defined to resolve dispatch.
 However, if both are defined, they cannot specify different algorithms.
 
@@ -72,22 +68,21 @@ Aaron Lun
 }
 
 \seealso{
-\code{\link{findKmknn}},
-\code{\link{findVptree}},
-and \code{\link{findAnnoy}} for specific methods.
+\code{\link{rangeFindKmknn}}
+and \code{\link{rangeFindVptree}} for specific methods.
 }
 
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
-str(k.out <- findKNN(Y, k=10))
-str(a.out <- findKNN(Y, k=10, BNPARAM=AnnoyParam()))
+k.out <- findNeighbors(Y, threshold=1)
+a.out <- findNeighbors(Y, threshold=1, BNPARAM=VptreeParam())
 
 k.dex <- buildKmknn(Y)
-str(k.out2 <- findKNN(Y, k=10, BNINDEX=k.dex, BNPARAM=NULL))
-str(k.out3 <- findKNN(Y, k=10, BNINDEX=k.dex, BNPARAM=KmknnParam()))
+k.out2 <- findNeighbors(Y, threshold=1, BNINDEX=k.dex, BNPARAM=NULL)
+k.out3 <- findNeighbors(Y, threshold=1, BNINDEX=k.dex, BNPARAM=KmknnParam())
 
-a.dex <- buildAnnoy(Y)
-str(a.out2 <- findKNN(Y, k=10, BNINDEX=a.dex, BNPARAM=NULL))
-str(a.out3 <- findKNN(Y, k=10, BNINDEX=a.dex, BNPARAM=AnnoyParam()))
+v.dex <- buildVptree(Y)
+v.out2 <- findNeighbors(Y, threshold=1, BNINDEX=v.dex, BNPARAM=NULL)
+v.out3 <- findNeighbors(Y, threshold=1, BNINDEX=v.dex, BNPARAM=VptreeParam())
 }
 
