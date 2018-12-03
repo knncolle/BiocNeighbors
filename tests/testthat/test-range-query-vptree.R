@@ -1,24 +1,5 @@
 # Tests rangeQueryVptree().
-# library(BiocNeighbors); library(testthat); source("test-range-query-vptree.R")
-
-REINFORCE <- function(out) {
-    O <- lapply(out$index, order)
-    re.index <- mapply(FUN="[", x=out$index, i=O, SIMPLIFY=FALSE)
-    re.dist <- mapply(FUN="[", x=out$distance, i=O, SIMPLIFY=FALSE)
-    list(index=re.index, distance=re.dist)
-}
-
-expect_identical_re <- function(left, right) {
-    expect_false(is.null(left$index))
-    expect_false(is.null(right$index))
-    expect_false(is.null(left$distance))
-    expect_false(is.null(right$distance))
-    
-    L <- REINFORCE(left)
-    R <- REINFORCE(right)
-    expect_identical(L$index, R$index)
-    expect_equal(L$distance, R$distance)
-}
+# library(BiocNeighbors); library(testthat); source("setup.R"); source("test-range-query-vptree.R")
 
 set.seed(1001)
 test_that("rangeQueryVptree() behaves correctly with queries", {
