@@ -1,11 +1,8 @@
 \name{VptreeIndex}
-\alias{VptreeIndex}
 \alias{VptreeIndex-class}
 
-\alias{dim,VptreeIndex-method}
-\alias{VptreeIndex_data}
+\alias{VptreeIndex}
 \alias{VptreeIndex_nodes}
-\alias{VptreeIndex_order}
 
 \title{The VptreeIndex class}
 \description{A class to hold the vantage point tree for exact nearest neighbor identification.}
@@ -13,13 +10,7 @@
 \usage{
 VptreeIndex(data, nodes, order, NAMES=NULL)
 
-VptreeIndex_data(x)
-
 VptreeIndex_nodes(x)
-
-VptreeIndex_order(x)
-
-\S4method{dim}{VptreeIndex}(x)
 }
 
 \arguments{
@@ -31,16 +22,14 @@ VptreeIndex_order(x)
 }
 
 \details{
-The VptreeIndex class holds the indexing structure required to run the KMKNN algorithm.
+The VptreeIndex class holds the indexing structure required to run the VP tree algorithm.
 Users should never need to call the constructor explicitly, but should generate instances of VptreeIndex classes with \code{\link{buildVptree}}.
 }
 
 \value{
 The \code{VptreeIndex} constructor will return an instance of the VptreeIndex class.
 
-\code{VptreeIndex_data} and related getters will return the corresponding slots of \code{x}.
-
-\code{dim} will return the dimensions of \code{t(data)}.
+\code{VptreeIndex_nodes} will return the corresponding slots of \code{x}.
 }
 
 \author{
@@ -53,10 +42,5 @@ Aaron Lun
 
 \examples{
 example(buildVptree)
-
-dim(out)
-
-str(VptreeIndex_data(out))
 str(VptreeIndex_nodes(out))
-str(VptreeIndex_order(out))
 }

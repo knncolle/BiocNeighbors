@@ -1,15 +1,10 @@
 \name{KmknnIndex}
-\alias{KmknnIndex}
 \alias{KmknnIndex-class}
 
-\alias{show,KmknnIndex-method}
-\alias{dim,KmknnIndex-method}
-\alias{dimnames,KmknnIndex-method}
-
-\alias{KmknnIndex_clustered_data}
+\alias{KmknnIndex}
 \alias{KmknnIndex_cluster_centers}
 \alias{KmknnIndex_cluster_info}
-\alias{KmknnIndex_clustered_order}
+\alias{show,KmknnIndex-method}
 
 \title{The KmknnIndex class}
 \description{A class to hold indexing structures for the KMKNN algorithm for exact nearest neighbor identification.}
@@ -17,19 +12,11 @@
 \usage{
 KmknnIndex(data, centers, info, order, NAMES=NULL)
 
-KmknnIndex_clustered_data(x)
-
 KmknnIndex_cluster_centers(x)
 
 KmknnIndex_cluster_info(x)
 
-KmknnIndex_clustered_order(x)
-
 \S4method{show}{KmknnIndex}(object)
-
-\S4method{dim}{KmknnIndex}(x)
-
-\S4method{dimnames}{KmknnIndex}(x)
 }
 
 \arguments{
@@ -49,11 +36,7 @@ Users should never need to call the constructor explicitly, but should generate 
 \value{
 The \code{KmknnIndex} constructor will return an instance of the KmknnIndex class.
 
-\code{KmknnIndex_clustered_data} and related getters will return the corresponding slots of \code{object}.
-
-\code{dim} will return the dimensions of \code{t(data)}.
-
-\code{dimnames} will return a list of length 2 where the first element is the supplied \code{NAMES}.
+\code{KmknnIndex_cluster_centers} and related getters will return the corresponding slots of \code{object}.
 }
 
 \author{
@@ -66,10 +49,6 @@ Aaron Lun
 
 \examples{
 example(buildKmknn)
-
-dim(out)
-
-str(KmknnIndex_clustered_data(out))
 str(KmknnIndex_cluster_centers(out))
-str(KmknnIndex_clustered_order(out))
+str(KmknnIndex_cluster_info(out))
 }
