@@ -25,6 +25,8 @@ SEXP find_vptree(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 SEXP query_vptree(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
+SEXP range_find_vptree(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+
 }
 
 #endif 

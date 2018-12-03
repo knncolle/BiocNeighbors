@@ -24,6 +24,8 @@ public:
     VpTree(Rcpp::NumericMatrix, Rcpp::List);
     Rcpp::List save();
 
+    void find_neighbors(size_t, double, const bool, const bool);
+    void find_neighbors(const double*, double, const bool, const bool);
     void find_nearest_neighbors(size_t, int, const bool, const bool);
     void find_nearest_neighbors(const double*, int, const bool, const bool);
 
@@ -56,9 +58,10 @@ private:
     double tau;
 
     std::priority_queue<std::pair<double, int> > nearest;
-    void search(int, const double*, int);
-
+    void search_nn(int, const double*, int);
     bool diagnose_ties;
+
+    void search_all(int, const double*, double, bool, bool);
 };
 
 #endif

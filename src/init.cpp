@@ -19,6 +19,7 @@ static const R_CallMethodDef all_call_entries[] = {
     REGISTER(build_vptree, 1),
     REGISTER(find_vptree, 6),
     REGISTER(query_vptree, 7),
+    REGISTER(range_find_vptree, 6),
     {NULL, NULL, 0}
 };
 
