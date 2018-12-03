@@ -14,8 +14,8 @@ VptreeIndex <- function(data, nodes, order, NAMES=NULL) {
 setValidity2("VptreeIndex", function(object) {
     msg <- character(0)
 
-    data <- VptreeIndex_data(object)
-    order <- VptreeIndex_order(object)
+    data <- bndata(object)
+    order <- bnorder(object)
     if (length(order)!=ncol(data)) {
         msg <- c(msg, "number of observations is not consistent between 'data' and 'order'")
     }
