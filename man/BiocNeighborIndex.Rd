@@ -58,7 +58,7 @@ More advanced methods (intended for developers of other packages) are:
 \code{\link{VptreeIndex}}    
 and \code{\link{AnnoyIndex}} for direct constructors.
 
-\code{\link{buildNNIndex}} for construction on an actual data set. 
+\code{\link{buildIndex}} for construction on an actual data set. 
 
 \code{\link{findKNN}} and \code{\link{queryKNN}} for dispatch.
 }

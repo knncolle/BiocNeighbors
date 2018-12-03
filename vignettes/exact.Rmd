@@ -126,11 +126,11 @@ It is also simple to speed up functions by parallelizing the calculations with t
 out <- findKNN(data, k=10, BPPARAM=MulticoreParam(3))
 ```
 
-For multiple queries to a constant `data`, the pre-clustering can be performed in a separate step with `buildNNIndex()`.
+For multiple queries to a constant `data`, the pre-clustering can be performed in a separate step with `buildIndex()`.
 The result can then be passed to multiple calls, avoiding the overhead of repeated clustering^[The algorithm type is automatically determined when `BNINDEX` is specified, so there is no need to also specify `BNPARAM` in the later functions.].
 
 ```{r}
-pre <- buildNNIndex(data, BNPARAM=KmknnParam())
+pre <- buildIndex(data, BNPARAM=KmknnParam())
 out1 <- findKNN(BNINDEX=pre, k=5)
 out2 <- queryKNN(BNINDEX=pre, query=query, k=2)
 ```

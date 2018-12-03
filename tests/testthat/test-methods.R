@@ -7,27 +7,27 @@ ndim <- 10
 k <- 5
 X <- matrix(runif(nobs * ndim), nrow=nobs)
 
-test_that("buildNNIndex dispatches correctly", {
+test_that("buildIndex dispatches correctly", {
     set.seed(100)        
-    out <- buildNNIndex(X)
+    out <- buildIndex(X)
     set.seed(100)        
-    out2 <- buildNNIndex(X, BNPARAM=KmknnParam())
+    out2 <- buildIndex(X, BNPARAM=KmknnParam())
     expect_equal(out, out2)
     expect_s4_class(out, "KmknnIndex")
     
     # Passes arguments down.
     set.seed(100)
-    out <- buildNNIndex(X, BNPARAM=KmknnParam(iter.max=20))
+    out <- buildIndex(X, BNPARAM=KmknnParam(iter.max=20))
     set.seed(100)
     ref <- buildKmknn(X, iter.max=20)
     expect_equal(out, ref)
 
     # Handles Vptree.
-    out <- buildNNIndex(X, BNPARAM=VptreeParam())
+    out <- buildIndex(X, BNPARAM=VptreeParam())
     expect_s4_class(out, "VptreeIndex")
 
     # Handles Annoy:
-    out <- buildNNIndex(X, BNPARAM=AnnoyParam())
+    out <- buildIndex(X, BNPARAM=AnnoyParam())
     expect_s4_class(out, "AnnoyIndex")
 })
 

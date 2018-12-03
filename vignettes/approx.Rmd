@@ -71,7 +71,7 @@ For example:
 The use of a pre-built `BNINDEX` is illustrated below:
 
 ```{r}
-pre <- buildNNIndex(data, BNPARAM=AnnoyParam())
+pre <- buildIndex(data, BNPARAM=AnnoyParam())
 out1 <- findKNN(BNINDEX=pre, k=5)
 out2 <- queryKNN(BNINDEX=pre, query=query, k=2)
 ```
@@ -87,7 +87,7 @@ By default, this file is located in `tempdir()`^[On HPC file systems, you can ch
 AnnoyIndex_path(pre)
 ```
 
-If the index is to persist across sessions, the path of the index file can be directly specified in `buildNNIndex`.
+If the index is to persist across sessions, the path of the index file can be directly specified in `buildIndex`.
 However, this means that it becomes the responsibility of the user to clean up any temporary indexing files after calculations are complete.
 
 # Session information

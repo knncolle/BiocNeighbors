@@ -26,9 +26,11 @@ See the associated documentation pages for more details.
 }
 
 \seealso{
-\code{\link{KmknnParam}} and \code{\link{AnnoyParam}} for constructors.
+\code{\link{KmknnParam}},
+\code{\link{VptreeParam}},
+and \code{\link{AnnoyParam}} for constructors.
 
-\code{\link{buildNNIndex}}, \code{\link{findKNN}} and \code{\link{queryKNN}} for dispatch.
+\code{\link{buildIndex}}, \code{\link{findKNN}} and \code{\link{queryKNN}} for dispatch.
 }
 
 \author{
