@@ -5,8 +5,14 @@
 \alias{show,BiocNeighborIndex-method}
 \alias{dim,BiocNeighborIndex-method}
 \alias{dimnames,BiocNeighborIndex-method}
+
+\alias{bndata}
 \alias{bndata,BiocNeighborIndex-method}
-\alias{bnorder,BiocNeighborIndex-method}
+
+\alias{bnorder}
+\alias{bnorder,KmknnIndex-method}
+\alias{bnorder,VptreeIndex-method}
+\alias{bnorder,AnnoyIndex-method}
 
 \title{The BiocNeighborIndex class}
 \description{A virtual class for indexing structures of different nearest-neighbor search algorithms.}

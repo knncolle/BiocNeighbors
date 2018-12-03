@@ -24,7 +24,7 @@ setValidity2("AnnoyParam", function(object) {
 
 #' @export
 #' @importFrom methods new
-AnnoyIndex <- function(data, path, dim, NAMES=NULL) {
+AnnoyIndex <- function(data, path, NAMES=NULL) {
     new("AnnoyIndex", data=data, path=path, NAMES=NAMES)
 }
 

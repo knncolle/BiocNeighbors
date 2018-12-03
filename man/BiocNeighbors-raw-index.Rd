@@ -10,7 +10,7 @@ Consider the following call:
     out <- findKmknn(precomputed=index, raw.index=TRUE)
 }
 This yields the same output as:
-\preformatted{    PRE <- KmknnIndex_clustered_data(index)
+\preformatted{    PRE <- bndata(index)
     out2 <- findKmknn(X=t(PRE))
 }
 
@@ -47,7 +47,7 @@ Aaron Lun
 vals <- matrix(rnorm(100000), ncol=20)
 index <- buildKmknn(vals)    
 out <- findKmknn(precomputed=index, raw.index=TRUE, k=5)
-alt <- findKmknn(t(KmknnIndex_clustered_data(index)), k=5)    
+alt <- findKmknn(t(bndata(index)), k=5)    
 head(out$index)
 head(alt$index)
 }
