@@ -1,13 +1,18 @@
-\name{queryNeighbors}
-\alias{queryNeighbors}
+\name{rangeQuery methods}
+\alias{rangeQueryKmknn}
+\alias{rangeQueryVptree}
 
-\title{Query neighbors}
-\description{Find all neighboring data points within a certain distance of a query point with the KMKNN algorithm.}
+\title{Query neighbors in range}
+\description{Find all neighboring data points within a certain distance of a query point.}
 
 \usage{
-queryNeighbors(X, query, threshold, get.index=TRUE, get.distance=TRUE, 
+rangeQueryKmknn(X, query, threshold, get.index=TRUE, get.distance=TRUE, 
     BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL,
     raw.index=FALSE, ...)
+
+rangeQueryVptree(X, query, threshold, get.index=TRUE, get.distance=TRUE, 
+    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL,
+    raw.index=FALSE)
 }
 
 \arguments{
@@ -18,7 +23,8 @@ Alternatively, a vector containing a different distance threshold for each query
 \item{get.index}{A logical scalar indicating whether the indices of the neighbors should be recorded.}
 \item{get.distance}{A logical scalar indicating whether distances to the neighbors should be recorded.}
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
-\item{precomputed}{A \linkS4class{KmknnIndex} object from running \code{\link{buildKmknn}} on \code{X}.}
+\item{precomputed}{A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
+For \code{rangeFindKmknn}, this should be a \linkS4class{KmknnIndex}, while for \code{rangeFindVptree}, this should be a \linkS4class{VptreeIndex}.}
 \item{transposed}{A logical scalar indicating whether the \code{query} is transposed, 
 in which case \code{query} is assumed to contain dimensions in the rows and data points in the columns.}
 \item{subset}{A vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the neighbors should be identified.}
@@ -27,9 +33,9 @@ in which case \code{query} is assumed to contain dimensions in the rows and data
 }
 
 \details{
-This function uses the same algorithm described in \code{\link{findKmknn}} to identify points in \code{X} that are neighbors 
-(i.e., within a distance \code{threshold}) of each point in \code{query}.
-This requires both \code{X} and \code{query} to have the same number of dimensions.
+This function identifies points in \code{X} that are neighbors (i.e., within a distance \code{threshold}) of each point in \code{query}.
+The exact implementation can either use the KMKNNN approach or a VP tree.
+This requires both \code{X} and \code{query} to have the same number of variables.
 
 By default, neighbors are identified for all data points within \code{query}.
 If \code{subset} is specified, neighbors are only detected for the query points in the subset.
@@ -43,7 +49,8 @@ If \code{transposed=TRUE}, this function assumes that \code{query} is already tr
 Turning off \code{get.index} or \code{get.distance} may also provide a slight speed boost when these returned values are not of interest.
 Using \code{BPPARAM} will also split the search by query points across multiple processes.
 
-If multiple queries are to be performed to the same \code{X}, it may be beneficial to use \code{\link{buildKmknn}} directly to precompute the clustering.
+If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} (e.g., with \code{\link{buildKmknn}}) 
+and pass the resulting BiocNeighborIndex object to \code{precomputed}.
 Advanced users can also set \code{raw.index=TRUE}, which returns indices of neighbors in the reordered data set in \code{precomputed}.
 This may be useful when dealing with multiple queries to a common precomputed object.
 }
@@ -70,13 +77,18 @@ Aaron Lun
 }
 
 \seealso{
-\code{\link{buildKmknn}} to build an index ahead of time.
+\code{\link{buildKmknn}} or \code{\link{buildVptree}} to build an index ahead of time.
 }
 
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
 Z <- matrix(rnorm(20000), ncol=20)
-out <- queryNeighbors(Y, query=Z, threshold=1)
+out <- rangeQueryKmknn(Y, query=Z, threshold=1)
 head(out$index)
 head(out$distance)
+
+out2 <- rangeQueryVptree(Y, query=Z, threshold=1)
+head(out2$index)
+head(out2$distance)
+
 }
