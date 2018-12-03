@@ -25,7 +25,7 @@ Alternatively, a vector containing a different distance threshold for each point
 \item{precomputed}{A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
 For \code{rangeFindKmknn}, this should be a \linkS4class{KmknnIndex}, while for \code{rangeFindVptree}, this should be a \linkS4class{VptreeIndex}.}
 \item{subset}{A vector indicating the rows of \code{X} for which the neighbors should be identified.}
-\item{raw.index}{A logial scalar indicating whether raw column indices to \code{precomputed$data} should be returned.}
+\item{raw.index}{A logial scalar indicating whether raw column indices should be returned, see \code{?"\link{BiocNeighbors-raw-index}"}.}
 \item{...}{Further arguments to pass to \code{\link{buildKmknn}} if \code{precomputed=NULL}.}
 }
 
@@ -46,8 +46,6 @@ Using \code{BPPARAM} will also split the search by query points, which usually p
 
 If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} (e.g., with \code{\link{buildKmknn}}) 
 and pass the resulting BiocNeighborIndex object to \code{precomputed}.
-In such cases, it is also possible to set \code{raw.index=TRUE} to obtain indices of neighbors in the reordered data set in \code{precomputed},
-though this will change both the nature of the output \code{index} and the interpretation of \code{subset} - see \code{?\link{findKmknn}} for details.
 }
 
 \value{
@@ -64,7 +62,7 @@ A list is returned containing:
 
 If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
 
-If \code{raw.index=TRUE}, the values in \code{index} refer to \emph{columns} of \code{\link{KmknnIndex_clustered_data}(precomputed)}.
+See \code{?"\link{BiocNeighbors-raw-index}"} for an explanation of the output when \code{raw.index=TRUE}.
 }
 
 \author{

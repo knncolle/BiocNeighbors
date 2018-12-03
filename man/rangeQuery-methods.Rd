@@ -28,7 +28,7 @@ For \code{rangeFindKmknn}, this should be a \linkS4class{KmknnIndex}, while for 
 \item{transposed}{A logical scalar indicating whether the \code{query} is transposed, 
 in which case \code{query} is assumed to contain dimensions in the rows and data points in the columns.}
 \item{subset}{A vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the neighbors should be identified.}
-\item{raw.index}{A logial scalar indicating whether raw column indices to \code{precomputed$data} should be returned.}
+\item{raw.index}{A logial scalar indicating whether raw column indices should be returned, see \code{?"\link{BiocNeighbors-raw-index}"}.}
 \item{...}{Further arguments to pass to \code{\link{buildKmknn}} if \code{precomputed=NULL}.}
 }
 
@@ -39,7 +39,7 @@ This requires both \code{X} and \code{query} to have the same number of variable
 
 By default, neighbors are identified for all data points within \code{query}.
 If \code{subset} is specified, neighbors are only detected for the query points in the subset.
-This yields the same result as (but is more efficient than) subsetting the output matrices after running \code{queryNeighbors} on the full \code{query} (i.e., with \code{subset=NULL}).
+This yields the same result as (but is more efficient than) subsetting the output matrices after running \code{queryNeighbors} on the full \code{query}.
 
 If \code{threshold} is a vector, each entry is assumed to specify a (possibly different) threshold for each point in \code{query}.
 If \code{subset} is also specified, each entry is assumed to specify a threshold for each point in \code{subset}.
@@ -51,8 +51,6 @@ Using \code{BPPARAM} will also split the search by query points across multiple 
 
 If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} (e.g., with \code{\link{buildKmknn}}) 
 and pass the resulting BiocNeighborIndex object to \code{precomputed}.
-Advanced users can also set \code{raw.index=TRUE}, which returns indices of neighbors in the reordered data set in \code{precomputed}.
-This may be useful when dealing with multiple queries to a common precomputed object.
 }
 
 \value{
@@ -69,7 +67,7 @@ A list is returned containing:
 
 If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
 
-If \code{raw.index=TRUE}, the values in \code{index} refer to \emph{columns} of \code{\link{KmknnIndex_clustered_data}(precomputed)}.
+See \code{?"\link{BiocNeighbors-raw-index}"} for an explanation of the output when \code{raw.index=TRUE}.
 }
 
 \author{
