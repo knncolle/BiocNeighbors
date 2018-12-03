@@ -49,8 +49,9 @@ If \code{transposed=TRUE}, this function assumes that \code{query} is already tr
 Turning off \code{get.index} or \code{get.distance} may also provide a slight speed boost when these returned values are not of interest.
 Using \code{BPPARAM} will also split the search by query points across multiple processes.
 
-If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} (e.g., with \code{\link{buildKmknn}}) 
-and pass the resulting BiocNeighborIndex object to \code{precomputed}.
+If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} (e.g., with \code{\link{buildKmknn}}).
+The resulting BiocNeighborIndex object can be supplied as \code{precomputed} to multiple function calls, avoiding the need to repeat index construction in each call.
+Note that when \code{precomputed} is supplied, the value of \code{X} is ignored.
 }
 
 \value{
@@ -76,6 +77,8 @@ Aaron Lun
 
 \seealso{
 \code{\link{buildKmknn}} or \code{\link{buildVptree}} to build an index ahead of time.
+
+See \code{?"\link{BiocNeighbors-algorithms}"} for an overview of the available algorithms.
 }
 
 \examples{

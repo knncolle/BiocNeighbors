@@ -36,7 +36,8 @@ in which case \code{query} is assumed to contain dimensions in the rows and data
 }
 
 \details{
-This function uses the same algorithm described in \code{\link{findKmknn}} to identify points in \code{X} that are nearest neighbors of each point in \code{query}.
+All of these functions identify points in \code{X} that are the \code{k} nearest neighbors of each point in \code{query}.
+\code{queryAnnoy} performs an approximate search, while \code{queryKmknn} and \code{queryVptree} are exact.
 This requires both \code{X} and \code{query} to have the same number of dimensions.
 Moreover, the upper bound for \code{k} is set at the number of points in \code{X}.
 
@@ -48,11 +49,10 @@ If \code{transposed=TRUE}, this function assumes that \code{query} is already tr
 Turning off \code{get.index} or \code{get.distance} may also provide a slight speed boost when these returned values are not of interest.
 Using \code{BPPARAM} will also split the search by query points across multiple processes.
 
-If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} (e.g., with \code{\link{buildKmknn}}) 
-and pass the resulting BiocNeighborIndex object to \code{precomputed}.
+If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} (e.g., with \code{\link{buildKmknn}}).
+The resulting BiocNeighborIndex object can be supplied as \code{precomputed} to multiple function calls, avoiding the need to repeat index construction in each call.
 Note that when \code{precomputed} is supplied, the value of \code{X} is ignored.
 
-\code{queryAnnoy} performs an approximate search, while \code{queryKmknn} and \code{queryVptree} are exact.
 For exact methods, see comments in \code{?"\link{BiocNeighbors-ties}"} regarding the warnings when tied distances are observed.
 }
 
@@ -79,6 +79,8 @@ Aaron Lun
 \code{\link{buildKmknn}}, 
 \code{\link{buildVptree}},
 or \code{\link{buildAnnoy}} to build an index ahead of time.
+
+See \code{?"\link{BiocNeighbors-algorithms}"} for an overview of the available algorithms.
 }
 
 \examples{
