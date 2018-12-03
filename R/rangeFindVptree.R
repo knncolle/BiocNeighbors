@@ -5,7 +5,7 @@ rangeFindVptree <- function(X, threshold, get.index=TRUE, get.distance=TRUE, BPP
         buildFUN=buildVptree, searchFUN=.range_find_vptree, searchArgsFUN=.find_vptree_args, orderFUN=VptreeIndex_order)
 }
 
-.range_find_vptree <- function(jobs, data, centers, info, threshold, get.index, get.distance) {
-    .Call(cxx_range_find_vptree, jobs, data, centers, info, threshold, get.index, get.distance)
+.range_find_vptree <- function(jobs, data, nodes, threshold, get.index, get.distance) {
+    .Call(cxx_range_find_vptree, jobs, data, nodes, threshold, get.index, get.distance)
 }
 

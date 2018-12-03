@@ -1,5 +1,5 @@
 #' @importFrom BiocParallel SerialParam bpmapply
-template_range_query_exact <- function(X, query, threshold, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, 
+.template_range_query_exact <- function(X, query, threshold, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE,
     buildFUN, searchFUN, searchArgsFUN, orderFUN, ...)
 # Identifies nearest neighbours in 'X' from a query set.
 #
