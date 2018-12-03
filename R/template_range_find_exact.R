@@ -29,7 +29,7 @@
 
     collected <- bpmapply(FUN=searchFUN, 
         jobs=jobs, threshold=thresholds,
-        MoreArgs=c(searchArgsFUN(precomputed), list(get.index=get.index, get.distance=get.distance)), 
+        MoreArgs=c(searchArgsFUN(precomputed), list(data=bndata(precomputed), get.index=get.index, get.distance=get.distance)), 
         BPPARAM=BPPARAM, SIMPLIFY=FALSE)
 
     # Aggregating results across cores.

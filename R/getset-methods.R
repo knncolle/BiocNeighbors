@@ -64,4 +64,4 @@ AnnoyIndex_path <- function(x) {
     x@path
 }
 
-setMethod("bnorder", "VptreeIndex", function(x) seq_len(ncol(bndata(x))) )
+setMethod("bnorder", "AnnoyIndex", function(x) seq_len(ncol(bndata(x))) )

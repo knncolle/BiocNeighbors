@@ -8,7 +8,7 @@ buildAnnoy <- function(X, ntrees=50, directory=tempdir(), fname=tempfile(tmpdir=
     if (!is.matrix(X)) {
         X <- as.matrix(X)
     }
-    tx <- t(X)
+    tX <- t(X)
     .Call(cxx_build_annoy, tX, ntrees, fname) 
     AnnoyIndex(data=tX, path=fname, NAMES=rownames(X))
 }
