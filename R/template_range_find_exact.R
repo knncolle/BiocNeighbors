@@ -1,13 +1,13 @@
-#' @export
 #' @importFrom BiocParallel SerialParam bpmapply
-findNeighbors <- function(X, threshold, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, ...)
-# Identifies neighbours within 'threshold' distance.
+.template_range_find_exact <- function(X, threshold, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, 
+    buildFUN, searchFUN, searchArgsFUN, orderFUN, ...)
+# Template to identify neighbours within 'threshold' distance.
 #
 # written by Aaron Lun
 # created 20 June 2018
 {
-    precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildKmknn, ...)
-    ind.out <- .setup_indices(precomputed, subset, raw.index, orderFUN=KmknnIndex_clustered_order)
+    precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildFUN, ...)
+    ind.out <- .setup_indices(precomputed, subset, raw.index, orderFUN=orderFUN)
     job.id <- ind.out$index
     reorder <- ind.out$reorder
 
@@ -27,13 +27,9 @@ findNeighbors <- function(X, threshold, get.index=TRUE, get.distance=TRUE, BPPAR
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
     thresholds <- .assign_jobs(thresholds, BPPARAM)
 
-    collected <- bpmapply(FUN=.find_neighbors, 
+    collected <- bpmapply(FUN=searchFUN, 
         jobs=jobs, threshold=thresholds,
-        MoreArgs=list(data=KmknnIndex_clustered_data(precomputed),
-            centers=KmknnIndex_cluster_centers(precomputed),
-            info=KmknnIndex_cluster_info(precomputed),
-            get.index=get.index, 
-            get.distance=get.distance), 
+        MoreArgs=c(searchArgsFUN(precomputed), list(get.index=get.index, get.distance=get.distance)), 
         BPPARAM=BPPARAM, SIMPLIFY=FALSE)
 
     # Aggregating results across cores.
@@ -41,7 +37,7 @@ findNeighbors <- function(X, threshold, get.index=TRUE, get.distance=TRUE, BPPAR
     if (get.index) {
         neighbors <- .combine_lists(collected, i=1, reorder=reorder)
         if (!raw.index) {
-            preorder <- KmknnIndex_clustered_order(precomputed)
+            preorder <- orderFUN(precomputed)
             neighbors <- lapply(neighbors, FUN=function(i) preorder[i])
         }
         output$index <- neighbors
@@ -50,8 +46,4 @@ findNeighbors <- function(X, threshold, get.index=TRUE, get.distance=TRUE, BPPAR
         output$distance <- .combine_lists(collected, i=2, reorder=reorder)
     }
     return(output)
-}
-
-.find_neighbors <- function(jobs, data, centers, info, threshold, get.index, get.distance) {
-    .Call(cxx_find_neighbors, jobs, data, centers, info, threshold, get.index, get.distance)
 }

@@ -1,12 +1,12 @@
-#' @export
 #' @importFrom BiocParallel SerialParam bpmapply
-queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, ...)
+template_range_query_exact <- function(X, query, threshold, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, 
+    buildFUN, searchFUN, searchArgsFUN, orderFUN, ...)
 # Identifies nearest neighbours in 'X' from a query set.
 #
 # written by Aaron Lun
 # created 22 June 2018
 {
-    precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildKmknn, ...)
+    precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildFUN, ...)
 
     q.out <- .setup_query(query, transposed, subset)
     query <- q.out$query        
@@ -29,14 +29,9 @@ queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRU
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
     thresholds <- .assign_jobs(thresholds, BPPARAM)
 
-    collected <- bpmapply(FUN=.query_neighbors,
+    collected <- bpmapply(FUN=searchFUN,
         jobs=jobs, threshold=thresholds,
-        MoreArgs=list(data=KmknnIndex_clustered_data(precomputed),
-            centers=KmknnIndex_cluster_centers(precomputed),
-            info=KmknnIndex_cluster_info(precomputed),
-            query=query,
-            get.index=get.index, 
-            get.distance=get.distance), 
+        MoreArgs=c(searchArgsFUN(precomputed), list(query=query, get.index=get.index, get.distance=get.distance)), 
         BPPARAM=BPPARAM, SIMPLIFY=FALSE)
 
     # Aggregating results across cores.
@@ -44,7 +39,7 @@ queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRU
     if (get.index) {
         neighbors <- .combine_lists(collected, i=1, reorder=reorder)
         if (!raw.index) {
-            preorder <- KmknnIndex_clustered_order(precomputed)
+            preorder <- orderFUN(precomputed)
             neighbors <- lapply(neighbors, FUN=function(i) preorder[i])
         }
         output$index <- neighbors
