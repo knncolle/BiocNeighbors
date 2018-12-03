@@ -16,13 +16,13 @@ setClass("AnnoyParam", contains="BiocNeighborParam", slots=c(ntrees="integer", d
 
 #' @export
 #' @importClassesFrom S4Vectors character_OR_NULL
-setClass("BiocNeighborIndex", contains="VIRTUAL", slots=c(NAMES="character_OR_NULL"))
+setClass("BiocNeighborIndex", contains="VIRTUAL", slots=c(data="matrix", NAMES="character_OR_NULL"))
 
 #' @export
-setClass("KmknnIndex", contains="BiocNeighborIndex", slots=c(data="matrix", centers="matrix", info="list", order="integer"))
+setClass("KmknnIndex", contains="BiocNeighborIndex", slots=c(centers="matrix", info="list", order="integer"))
 
 #' @export
-setClass("VptreeIndex", contains="BiocNeighborIndex", slots=c(data="matrix", order="integer", nodes="list"))
+setClass("VptreeIndex", contains="BiocNeighborIndex", slots=c(order="integer", nodes="list"))
 
 #' @export
-setClass("AnnoyIndex", contains="BiocNeighborIndex", slots=c(path="character", Dims="integer"))
+setClass("AnnoyIndex", contains="BiocNeighborIndex", slots=c(path="character"))

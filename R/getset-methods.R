@@ -1,3 +1,4 @@
+##################################
 # Getter methods for KmknnParam.
 
 #' @export
@@ -17,6 +18,7 @@ AnnoyParam_directory <- function(x) {
     x@dir
 }
 
+##################################
 # Getter methods for BiocNeighborIndex
 
 #' @export
@@ -24,12 +26,13 @@ setMethod("dimnames", "BiocNeighborIndex", function(x) {
     list(x@NAMES, NULL) 
 })
 
-# Getter methods for KmknnIndex
+#' @export
+setMethod("bndata", "BiocNeighborIndex", function(x) x@data)
 
 #' @export
-KmknnIndex_clustered_data <- function(x) {
-    x@data
-}
+setMethod("dim", "BiocNeighborIndex", function(x) rev(dim(bndata(x))) ) # reversed, as matrix was transposed.
+
+# Getter methods for KmknnIndex
 
 #' @export
 KmknnIndex_cluster_centers <- function(x) {
@@ -42,20 +45,9 @@ KmknnIndex_cluster_info <- function(x) {
 }
 
 #' @export
-KmknnIndex_clustered_order <- function(x) {
-    x@order
-}
-
-setMethod("dim", "KmknnIndex", function(x) { 
-    rev(dim(KmknnIndex_clustered_data(x))) # reversed, as matrix was transposed.
-}) 
+setMethod("bnorder", "KmknnIndex", function(x) x@order)
 
 # Getter methods for VptreeIndex
-
-#' @export
-VptreeIndex_data <- function(x) {
-    x@data
-}
 
 #' @export
 VptreeIndex_nodes <- function(x) {
@@ -63,13 +55,7 @@ VptreeIndex_nodes <- function(x) {
 }
 
 #' @export
-VptreeIndex_order <- function(x) {
-    x@order
-}
-
-setMethod("dim", "VptreeIndex", function(x) { 
-    rev(dim(VptreeIndex_data(x))) # reversed, as matrix was transposed.
-}) 
+setMethod("bnorder", "VptreeIndex", function(x) x@order)
 
 # Getter methods for AnnoyIndex
 
@@ -78,5 +64,4 @@ AnnoyIndex_path <- function(x) {
     x@path
 }
 
-#' @export
-setMethod("dim", "AnnoyIndex", function(x) { x@Dims })
+setMethod("bnorder", "VptreeIndex", function(x) seq_len(ncol(bndata(x))) )
