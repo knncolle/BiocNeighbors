@@ -1,11 +1,10 @@
-#include "init.h"
-#include "kmknn.h"
+#ifndef RANGE_QUERY_EXACT_H
+#define RANGE_QUERY_EXACT_H
 #include "utils.h"
 
-SEXP query_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info, SEXP dist_thresh, SEXP query, SEXP get_index, SEXP get_distance) {
-    BEGIN_RCPP
-    searcher n_finder(X, clust_centers, clust_info);
-    const size_t ndim=n_finder.get_ndims();
+template<class Searcher>
+SEXP range_query_exact(Searcher& finder, SEXP to_check, SEXP dist_thresh, SEXP query, SEXP get_index, SEXP get_distance) {
+    const size_t ndim=finder.get_ndims();
 
     // Examining the query matrix and checking it against the subset indices.
     Rcpp::NumericMatrix Query(query);
@@ -33,17 +32,17 @@ SEXP query_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info,
         
     // Iterating across cells, finding NNs and storing distances or neighbors.
     for (size_t ix=0; ix<nobs; ++ix) {
-        n_finder.find_neighbors(Query.begin() + ndim * points[ix], thresholds[ix], store_neighbors, store_distances); 
+        finder.find_neighbors(Query.begin() + ndim * points[ix], thresholds[ix], store_neighbors, store_distances); 
 
         if (store_neighbors) {
-            const std::deque<size_t>& neighbors=n_finder.get_neighbors();
+            const std::deque<size_t>& neighbors=finder.get_neighbors();
             Rcpp::IntegerVector output(neighbors.begin(), neighbors.end());
             for (auto& o : output) { ++o; } // getting back to 1-based indexing.
             out_idx[ix]=output;
         }
 
         if (store_distances) {
-            const std::deque<double>& distances=n_finder.get_distances();
+            const std::deque<double>& distances=finder.get_distances();
             out_dist[ix]=Rcpp::NumericVector(distances.begin(), distances.end());
         }
     }
@@ -56,5 +55,6 @@ SEXP query_neighbors(SEXP to_check, SEXP X, SEXP clust_centers, SEXP clust_info,
         output[1]=out_dist;
     }
     return output;
-    END_RCPP
 }
+
+#endif
