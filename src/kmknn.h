@@ -7,9 +7,9 @@
 #include <queue>
 #include "Rcpp.h"
 
-struct searcher {
+struct Kmknn {
 public:
-    searcher(SEXP, SEXP, SEXP);
+    Kmknn(SEXP, SEXP, SEXP);
 
     void find_neighbors(size_t, double, const bool, const bool);
     void find_neighbors(const double*, double, const bool, const bool);

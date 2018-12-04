@@ -6,7 +6,7 @@
 
 /****************** Constructor *********************/
 
-searcher::searcher(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen), diagnose_ties(true) {
+Kmknn::Kmknn(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen), diagnose_ties(true) {
     const size_t& ncenters=centers.ncol();
 
     Rcpp::List Info(info);
@@ -27,15 +27,15 @@ searcher::searcher(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen), diag
 
 /****************** Visible methods *********************/
 
-size_t searcher::get_nobs() const { return exprs.ncol(); }
+size_t Kmknn::get_nobs() const { return exprs.ncol(); }
 
-size_t searcher::get_ndims() const { return exprs.nrow(); }
+size_t Kmknn::get_ndims() const { return exprs.nrow(); }
 
-std::deque<size_t>& searcher::get_neighbors () { return neighbors; }
+std::deque<size_t>& Kmknn::get_neighbors () { return neighbors; }
 
-std::deque<double>& searcher::get_distances () { return distances; }
+std::deque<double>& Kmknn::get_distances () { return distances; }
 
-void searcher::find_neighbors (size_t cell, double threshold, const bool index, const bool dist) {
+void Kmknn::find_neighbors (size_t cell, double threshold, const bool index, const bool dist) {
     if (cell >= size_t(exprs.ncol())) {
         throw std::runtime_error("cell index out of range");
     }
@@ -44,12 +44,12 @@ void searcher::find_neighbors (size_t cell, double threshold, const bool index, 
     return;
 }
 
-void searcher::find_neighbors (const double* current, double threshold, const bool index, const bool dist) {
+void Kmknn::find_neighbors (const double* current, double threshold, const bool index, const bool dist) {
     search_all(current, threshold, index, dist);
     return;
 }
 
-void searcher::find_nearest_neighbors (size_t cell, size_t nn, const bool index, const bool dist) {
+void Kmknn::find_nearest_neighbors (size_t cell, size_t nn, const bool index, const bool dist) {
     if (cell >= size_t(exprs.ncol())) {
         throw std::runtime_error("cell index out of range");
     }
@@ -63,7 +63,7 @@ void searcher::find_nearest_neighbors (size_t cell, size_t nn, const bool index,
     return;
 }
 
-void searcher::find_nearest_neighbors (const double* current, size_t nn, const bool index, const bool dist) {
+void Kmknn::find_nearest_neighbors (const double* current, size_t nn, const bool index, const bool dist) {
     search_nn(current, nn + diagnose_ties);
     
     queue2deque(nearest, neighbors, distances, index, dist || diagnose_ties, false, size_t(0));
@@ -73,7 +73,7 @@ void searcher::find_nearest_neighbors (const double* current, size_t nn, const b
     return;
 }
 
-double searcher::compute_sqdist(const double* x, const double* y) const {
+double Kmknn::compute_sqdist(const double* x, const double* y) const {
     double out=0;
     const size_t NR=exprs.nrow();
     for (size_t m=0; m<NR; ++m) {
@@ -85,7 +85,7 @@ double searcher::compute_sqdist(const double* x, const double* y) const {
 
 /****************** Convex search methods *********************/
 
-void searcher::search_all (const double* current, double threshold, const bool index, const bool dist) {
+void Kmknn::search_all (const double* current, double threshold, const bool index, const bool dist) {
     neighbors.clear();
     distances.clear();
     const size_t& ndims=exprs.nrow();
@@ -136,7 +136,7 @@ void searcher::search_all (const double* current, double threshold, const bool i
     return;
 }
 
-void searcher::search_nn(const double* current, size_t nn) {
+void Kmknn::search_nn(const double* current, size_t nn) {
     const size_t& ndims=exprs.nrow();
     const size_t& ncenters=centers.ncol();
     const double* center_ptr=centers.begin();
