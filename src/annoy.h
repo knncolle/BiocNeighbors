@@ -16,6 +16,6 @@
 
 typedef float ANNOYTYPE;
 
-typedef AnnoyIndex<int, ANNOYTYPE, Euclidean, Kiss64Random> annoyance;
+typedef AnnoyIndex<int32_t, ANNOYTYPE, Euclidean, Kiss64Random> annoyance;
 
 #endif
