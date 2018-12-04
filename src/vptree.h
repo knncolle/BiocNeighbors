@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <deque>
 #include <vector>
-#include <queue>
+#include "neighbor_queue.h"
 #include "Rcpp.h"
 
 /* Adapted from http://stevehanov.ca/blog/index.php?id=130 */
@@ -57,10 +57,8 @@ private:
     std::deque<double> distances;
     double tau;
 
-    std::priority_queue<std::pair<double, int> > nearest;
-    void search_nn(int, const double*, int);
-    bool diagnose_ties;
-
+    neighbor_queue nearest;
+    void search_nn(int, const double*);
     void search_all(int, const double*, double, bool, bool);
 };
 

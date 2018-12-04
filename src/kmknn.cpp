@@ -1,12 +1,11 @@
 #include "kmknn.h"
 #include "utils.h"
-#include "queue2deque.h"
 
 #define USE_UPPER 0
 
 /****************** Constructor *********************/
 
-Kmknn::Kmknn(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen), diagnose_ties(true) {
+Kmknn::Kmknn(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen) {
     const size_t& ncenters=centers.ncol();
 
     Rcpp::List Info(info);
@@ -54,22 +53,16 @@ void Kmknn::find_nearest_neighbors (size_t cell, size_t nn, const bool index, co
         throw std::runtime_error("cell index out of range");
     }
     auto curcol=exprs.column(cell);
-    search_nn(curcol.begin(), nn + 1 + diagnose_ties);
-    
-    queue2deque(nearest, neighbors, distances, index, dist || diagnose_ties, true, cell);
-    for (auto& d : distances) { d=std::sqrt(d); } // distances in 'nearest' are squared.
-
-    check_ties(diagnose_ties, neighbors, distances, nn);
+    nearest.setup(nn, true);
+    search_nn(curcol.begin());
+    nearest.report(neighbors, distances, index, dist, true, cell);
     return;
 }
 
 void Kmknn::find_nearest_neighbors (const double* current, size_t nn, const bool index, const bool dist) {
-    search_nn(current, nn + diagnose_ties);
-    
-    queue2deque(nearest, neighbors, distances, index, dist || diagnose_ties, false, size_t(0));
-    for (auto& d : distances) { d=std::sqrt(d); } // distances in 'nearest' are squared.
-
-    check_ties(diagnose_ties, neighbors, distances, nn);
+    nearest.setup(nn, false);
+    search_nn(current);
+    nearest.report(neighbors, distances, index, dist, true);
     return;
 }
 
@@ -136,7 +129,7 @@ void Kmknn::search_all (const double* current, double threshold, const bool inde
     return;
 }
 
-void Kmknn::search_nn(const double* current, size_t nn) {
+void Kmknn::search_nn(const double* current) {
     const size_t& ndims=exprs.nrow();
     const size_t& ncenters=centers.ncol();
     const double* center_ptr=centers.begin();
@@ -196,17 +189,12 @@ void Kmknn::search_nn(const double* current, size_t nn) {
 #endif
 
             const double dist2cell2=compute_sqdist(current, other_cell);
-            if (nearest.size() < nn || dist2cell2 < threshold2) {
-                nearest.push(std::make_pair(dist2cell2, cur_start + celldex));
-                if (nearest.size() > nn) {
-                    nearest.pop();
-                }
-                if (nearest.size()==nn) {
-                    threshold2=nearest.top().first; // Shrinking the threshold, if an earlier NN has been found.
+            nearest.add(cur_start + celldex, dist2cell2);
+            if (nearest.is_full()) {
+                threshold2=nearest.limit(); // Shrinking the threshold, if an earlier NN has been found.
 #if USE_UPPER
-                    upper_bd=std::sqrt(threshold2) + dist2center; 
+                upper_bd=std::sqrt(threshold2) + dist2center; 
 #endif
-                }
             }
         }
     }

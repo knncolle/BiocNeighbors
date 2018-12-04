@@ -56,28 +56,3 @@ Rcpp::NumericVector check_distances(Rcpp::NumericVector incoming, size_t N) {
     }
     return incoming;
 }
-
-void check_ties(bool& diagnose_ties, std::deque<size_t>& neighbors, std::deque<double>& distances, size_t nn) {
-    if (!diagnose_ties) { return; }
-
-    constexpr double TOLERANCE=1.00000001;
-    for (size_t d=1; d<distances.size(); ++d) {
-        if (distances[d-1] * TOLERANCE >= distances[d]) {
-            // Setting diagnose_ties to false, as we've found the first instance.
-            diagnose_ties=false;
-            Rcpp::warning("tied distances detected in nearest-neighbor calculation");
-            break;
-        }
-    }
-
-    // We assume that the NN search was conducted with an extra neighbor if diagnose_ties=true upon entry.
-    // This is necessary to allow the above code to check for whether there is a tie at the boundary of the set.
-    // It is now time to remove this extra neighbor which should lie at the end of the set.
-    if (neighbors.size() > nn) {
-        neighbors.pop_back();
-    }
-    if (distances.size() > nn) {
-        distances.pop_back();
-    }
-    return;
-}

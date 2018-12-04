@@ -4,8 +4,9 @@
 #include <stdexcept>
 #include <algorithm>
 #include <deque>
-#include <queue>
+#include <cmath>
 #include "Rcpp.h"
+#include "neighbor_queue.h"
 
 struct Kmknn {
 public:
@@ -29,19 +30,15 @@ protected:
     std::deque<size_t> neighbors;
     std::deque<double> distances;
     void search_all(const double*, double, const bool, const bool);
-    void search_nn (const double*, size_t);
+
+    neighbor_queue nearest;
+    void search_nn (const double*);
 
     // Cluster-related data members.
     const Rcpp::NumericMatrix centers;
     std::deque<int> clust_start;
     std::deque<int> clust_nobs;
     std::deque<Rcpp::NumericVector> clust_dist;
-
-    // Nearest-neighbor-related data members.
-    std::priority_queue<std::pair<double, int> > nearest;
-
-    // Deal with ties.
-    bool diagnose_ties;
 };
 
 #endif

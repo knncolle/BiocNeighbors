@@ -1,5 +1,4 @@
 #include "vptree.h"
-#include "queue2deque.h"
 #include "utils.h"
 
 DataPoint::DataPoint() : ptr(NULL), index(-1) {}
@@ -18,7 +17,7 @@ std::deque<double>& VpTree::get_distances () { return distances; }
 
 /***** Methods to build the VP tree *****/
 
-VpTree::VpTree(Rcpp::NumericMatrix vals) : reference(vals), ndim(vals.nrow()), diagnose_ties(true) {
+VpTree::VpTree(Rcpp::NumericMatrix vals) : reference(vals), ndim(vals.nrow()) {
     const int nelements=vals.ncol();
     items.reserve(nelements);
     const double * ptr = vals.begin();
@@ -116,7 +115,7 @@ Rcpp::List VpTree::save() {
     return Rcpp::List::create(item_index, node_index, node_left, node_right, node_thresholds);
 }
 
-VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data) : reference(vals), ndim(vals.nrow()), diagnose_ties(true) {
+VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data) : reference(vals), ndim(vals.nrow()) {
     const int nelements=reference.ncol();
 
     { // Filling the item index.
@@ -168,22 +167,22 @@ void VpTree::find_nearest_neighbors (size_t cell, int k, const bool index, const
         throw std::runtime_error("cell index out of range");
     }
     tau = DBL_MAX;
+    nearest.setup(k, true);
     auto curcol=reference.column(cell);
-    search_nn(0, curcol.begin(), k + 1 + diagnose_ties);
-    queue2deque(nearest, neighbors, distances, index, dist || diagnose_ties, true, cell);
-    check_ties(diagnose_ties, neighbors, distances, k);
+    search_nn(0, curcol.begin());
+    nearest.report(neighbors, distances, index, dist, false, cell);
     return;
 }
 
 void VpTree::find_nearest_neighbors (const double* current, int k, const bool index, const bool dist) {
     tau = DBL_MAX;
-    search_nn(0, current, k + diagnose_ties);
-    queue2deque(nearest, neighbors, distances, index, dist || diagnose_ties, false, size_t(0));
-    check_ties(diagnose_ties, neighbors, distances, k);
+    nearest.setup(k, false);
+    search_nn(0, current);
+    nearest.report(neighbors, distances, index, dist, false);
     return;
 }
 
-void VpTree::search_nn(int curnode_index, const double* target, int k) {
+void VpTree::search_nn(int curnode_index, const double* target) {
     if(curnode_index == LEAF_MARKER) { // indicates that we're done here
         return;
     }
@@ -194,14 +193,9 @@ void VpTree::search_nn(int curnode_index, const double* target, int k) {
 
     // If current node within radius tau
     if (dist < tau) {
-        if (nearest.size() == k) {
-            nearest.pop(); // remove furthest node from result list (if we already have k results)
-        }
-
-        nearest.push(std::make_pair(dist, curnode.index)); // add current node to result list
-
-        if (nearest.size() == k) {
-            tau = nearest.top().first; // update value of tau (farthest point in result list)
+        nearest.add(curnode.index, dist);
+        if (nearest.is_full()) {
+            tau = nearest.limit(); // update value of tau (farthest point in result list)
         }
     }
     
@@ -213,21 +207,21 @@ void VpTree::search_nn(int curnode_index, const double* target, int k) {
     // If the target lies within the radius of ball
     if (dist < curnode.threshold) {
         if (dist - tau <= curnode.threshold) {         // if there can still be neighbors inside the ball, recursively search left child first
-            search_nn(curnode.left, target, k);
+            search_nn(curnode.left, target);
         }
         
         if (dist + tau >= curnode.threshold) {         // if there can still be neighbors outside the ball, recursively search right child
-            search_nn(curnode.right, target, k);
+            search_nn(curnode.right, target);
         }
     
     // If the target lies outsize the radius of the ball
     } else {
         if (dist + tau >= curnode.threshold) {         // if there can still be neighbors outside the ball, recursively search right child first
-            search_nn(curnode.right, target, k);
+            search_nn(curnode.right, target);
         }
         
         if (dist - tau <= curnode.threshold) {         // if there can still be neighbors inside the ball, recursively search left child
-            search_nn(curnode.left, target, k);
+            search_nn(curnode.left, target);
         }
     }
 }
