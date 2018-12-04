@@ -54,14 +54,14 @@ void Kmknn::find_nearest_neighbors (size_t cell, size_t nn, const bool index, co
     }
     auto curcol=exprs.column(cell);
     nearest.setup(nn, true);
-    search_nn(curcol.begin());
+    search_nn(curcol.begin(), nearest);
     nearest.report(neighbors, distances, index, dist, true, cell);
     return;
 }
 
 void Kmknn::find_nearest_neighbors (const double* current, size_t nn, const bool index, const bool dist) {
     nearest.setup(nn, false);
-    search_nn(current);
+    search_nn(current, nearest);
     nearest.report(neighbors, distances, index, dist, true);
     return;
 }
@@ -129,7 +129,9 @@ void Kmknn::search_all (const double* current, double threshold, const bool inde
     return;
 }
 
-void Kmknn::search_nn(const double* current) {
+void Kmknn::search_nn(const double* current, neighbor_queue& nearest) { 
+    // final argument is not strictly necessary but makes dependencies more obvious.
+
     const size_t& ndims=exprs.nrow();
     const size_t& ncenters=centers.ncol();
     const double* center_ptr=centers.begin();

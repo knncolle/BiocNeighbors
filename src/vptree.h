@@ -58,7 +58,7 @@ private:
     double tau;
 
     neighbor_queue nearest;
-    void search_nn(int, const double*);
+    void search_nn(int, const double*, neighbor_queue&);
     void search_all(int, const double*, double, bool, bool);
 };
 
