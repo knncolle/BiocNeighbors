@@ -3,18 +3,18 @@
 
 SEXP query_annoy (SEXP to_check, SEXP query, SEXP ndims, SEXP fname, SEXP nn, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
-    const size_t Ndim=check_integer_scalar(ndims, "number of dimensions");
+    const MatDim_t Ndim=check_integer_scalar(ndims, "number of dimensions");
     annoyance obj(Ndim);
     auto Fname=check_string(fname, "index file name");
     obj.load(Fname.c_str());
 
     Rcpp::NumericMatrix Query(query);
-    if (size_t(Query.nrow())!=Ndim) {
+    if (Query.nrow()!=Ndim) {
         throw std::runtime_error("'query' and 'X' have different dimensionality");
     }
     const Rcpp::IntegerVector points=check_indices(to_check, Query.ncol());
-    const size_t nobs=points.size();
-    const size_t K=check_k(nn);
+    const VecSize_t nobs=points.size();
+    const NumNeighbors_t K=check_k(nn);
     
     // Choosing the output mode.
     const bool store_neighbors=check_logical_scalar(get_index, "'get.index'");
@@ -46,7 +46,7 @@ SEXP query_annoy (SEXP to_check, SEXP query, SEXP ndims, SEXP fname, SEXP nn, SE
         std::copy(qIt, qIt+Ndim, tmp.begin());
 
         obj.get_nns_by_vector(tmp.data(), K, -1, iptr, dptr);
-        const size_t limit=std::min(K, kept_index.size()); // as the API can yield < K elements.
+        const NumNeighbors_t limit=std::min(K, static_cast<NumNeighbors_t>(kept_index.size())); // as the API can yield < K elements.
 
         if (store_neighbors) {
             for (auto& x : kept_index) { ++x; } // getting back to 1-based indexing.

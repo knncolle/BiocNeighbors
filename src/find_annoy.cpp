@@ -3,14 +3,14 @@
 
 SEXP find_annoy (SEXP to_check, SEXP ndims, SEXP fname, SEXP nn, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
-    const int Ndim=check_integer_scalar(ndims, "number of dimensions");
+    const MatDim_t Ndim=check_integer_scalar(ndims, "number of dimensions");
     annoyance obj(Ndim);
     auto Fname=check_string(fname, "index file name");
     obj.load(Fname.c_str());
 
-    auto chosen=check_indices(to_check, obj.get_n_items());
-    const size_t nobs=chosen.size();
-    const size_t K=check_k(nn);
+    const Rcpp::IntegerVector chosen=check_indices(to_check, obj.get_n_items());
+    const VecSize_t nobs=chosen.size();
+    const NumNeighbors_t K=check_k(nn);
     
     // Choosing the output mode.
     const bool store_neighbors=check_logical_scalar(get_index, "'get.index'");
@@ -39,7 +39,7 @@ SEXP find_annoy (SEXP to_check, SEXP ndims, SEXP fname, SEXP nn, SEXP get_index,
     for (auto c : chosen) { 
         obj.get_nns_by_item(c, K + 1, -1, iptr, dptr); // +1, as it forgets to discard 'self'.
 
-        size_t counter=0;
+        NumNeighbors_t counter=0;
         for (size_t idx=0; idx<kept_index.size() && counter < K; ++idx) { // protect against API returning more/less NNs.
             if (kept_index[idx]!=c) {
                 if (store_neighbors) {

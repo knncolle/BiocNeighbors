@@ -113,12 +113,12 @@ Rcpp::List VpTree::save() {
 }
 
 VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data) : reference(vals), ndim(vals.nrow()) {
-    const size_t nelements=reference.ncol();
+    const MatDim_t nelements=reference.ncol();
 
     { // Filling the item index.
         items.reserve(nelements);
         const double* ptr=reference.begin();
-        for (size_t i=0; i<nelements; ++i, ptr+=ndim) {
+        for (MatDim_t i=0; i<nelements; ++i, ptr+=ndim) {
             items.push_back(DataPoint(i, ptr));
         }
     }
@@ -133,14 +133,14 @@ VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data) : reference(vals)
         Rcpp::IntegerVector node_right=node_data[2];
         Rcpp::NumericVector node_thresholds=node_data[3];
 
-        const NodeIndex_t nnodes=node_index.size();
-        if (static_cast<NodeIndex_t>(node_left.size())!=nnodes || 
-                static_cast<NodeIndex_t>(node_right.size())!=nnodes || 
-                static_cast<NodeIndex_t>(node_thresholds.size())!=nnodes) {
+        if (node_left.size()!=node_index.size() || 
+                node_right.size()!=node_index.size() || 
+                node_thresholds.size()!=node_index.size()) {
             throw std::runtime_error("VP tree node index vector lengths are not consistent");
         }
 
-        for (auto i=0; i<nnodes; ++i) {
+        const NodeIndex_t nnodes=node_index.size();
+        for (NodeIndex_t i=0; i<nnodes; ++i) {
             nodes.push_back(Node(node_index[i]));
             Node& curnode=nodes.back();
             curnode.left=node_left[i];
