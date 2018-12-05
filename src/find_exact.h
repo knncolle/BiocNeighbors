@@ -5,9 +5,9 @@
 template <class Searcher>
 SEXP find_exact(Searcher& finder, SEXP to_check, SEXP nn, SEXP get_index, SEXP get_distance) {
     // Checking NN's and indices.
-    const size_t NN=check_k(nn);
+    const NumNeighbors_t NN=check_k(nn);
     const Rcpp::IntegerVector points=check_indices(to_check, finder.get_nobs());
-    const size_t nobs=points.size();
+    const VecSize_t nobs=points.size();
 
     // Getting the output mode.
     const bool store_neighbors=check_logical_scalar(get_index, "'get.index'");
@@ -28,8 +28,8 @@ SEXP find_exact(Searcher& finder, SEXP to_check, SEXP nn, SEXP get_index, SEXP g
     // Iterating across cells, finding NNs and storing distances or neighbors.
     for (auto h : points) {
         finder.find_nearest_neighbors(h, NN, store_neighbors, store_distances);
-        const std::deque<double>& distances=finder.get_distances();
-        const std::deque<size_t>& neighbors=finder.get_neighbors();
+        const auto& distances=finder.get_distances();
+        const auto& neighbors=finder.get_neighbors();
 
         if (store_distances) {
             std::copy(distances.begin(), distances.end(), odIt);
@@ -37,7 +37,7 @@ SEXP find_exact(Searcher& finder, SEXP to_check, SEXP nn, SEXP get_index, SEXP g
         }
         if (store_neighbors) {
             std::copy(neighbors.begin(), neighbors.end(), oiIt);
-            for (size_t i=0; i<NN; ++i, ++oiIt) {
+            for (NumNeighbors_t i=0; i<NN; ++i, ++oiIt) {
                 ++(*oiIt); // getting back to 1-indexed.
             }
         }

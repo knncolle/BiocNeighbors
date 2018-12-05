@@ -1,6 +1,6 @@
 #include "neighbor_queue.h"
 
-void neighbor_queue::setup(size_t k, bool s) {
+void neighbor_queue::setup(NumNeighbors_t k, bool s) {
     self=s;
     n_neighbors=k;
     check_k=n_neighbors + self + ties;
@@ -8,10 +8,10 @@ void neighbor_queue::setup(size_t k, bool s) {
     return;
 }
 
-void neighbor_queue::add(size_t i, double d) {
+void neighbor_queue::add(CellIndex_t i, double d) {
     if (!full) {
         nearest.push(NeighborPoint(d, i));
-        if (nearest.size()==check_k) {
+        if (static_cast<NumNeighbors_t>(nearest.size())==check_k) {
             full=true;
         }
     } else if (d < nearest.top().first) {
@@ -30,7 +30,7 @@ double neighbor_queue::limit() const {
 }
 
 // Converts information to neighbors/distances. Also clears 'nearest'.
-void neighbor_queue::report(std::deque<size_t>& neighbors, std::deque<double>& distances, bool index, bool dist, bool sqdist, size_t self_dex)
+void neighbor_queue::report(std::deque<CellIndex_t>& neighbors, std::deque<double>& distances, bool index, bool dist, bool sqdist, CellIndex_t self_dex)
 {
     neighbors.clear();
     distances.clear();
@@ -88,12 +88,12 @@ void neighbor_queue::report(std::deque<size_t>& neighbors, std::deque<double>& d
         // This is necessary to allow the above code to check for whether there is a tie at the boundary of the set.
         // It is now time to remove this extra neighbor which should lie at the end of the set. The exception
         // is when we never actually fill up the queue, in which case we shouldn't do any popping.
-        if (neighbors.size() > n_neighbors) {
+        if (static_cast<NumNeighbors_t>(neighbors.size()) > n_neighbors) {
             neighbors.pop_back();
         }
         if (!dist) {
             distances.clear();
-        } else if (distances.size() > n_neighbors) {
+        } else if (static_cast<NumNeighbors_t>(distances.size()) > n_neighbors) {
             distances.pop_back();
         }
     }

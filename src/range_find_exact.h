@@ -6,7 +6,7 @@ template<class Searcher>
 SEXP range_neighbors(Searcher& finder, SEXP to_check, SEXP dist_thresh, SEXP get_index, SEXP get_distance) {
     // Figuring out which indices we're using.
     const Rcpp::IntegerVector points=check_indices(to_check, finder.get_nobs());
-    const size_t nobs=points.size();
+    const VecSize_t nobs=points.size();
     const Rcpp::NumericVector thresholds=check_distances(dist_thresh, nobs);
 
     // Getting the output mode.
@@ -24,18 +24,18 @@ SEXP range_neighbors(Searcher& finder, SEXP to_check, SEXP dist_thresh, SEXP get
     }
 
     // Iterating across cells, finding NNs and storing distances or neighbors.
-    for (size_t ix=0; ix<nobs; ++ix) {
+    for (VecSize_t ix=0; ix<nobs; ++ix) {
         finder.find_neighbors(points[ix], thresholds[ix], store_neighbors, store_distances);
 
         if (store_neighbors) {
-            const std::deque<size_t>& neighbors=finder.get_neighbors();
+            const auto& neighbors=finder.get_neighbors();
             Rcpp::IntegerVector output(neighbors.begin(), neighbors.end());
             for (auto& o : output) { ++o; } // getting back to 1-based indexing.
             out_idx[ix]=output;
         }
 
         if (store_distances) {
-            const std::deque<double>& distances=finder.get_distances();
+            const auto& distances=finder.get_distances();
             out_dist[ix]=Rcpp::NumericVector(distances.begin(), distances.end());
         }
     }

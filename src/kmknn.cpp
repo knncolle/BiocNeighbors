@@ -6,10 +6,10 @@
 /****************** Constructor *********************/
 
 Kmknn::Kmknn(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen) {
-    const size_t& ncenters=centers.ncol();
+    const MatDim_t ncenters=centers.ncol();
 
     Rcpp::List Info(info);
-    for (size_t i=0; i<ncenters; ++i) {
+    for (MatDim_t i=0; i<ncenters; ++i) {
         Rcpp::List current(Info[i]);
         if (current.size()!=2) {
             throw std::runtime_error("cluster information list elements must be of length 2");
@@ -26,16 +26,16 @@ Kmknn::Kmknn(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen) {
 
 /****************** Visible methods *********************/
 
-size_t Kmknn::get_nobs() const { return exprs.ncol(); }
+MatDim_t Kmknn::get_nobs() const { return exprs.ncol(); }
 
-size_t Kmknn::get_ndims() const { return exprs.nrow(); }
+MatDim_t Kmknn::get_ndims() const { return exprs.nrow(); }
 
-std::deque<size_t>& Kmknn::get_neighbors () { return neighbors; }
+std::deque<CellIndex_t>& Kmknn::get_neighbors () { return neighbors; }
 
 std::deque<double>& Kmknn::get_distances () { return distances; }
 
-void Kmknn::find_neighbors (size_t cell, double threshold, const bool index, const bool dist) {
-    if (cell >= size_t(exprs.ncol())) {
+void Kmknn::find_neighbors (CellIndex_t cell, double threshold, const bool index, const bool dist) {
+    if (cell >= static_cast<CellIndex_t>(exprs.ncol())) {
         throw std::runtime_error("cell index out of range");
     }
     auto curcol=exprs.column(cell);
@@ -48,8 +48,8 @@ void Kmknn::find_neighbors (const double* current, double threshold, const bool 
     return;
 }
 
-void Kmknn::find_nearest_neighbors (size_t cell, size_t nn, const bool index, const bool dist) {
-    if (cell >= size_t(exprs.ncol())) {
+void Kmknn::find_nearest_neighbors (CellIndex_t cell, NumNeighbors_t nn, const bool index, const bool dist) {
+    if (cell >= static_cast<CellIndex_t>(exprs.ncol())) {
         throw std::runtime_error("cell index out of range");
     }
     auto curcol=exprs.column(cell);
@@ -59,7 +59,7 @@ void Kmknn::find_nearest_neighbors (size_t cell, size_t nn, const bool index, co
     return;
 }
 
-void Kmknn::find_nearest_neighbors (const double* current, size_t nn, const bool index, const bool dist) {
+void Kmknn::find_nearest_neighbors (const double* current, NumNeighbors_t nn, const bool index, const bool dist) {
     nearest.setup(nn, false);
     search_nn(current, nearest);
     nearest.report(neighbors, distances, index, dist, true);
@@ -68,9 +68,9 @@ void Kmknn::find_nearest_neighbors (const double* current, size_t nn, const bool
 
 double Kmknn::compute_sqdist(const double* x, const double* y) const {
     double out=0;
-    const size_t NR=exprs.nrow();
-    for (size_t m=0; m<NR; ++m) {
-        const double tmp=x[m]-y[m];
+    const MatDim_t NR=exprs.nrow();
+    for (MatDim_t m=0; m<NR; ++m, ++x, ++y) {
+        const double tmp=*x - *y;
         out+=tmp*tmp;
     }
     return out;
@@ -81,19 +81,19 @@ double Kmknn::compute_sqdist(const double* x, const double* y) const {
 void Kmknn::search_all (const double* current, double threshold, const bool index, const bool dist) {
     neighbors.clear();
     distances.clear();
-    const size_t& ndims=exprs.nrow();
-    const size_t& ncenters=centers.ncol();
+    const MatDim_t ndims=exprs.nrow();
+    const MatDim_t ncenters=centers.ncol();
     const double* center_ptr=centers.begin();
     const double threshold2=threshold*threshold; // squaring.
 
     // Computing the distance to each center, and deciding whether to proceed for each cluster.
-    for (size_t center=0; center<ncenters; ++center, center_ptr+=ndims) {
-        const int& cur_nobs=clust_nobs[center];
+    for (MatDim_t center=0; center<ncenters; ++center, center_ptr+=ndims) {
+        const CellIndex_t cur_nobs=clust_nobs[center];
         if (!cur_nobs) { continue; }
 
         const double dist2center=std::sqrt(compute_sqdist(current, center_ptr));
         auto dIt=clust_dist[center].begin();
-        const double& maxdist=*(dIt + cur_nobs - 1);
+        const double maxdist=*(dIt + cur_nobs - 1);
         if (threshold + maxdist < dist2center) { continue; }
 
         /* Cells within this cluster are potentially countable; jumping to the first countable cell,
@@ -101,14 +101,14 @@ void Kmknn::search_all (const double* current, double threshold, const bool inde
          * reverse triangle inequality, but the clusters are too compact for that to come into play.
          */
         const double lower_bd=dist2center-threshold;
-        const int firstcell=std::lower_bound(dIt, dIt + cur_nobs, lower_bd) - dIt;
+        const CellIndex_t firstcell=std::lower_bound(dIt, dIt + cur_nobs, lower_bd) - dIt;
 #if USE_UPPER
         const double upper_bd=dist2center + threshold;
 #endif
 
-        const int& cur_start=clust_start[center];
+        const CellIndex_t cur_start=clust_start[center];
         const double* other_cell=exprs.begin() + ndims * (cur_start + firstcell);
-        for (int celldex=firstcell; celldex<cur_nobs; ++celldex, other_cell+=ndims) {
+        for (CellIndex_t celldex=firstcell; celldex<cur_nobs; ++celldex, other_cell+=ndims) {
 #if USE_UPPER
             if (*(dIt + celldex) > upper_bd) {
                 break;
@@ -132,16 +132,16 @@ void Kmknn::search_all (const double* current, double threshold, const bool inde
 void Kmknn::search_nn(const double* current, neighbor_queue& nearest) { 
     // final argument is not strictly necessary but makes dependencies more obvious.
 
-    const size_t& ndims=exprs.nrow();
-    const size_t& ncenters=centers.ncol();
+    const MatDim_t ndims=exprs.nrow();
+    const MatDim_t ncenters=centers.ncol();
     const double* center_ptr=centers.begin();
     double threshold2 = R_PosInf;
 
     /* Computing distances to all centers and sorting them.
      * The aim is to go through the nearest centers first, to get the shortest 'threshold' possible.
      */
-    std::deque<std::pair<double, size_t> > center_order(ncenters);
-    for (size_t center=0; center<ncenters; ++center, center_ptr+=ndims) {
+    std::deque<std::pair<double, MatDim_t> > center_order(ncenters);
+    for (MatDim_t center=0; center<ncenters; ++center, center_ptr+=ndims) {
         center_order[center].first=std::sqrt(compute_sqdist(current, center_ptr));
         center_order[center].second=center;
     }
@@ -149,15 +149,15 @@ void Kmknn::search_nn(const double* current, neighbor_queue& nearest) {
 
     // Computing the distance to each center, and deciding whether to proceed for each cluster.
     for (const auto& curcent : center_order) {
-        const size_t& center=curcent.second;
-        const double& dist2center=curcent.first;
+        const MatDim_t center=curcent.second;
+        const double dist2center=curcent.first;
 
-        const int& cur_nobs=clust_nobs[center];
+        const auto cur_nobs=clust_nobs[center];
         if (!cur_nobs) { continue; }
         const double* dIt=clust_dist[center].begin();
-        const double& maxdist=*(dIt + cur_nobs-1);
+        const double maxdist=*(dIt + cur_nobs-1);
 
-        int firstcell=0;
+        CellIndex_t firstcell=0;
 #if USE_UPPER
         double upper_bd=R_PosInf;
 #endif
@@ -181,9 +181,9 @@ void Kmknn::search_nn(const double* current, neighbor_queue& nearest) {
 #endif
         }
 
-        const int& cur_start=clust_start[center];
+        const CellIndex_t cur_start=clust_start[center];
         const double* other_cell=exprs.begin() + ndims * (cur_start + firstcell);
-        for (int celldex=firstcell; celldex<cur_nobs; ++celldex, other_cell+=ndims) {
+        for (CellIndex_t celldex=firstcell; celldex<cur_nobs; ++celldex, other_cell+=ndims) {
 #if USE_UPPER
             if (*(dIt + celldex) > upper_bd) {
                 break;
