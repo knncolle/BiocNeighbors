@@ -46,7 +46,7 @@ size_t check_k(Rcpp::RObject incoming) {
 }
 
 Rcpp::NumericVector check_distances(Rcpp::NumericVector incoming, size_t N) {
-    if (incoming.size()!=N) {
+    if (size_t(incoming.size())!=N) {
         throw std::runtime_error("length of distance vector should be equal to number of points");
     }
     for (auto threshold : incoming) {

@@ -7,9 +7,9 @@ DataPoint::DataPoint (int i, const double* p) : ptr(p), index(i) {}
 
 /***** Getter methods *****/
 
-int VpTree::get_nobs() const { return reference.ncol(); }
+size_t VpTree::get_nobs() const { return reference.ncol(); }
 
-int VpTree::get_ndims() const { return reference.nrow(); }
+size_t VpTree::get_ndims() const { return reference.nrow(); }
 
 std::deque<size_t>& VpTree::get_neighbors () { return neighbors; }
 
@@ -18,10 +18,10 @@ std::deque<double>& VpTree::get_distances () { return distances; }
 /***** Methods to build the VP tree *****/
 
 VpTree::VpTree(Rcpp::NumericMatrix vals) : reference(vals), ndim(vals.nrow()) {
-    const int nelements=vals.ncol();
+    const size_t nelements=vals.ncol();
     items.reserve(nelements);
     const double * ptr = vals.begin();
-    for (int i=0; i<nelements; ++i, ptr+=ndim) {
+    for (size_t i=0; i<nelements; ++i, ptr+=ndim) {
         items.push_back(DataPoint(i, ptr));
     }
 
@@ -30,9 +30,9 @@ VpTree::VpTree(Rcpp::NumericMatrix vals) : reference(vals), ndim(vals.nrow()) {
     return;
 }
 
-double euclidean_dist2(const double* x, const double* y, int d) {
+double euclidean_dist2(const double* x, const double* y, size_t d) {
     double dist=0;
-    for (int i=0; i<d; ++i, ++x, ++y) {
+    for (size_t i=0; i<d; ++i, ++x, ++y) {
         double diff=*x - *y;
         dist += diff * diff;
     }
@@ -43,8 +43,8 @@ double euclidean_dist2(const double* x, const double* y, int d) {
 struct DistanceComparator
 {
     const DataPoint& item;
-    const int ndim;
-    DistanceComparator(const DataPoint& item, int d) : item(item), ndim(d) {}
+    const size_t ndim;
+    DistanceComparator(const DataPoint& item, size_t d) : item(item), ndim(d) {}
     bool operator()(const DataPoint& a, const DataPoint& b) {
         return euclidean_dist2(item.ptr, a.ptr, ndim) < euclidean_dist2(item.ptr, b.ptr, ndim);
     }
@@ -116,12 +116,12 @@ Rcpp::List VpTree::save() {
 }
 
 VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data) : reference(vals), ndim(vals.nrow()) {
-    const int nelements=reference.ncol();
+    const size_t nelements=reference.ncol();
 
     { // Filling the item index.
         items.reserve(nelements);
         const double* ptr=reference.begin();
-        for (int i=0; i<nelements; ++i, ptr+=ndim) {
+        for (size_t i=0; i<nelements; ++i, ptr+=ndim) {
             items.push_back(DataPoint(i, ptr));
         }
     }
@@ -136,12 +136,12 @@ VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data) : reference(vals)
         Rcpp::IntegerVector node_right=node_data[2];
         Rcpp::NumericVector node_thresholds=node_data[3];
 
-        const int nnodes=node_index.size();
+        const auto nnodes=node_index.size();
         if (node_left.size()!=nnodes || node_right.size()!=nnodes || node_thresholds.size()!=nnodes) {
             throw std::runtime_error("VP tree node index vector lengths are not consistent");
         }
 
-        for (int i=0; i<nnodes; ++i) {
+        for (auto i=0; i<nnodes; ++i) {
             nodes.push_back(Node(node_index[i]));
             Node& curnode=nodes.back();
             curnode.left=node_left[i];
@@ -162,8 +162,8 @@ VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data) : reference(vals)
 
 /***** Methods to search the VP tree for nearest neighbors *****/
 
-void VpTree::find_nearest_neighbors (size_t cell, int k, const bool index, const bool dist) {
-    if (cell >= reference.ncol()) {
+void VpTree::find_nearest_neighbors (size_t cell, size_t k, const bool index, const bool dist) {
+    if (cell >= static_cast<size_t>(reference.ncol())) {
         throw std::runtime_error("cell index out of range");
     }
     tau = DBL_MAX;
@@ -174,7 +174,7 @@ void VpTree::find_nearest_neighbors (size_t cell, int k, const bool index, const
     return;
 }
 
-void VpTree::find_nearest_neighbors (const double* current, int k, const bool index, const bool dist) {
+void VpTree::find_nearest_neighbors (const double* current, size_t k, const bool index, const bool dist) {
     tau = DBL_MAX;
     nearest.setup(k, false);
     search_nn(0, current, nearest);

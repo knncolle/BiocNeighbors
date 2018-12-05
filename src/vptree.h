@@ -26,17 +26,17 @@ public:
 
     void find_neighbors(size_t, double, const bool, const bool);
     void find_neighbors(const double*, double, const bool, const bool);
-    void find_nearest_neighbors(size_t, int, const bool, const bool);
-    void find_nearest_neighbors(const double*, int, const bool, const bool);
+    void find_nearest_neighbors(size_t, size_t, const bool, const bool);
+    void find_nearest_neighbors(const double*, size_t, const bool, const bool);
 
-    int get_nobs() const;
-    int get_ndims() const;
+    size_t get_nobs() const;
+    size_t get_ndims() const;
 
     std::deque<size_t>& get_neighbors ();
     std::deque<double>& get_distances ();
 private:
-    int ndim;
     Rcpp::NumericMatrix reference;
+    size_t ndim;
     std::vector<DataPoint> items;
     static const int LEAF_MARKER=-1;
 
@@ -47,7 +47,7 @@ private:
         int index;              // index of point in node
         int left;               // node: points closer by than threshold
         int right;              // node: points farther away than threshold
-        Node(int i=0) : index(i), threshold(0.), left(LEAF_MARKER), right(LEAF_MARKER) {}
+        Node(int i=0) : threshold(0), index(i), left(LEAF_MARKER), right(LEAF_MARKER) {}
     };
     std::deque<Node> nodes;
 

@@ -3,7 +3,7 @@
 
 SEXP query_annoy (SEXP to_check, SEXP query, SEXP ndims, SEXP fname, SEXP nn, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
-    const int Ndim=check_integer_scalar(ndims, "number of dimensions");
+    const size_t Ndim=check_integer_scalar(ndims, "number of dimensions");
     annoyance obj(Ndim);
     auto Fname=check_string(fname, "index file name");
     obj.load(Fname.c_str());
