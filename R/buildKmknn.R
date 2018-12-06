@@ -1,12 +1,16 @@
 #' @export
 #' @importFrom stats kmeans
 #' @importFrom methods is
-buildKmknn <- function(X, ...) 
+#' @importFrom BiocGenerics t
+buildKmknn <- function(X, transposed=FALSE, ...) 
 # Reorganizing the matrix 'x' for fast lookup via K-means clustering.
 #
 # written by Aaron Lun
 # created 19 June 2018
 {
+    if (transposed) {
+        X <- t(X)
+    }
     if (!is.matrix(X)) {
         X <- as.matrix(X)
     }
