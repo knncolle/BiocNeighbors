@@ -58,6 +58,26 @@ test_that("buildKmknn() preserves dimension names", {
     expect_identical(rownames(out), NULL)
 })
 
+set.seed(200002)
+test_that("buildKmknn() responds to transposition", {
+    nobs <- 1011
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    rownames(X) <- paste0("POINT", seq_len(nobs))
+    colnames(X) <- paste0("DIM", seq_len(ndim))
+
+    set.seed(101)
+    ref <- buildKmknn(X)
+    set.seed(101)
+    out <- buildKmknn(t(X), transposed=TRUE)
+    expect_identical(ref, out)
+
+    # Check it works in a function.
+    ref <- findKmknn(X, k=5)
+    out <- findKmknn(t(X), k=5, transposed=TRUE)
+    expect_identical(ref, out)
+})
+
 set.seed(20001)
 test_that("buildKmknn() behaves sensibly with silly inputs", {
     nobs <- 100L

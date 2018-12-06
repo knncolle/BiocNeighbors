@@ -42,6 +42,26 @@ test_that("buildVptree() preserves dimension names", {
     expect_identical(rownames(out), NULL)
 })
 
+set.seed(200002)
+test_that("buildVptree() responds to transposition", {
+    nobs <- 1011
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    rownames(X) <- paste0("POINT", seq_len(nobs))
+    colnames(X) <- paste0("DIM", seq_len(ndim))
+
+    set.seed(101)
+    ref <- buildVptree(X)
+    set.seed(101)
+    out <- buildVptree(t(X), transposed=TRUE)
+    expect_identical(ref, out)
+
+    # Testing use in a function.
+    ref <- findVptree(X, k=5)
+    out <- findVptree(t(X), k=5, transposed=TRUE)
+    expect_identical(ref, out)
+})
+
 set.seed(20001)
 test_that("buildVptree() behaves sensibly with silly inputs", {
     nobs <- 100L

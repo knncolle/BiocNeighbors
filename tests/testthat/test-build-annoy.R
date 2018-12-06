@@ -15,7 +15,7 @@ test_that("buildAnnoy() works as expected", {
     }
 })
 
-set.seed(2500011)
+set.seed(2500001)
 test_that("buildAnnoy() respects path changes", {
     nobs <- 500
     ndim <- 5
@@ -43,6 +43,29 @@ test_that("buildAnnoy() preserves dimension names", {
     # Still true if there are no cells.
     out <- buildAnnoy(X[0,,drop=FALSE])
     expect_identical(rownames(out), NULL)
+})
+
+set.seed(2500011)
+test_that("buildAnnoy() responds to transposition", {
+    nobs <- 1011
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    rownames(X) <- paste0("POINT", seq_len(nobs))
+    colnames(X) <- paste0("DIM", seq_len(ndim))
+
+    set.seed(101)
+    ref <- buildAnnoy(X)
+    set.seed(101)
+    out <- buildAnnoy(t(X), transposed=TRUE)
+
+    expect_identical(bndata(ref), bndata(out))
+    expect_identical(rownames(ref), rownames(out))
+    expect_identical(bnorder(ref), bnorder(out))
+
+    # Check it works in a function.
+    ref <- findAnnoy(X, k=5)
+    out <- findAnnoy(t(X), k=5, transposed=TRUE)
+    expect_identical(out, ref)
 })
 
 set.seed(250002)
