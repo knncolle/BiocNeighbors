@@ -24,7 +24,7 @@ library(BiocNeighbors)
 # Introduction
 
 The `r Biocpkg("BiocNeighbors")` package provides an implementation of the [Annoy](https://github.com/spotify/annoy) (Approximate Nearest Neighbors Oh Yeah) method based on C++ code in the `CRANpkg("RcppAnnoy")` package.
-The aim is to provide an approximate method to complement the exact KMKNN algorithm `r Biocpkg("BiocNeighbors", vignette="kmknn.html", label="described previously")`.
+The aim is to provide an approximate method to complement the exact algorithms `r Biocpkg("BiocNeighbors", vignette="exact.html", label="described previously")`.
 Indeed, it is straightforward to switch from one algorithm to another by simply changing the `BNPARAM` argument in `findKNN` and `queryKNN`.
 
 Briefly, the Annoy method works by building a tree where a random hyperplane partitions points into two child groups at each internal node.
