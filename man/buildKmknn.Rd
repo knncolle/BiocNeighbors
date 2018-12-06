@@ -10,6 +10,7 @@ buildKmknn(X, ...)
 
 \arguments{
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
+\item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
 \item{...}{Further arguments to pass to \code{\link{kmeans}}.}
 }
 

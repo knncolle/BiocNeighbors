@@ -6,13 +6,13 @@
 \description{Find all neighboring data points within a certain distance of each point.}
 
 \usage{
-rangeFindKmknn(X, threshold, get.index=TRUE, get.distance=TRUE, 
-    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, 
+rangeFindKmknn(X, threshold, get.index=TRUE, get.distance=TRUE,
+    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL,
     raw.index=FALSE, ...)
 
-rangeFindVptree(X, threshold, get.index=TRUE, get.distance=TRUE, 
-    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, 
-    raw.index=FALSE)
+rangeFindVptree(X, threshold, get.index=TRUE, get.distance=TRUE,
+    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL,
+    raw.index=FALSE, ...)
 }
 
 \arguments{
@@ -23,10 +23,11 @@ Alternatively, a vector containing a different distance threshold for each point
 \item{get.distance}{A logical scalar indicating whether distances to the neighbors should be recorded.}
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
 \item{precomputed}{A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
-For \code{rangeFindKmknn}, this should be a \linkS4class{KmknnIndex}, while for \code{rangeFindVptree}, this should be a \linkS4class{VptreeIndex}.}
+For \code{rangeFindKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{rangeFindKmknn}}.
+For \code{rangeFindVptree}, this should be a \linkS4class{VptreeIndex} from \code{\link{rangeFindVptree}}.}
 \item{subset}{A vector indicating the rows of \code{X} for which the neighbors should be identified.}
 \item{raw.index}{A logial scalar indicating whether raw column indices should be returned, see \code{?"\link{BiocNeighbors-raw-index}"}.}
-\item{...}{Further arguments to pass to \code{\link{buildKmknn}} if \code{precomputed=NULL}.}
+\item{...}{Further arguments to pass to the respective \code{build*} function for each algorithm.}
 }
 
 \details{

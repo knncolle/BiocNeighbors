@@ -5,12 +5,13 @@
 \description{Build an Annoy index and save it to file in preparation for a nearest-neighbors search.}
 
 \usage{
-buildAnnoy(X, ntrees=50, directory=tempdir(), 
+buildAnnoy(X, transposed=FALSE, ntrees=50, directory=tempdir(),
     fname=tempfile(tmpdir=directory, fileext=".idx")) 
 }
 
 \arguments{
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
+\item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
 \item{ntrees}{Integer scalar specifying the number of trees, where more trees provide greater accuracy at the cost of more computational work.}
 \item{directory}{String containing the path to the directory in which to save the index file.}
 \item{fname}{String containing the path to the index file.}

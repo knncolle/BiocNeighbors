@@ -11,7 +11,7 @@ findKmknn(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
     precomputed=NULL, subset=NULL, raw.index=FALSE, ...)
 
 findVptree(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), 
-    precomputed=NULL, subset=NULL, raw.index=FALSE)
+    precomputed=NULL, subset=NULL, raw.index=FALSE, ...)
 
 findAnnoy(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), 
     precomputed=NULL, subset=NULL, ...)
@@ -24,12 +24,12 @@ findAnnoy(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
 \item{get.distance}{A logical scalar indicating whether distances to the nearest neighbors should be recorded.}
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
 \item{precomputed}{A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
-For \code{findKmknn}, this should be a \linkS4class{KmknnIndex};
-for \code{findVptree}, this should be a \linkS4class{VptreeIndex};
-and for \code{findAnnoy}, this should be a \linkS4class{AnnoyIndex}.}
+For \code{findKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{buildKmknn}};
+for \code{findVptree}, this should be a \linkS4class{VptreeIndex} from \code{\link{buildVptree}};
+and for \code{findAnnoy}, this should be a \linkS4class{AnnoyIndex} from \code{\link{buildAnnoy}}.}
 \item{subset}{A vector indicating the rows of \code{X} for which the nearest neighbors should be identified.}
 \item{raw.index}{A logial scalar indicating whether raw column indices should be returned, see \code{?"\link{BiocNeighbors-raw-index}"}.}
-\item{...}{Further arguments to pass to \code{\link{buildKmknn}} (for \code{findKmknn}) or \code{\link{buildAnnoy}} (for \code{findAnnoy}) if \code{precomputed=NULL}.}
+\item{...}{Further arguments to pass to the respective \code{build*} function for each algorithm.}
 }
 
 \details{

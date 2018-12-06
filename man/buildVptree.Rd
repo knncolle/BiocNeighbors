@@ -5,11 +5,12 @@
 \description{Build a vantage point tree in preparation for a nearest-neighbors search.}
 
 \usage{
-buildVptree(X)
+buildVptree(X, transposed=FALSE)
 }
 
 \arguments{
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
+\item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
 }
 
 \details{

@@ -24,12 +24,13 @@ Alternatively, a vector containing a different distance threshold for each query
 \item{get.distance}{A logical scalar indicating whether distances to the neighbors should be recorded.}
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
 \item{precomputed}{A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
-For \code{rangeFindKmknn}, this should be a \linkS4class{KmknnIndex}, while for \code{rangeFindVptree}, this should be a \linkS4class{VptreeIndex}.}
+For \code{rangeFindKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{rangeFindKmknn}}.
+For \code{rangeFindVptree}, this should be a \linkS4class{VptreeIndex} from \code{\link{rangeFindVptree}}.}
 \item{transposed}{A logical scalar indicating whether the \code{query} is transposed, 
 in which case \code{query} is assumed to contain dimensions in the rows and data points in the columns.}
 \item{subset}{A vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the neighbors should be identified.}
 \item{raw.index}{A logial scalar indicating whether raw column indices should be returned, see \code{?"\link{BiocNeighbors-raw-index}"}.}
-\item{...}{Further arguments to pass to \code{\link{buildKmknn}} if \code{precomputed=NULL}.}
+\item{...}{Further arguments to pass to the respective \code{build*} function for each algorithm.}
 }
 
 \details{
