@@ -50,6 +50,7 @@ The resulting BiocNeighborIndex object can be supplied as \code{precomputed} to 
 Note that when \code{precomputed} is supplied, the value of \code{X} is completely ignored.
 
 For exact methods, see comments in \code{?"\link{BiocNeighbors-ties}"} regarding the warnings when tied distances are observed.
+For Annoy, see comments in \code{\link{buildAnnoy}} about the (lack of) randomness in the search results.
 }
 
 \value{
