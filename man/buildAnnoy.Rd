@@ -23,6 +23,9 @@ However, it can be called directly by the user to save time if multiple queries 
 
 It is advisable to change \code{directory} to a location that is amenable to parallel read operations on HPC file systems.
 Of course, if index files are manually constructed, the user is also responsible for their clean-up after all calculations are completed.
+
+Technically, the index construction algorithm is stochastic but, for various logistical reasons, the seed is hard-coded into the C++ code.
+This means that the results of the Annoy neighbor searches will be fully deterministic for the same inputs, even though the theory provides no such guarantees.
 }
 
 \value{
