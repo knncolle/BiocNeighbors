@@ -10,6 +10,9 @@
 // define R's REprintf as the 'local' error print method for Annoy
 #define __ERROR_PRINTER_OVERRIDE__  REprintf
 
+// turn off AVX always, to avoid small inconsistencies in distance calculations.
+#define NO_MANUAL_VECTORIZATION 1
+
 #include "annoylib.h"
 #include "kissrandom.h"
 #include "utils.h"
