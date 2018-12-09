@@ -28,4 +28,8 @@ NumNeighbors_t check_k(Rcpp::RObject);
 
 Rcpp::NumericVector check_distances(Rcpp::NumericVector, VecSize_t);
 
+// Distance functions.
+
+double squared_euclidean_dist(const double*, const double*, MatDim_t);
+
 #endif

@@ -26,7 +26,6 @@ public:
     std::deque<double>& get_distances ();
 protected:  
     const Rcpp::NumericMatrix exprs;
-    double compute_sqdist(const double*, const double*) const;
     
     // Data members to store output.
     std::deque<CellIndex_t> neighbors;

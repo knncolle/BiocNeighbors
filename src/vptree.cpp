@@ -26,15 +26,6 @@ VpTree::VpTree(Rcpp::NumericMatrix vals) : reference(vals), ndim(vals.nrow()) {
     return;
 }
 
-double euclidean_dist2(const double* x, const double* y, MatDim_t d) {
-    double dist=0;
-    for (MatDim_t i=0; i<d; ++i, ++x, ++y) {
-        const double diff=*x - *y;
-        dist += diff * diff;
-    }
-    return dist;
-}
-
 // Euclidean distance comparator for use in std::nth_element
 struct VpTree::DistanceComparator
 {
@@ -42,7 +33,7 @@ struct VpTree::DistanceComparator
     const MatDim_t ndim;
     DistanceComparator(const DataPoint& item, MatDim_t d) : item(item), ndim(d) {}
     bool operator()(const DataPoint& a, const DataPoint& b) {
-        return euclidean_dist2(item.second, a.second, ndim) < euclidean_dist2(item.second, b.second, ndim);
+        return squared_euclidean_dist(item.second, a.second, ndim) < squared_euclidean_dist(item.second, b.second, ndim);
     }
 };
 
@@ -72,7 +63,7 @@ VpTree::NodeIndex_t VpTree::buildFromPoints(NodeIndex_t lower, NodeIndex_t upper
                          DistanceComparator(items[lower], ndim));
        
         // Threshold of the new node will be the distance to the median
-        node.threshold = std::sqrt(euclidean_dist2(items[lower].second, items[median].second, ndim));
+        node.threshold = std::sqrt(squared_euclidean_dist(items[lower].second, items[median].second, ndim));
         
         // Recursively build tree
         node.left = buildFromPoints(lower + 1, median);
@@ -190,7 +181,7 @@ void VpTree::search_nn(NodeIndex_t curnode_index, const double* target, neighbor
     
     // Compute distance between target and current node
     const auto& curnode=nodes[curnode_index];
-    double dist = std::sqrt(euclidean_dist2(items[curnode.index].second, target, ndim));
+    double dist = std::sqrt(squared_euclidean_dist(items[curnode.index].second, target, ndim));
 
     // If current node within radius tau
     if (dist < tau) {
@@ -258,7 +249,7 @@ void VpTree::search_all(NodeIndex_t curnode_index, const double* target, double 
     
     // Compute distance between target and current node
     const auto& curnode=nodes[curnode_index];
-    double dist = std::sqrt(euclidean_dist2(items[curnode.index].second, target, ndim));
+    double dist = std::sqrt(squared_euclidean_dist(items[curnode.index].second, target, ndim));
 
     // If current node within radius thresh
     if (dist < thresh) {

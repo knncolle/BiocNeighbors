@@ -66,16 +66,6 @@ void Kmknn::find_nearest_neighbors (const double* current, NumNeighbors_t nn, co
     return;
 }
 
-double Kmknn::compute_sqdist(const double* x, const double* y) const {
-    double out=0;
-    const MatDim_t NR=exprs.nrow();
-    for (MatDim_t m=0; m<NR; ++m, ++x, ++y) {
-        const double tmp=*x - *y;
-        out+=tmp*tmp;
-    }
-    return out;
-}
-
 /****************** Convex search methods *********************/
 
 void Kmknn::search_all (const double* current, double threshold, const bool index, const bool dist) {
@@ -91,7 +81,7 @@ void Kmknn::search_all (const double* current, double threshold, const bool inde
         const CellIndex_t cur_nobs=clust_nobs[center];
         if (!cur_nobs) { continue; }
 
-        const double dist2center=std::sqrt(compute_sqdist(current, center_ptr));
+        const double dist2center=std::sqrt(squared_euclidean_dist(current, center_ptr, ndims));
         auto dIt=clust_dist[center].begin();
         const double maxdist=*(dIt + cur_nobs - 1);
         if (threshold + maxdist < dist2center) { continue; }
@@ -115,7 +105,7 @@ void Kmknn::search_all (const double* current, double threshold, const bool inde
             }
 #endif
 
-            const double dist2cell2=compute_sqdist(current, other_cell);
+            const double dist2cell2=squared_euclidean_dist(current, other_cell, ndims);
             if (dist2cell2 <= threshold2) {
                 if (index) {
                     neighbors.push_back(cur_start + celldex);
@@ -142,7 +132,7 @@ void Kmknn::search_nn(const double* current, neighbor_queue& nearest) {
      */
     std::deque<std::pair<double, MatDim_t> > center_order(ncenters);
     for (MatDim_t center=0; center<ncenters; ++center, center_ptr+=ndims) {
-        center_order[center].first=std::sqrt(compute_sqdist(current, center_ptr));
+        center_order[center].first=std::sqrt(squared_euclidean_dist(current, center_ptr, ndims));
         center_order[center].second=center;
     }
     std::sort(center_order.begin(), center_order.end());
@@ -190,7 +180,7 @@ void Kmknn::search_nn(const double* current, neighbor_queue& nearest) {
             }
 #endif
 
-            const double dist2cell2=compute_sqdist(current, other_cell);
+            const double dist2cell2=squared_euclidean_dist(current, other_cell, ndims);
             nearest.add(cur_start + celldex, dist2cell2);
             if (nearest.is_full()) {
                 threshold2=nearest.limit(); // Shrinking the threshold, if an earlier NN has been found.
