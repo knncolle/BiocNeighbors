@@ -11,7 +11,7 @@ queryKmknn(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam()
     precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, ...)
 
 queryVptree(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
-    precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE)
+    precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, ...)
 
 queryAnnoy(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
     precomputed=NULL, transposed=FALSE, subset=NULL, ...)

@@ -5,7 +5,7 @@
 \description{Perform k-means clustering in preparation for a KMKNN nearest-neighbors search.}
 
 \usage{
-buildKmknn(X, ...)
+buildKmknn(X, transposed=FALSE, ...)
 }
 
 \arguments{

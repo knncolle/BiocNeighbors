@@ -12,7 +12,7 @@ rangeQueryKmknn(X, query, threshold, get.index=TRUE, get.distance=TRUE,
 
 rangeQueryVptree(X, query, threshold, get.index=TRUE, get.distance=TRUE, 
     BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL,
-    raw.index=FALSE)
+    raw.index=FALSE, ...)
 }
 
 \arguments{
