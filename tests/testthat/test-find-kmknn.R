@@ -69,6 +69,7 @@ test_that("findKmknn() behaves correctly with alternative options", {
 
 set.seed(100301)
 test_that("findKmknn() behaves correctly with parallelization", {
+    library(BiocParallel)
     nobs <- 1000
     ndim <- 10
     k <- 5

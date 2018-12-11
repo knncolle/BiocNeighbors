@@ -96,6 +96,7 @@ test_that("findAnnoy() behaves correctly with alternative options", {
 
 set.seed(7004)
 test_that("findAnnoy() behaves correctly with parallelization", {
+    library(BiocParallel)
     nobs <- 1000
     ndim <- 10
     k <- 5

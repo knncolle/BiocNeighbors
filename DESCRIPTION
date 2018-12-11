@@ -1,11 +1,11 @@
 Package: BiocNeighbors
-Version: 1.1.5
-Date: 2018-12-09
+Version: 1.1.6
+Date: 2018-12-11
 Title: Nearest Neighbor Detection for Bioconductor Packages
 Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
         email="infinite.monkeys.with.keyboards@gmail.com"))
-Depends: R (>= 3.6), BiocParallel
-Imports: Rcpp, S4Vectors, stats, methods
+Depends: R (>= 3.6)
+Imports: Rcpp, S4Vectors, BiocParallel, stats, methods
 Suggests: testthat, BiocStyle, knitr, rmarkdown, FNN, RcppAnnoy
 biocViews: Clustering, Classification
 Description: Implements exact and approximate methods for nearest neighbor 

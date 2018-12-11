@@ -102,6 +102,7 @@ test_that("queryAnnoy() behaves correctly with alternative options", {
 
 set.seed(100301)
 test_that("queryAnnoy() behaves correctly with parallelization", {
+    library(BiocParallel)
     nobs <- 1000
     nquery <- 124
     ndim <- 10

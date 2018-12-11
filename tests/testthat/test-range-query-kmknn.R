@@ -85,6 +85,7 @@ test_that("rangeQueryKmknn() behaves correctly with alternative options", {
 
 set.seed(100301)
 test_that("rangeQueryKmknn() behaves correctly with parallelization", {
+    library(BiocParallel)
     nobs <- 1001
     nquery <- 101
     ndim <- 11

@@ -71,6 +71,7 @@ test_that("rangeFindKmknn() behaves correctly with alternative options", {
 
 set.seed(100301)
 test_that("rangeFindKmknn() behaves correctly with parallelization", {
+    library(BiocParallel)
     nobs <- 1001
     ndim <- 8
     d <- 1

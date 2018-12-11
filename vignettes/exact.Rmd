@@ -123,6 +123,7 @@ names(findKNN(data, k=2, get.distance=FALSE))
 It is also simple to speed up functions by parallelizing the calculations with the `r Biocpkg("BiocParallel")` framework.
 
 ```{r}
+library(BiocParallel)
 out <- findKNN(data, k=10, BPPARAM=MulticoreParam(3))
 ```
 
