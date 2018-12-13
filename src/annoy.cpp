@@ -14,58 +14,64 @@ MatDim_t Annoy::get_ndims() const {
     return NDims;
 }
 
-std::deque<CellIndex_t>& Annoy::get_neighbors () {
-    return neighbors;
+const std::vector<Annoy::Index_t>& Annoy::get_neighbors () const {
+    return kept_idx;
 }
 
-std::deque<double>& Annoy::get_distances () {
-    return distances;
+const std::vector<Annoy::Data_t>& Annoy::get_distances () const {
+    return kept_dist;
 }
 
 void Annoy::find_nearest_neighbors(CellIndex_t c, NumNeighbors_t K, const bool index, const bool distance) {
-    std::vector<Data_t>* dptr=(distance ? &kept_dist: NULL);
+    kept_idx.clear();
+    kept_dist.clear();
+    std::vector<Data_t>* dptr=(distance ? &kept_dist : NULL);
     obj.get_nns_by_item(c, K + 1, -1, &kept_idx, dptr); // +1, as it forgets to discard 'self'.
-
-    neighbors.clear();
-    distances.clear();
-    NumNeighbors_t counter=0;
-    for (size_t idx=0; idx<kept_idx.size() && counter < K; ++idx) { // protect against API returning more/less NNs.
-        if (static_cast<CellIndex_t>(kept_idx[idx])!=c) {
+    
+    bool self_found=false;
+    for (size_t idx=0; idx<kept_idx.size(); ++idx) { 
+        if (static_cast<CellIndex_t>(kept_idx[idx])==c) {
             if (index) {
-                neighbors.push_back(kept_idx[idx]); 
+                kept_idx.erase(kept_idx.begin() + idx);
             }
             if (distance) {
-                distances.push_back(kept_dist[idx]);
+                kept_dist.erase(kept_dist.begin() + idx);
             }
-            ++counter;
+            self_found=true;
+            break;
         }
     }
 
-    kept_idx.clear();
-    kept_dist.clear();
+    // Just in case we're full of ties at duplicate points, such that 'c' is not in the set.
+    // Note that, if self_found=false, we must have at least 'K+2' points for 'c' to not 
+    // be detected as its own neighbor. Thus there is no need to worry whether we are popping 
+    // off a non-'c' element at the end of the vector.
+    if (!self_found) {
+        if (index) {
+            kept_idx.pop_back();
+        }
+        if (distance) {
+            kept_dist.pop_back();
+        }
+    }
+
+    // For consistency.
+    if (!index) {
+        kept_idx.clear();
+    }
     return;
 }
 
 
 void Annoy::find_nearest_neighbors(const double* query, NumNeighbors_t K, const bool index, const bool distance) {
+    kept_idx.clear();
+    kept_dist.clear();
     std::vector<Data_t>* dptr=(distance ? &kept_dist: NULL);
     std::copy(query, query+NDims, holding.begin());
     obj.get_nns_by_vector(holding.data(), K, -1, &kept_idx, dptr);
-
-    const NumNeighbors_t limit=std::min(K, static_cast<NumNeighbors_t>(kept_idx.size())); // as the API can yield < K elements.
-
-    if (index) {
-        neighbors.resize(limit);
-        std::copy(kept_idx.begin(), kept_idx.begin() + limit, neighbors.begin());
+    if (!index) {
+        kept_idx.clear();
     }
-    kept_idx.clear();
-
-    if (distance) {
-        distances.resize(limit);
-        std::copy(kept_dist.begin(), kept_dist.begin() + limit, distances.begin());
-        kept_dist.clear();
-    }
-
     return;
 }
 

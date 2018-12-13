@@ -27,21 +27,18 @@ public:
     MatDim_t get_nobs() const;
     MatDim_t get_ndims() const;
 
-    std::deque<CellIndex_t>& get_neighbors ();
-    std::deque<double>& get_distances ();
-
     typedef int32_t Index_t;
     typedef float Data_t;
     typedef AnnoyIndex<Index_t, Data_t, Euclidean, Kiss64Random> _index;
+
+    const std::vector<Index_t>& get_neighbors () const;
+    const std::vector<Data_t>& get_distances () const;
 private:
     MatDim_t NDims;
     _index obj;
 
     std::vector<Index_t> kept_idx;
     std::vector<Data_t> kept_dist, holding;
-
-    std::deque<CellIndex_t> neighbors;
-    std::deque<double> distances;
 };
 
 #endif
