@@ -1,9 +1,9 @@
-#ifndef QUERY_EXACT_H
-#define QUERY_EXACT_H
+#ifndef QUERY_KNN_H
+#define QUERY_KNN_H
 #include "utils.h"
 
 template <class Searcher>
-SEXP query_exact(Searcher& finder, SEXP to_check, SEXP nn, SEXP query, SEXP get_index, SEXP get_distance) {
+SEXP query_knn(Searcher& finder, SEXP to_check, SEXP nn, SEXP query, SEXP get_index, SEXP get_distance) {
     const MatDim_t ndim=finder.get_ndims();
     const NumNeighbors_t NN=check_k(nn);
 
