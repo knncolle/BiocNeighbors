@@ -7,14 +7,14 @@ SEXP build_annoy (SEXP mat, SEXP ntrees, SEXP fname) {
     const int ndim=Mat.nrow();
     const int ncells=Mat.ncol();
 
-    annoyance obj(ndim);
-    std::vector<ANNOYTYPE> tmp(ndim);
+    Annoy::_index obj(ndim);
+    std::vector<Annoy::Data_t> tmp(ndim);
     auto mIt=Mat.begin();
     for (int i=0; i<ncells; ++i, mIt+=ndim) {
         std::copy(mIt, mIt+ndim, tmp.begin());
         obj.add_item(i, tmp.data());
     }
-        
+
     const int Ntrees=check_integer_scalar(ntrees, "number of trees");
     obj.build(Ntrees);
 
