@@ -1,12 +1,12 @@
 ##################################
-# Getter methods for KmknnParam.
+# Getter methods for Kmknn. 
 
 #' @export
 KmknnParam_kmeans_args <- function(x) {
     x@kmeans.args
 }
 
-# Getter methods for AnnoyParam.
+# Getter methods for Annoy. 
 
 #' @export
 AnnoyParam_ntrees <- function(x) {
@@ -15,6 +15,23 @@ AnnoyParam_ntrees <- function(x) {
 
 #' @export
 AnnoyParam_directory <- function(x) {
+    x@dir
+}
+
+# Getter methods for Hnsw. 
+
+#' @export
+HnswParam_max_neighbors <- function(x) {
+    x@max.neighbors
+}
+
+#' @export
+HnswParam_ef_construction <- function(x) {
+    x@ef.construction
+}
+
+#' @export
+HnswParam_directory <- function(x) {
     x@dir
 }
 
@@ -64,4 +81,15 @@ AnnoyIndex_path <- function(x) {
     x@path
 }
 
+#' @export
 setMethod("bnorder", "AnnoyIndex", function(x) seq_len(ncol(bndata(x))) )
+
+# Getter methods for HnswIndex
+
+#' @export
+HnswIndex_path <- function(x) {
+    x@path
+}
+
+#' @export
+setMethod("bnorder", "HnswIndex", function(x) seq_len(ncol(bndata(x))) )

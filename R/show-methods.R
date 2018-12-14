@@ -28,3 +28,9 @@ setMethod("show", "AnnoyIndex", function(object) {
     callNextMethod()
     cat(sprintf("path: %s\n", AnnoyIndex_path(object)))
 })
+
+#' @export
+setMethod("show", "HnswIndex", function(object) {
+    callNextMethod()
+    cat(sprintf("path: %s\n", HnswIndex_path(object)))
+})
