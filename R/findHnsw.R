@@ -11,7 +11,7 @@ findHnsw <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPara
 }
 
 .find_hnsw <- function(jobs, data, fname, k, get.index, get.distance) {
-    .Call(cxx_find_annoy, jobs, data, fname, k, get.index, get.distance)
+    .Call(cxx_find_hnsw, jobs, data, fname, k, get.index, get.distance)
 }
 
 .find_hnsw_args <- function(precomputed) {
