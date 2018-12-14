@@ -2,6 +2,7 @@
 \alias{queryKmknn}
 \alias{queryVptree}
 \alias{queryAnnoy}
+\alias{queryHnsw}
 
 \title{Query nearest neighbors}
 \description{Query a dataset for nearest neighbors of points in another dataset, using a variety of algorithms.}
@@ -15,6 +16,9 @@ queryVptree(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(
 
 queryAnnoy(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
     precomputed=NULL, transposed=FALSE, subset=NULL, ...)
+
+queryHnsw(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
+    precomputed=NULL, transposed=FALSE, subset=NULL, ...)
 }
 
 \arguments{
@@ -27,7 +31,8 @@ queryAnnoy(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam()
 \item{precomputed}{A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
 For \code{queryKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{buildKmknn}};
 for \code{queryVptree}, this should be a \linkS4class{VptreeIndex} from \code{\link{buildVptree}};
-and for \code{queryAnnoy}, this should be a \linkS4class{AnnoyIndex} from \code{\link{buildAnnoy}}.}
+for \code{queryAnnoy}, this should be a \linkS4class{AnnoyIndex} from \code{\link{buildAnnoy}};
+and for \code{queryHnsw}, this should be a \linkS4class{HnswIndex} from \code{\link{buildHnsw}}.}
 \item{transposed}{A logical scalar indicating whether the \code{query} is transposed, 
 in which case \code{query} is assumed to contain dimensions in the rows and data points in the columns.}
 \item{subset}{A vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the nearest neighbors should be identified.}
@@ -54,7 +59,7 @@ The resulting BiocNeighborIndex object can be supplied as \code{precomputed} to 
 Note that when \code{precomputed} is supplied, the value of \code{X} is ignored.
 
 For exact methods, see comments in \code{?"\link{BiocNeighbors-ties}"} regarding the warnings when tied distances are observed.
-For Annoy, see comments in \code{\link{buildAnnoy}} about the (lack of) randomness in the search results.
+For approximate methods, see comments in \code{\link{buildAnnoy}} and \code{\link{buildHnsw}} about the (lack of) randomness in the search results.
 }
 
 \value{
@@ -96,6 +101,11 @@ head(out2$index)
 head(out2$distance)
 
 out3 <- queryAnnoy(Y, query=Z, k=5)
-head(out$index)
-head(out$distance)
+head(out3$index)
+head(out3$distance)
+
+out4 <- queryHnsw(Y, query=Z, k=5)
+head(out4$index)
+head(out4$distance)
+
 }

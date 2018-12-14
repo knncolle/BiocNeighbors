@@ -2,6 +2,7 @@
 \alias{findKmknn}
 \alias{findVptree}
 \alias{findAnnoy}
+\alias{findHnsw}
 
 \title{Find nearest neighbors}
 \description{Use the KMKNN (K-means for k-nearest neighbors) algorithm to identify nearest neighbors from a dataset.}
@@ -15,6 +16,9 @@ findVptree(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
 
 findAnnoy(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), 
     precomputed=NULL, subset=NULL, ...)
+
+findHnsw(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), 
+    precomputed=NULL, subset=NULL, ...)
 }
 
 \arguments{
@@ -26,7 +30,8 @@ findAnnoy(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
 \item{precomputed}{A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
 For \code{findKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{buildKmknn}};
 for \code{findVptree}, this should be a \linkS4class{VptreeIndex} from \code{\link{buildVptree}};
-and for \code{findAnnoy}, this should be a \linkS4class{AnnoyIndex} from \code{\link{buildAnnoy}}.}
+for \code{findAnnoy}, this should be a \linkS4class{AnnoyIndex} from \code{\link{buildAnnoy}};
+and for \code{findHnsw}, this should be a \linkS4class{HnswIndex} from \code{\link{buildHnsw}}.}
 \item{subset}{A vector indicating the rows of \code{X} for which the nearest neighbors should be identified.}
 \item{raw.index}{A logial scalar indicating whether raw column indices should be returned, see \code{?"\link{BiocNeighbors-raw-index}"}.}
 \item{...}{Further arguments to pass to the respective \code{build*} function for each algorithm.}
@@ -34,7 +39,7 @@ and for \code{findAnnoy}, this should be a \linkS4class{AnnoyIndex} from \code{\
 
 \details{
 All of these functions identify points in \code{X} that are the \code{k} nearest neighbors of each other point.
-\code{findAnnoy} performs an approximate search, while \code{findKmknn} and \code{findVptree} are exact.
+\code{findAnnoy} and \code{findHnsw} perform an approximate search, while \code{findKmknn} and \code{findVptree} are exact.
 The upper bound for \code{k} is set at the number of points in \code{X} minus 1.
 
 By default, nearest neighbors are identified for all data points within \code{X}.
@@ -50,7 +55,7 @@ The resulting BiocNeighborIndex object can be supplied as \code{precomputed} to 
 Note that when \code{precomputed} is supplied, the value of \code{X} is completely ignored.
 
 For exact methods, see comments in \code{?"\link{BiocNeighbors-ties}"} regarding the warnings when tied distances are observed.
-For Annoy, see comments in \code{\link{buildAnnoy}} about the (lack of) randomness in the search results.
+For approximate methods, see comments in \code{\link{buildAnnoy}} and \code{\link{buildHnsw}} about the (lack of) randomness in the search results.
 }
 
 \value{
@@ -75,7 +80,8 @@ Aaron Lun
 \seealso{
 \code{\link{buildKmknn}}, 
 \code{\link{buildVptree}},
-or \code{\link{buildAnnoy}} to build an index ahead of time.
+\code{\link{buildAnnoy}},
+or \code{\link{buildHnsw}} to build an index ahead of time.
 
 See \code{?"\link{BiocNeighbors-algorithms}"} for an overview of the available algorithms.
 }
@@ -93,4 +99,8 @@ head(out2$distance)
 out3 <- findAnnoy(Y, k=8)
 head(out3$index)
 head(out3$distance)
+
+out4 <- findHnsw(Y, k=8)
+head(out4$index)
+head(out4$distance)
 }
