@@ -21,8 +21,8 @@ AnnoyParam_directory <- function(x) {
 # Getter methods for Hnsw. 
 
 #' @export
-HnswParam_max_neighbors <- function(x) {
-    x@max.neighbors
+HnswParam_nlinks <- function(x) {
+    x@nlinks
 }
 
 #' @export

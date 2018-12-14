@@ -1,5 +1,5 @@
 #' @export
-buildHnsw <- function(X, transposed=FALSE, max.neighbors=16, ef.construction=200, directory=tempdir(), fname=tempfile(tmpdir=directory, fileext=".idx")) 
+buildHnsw <- function(X, transposed=FALSE, nlinks=16, ef.construction=200, directory=tempdir(), fname=tempfile(tmpdir=directory, fileext=".idx")) 
 # Builds an Hnsw index at the specified path.
 # 
 # written by Aaron Lun
@@ -13,6 +13,6 @@ buildHnsw <- function(X, transposed=FALSE, max.neighbors=16, ef.construction=200
     if (!is.matrix(tX)) {
         tX <- as.matrix(tX)
     }
-    .Call(cxx_build_hnsw, tX, max.neighbors, ef.construction, fname) 
+    .Call(cxx_build_hnsw, tX, nlinks, ef.construction, fname) 
     HnswIndex(data=tX, path=fname, NAMES=colnames(tX))
 }

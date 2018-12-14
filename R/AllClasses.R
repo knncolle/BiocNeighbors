@@ -13,7 +13,7 @@ setClass("VptreeParam", contains="BiocNeighborParam")
 setClass("AnnoyParam", contains="BiocNeighborParam", slots=c(ntrees="integer", dir="character")) 
 
 #' @export
-setClass("HnswParam", contains="BiocNeighborParam", slots=c(max.neighbors="integer", ef.construction="integer", dir="character")) 
+setClass("HnswParam", contains="BiocNeighborParam", slots=c(nlinks="integer", ef.construction="integer", dir="character")) 
 
 # Defines the BiocNeighborIndex class and derivatives.
 

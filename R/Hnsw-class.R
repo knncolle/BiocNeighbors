@@ -1,16 +1,16 @@
 #' @export
 #' @importFrom methods new
-HnswParam <- function(max.neighbors=16, ef.construction=200, directory=tempdir()) {
-    new("HnswParam", max.neighbors=as.integer(max.neighbors), ef.construction=as.integer(ef.construction), dir=directory)
+HnswParam <- function(nlinks=16, ef.construction=200, directory=tempdir()) {
+    new("HnswParam", nlinks=as.integer(nlinks), ef.construction=as.integer(ef.construction), dir=directory)
 }
 
 #' @importFrom S4Vectors setValidity2
 setValidity2("HnswParam", function(object) {
     msg <- character(0)
 
-    max.neighbors <- HnswParam_max_neighbors(object)
-    if (length(max.neighbors) != 1L || max.neighbors <= 0L) {
-        msg <- c(msg, "'max.neighbors' should be a positive integer scalar")
+    nlinks <- HnswParam_nlinks(object)
+    if (length(nlinks) != 1L || nlinks <= 0L) {
+        msg <- c(msg, "'nlinks' should be a positive integer scalar")
     }
 
     ef.construction <- HnswParam_ef_construction(object)
