@@ -19,6 +19,12 @@ SEXP find_annoy(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 SEXP query_annoy(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
+SEXP build_hnsw(SEXP, SEXP, SEXP, SEXP);
+
+SEXP find_hnsw(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+
+SEXP query_hnsw(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+
 SEXP build_vptree(SEXP);
 
 SEXP find_vptree(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);

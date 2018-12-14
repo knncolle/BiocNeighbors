@@ -18,7 +18,7 @@ Description: Implements exact and approximate methods for nearest neighbor
     a given distance. Parallelization is achieved for all methods using 
     the BiocParallel framework.
 License: GPL-3
-LinkingTo: Rcpp, RcppAnnoy
+LinkingTo: Rcpp, RcppAnnoy, RcppHNSW
 VignetteBuilder: knitr
 SystemRequirements: C++11
 RoxygenNote: 6.1.1
