@@ -24,7 +24,7 @@ AnnoyIndex_path(x)
 }
 
 \details{
-The AnnoyIndex class holds the indexing structure required to run the KMKNN algorithm.
+The AnnoyIndex class holds the indexing structure required to run the Annoy algorithm.
 Users should never need to call the constructor explicitly, but should generate instances of AnnoyIndex classes with \code{\link{buildAnnoy}}.
 }
 
