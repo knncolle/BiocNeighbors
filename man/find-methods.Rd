@@ -5,7 +5,7 @@
 \alias{findHnsw}
 
 \title{Find nearest neighbors}
-\description{Use the KMKNN (K-means for k-nearest neighbors) algorithm to identify nearest neighbors from a dataset.}
+\description{Find the nearest neighbors of each point in a dataset, using a variety of algorithms.}
 
 \usage{
 findKmknn(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), 
