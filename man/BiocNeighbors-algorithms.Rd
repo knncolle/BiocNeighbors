@@ -5,24 +5,30 @@
 \description{This page provides an overview of the neighbor search algorithms available in \pkg{BiocNeighbors}.}
 
 \section{K-means with k-nearest neighbors (KMKNN)}{
-The KMKNN algorithm was proposed by Wang (2012) to quickly identify k-nearest neighbors in high-dimensional data.
-Briefly, data points are rapidly clustered into \code{N} clusters using k-means clustering, where \code{N} is the square root of the number of points.
-This clustering is then used to speed up the nearest neighbor search across the input data set,
-exploiting the triangle inequality between cluster centers, the query point and each point in the cluster to narrow the search space.
+In the KMKNN algorithm (Wang, 2012), k-means clustering is first applied to the data points using the square root of the number of points as the number of cluster centers.
+The cluster assignment and distance to the assigned cluster center for each point represent the KMKNN indexing information. 
+This speeds up the nearest neighbor search by exploiting the triangle inequality between cluster centers, the query point and each point in the cluster to narrow the search space.
+The advantage of the KMKNN approach is its simplicity and minimal overhead,
+resulting in performance improvements over conventional tree-based methods for high-dimensional data where most points need to be searched anyway.
+It is also trivially extended to find all neighbors within a threshold distance from a query point.
 }
 
 \section{Vantage point (VP) trees}{
-VP trees (Yianilos, 1993) are designed to quickly identify k-nearest neighbors in high-dimensional data.
-In the VP tree, each node contains a subset of points and has a defined threshold distance (usually the median distance to all points in the subset).
-The left child contains the further subset of points within the radius, while the right child contains the remaining points in the subset that are outside.
-The nearest neighbor search across \code{X} exploits the triangle inequality between node centers and thresholds to narrow the search space.
+In a VP tree (Yianilos, 1993), each node contains a subset of points and has a defined threshold distance (usually the median distance to all points in the subset).
+The left child of this node contains the further subset of points within the radius, while the right child contains the remaining points in the subset that are outside.
+The nearest neighbor search traverses the tree and exploits the triangle inequality between query points, node centers and thresholds to narrow the search space.
+VP trees are often faster than more conventional KD-trees or ball trees as the former uses the points themselves as the nodes of the tree,
+avoiding the need to create many intermediate nodes and reducing the total number of distance calculations.
+Like KMKNN, it is also trivially extended to find all neighbors within a threshold distance from a query point.
 } 
 
 \section{Approximate nearest neighbors Oh Yeah (Annoy)}{ 
-The Annoy method was developed by Erik Bernhardsson to identify approximate k-nearest neighbors in high-dimensional data.
-Briefly, a tree is constructed by using a random hyperplane to split the points at each internal node.
-For a given input data point, all points in the same leaf node are defined as a set of potential nearest neighbors.
-This is repeated across multiple trees, and the union of all such sets is searched to identify the actual nearest neighbors.
+The Annoy algorithm was developed by Erik Bernhardsson to identify approximate k-nearest neighbors in high-dimensional data.
+Briefly, a tree is constructed where a random hyperplane splits the points into two subsets at each internal node.
+Leaf nodes are defined when the number of points in a subset falls below a threshold (close to twice the number of dimensions for the settings used here).
+Multiple trees are constructed in this manner, each of which is different due to the random choice of hyperplanes.
+For a given query point, each tree is searched to identify the subset of all points in the same leaf node as the query point. 
+The union of these subsets across all trees is exhaustively searched to identify the actual nearest neighbors to the query.
 }
 
 \section{Hierarchical navigable small worlds (HNSW)}{

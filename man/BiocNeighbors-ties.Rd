@@ -17,12 +17,12 @@ A milder issue is that the order of the neighbors within the set is arbitrary, w
 }
 
 \section{Interaction with random seeds}{
-In general, the NN search algorithms in this package are fully deterministic, despite the use of stochastic steps during index construction.
+In general, the exact NN search algorithms in this package are fully deterministic despite the use of stochastic steps during index construction.
 The only exception occurs when there are tied distances to neighbors, at which point the order and/or identity of the k-nearest neighboring points is not well-defined.
-This is because, In the presence of ties, the output will depend on the ordering of points in the \code{\link{buildKmknn}} output.
+This is because, In the presence of ties, the output will depend on the ordering of points in the constructed index from \code{\link{buildKmknn}} or \code{\link{buildVptree}}.
 
 Users should set the seed to guarantee consistent (albeit arbitrary) results across different runs of the function.
-Note, however, that the exact selection of tied points depends on the numerical precision of the system.
+However, note that the exact selection of tied points depends on the numerical precision of the system.
 Thus, even after setting a seed, there is no guarantee that the results will be reproducible across machines (especially Windows)!
 }
 
