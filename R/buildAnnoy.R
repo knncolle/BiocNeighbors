@@ -1,4 +1,5 @@
 #' @export
+#' @importFrom BiocGenerics t
 buildAnnoy <- function(X, transposed=FALSE, ntrees=50, directory=tempdir(), fname=tempfile(tmpdir=directory, fileext=".idx")) 
 # Builds an Annoy index at the specified path.
 # 

@@ -1,4 +1,5 @@
 #' @export
+#' @importFrom Biocgenerics t
 buildHnsw <- function(X, transposed=FALSE, nlinks=16, ef.construction=200, directory=tempdir(), fname=tempfile(tmpdir=directory, fileext=".idx")) 
 # Builds an Hnsw index at the specified path.
 # 

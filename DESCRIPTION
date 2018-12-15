@@ -5,7 +5,7 @@ Title: Nearest Neighbor Detection for Bioconductor Packages
 Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
         email="infinite.monkeys.with.keyboards@gmail.com"))
 Depends: R (>= 3.6)
-Imports: Rcpp, S4Vectors, BiocParallel, stats, methods
+Imports: Rcpp, BiocGenerics, S4Vectors, BiocParallel, stats, methods
 Suggests: testthat, BiocStyle, knitr, rmarkdown, FNN, RcppAnnoy
 biocViews: Clustering, Classification
 Description: Implements exact and approximate methods for nearest neighbor 
