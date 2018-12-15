@@ -35,7 +35,7 @@ void Hnsw::find_nearest_neighbors(CellIndex_t c, NumNeighbors_t K, const bool in
                 kept_idx.push_front(current.second);
             } 
             if (distance) {
-                kept_dist.push_front(std::sqrt(current.first));
+                kept_dist.push_front(std::sqrt(static_cast<double>(current.first)));
             }
             found_self=true;
         }
@@ -57,6 +57,8 @@ void Hnsw::find_nearest_neighbors(CellIndex_t c, NumNeighbors_t K, const bool in
 void Hnsw::find_nearest_neighbors(const double* query, NumNeighbors_t K, const bool index, const bool distance) {
     std::copy(query, query+holding.size(), holding.begin());
     auto Q=obj.searchKnn(holding.data(), K);
+    kept_idx.clear();
+    kept_dist.clear();
 
     while (!Q.empty()) {
         const auto& current=Q.top();
@@ -64,7 +66,7 @@ void Hnsw::find_nearest_neighbors(const double* query, NumNeighbors_t K, const b
             kept_idx.push_front(current.second);
         }
         if (distance) {
-            kept_dist.push_front(std::sqrt(current.first));
+            kept_dist.push_front(std::sqrt(static_cast<double>(current.first)));
         }
         Q.pop();
     }
