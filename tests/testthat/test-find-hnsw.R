@@ -3,9 +3,8 @@
 
 library(RcppHNSW)
 REFFUN <- function(X, k, M=16, ef=200) {
-    out <- RcppHNSW::get_knn(X, k = k+1, distance = "euclidean", M=M, ef=ef)
-    storage.mode(out$idx) <- "integer"
-    list(index=out$idx[,-1,drop=FALSE], distance=out$dist[,-1,drop=FALSE])
+    out <- RcppHNSW::get_knn(X, k = k, include_self=FALSE, distance = "euclidean", M=M, ef=ef)
+    list(index=out$idx, distance=out$dist)
 }
 
 set.seed(7001)
@@ -17,7 +16,7 @@ test_that("findHnsw() behaves correctly on simple inputs", {
             out <- findHnsw(X, k=k)
             ref <- REFFUN(X, k=k)
             expect_identical(out$index, ref$index)
-            expect_equal(out$distance, ref$distance, tol=1e-6) # not sure why this is needed.
+            expect_identical(out$distance, ref$distance)
         }
     }
 })

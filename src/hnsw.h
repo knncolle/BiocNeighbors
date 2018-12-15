@@ -7,6 +7,8 @@
 // define R's REprintf as the 'local' error print method for Annoy
 #define __ERROR_PRINTER_OVERRIDE__  REprintf
 
+// Avoid discrepancies with AVX.
+#define HNSW_PORTABLE 1
 #include "hnswlib.h"
 
 class Hnsw {
