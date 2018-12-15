@@ -28,7 +28,8 @@ See the associated documentation pages for more details.
 \seealso{
 \code{\link{KmknnParam}},
 \code{\link{VptreeParam}},
-and \code{\link{AnnoyParam}} for constructors.
+\code{\link{AnnoyParam}},
+and \code{\link{HnswParam}} for constructors.
 
 \code{\link{buildIndex}}, \code{\link{findKNN}} and \code{\link{queryKNN}} for dispatch.
 }

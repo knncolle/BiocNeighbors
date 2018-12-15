@@ -13,17 +13,19 @@
 \alias{bnorder,KmknnIndex-method}
 \alias{bnorder,VptreeIndex-method}
 \alias{bnorder,AnnoyIndex-method}
+\alias{bnorder,HnswIndex-method}
 
 \title{The BiocNeighborIndex class}
 \description{A virtual class for indexing structures of different nearest-neighbor search algorithms.}
 
 \details{
 The BiocNeighborIndex class is a virtual base class on which other index objects are built.
-There are 3 concrete subclasses:
+There are 4 concrete subclasses:
 \describe{
     \item{}{\code{\link{KmknnIndex}}: exact nearest-neighbor search with the KMKNN algorithm.}
     \item{}{\code{\link{VptreeIndex}}: exact nearest-neighbor search with a VP tree.}
     \item{}{\code{\link{AnnoyIndex}}: approximate nearest-neighbor search with the Annoy algorithm.}
+    \item{}{\code{\link{HnswIndex}}: approximate nearest-neighbor search with the HNSW algorithm.}
 }
 
 These objects hold indexing structures for a given data set - see the associated documentation pages for more details.
@@ -55,8 +57,9 @@ More advanced methods (intended for developers of other packages) are:
 
 \seealso{
 \code{\link{KmknnIndex}},
-\code{\link{VptreeIndex}}    
-and \code{\link{AnnoyIndex}} for direct constructors.
+\code{\link{VptreeIndex}},
+\code{\link{AnnoyIndex}},
+and \code{\link{HnswIndex}} for direct constructors.
 
 \code{\link{buildIndex}} for construction on an actual data set. 
 
