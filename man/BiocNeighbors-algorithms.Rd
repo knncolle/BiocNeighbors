@@ -33,9 +33,11 @@ The union of these subsets across all trees is exhaustively searched to identify
 
 \section{Hierarchical navigable small worlds (HNSW)}{
 In the HNSW algorithm (Malkov and Yashunin, 2016), each point is a node in a \dQuote{nagivable small world} graph.
-The search proceeds by starting at a node and walking through the graph to obtain closer neighbors to a given query point.
-Nagivable small world graphs are special as they maintain connectivity in clustered data, ensuring that the search does not need to take many small steps.
-This is further improved by using a hierarchy of such graphs containing links of different lengths.
+The nearest neighbor search proceeds by starting at a node and walking through the graph to obtain closer neighbors to a given query point.
+Nagivable small world graphs are used to maintain connectivity across the data set by creating links between distant points.
+This speeds up the search by ensuring that the algorithm does not need to take many small steps to move from one cluster to another.
+The HNSW algorithm extends this idea by using a hierarchy of such graphs containing links of different lengths, 
+which avoids wasting time on small steps in the early stages of the search where the current node position is far from the query.
 }
 
 \section{Distance metrics}{ 
@@ -60,7 +62,7 @@ VP trees: A data structure for finding stuff fast.
 
 Yianilos PN (1993).
 Data structures and algorithms for nearest neighbor search in general metric spaces.
-\emph{Proceedings of the Fourth Annual ACM-SIAM Symposium on Discrete Algorithms}, 311-321 
+\emph{Proceedings of the Fourth Annual ACM-SIAM Symposium on Discrete Algorithms}, 311-321.
 
 Bernhardsson E (2018).
 Annoy.
@@ -68,7 +70,6 @@ Annoy.
 
 Malkov YA, Yashunin DA (2016).
 Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs.
-\emph{arXiv}
+\emph{arXiv}.
+\url{https://arxiv.org/abs/1603.09320}
 }
-
-
