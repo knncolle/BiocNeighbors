@@ -53,14 +53,14 @@ void Kmknn::find_nearest_neighbors (CellIndex_t cell, NumNeighbors_t nn, const b
         throw std::runtime_error("cell index out of range");
     }
     auto curcol=exprs.column(cell);
-    nearest.setup(nn, true);
+    nearest.setup(nn, cell);
     search_nn(curcol.begin(), nearest);
-    nearest.report(neighbors, distances, index, dist, true, cell);
+    nearest.report(neighbors, distances, index, dist, true);
     return;
 }
 
 void Kmknn::find_nearest_neighbors (const double* current, NumNeighbors_t nn, const bool index, const bool dist) {
-    nearest.setup(nn, false);
+    nearest.setup(nn);
     search_nn(current, nearest);
     nearest.report(neighbors, distances, index, dist, true);
     return;

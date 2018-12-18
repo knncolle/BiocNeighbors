@@ -166,18 +166,18 @@ void VpTree::find_nearest_neighbors (CellIndex_t cell, NumNeighbors_t k, const b
         throw std::runtime_error("cell index out of range");
     }
     tau = DBL_MAX;
-    nearest.setup(k, true);
+    nearest.setup(k, cell);
     auto curcol=reference.column(cell);
     search_nn(0, curcol.begin(), nearest);
-    nearest.report(neighbors, distances, index, dist, false, cell);
+    nearest.report(neighbors, distances, index, dist);
     return;
 }
 
 void VpTree::find_nearest_neighbors (const double* current, NumNeighbors_t k, const bool index, const bool dist) {
     tau = DBL_MAX;
-    nearest.setup(k, false);
+    nearest.setup(k);
     search_nn(0, current, nearest);
-    nearest.report(neighbors, distances, index, dist, false);
+    nearest.report(neighbors, distances, index, dist);
     return;
 }
 
