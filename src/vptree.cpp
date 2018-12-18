@@ -1,19 +1,25 @@
 #include "vptree.h"
 #include "utils.h"
+#include "distances.h"
 
 /***** Getter methods *****/
 
-MatDim_t VpTree::get_nobs() const { return reference.ncol(); }
+template<class Distance>
+MatDim_t VpTree<Distance>::get_nobs() const { return reference.ncol(); }
 
-MatDim_t VpTree::get_ndims() const { return reference.nrow(); }
+template<class Distance>
+MatDim_t VpTree<Distance>::get_ndims() const { return reference.nrow(); }
 
-std::deque<CellIndex_t>& VpTree::get_neighbors () { return neighbors; }
+template<class Distance>
+std::deque<CellIndex_t>& VpTree<Distance>::get_neighbors () { return neighbors; }
 
-std::deque<double>& VpTree::get_distances () { return distances; }
+template<class Distance>
+std::deque<double>& VpTree<Distance>::get_distances () { return distances; }
 
 /***** Methods to build the VP tree *****/
 
-VpTree::VpTree(Rcpp::NumericMatrix vals) : reference(vals), ndim(vals.nrow()) {
+template<class Distance>
+VpTree<Distance>::VpTree(Rcpp::NumericMatrix vals) : reference(vals), ndim(vals.nrow()) {
     const MatDim_t nelements=vals.ncol();
     items.reserve(nelements);
     const double * ptr = vals.begin();
@@ -26,27 +32,19 @@ VpTree::VpTree(Rcpp::NumericMatrix vals) : reference(vals), ndim(vals.nrow()) {
     return;
 }
 
-double euclidean_dist2(const double* x, const double* y, MatDim_t d) {
-    double dist=0;
-    for (MatDim_t i=0; i<d; ++i, ++x, ++y) {
-        const double diff=*x - *y;
-        dist += diff * diff;
-    }
-    return dist;
-}
-
-// Euclidean distance comparator for use in std::nth_element
-struct VpTree::DistanceComparator
+template<class Distance>
+struct VpTree<Distance>::DistanceComparator
 {
     const DataPoint& item;
     const MatDim_t ndim;
     DistanceComparator(const DataPoint& item, MatDim_t d) : item(item), ndim(d) {}
     bool operator()(const DataPoint& a, const DataPoint& b) {
-        return euclidean_dist2(item.second, a.second, ndim) < euclidean_dist2(item.second, b.second, ndim);
+        return Distance::raw_distance(item.second, a.second, ndim) < Distance::raw_distance(item.second, b.second, ndim);
     }
 };
 
-VpTree::NodeIndex_t VpTree::buildFromPoints(NodeIndex_t lower, NodeIndex_t upper)
+template<class Distance>
+typename VpTree<Distance>::NodeIndex_t VpTree<Distance>::buildFromPoints(NodeIndex_t lower, NodeIndex_t upper)
 {
     if (upper == lower) {     // indicates that we're done here!
         return LEAF_MARKER;
@@ -72,7 +70,7 @@ VpTree::NodeIndex_t VpTree::buildFromPoints(NodeIndex_t lower, NodeIndex_t upper
                          DistanceComparator(items[lower], ndim));
        
         // Threshold of the new node will be the distance to the median
-        node.threshold = std::sqrt(euclidean_dist2(items[lower].second, items[median].second, ndim));
+        node.threshold = Distance::distance(items[lower].second, items[median].second, ndim);
         
         // Recursively build tree
         node.left = buildFromPoints(lower + 1, median);
@@ -83,7 +81,8 @@ VpTree::NodeIndex_t VpTree::buildFromPoints(NodeIndex_t lower, NodeIndex_t upper
     return pos;
 }
 
-Rcpp::List VpTree::save() {
+template<class Distance>
+Rcpp::List VpTree<Distance>::save() {
     // Saving item ordering.
     Rcpp::IntegerVector item_index(items.size());
     auto iiIt=item_index.begin();
@@ -112,7 +111,8 @@ Rcpp::List VpTree::save() {
     return Rcpp::List::create(item_index, node_index, node_left, node_right, node_thresholds);
 }
 
-VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data) : reference(vals), ndim(vals.nrow()) {
+template<class Distance>
+VpTree<Distance>::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data) : reference(vals), ndim(vals.nrow()) {
     const MatDim_t nelements=reference.ncol();
 
     { // Filling the item index.
@@ -161,7 +161,8 @@ VpTree::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data) : reference(vals)
 
 /***** Methods to search the VP tree for nearest neighbors *****/
 
-void VpTree::find_nearest_neighbors (CellIndex_t cell, NumNeighbors_t k, const bool index, const bool dist) {
+template<class Distance>
+void VpTree<Distance>::find_nearest_neighbors (CellIndex_t cell, NumNeighbors_t k, const bool index, const bool dist) {
     if (cell >= static_cast<CellIndex_t>(reference.ncol())) {
         throw std::runtime_error("cell index out of range");
     }
@@ -173,7 +174,8 @@ void VpTree::find_nearest_neighbors (CellIndex_t cell, NumNeighbors_t k, const b
     return;
 }
 
-void VpTree::find_nearest_neighbors (const double* current, NumNeighbors_t k, const bool index, const bool dist) {
+template<class Distance>
+void VpTree<Distance>::find_nearest_neighbors (const double* current, NumNeighbors_t k, const bool index, const bool dist) {
     tau = DBL_MAX;
     nearest.setup(k);
     search_nn(0, current, nearest);
@@ -181,7 +183,8 @@ void VpTree::find_nearest_neighbors (const double* current, NumNeighbors_t k, co
     return;
 }
 
-void VpTree::search_nn(NodeIndex_t curnode_index, const double* target, neighbor_queue& nearest) { 
+template<class Distance>
+void VpTree<Distance>::search_nn(NodeIndex_t curnode_index, const double* target, neighbor_queue<Distance>& nearest) { 
     // final argument is not strictly necessary but makes dependencies more obvious.
 
     if (curnode_index == LEAF_MARKER) { // indicates that we're done here
@@ -190,7 +193,7 @@ void VpTree::search_nn(NodeIndex_t curnode_index, const double* target, neighbor
     
     // Compute distance between target and current node
     const auto& curnode=nodes[curnode_index];
-    double dist = std::sqrt(euclidean_dist2(items[curnode.index].second, target, ndim));
+    double dist = Distance::distance(items[curnode.index].second, target, ndim);
 
     // If current node within radius tau
     if (dist < tau) {
@@ -229,7 +232,8 @@ void VpTree::search_nn(NodeIndex_t curnode_index, const double* target, neighbor
 
 /***** Methods to search the VP tree for all neighbors *****/
 
-void VpTree::find_neighbors (CellIndex_t cell, double threshold, const bool index, const bool dist) {
+template<class Distance>
+void VpTree<Distance>::find_neighbors (CellIndex_t cell, double threshold, const bool index, const bool dist) {
     neighbors.clear();
     distances.clear();
     if (cell >= static_cast<CellIndex_t>(reference.ncol())) {
@@ -242,7 +246,8 @@ void VpTree::find_neighbors (CellIndex_t cell, double threshold, const bool inde
     return;
 }
 
-void VpTree::find_neighbors (const double* current, double threshold, const bool index, const bool dist) {
+template<class Distance>
+void VpTree<Distance>::find_neighbors (const double* current, double threshold, const bool index, const bool dist) {
     neighbors.clear();
     distances.clear();
     if (!nodes.empty()) {
@@ -251,14 +256,15 @@ void VpTree::find_neighbors (const double* current, double threshold, const bool
     return;
 }
 
-void VpTree::search_all(NodeIndex_t curnode_index, const double* target, double thresh, bool index, bool keepdist) {
+template<class Distance>
+void VpTree<Distance>::search_all(NodeIndex_t curnode_index, const double* target, double thresh, bool index, bool keepdist) {
     if(curnode_index == LEAF_MARKER) { // indicates that we're done here
         return;
     }
     
     // Compute distance between target and current node
     const auto& curnode=nodes[curnode_index];
-    double dist = std::sqrt(euclidean_dist2(items[curnode.index].second, target, ndim));
+    double dist = Distance::distance(items[curnode.index].second, target, ndim);
 
     // If current node within radius thresh
     if (dist < thresh) {
@@ -297,3 +303,8 @@ void VpTree::search_all(NodeIndex_t curnode_index, const double* target, double 
     }
     return;
 }
+
+/***** Realizing templates for Manhattan, Euclidean distances. *****/
+
+template class VpTree<BNManhattan>;
+template class VpTree<BNEuclidean>;

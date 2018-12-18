@@ -10,10 +10,13 @@ findVptree <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPa
         buildFUN=buildVptree, searchFUN=.find_vptree, searchArgsFUN=.find_vptree_args, ...)
 }
 
-.find_vptree <- function(jobs, data, nodes, k, get.index, get.distance) {
-    .Call(cxx_find_vptree, jobs, data, nodes, k, get.index, get.distance)
+.find_vptree <- function(jobs, data, nodes, distance, k, get.index, get.distance) {
+    .Call(cxx_find_vptree, jobs, data, nodes, distance, k, get.index, get.distance)
 }
 
 .find_vptree_args <- function(precomputed) {
-    list(nodes=VptreeIndex_nodes(precomputed))
+    list(
+        nodes=VptreeIndex_nodes(precomputed),
+        distance="Euclidean"
+    )
 }

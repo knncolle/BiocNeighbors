@@ -11,6 +11,6 @@ queryKmknn <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=S
         buildFUN=buildKmknn, searchFUN=.query_kmknn, searchArgsFUN=.find_kmknn_args, ...) 
 }
 
-.query_kmknn <- function(jobs, data, centers, info, k, query, get.index, get.distance) {
-    .Call(cxx_query_kmknn, jobs, data, centers, info, k, query, get.index, get.distance)
+.query_kmknn <- function(jobs, data, centers, info, distance, k, query, get.index, get.distance) {
+    .Call(cxx_query_kmknn, jobs, data, centers, info, distance, k, query, get.index, get.distance)
 }

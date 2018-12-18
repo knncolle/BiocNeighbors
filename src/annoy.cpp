@@ -1,28 +1,34 @@
 #include "annoy.h"
 
-Annoy::Annoy(SEXP ndim, SEXP fname) : NDims(check_integer_scalar(ndim, "number of dimensions")), obj(NDims), holding(NDims) {
+template<class Distance>
+Annoy<Distance>::Annoy(SEXP ndim, SEXP fname) : NDims(check_integer_scalar(ndim, "number of dimensions")), obj(NDims), holding(NDims) {
     auto Fname=check_string(fname, "index file name");
     obj.load(Fname.c_str());
     return;
 }
 
-MatDim_t Annoy::get_nobs() const {
+template<class Distance>
+MatDim_t Annoy<Distance>::get_nobs() const {
     return obj.get_n_items();
 }
 
-MatDim_t Annoy::get_ndims() const {
+template<class Distance>
+MatDim_t Annoy<Distance>::get_ndims() const {
     return NDims;
 }
 
-const std::vector<Annoy::Index_t>& Annoy::get_neighbors () const {
+template<class Distance>
+const std::vector<typename Annoy<Distance>::Index_t>& Annoy<Distance>::get_neighbors () const {
     return kept_idx;
 }
 
-const std::vector<Annoy::Data_t>& Annoy::get_distances () const {
+template<class Distance>
+const std::vector<typename Annoy<Distance>::Data_t>& Annoy<Distance>::get_distances () const {
     return kept_dist;
 }
 
-void Annoy::find_nearest_neighbors(CellIndex_t c, NumNeighbors_t K, const bool index, const bool distance) {
+template<class Distance>
+void Annoy<Distance>::find_nearest_neighbors(CellIndex_t c, NumNeighbors_t K, const bool index, const bool distance) {
     kept_idx.clear();
     kept_dist.clear();
     std::vector<Data_t>* dptr=(distance ? &kept_dist : NULL);
@@ -62,8 +68,8 @@ void Annoy::find_nearest_neighbors(CellIndex_t c, NumNeighbors_t K, const bool i
     return;
 }
 
-
-void Annoy::find_nearest_neighbors(const double* query, NumNeighbors_t K, const bool index, const bool distance) {
+template<class Distance>
+void Annoy<Distance>::find_nearest_neighbors(const double* query, NumNeighbors_t K, const bool index, const bool distance) {
     kept_idx.clear();
     kept_dist.clear();
     std::vector<Data_t>* dptr=(distance ? &kept_dist: NULL);
@@ -75,3 +81,5 @@ void Annoy::find_nearest_neighbors(const double* query, NumNeighbors_t K, const 
     return;
 }
 
+template class Annoy<Manhattan>;
+template class Annoy<Euclidean>;

@@ -17,6 +17,7 @@
 #include "annoylib.h"
 #include "kissrandom.h"
 
+template<class Distance>
 class Annoy {
 public:
     Annoy(SEXP, SEXP);
@@ -29,7 +30,7 @@ public:
 
     typedef int32_t Index_t;
     typedef float Data_t;
-    typedef AnnoyIndex<Index_t, Data_t, Euclidean, Kiss64Random> _index;
+    typedef AnnoyIndex<Index_t, Data_t, Distance, Kiss64Random> _index;
 
     const std::vector<Index_t>& get_neighbors () const;
     const std::vector<Data_t>& get_distances () const;

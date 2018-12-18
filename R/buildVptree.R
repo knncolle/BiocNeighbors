@@ -1,6 +1,6 @@
 #' @export
 #' @importFrom BiocGenerics t
-buildVptree <- function(X, transposed=FALSE)
+buildVptree <- function(X, transposed=FALSE, distance=c("Euclidean", "Manhattan"))
 # Builds an VP tree index.
 # 
 # written by Aaron Lun
@@ -15,7 +15,7 @@ buildVptree <- function(X, transposed=FALSE)
         tX <- as.matrix(tX)
     }
 
-    out <- .Call(cxx_build_vptree, tX)
+    out <- .Call(cxx_build_vptree, tX, match.arg(distance))
     ordering <- out[[1]]
     VptreeIndex(data=tX[,ordering,drop=FALSE], order=ordering, nodes=out[-1], NAMES=colnames(tX))
 }
