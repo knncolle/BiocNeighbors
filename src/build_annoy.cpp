@@ -24,8 +24,13 @@ SEXP build_annoy_internal (SEXP mat, SEXP ntrees, SEXP fname) {
     return R_NilValue;
 }
 
-SEXP build_annoy(SEXP mat, SEXP ntrees, SEXP fname) {
+SEXP build_annoy(SEXP mat, SEXP ntrees, SEXP fname, SEXP dtype) {
     BEGIN_RCPP
-    return build_annoy_internal<Euclidean>(mat, ntrees, fname);
+    auto Mode=check_string(dtype, "distance type");
+    if (Mode=="Manhattan") {
+        return build_annoy_internal<Manhattan>(mat, ntrees, fname);
+    } else {
+        return build_annoy_internal<Euclidean>(mat, ntrees, fname);
+    }
     END_RCPP
 }
