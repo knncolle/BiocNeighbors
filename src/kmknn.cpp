@@ -1,11 +1,13 @@
 #include "kmknn.h"
+#include "distances.h"
 #include "utils.h"
 
 #define USE_UPPER 0
 
 /****************** Constructor *********************/
 
-Kmknn::Kmknn(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen) {
+template<class Distance>
+Kmknn<Distance>::Kmknn(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen) {
     const MatDim_t ncenters=centers.ncol();
 
     Rcpp::List Info(info);
@@ -26,15 +28,20 @@ Kmknn::Kmknn(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen) {
 
 /****************** Visible methods *********************/
 
-MatDim_t Kmknn::get_nobs() const { return exprs.ncol(); }
+template<class Distance>
+MatDim_t Kmknn<Distance>::get_nobs() const { return exprs.ncol(); }
 
-MatDim_t Kmknn::get_ndims() const { return exprs.nrow(); }
+template<class Distance>
+MatDim_t Kmknn<Distance>::get_ndims() const { return exprs.nrow(); }
 
-std::deque<CellIndex_t>& Kmknn::get_neighbors () { return neighbors; }
+template<class Distance>
+std::deque<CellIndex_t>& Kmknn<Distance>::get_neighbors () { return neighbors; }
 
-std::deque<double>& Kmknn::get_distances () { return distances; }
+template<class Distance>
+std::deque<double>& Kmknn<Distance>::get_distances () { return distances; }
 
-void Kmknn::find_neighbors (CellIndex_t cell, double threshold, const bool index, const bool dist) {
+template<class Distance>
+void Kmknn<Distance>::find_neighbors (CellIndex_t cell, double threshold, const bool index, const bool dist) {
     if (cell >= static_cast<CellIndex_t>(exprs.ncol())) {
         throw std::runtime_error("cell index out of range");
     }
@@ -43,12 +50,14 @@ void Kmknn::find_neighbors (CellIndex_t cell, double threshold, const bool index
     return;
 }
 
-void Kmknn::find_neighbors (const double* current, double threshold, const bool index, const bool dist) {
+template<class Distance>
+void Kmknn<Distance>::find_neighbors (const double* current, double threshold, const bool index, const bool dist) {
     search_all(current, threshold, index, dist);
     return;
 }
 
-void Kmknn::find_nearest_neighbors (CellIndex_t cell, NumNeighbors_t nn, const bool index, const bool dist) {
+template<class Distance>
+void Kmknn<Distance>::find_nearest_neighbors (CellIndex_t cell, NumNeighbors_t nn, const bool index, const bool dist) {
     if (cell >= static_cast<CellIndex_t>(exprs.ncol())) {
         throw std::runtime_error("cell index out of range");
     }
@@ -59,39 +68,31 @@ void Kmknn::find_nearest_neighbors (CellIndex_t cell, NumNeighbors_t nn, const b
     return;
 }
 
-void Kmknn::find_nearest_neighbors (const double* current, NumNeighbors_t nn, const bool index, const bool dist) {
+template<class Distance>
+void Kmknn<Distance>::find_nearest_neighbors (const double* current, NumNeighbors_t nn, const bool index, const bool dist) {
     nearest.setup(nn);
     search_nn(current, nearest);
     nearest.report(neighbors, distances, index, dist, true);
     return;
 }
 
-double Kmknn::compute_sqdist(const double* x, const double* y) const {
-    double out=0;
-    const MatDim_t NR=exprs.nrow();
-    for (MatDim_t m=0; m<NR; ++m, ++x, ++y) {
-        const double tmp=*x - *y;
-        out+=tmp*tmp;
-    }
-    return out;
-}
-
 /****************** Convex search methods *********************/
 
-void Kmknn::search_all (const double* current, double threshold, const bool index, const bool dist) {
+template<class Distance>
+void Kmknn<Distance>::search_all (const double* current, double threshold, const bool index, const bool dist) {
     neighbors.clear();
     distances.clear();
     const MatDim_t ndims=exprs.nrow();
     const MatDim_t ncenters=centers.ncol();
     const double* center_ptr=centers.begin();
-    const double threshold2=threshold*threshold; // squaring.
+    const double threshold_raw=Distance::unnormalize(threshold);
 
     // Computing the distance to each center, and deciding whether to proceed for each cluster.
     for (MatDim_t center=0; center<ncenters; ++center, center_ptr+=ndims) {
         const CellIndex_t cur_nobs=clust_nobs[center];
         if (!cur_nobs) { continue; }
 
-        const double dist2center=std::sqrt(compute_sqdist(current, center_ptr));
+        const double dist2center=Distance::distance(current, center_ptr, ndims);
         auto dIt=clust_dist[center].begin();
         const double maxdist=*(dIt + cur_nobs - 1);
         if (threshold + maxdist < dist2center) { continue; }
@@ -115,13 +116,13 @@ void Kmknn::search_all (const double* current, double threshold, const bool inde
             }
 #endif
 
-            const double dist2cell2=compute_sqdist(current, other_cell);
-            if (dist2cell2 <= threshold2) {
+            const double dist2cell_raw=Distance::raw_distance(current, other_cell, ndims);
+            if (dist2cell_raw <= threshold_raw) {
                 if (index) {
                     neighbors.push_back(cur_start + celldex);
                 }
                 if (dist) {
-                    distances.push_back(std::sqrt(dist2cell2));
+                    distances.push_back(Distance::normalize(dist2cell_raw));
                 }
             }
         }
@@ -129,20 +130,21 @@ void Kmknn::search_all (const double* current, double threshold, const bool inde
     return;
 }
 
-void Kmknn::search_nn(const double* current, neighbor_queue& nearest) { 
+template<class Distance>
+void Kmknn<Distance>::search_nn(const double* current, neighbor_queue& nearest) { 
     // final argument is not strictly necessary but makes dependencies more obvious.
 
     const MatDim_t ndims=exprs.nrow();
     const MatDim_t ncenters=centers.ncol();
     const double* center_ptr=centers.begin();
-    double threshold2 = R_PosInf;
+    double threshold_raw = R_PosInf;
 
     /* Computing distances to all centers and sorting them.
      * The aim is to go through the nearest centers first, to get the shortest 'threshold' possible.
      */
     std::deque<std::pair<double, MatDim_t> > center_order(ncenters);
     for (MatDim_t center=0; center<ncenters; ++center, center_ptr+=ndims) {
-        center_order[center].first=std::sqrt(compute_sqdist(current, center_ptr));
+        center_order[center].first=Distance::distance(current, center_ptr, ndims);
         center_order[center].second=center;
     }
     std::sort(center_order.begin(), center_order.end());
@@ -161,8 +163,8 @@ void Kmknn::search_nn(const double* current, neighbor_queue& nearest) {
 #if USE_UPPER
         double upper_bd=R_PosInf;
 #endif
-        if (R_FINITE(threshold2)) {
-            const double threshold=std::sqrt(threshold2);
+        if (R_FINITE(threshold_raw)) {
+            const double threshold=Distance::normalize(threshold_raw);
 
             /* The conditional expression below exploits the triangle inequality; it is equivalent to asking whether:
              *     threshold + maxdist < dist2center
@@ -190,15 +192,20 @@ void Kmknn::search_nn(const double* current, neighbor_queue& nearest) {
             }
 #endif
 
-            const double dist2cell2=compute_sqdist(current, other_cell);
-            nearest.add(cur_start + celldex, dist2cell2);
+            const double dist2cell_raw=Distance::raw_distance(current, other_cell, ndims);
+            nearest.add(cur_start + celldex, dist2cell_raw);
             if (nearest.is_full()) {
-                threshold2=nearest.limit(); // Shrinking the threshold, if an earlier NN has been found.
+                threshold_raw=nearest.limit(); // Shrinking the threshold, if an earlier NN has been found.
 #if USE_UPPER
-                upper_bd=std::sqrt(threshold2) + dist2center; 
+                upper_bd=std::sqrt(threshold_raw) + dist2center; 
 #endif
             }
         }
     }
     return;
 }
+
+/****************** Template realizations *********************/
+
+template class Kmknn<BNManhattan>;
+template class Kmknn<BNEuclidean>;

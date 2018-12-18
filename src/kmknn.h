@@ -4,13 +4,13 @@
 #include <stdexcept>
 #include <algorithm>
 #include <deque>
-#include <cmath>
 
 #include "Rcpp.h"
 #include "utils.h"
 #include "neighbor_queue.h"
 
-struct Kmknn {
+template<class Distance>
+class Kmknn {
 public:
     Kmknn(SEXP, SEXP, SEXP);
 
@@ -26,8 +26,7 @@ public:
     std::deque<double>& get_distances ();
 protected:  
     const Rcpp::NumericMatrix exprs;
-    double compute_sqdist(const double*, const double*) const;
-    
+
     // Data members to store output.
     std::deque<CellIndex_t> neighbors;
     std::deque<double> distances;

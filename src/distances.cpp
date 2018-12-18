@@ -18,6 +18,10 @@ double BNEuclidean::normalize(double val) {
     return std::sqrt(val);
 }
 
+double BNEuclidean::unnormalize(double val) {
+    return val*val;
+}
+
 double BNManhattan::raw_distance(const double* x, const double* y, MatDim_t d) {
     double res=0;
     for (; d>0; --d, ++x, ++y) {
@@ -31,5 +35,9 @@ double BNManhattan::distance(const double*x, const double* y, MatDim_t d) {
 }
 
 double BNManhattan::normalize(double val) {
+    return val;
+}
+
+double BNManhattan::unnormalize(double val) {
     return val;
 }
