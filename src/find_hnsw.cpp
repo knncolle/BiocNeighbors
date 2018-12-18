@@ -2,9 +2,15 @@
 #include "hnsw.h"
 #include "find_knn.h"
 
-SEXP find_hnsw (SEXP to_check, SEXP vals, SEXP fname, SEXP nn, SEXP get_index, SEXP get_distance) {
+SEXP find_hnsw (SEXP to_check, SEXP vals, SEXP fname, SEXP dtype, SEXP nn, SEXP get_index, SEXP get_distance) {
     BEGIN_RCPP
-    Hnsw searcher(vals, fname);
-    return find_knn(searcher, to_check, nn, get_index, get_distance);
+    auto Mode=check_string(dtype, "distance type");
+    if (Mode=="Manhattan") {
+        Hnsw<L1Space> searcher(vals, fname);
+        return find_knn(searcher, to_check, nn, get_index, get_distance);
+     } else {
+        Hnsw<hnswlib::L2Space> searcher(vals, fname);
+        return find_knn(searcher, to_check, nn, get_index, get_distance);
+    }
     END_RCPP
 }

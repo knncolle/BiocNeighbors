@@ -11,6 +11,7 @@
 #define HNSW_PORTABLE 1
 #include "hnswlib.h"
 
+template<class Space>
 class Hnsw {
 public:
     Hnsw(SEXP, SEXP);
@@ -29,12 +30,25 @@ public:
     const std::deque<double>& get_distances () const;
 private:
     Rcpp::NumericMatrix data;
-    hnswlib::L2Space space;   
+    Space space;
     _index obj;
 
+    static double normalize(double);
     std::deque<CellIndex_t> kept_idx;
     std::deque<double> kept_dist;
     std::vector<Data_t> holding;
+};
+
+class L1Space : public hnswlib::SpaceInterface<float> {
+    size_t data_size_;
+    size_t dim_;
+public:
+    L1Space(size_t dim);
+    size_t get_data_size();
+    hnswlib::DISTFUNC<float> get_dist_func();
+    void *get_dist_func_param();
+
+    static float L1(const void*, const void*, const void*);
 };
 
 #endif
