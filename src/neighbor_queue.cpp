@@ -1,10 +1,23 @@
 #include "neighbor_queue.h"
+#include <cmath>
 
-void neighbor_queue::setup(NumNeighbors_t k, bool s) {
-    self=s;
+void neighbor_queue::base_setup(NumNeighbors_t k) {
     n_neighbors=k;
     check_k=n_neighbors + self + ties;
     full=(check_k==0);
+    return;
+}
+
+void neighbor_queue::setup(NumNeighbors_t k) {
+    self=false;
+    base_setup(k);
+    return;
+}
+
+void neighbor_queue::setup(NumNeighbors_t k, CellIndex_t s) {
+    self=true;
+    self_dex=s;
+    base_setup(k);
     return;
 }
 
@@ -30,8 +43,7 @@ double neighbor_queue::limit() const {
 }
 
 // Converts information to neighbors/distances. Also clears 'nearest'.
-void neighbor_queue::report(std::deque<CellIndex_t>& neighbors, std::deque<double>& distances, bool index, bool dist, bool sqdist, CellIndex_t self_dex)
-{
+void neighbor_queue::report(std::deque<CellIndex_t>& neighbors, std::deque<double>& distances, bool index, bool dist, bool sqdist) {
     neighbors.clear();
     distances.clear();
     if (nearest.empty()) {
