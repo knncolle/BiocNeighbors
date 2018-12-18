@@ -11,6 +11,6 @@ rangeQueryVptree <- function(X, query, threshold, get.index=TRUE, get.distance=T
         buildFUN=buildVptree, searchFUN=.range_query_vptree, searchArgsFUN=.find_vptree_args, ...)
 }
 
-.range_query_vptree <- function(jobs, data, nodes, threshold, query, get.index, get.distance) {
-    .Call(cxx_range_query_vptree, jobs, data, nodes, threshold, query, get.index, get.distance)
+.range_query_vptree <- function(jobs, data, nodes, distance, threshold, query, get.index, get.distance) {
+    .Call(cxx_range_query_vptree, jobs, data, nodes, distance, threshold, query, get.index, get.distance)
 }

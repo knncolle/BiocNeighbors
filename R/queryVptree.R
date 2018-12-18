@@ -11,6 +11,6 @@ queryVptree <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=
         buildFUN=buildVptree, searchFUN=.query_vptree, searchArgsFUN=.find_vptree_args, ...)
 }
 
-.query_vptree <- function(jobs, data, nodes, k, query, get.index, get.distance) {
-    .Call(cxx_query_vptree, jobs, data, nodes, k, query, get.index, get.distance)
+.query_vptree <- function(jobs, data, nodes, distance, k, query, get.index, get.distance) {
+    .Call(cxx_query_vptree, jobs, data, nodes, distance, k, query, get.index, get.distance)
 }
