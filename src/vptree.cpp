@@ -184,7 +184,7 @@ void VpTree<Distance>::find_nearest_neighbors (const double* current, NumNeighbo
 }
 
 template<class Distance>
-void VpTree<Distance>::search_nn(NodeIndex_t curnode_index, const double* target, neighbor_queue& nearest) { 
+void VpTree<Distance>::search_nn(NodeIndex_t curnode_index, const double* target, neighbor_queue<Distance>& nearest) { 
     // final argument is not strictly necessary but makes dependencies more obvious.
 
     if (curnode_index == LEAF_MARKER) { // indicates that we're done here

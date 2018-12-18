@@ -131,7 +131,7 @@ void Kmknn<Distance>::search_all (const double* current, double threshold, const
 }
 
 template<class Distance>
-void Kmknn<Distance>::search_nn(const double* current, neighbor_queue& nearest) { 
+void Kmknn<Distance>::search_nn(const double* current, neighbor_queue<Distance>& nearest) { 
     // final argument is not strictly necessary but makes dependencies more obvious.
 
     const MatDim_t ndims=exprs.nrow();

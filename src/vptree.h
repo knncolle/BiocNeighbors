@@ -56,8 +56,8 @@ private:
     std::deque<double> distances;
     double tau;
 
-    neighbor_queue nearest;
-    void search_nn(NodeIndex_t, const double*, neighbor_queue&);
+    neighbor_queue<Distance> nearest;
+    void search_nn(NodeIndex_t, const double*, neighbor_queue<Distance>&);
     void search_all(NodeIndex_t, const double*, double, bool, bool);
 };
 

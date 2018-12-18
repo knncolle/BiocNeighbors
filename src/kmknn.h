@@ -32,8 +32,8 @@ protected:
     std::deque<double> distances;
     void search_all(const double*, double, const bool, const bool);
 
-    neighbor_queue nearest;
-    void search_nn(const double*, neighbor_queue&);
+    neighbor_queue<Distance> nearest;
+    void search_nn(const double*, neighbor_queue<Distance>&);
 
     // Cluster-related data members.
     const Rcpp::NumericMatrix centers;

@@ -1,27 +1,31 @@
 #include "neighbor_queue.h"
-#include <cmath>
+#include "distances.h"
 
-void neighbor_queue::base_setup(NumNeighbors_t k) {
+template<class Distance>
+void neighbor_queue<Distance>::base_setup(NumNeighbors_t k) {
     n_neighbors=k;
     check_k=n_neighbors + self + ties;
     full=(check_k==0);
     return;
 }
 
-void neighbor_queue::setup(NumNeighbors_t k) {
+template<class Distance>
+void neighbor_queue<Distance>::setup(NumNeighbors_t k) {
     self=false;
     base_setup(k);
     return;
 }
 
-void neighbor_queue::setup(NumNeighbors_t k, CellIndex_t s) {
+template<class Distance>
+void neighbor_queue<Distance>::setup(NumNeighbors_t k, CellIndex_t s) {
     self=true;
     self_dex=s;
     base_setup(k);
     return;
 }
 
-void neighbor_queue::add(CellIndex_t i, double d) {
+template<class Distance>
+void neighbor_queue<Distance>::add(CellIndex_t i, double d) {
     if (!full) {
         nearest.push(NeighborPoint(d, i));
         if (static_cast<NumNeighbors_t>(nearest.size())==check_k) {
@@ -34,16 +38,19 @@ void neighbor_queue::add(CellIndex_t i, double d) {
     return;
 }
 
-bool neighbor_queue::is_full() const {
+template<class Distance>
+bool neighbor_queue<Distance>::is_full() const {
     return full;
 }
 
-double neighbor_queue::limit() const {
+template<class Distance>
+double neighbor_queue<Distance>::limit() const {
     return nearest.top().first;
 }
 
 // Converts information to neighbors/distances. Also clears 'nearest'.
-void neighbor_queue::report(std::deque<CellIndex_t>& neighbors, std::deque<double>& distances, bool index, bool dist, bool sqdist) {
+template<class Distance>
+void neighbor_queue<Distance>::report(std::deque<CellIndex_t>& neighbors, std::deque<double>& distances, bool index, bool dist, bool normalize) {
     neighbors.clear();
     distances.clear();
     if (nearest.empty()) {
@@ -81,8 +88,8 @@ void neighbor_queue::report(std::deque<CellIndex_t>& neighbors, std::deque<doubl
     }
 
     // Square rooting if the distances were squared.
-    if (sqdist && !distances.empty()) {
-        for (auto& d : distances) { d=std::sqrt(d); }
+    if (normalize && !distances.empty()) {
+        for (auto& d : distances) { d=Distance::normalize(d); }
     }
 
     if (ties) {
@@ -112,3 +119,7 @@ void neighbor_queue::report(std::deque<CellIndex_t>& neighbors, std::deque<doubl
 
     return;
 }
+
+template class neighbor_queue<BNManhattan>;
+template class neighbor_queue<BNEuclidean>;
+
