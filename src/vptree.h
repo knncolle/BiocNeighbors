@@ -11,6 +11,7 @@
 
 /* Adapted from http://stevehanov.ca/blog/index.php?id=130 */
 
+template<class Distance>
 class VpTree {
 public:    
     VpTree(Rcpp::NumericMatrix); 
