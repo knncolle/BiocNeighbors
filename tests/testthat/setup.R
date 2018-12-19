@@ -53,7 +53,12 @@ expect_identical_re <- function(left, right) {
 #################################################
 # Setting up some common function for Manhattan distances.
 
-findKNN.L1.EXACT <- function(X, k) {
+refFindKNN <- function(X, k, type="euclidean") {
+    if (type=="euclidean") {
+        ref <- FNN::get.knn(X, k=k)
+        return(list(index=ref$nn.index, distance=ref$nn.dist))
+    }
+
     collected.index <- collected.dist <- list()
     tX <- t(X)
     for (i in seq_len(nrow(X))) {
@@ -68,7 +73,12 @@ findKNN.L1.EXACT <- function(X, k) {
         distance=do.call(rbind, collected.dist))
 }
 
-queryKNN.L1.EXACT <- function(X, Y, k) {
+refQueryKNN <- function(X, Y, k, type="euclidean") {
+    if (type=="euclidean") {
+        ref <- FNN::get.knnx(data=X, query=Y, k=k)
+        return(list(index=ref$nn.index, distance=ref$nn.dist))
+    }
+
     collected.index <- collected.dist <- list()
     tX <- t(X)
     for (i in seq_len(nrow(Y))) {

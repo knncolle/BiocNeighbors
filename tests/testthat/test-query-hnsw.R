@@ -100,7 +100,7 @@ test_that("queryHnsw() behaves correctly with alternative options", {
 
 set.seed(1003001)
 test_that("queryKmknn() behaves correctly with queries", {
-    ndata <- 500 # fewer points as queryKNN.L1.EXACT is a slow brute-force method.
+    ndata <- 500 
     nquery <- 100
     ndim <- 5
     X <- matrix(runif(ndata * ndim), nrow=ndata)

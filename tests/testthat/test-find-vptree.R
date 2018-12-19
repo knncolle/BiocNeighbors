@@ -1,7 +1,6 @@
 # Tests findVptree().
 # library(BiocNeighbors); library(testthat); source("setup.R"); source("test-find-vptree.R")
 
-library(FNN)
 set.seed(1001)
 test_that("findVptree() behaves correctly on simple inputs", {
     nobs <- 1000
@@ -9,9 +8,9 @@ test_that("findVptree() behaves correctly on simple inputs", {
         for (k in c(1, 5, 20)) { 
             X <- matrix(runif(nobs * ndim), nrow=nobs)
             out <- findVptree(X, k=k)
-            ref <- get.knn(X, k=k)
-            expect_identical(out$index, ref$nn.index)
-            expect_equal(out$distance, ref$nn.dist)
+            ref <- refFindKNN(X, k=k)
+            expect_identical(out$index, ref$index)
+            expect_equal(out$distance, ref$distance)
         }
     }
 })
@@ -69,12 +68,12 @@ test_that("findVptree() behaves correctly with alternative options", {
 
 set.seed(1003001)
 test_that("findVptree() behaves correctly with Manhattan distances", {
-    nobs <- 500 # fewer observations, as findKNN.L1.EXACT is a slow brute-force method.
+    nobs <- 500 # fewer observations, as refFindKNN is a slow brute-force method.
     for (ndim in c(1, 5, 10)) {
         for (k in c(1, 5, 20)) { 
             X <- matrix(runif(nobs * ndim), nrow=nobs)
             out <- findVptree(X, k=k, distance="Manhattan")
-            ref <- findKNN.L1.EXACT(X, k=k)
+            ref <- refFindKNN(X, k=k, type="manhattan")
             expect_identical(out$index, ref$index)
             expect_equal(out$distance, ref$distance)
         }

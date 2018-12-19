@@ -3,7 +3,6 @@
 
 set.seed(1001)
 test_that("queryVptree() behaves correctly with queries", {
-    library(FNN)
     ndata <- 1000
     nquery <- 100
 
@@ -13,9 +12,9 @@ test_that("queryVptree() behaves correctly with queries", {
             Y <- matrix(runif(nquery * ndim), nrow=nquery)
 
             out <- queryVptree(X, k=k, query=Y)
-            ref <- get.knnx(data=X, query=Y, k=k)
-            expect_identical(out$index, ref$nn.index)
-            expect_equal(out$distance, ref$nn.dist)
+            ref <- refQueryKNN(X, Y, k=k)
+            expect_identical(out$index, ref$index)
+            expect_equal(out$distance, ref$distance)
         }
     }
 })
@@ -80,8 +79,8 @@ test_that("queryVptree() behaves correctly with alternative options", {
 })
 
 set.seed(1003001)
-test_that("queryVptree() behaves correctly with queries", {
-    ndata <- 500 # fewer points as queryKNN.L1.EXACT is a slow brute-force method.
+test_that("queryVptree() works with Manhattan distances", {
+    ndata <- 500 # fewer points as refQueryKNN is a slow brute-force method.
     nquery <- 100
 
     for (ndim in c(1, 5, 10)) {
@@ -90,7 +89,7 @@ test_that("queryVptree() behaves correctly with queries", {
             Y <- matrix(runif(nquery * ndim), nrow=nquery)
 
             out <- queryVptree(X, k=k, query=Y, distance="Manhattan")
-            ref <- queryKNN.L1.EXACT(X, Y, k=k)
+            ref <- refQueryKNN(X, Y, k=k, type="manhattan")
             expect_identical(out$index, ref$index)
             expect_equal(out$distance, ref$distance)
         }
