@@ -12,6 +12,7 @@ test_that("buildKmknn() works as expected", {
             expect_identical(rev(dim(bndata(out))), dim(X))
             expect_identical(sort(bnorder(out)), seq_len(nobs))
             expect_identical(bndata(out), t(X[bnorder(out),]))
+            expect_identical(bndistance(out), "Euclidean")
 
             Nclust <- length(KmknnIndex_cluster_info(out))
             expect_identical(Nclust, as.integer(ceiling(sqrt(nobs))))
@@ -78,6 +79,21 @@ test_that("buildKmknn() responds to transposition", {
     expect_identical(ref, out)
 })
 
+set.seed(200003)
+test_that("buildKmknn() works with the Manhattan distance", {
+    nobs <- 1011
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    set.seed(102)
+    ref <- buildKmknn(X, distance="Manhattan")
+    expect_identical(bndistance(ref), "Manhattan")
+
+    res <- findKmknn(precomputed=ref, k=5)
+    val <- findKmknn(X, k=5, distance="Manhattan")
+    expect_identical(res, val)
+})
+ 
 set.seed(20001)
 test_that("buildKmknn() behaves sensibly with silly inputs", {
     nobs <- 100L

@@ -11,6 +11,7 @@ test_that("buildHnsw() works as expected", {
             out <- buildHnsw(X)
             expect_identical(dirname(HnswIndex_path(out)), tmp.dir)
             expect_identical(dim(out), dim(X))
+            expect_identical(bndistance(out), "Euclidean")
         }
     }
 })
@@ -85,6 +86,21 @@ test_that("choice of parameters in buildHnsw() has an effect", {
     idx3 <- buildHnsw(X, nlinks=10)
     out3 <- findHnsw(precomputed=idx3, k=20)
     expect_true(identical(out1$index, out3$index))
+})
+
+set.seed(2500021)
+test_that("buildHnsw() works with the Manhattan distance", {
+    nobs <- 1011
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    set.seed(102)
+    ref <- buildHnsw(X, distance="Manhattan")
+    expect_identical(bndistance(ref), "Manhattan")
+
+    res <- findHnsw(precomputed=ref, k=5)
+    val <- findHnsw(X, k=5, distance="Manhattan")
+    expect_identical(res, val)
 })
 
 set.seed(250003)
