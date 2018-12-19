@@ -1,3 +1,4 @@
+#################################################
 # Setting up some common functions for range find checks.
 
 REINFORCE <- function(out) {
@@ -21,6 +22,9 @@ expect_identical_re <- function(left, right) {
     expect_equal(L$distance, R$distance)
 }
 
+#################################################
+# Setting up some common function for Manhattan distances.
+
 findKNN.L1.EXACT <- function(X, k) {
     collected.index <- collected.dist <- list()
     tX <- t(X)
@@ -34,4 +38,20 @@ findKNN.L1.EXACT <- function(X, k) {
     
     list(index=do.call(rbind, collected.index),
         distance=do.call(rbind, collected.dist))
+}
+
+queryKNN.L1.EXACT <- function(X, Y, k) {
+    collected.index <- collected.dist <- list()
+    tX <- t(X)
+    for (i in seq_len(nrow(Y))) {
+        all.dist <- colSums(abs(tX - Y[i,]))
+        o <- order(all.dist)
+        keep <- head(o, k)
+        collected.index[[i]] <- keep
+        collected.dist[[i]] <- all.dist[keep]
+    }
+    
+    list(index=do.call(rbind, collected.index),
+        distance=do.call(rbind, collected.dist))
+
 }

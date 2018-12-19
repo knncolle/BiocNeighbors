@@ -1,28 +1,28 @@
 # Tests queryHnsw().
 # library(BiocNeighbors); library(testthat); source("test-query-hnsw.R")
 
-library(RcppHNSW)
-REFFUN <- function(X, Y, k, M=16, ef_construction = 200, ef=10) {
-    ann <- new(HnswL2, ncol(X), nrow(X), as.integer(M), as.integer(ef_construction))
-    for (i in seq_len(nrow(X))) {
-        ann$addItem(X[i,])
-    }
-
-    ann$setEf(ef)
-    collected.dex <- collected.dist <- vector("list", nrow(X))
-    for (i in seq_len(nrow(Y))) {
-        available <- ann$getNNs(Y[i,], k)
-        available <- head(available, k)
-        collected.dex[[i]] <- as.integer(available)
-        collected.dist[[i]] <- sqrt(colSums((Y[i,] - t(X[available,,drop=FALSE]))^2))
-    }
-
-    list(index=do.call(rbind, collected.dex),
-        distance=do.call(rbind, collected.dist))            
-}
-
 set.seed(1001)
 test_that("queryHnsw() behaves correctly with queries", {
+    library(RcppHNSW)
+    REFFUN <- function(X, Y, k, M=16, ef_construction = 200, ef=10) {
+        ann <- new(HnswL2, ncol(X), nrow(X), as.integer(M), as.integer(ef_construction))
+        for (i in seq_len(nrow(X))) {
+            ann$addItem(X[i,])
+        }
+    
+        ann$setEf(ef)
+        collected.dex <- collected.dist <- vector("list", nrow(X))
+        for (i in seq_len(nrow(Y))) {
+            available <- ann$getNNs(Y[i,], k)
+            available <- head(available, k)
+            collected.dex[[i]] <- as.integer(available)
+            collected.dist[[i]] <- sqrt(colSums((Y[i,] - t(X[available,,drop=FALSE]))^2))
+        }
+    
+        list(index=do.call(rbind, collected.dex),
+            distance=do.call(rbind, collected.dist))            
+    }
+
     ndata <- 1000
     nquery <- 100
 
@@ -96,6 +96,24 @@ test_that("queryHnsw() behaves correctly with alternative options", {
     # Checking transposition.
     out5 <- queryHnsw(X, k=k, query=t(Y), transposed=TRUE)
     expect_identical(out5, out)
+})
+
+set.seed(1003001)
+test_that("queryKmknn() behaves correctly with queries", {
+    ndata <- 500 # fewer points as queryKNN.L1.EXACT is a slow brute-force method.
+    nquery <- 100
+    ndim <- 5
+    X <- matrix(runif(ndata * ndim), nrow=ndata)
+    Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+    # Can't compare directly as L1Space doesn't exist in RcppHNSW.
+    # We just check that the distance calculation is about-right.
+    k <- 10
+    out <- queryKmknn(X, k=k, query=Y, distance="Manhattan")
+    for (i in seq_len(k)) {
+        val <- rowSums(abs(Y - X[out$index[,i],,drop=FALSE]))
+        expect_equal(out$distance[,i], val, tol=1e-6)
+    }
 })
 
 set.seed(100301)

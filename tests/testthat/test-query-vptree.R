@@ -1,9 +1,9 @@
 # Tests queryVptree().
-# library(BiocNeighbors); library(testthat); source("test-query-vptree.R")
+# library(BiocNeighbors); library(testthat); source("setup.R"); source("test-query-vptree.R")
 
-library(FNN)
 set.seed(1001)
 test_that("queryVptree() behaves correctly with queries", {
+    library(FNN)
     ndata <- 1000
     nquery <- 100
 
@@ -77,6 +77,24 @@ test_that("queryVptree() behaves correctly with alternative options", {
     # Checking transposition.
     out5 <- queryVptree(X, k=k, query=t(Y), transposed=TRUE)
     expect_identical(out5, out)
+})
+
+set.seed(1003001)
+test_that("queryVptree() behaves correctly with queries", {
+    ndata <- 500 # fewer points as queryKNN.L1.EXACT is a slow brute-force method.
+    nquery <- 100
+
+    for (ndim in c(1, 5, 10)) {
+        for (k in c(1, 5, 20)) {
+            X <- matrix(runif(ndata * ndim), nrow=ndata)
+            Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+            out <- queryVptree(X, k=k, query=Y, distance="Manhattan")
+            ref <- queryKNN.L1.EXACT(X, Y, k=k)
+            expect_identical(out$index, ref$index)
+            expect_equal(out$distance, ref$distance)
+        }
+    }
 })
 
 set.seed(100301)
