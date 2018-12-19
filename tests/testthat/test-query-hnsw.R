@@ -2,12 +2,13 @@
 # library(BiocNeighbors); library(testthat); source("test-query-hnsw.R")
 
 library(RcppHNSW)
-REFFUN <- function(X, Y, k, M=16, ef=200) {
-    ann <- new(HnswL2, ncol(X), nrow(X), as.integer(M), as.integer(ef))
+REFFUN <- function(X, Y, k, M=16, ef_construction = 200, ef=10) {
+    ann <- new(HnswL2, ncol(X), nrow(X), as.integer(M), as.integer(ef_construction))
     for (i in seq_len(nrow(X))) {
         ann$addItem(X[i,])
     }
 
+    ann$setEf(ef)
     collected.dex <- collected.dist <- vector("list", nrow(X))
     for (i in seq_len(nrow(Y))) {
         available <- ann$getNNs(Y[i,], k)

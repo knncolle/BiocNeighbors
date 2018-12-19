@@ -2,9 +2,9 @@
 # library(BiocNeighbors); library(testthat); source("test-find-hnsw.R")
 
 library(RcppHNSW)
-REFFUN <- function(X, k, M=16, ef=200) {
-    out <- RcppHNSW::get_knn(X, k = k, include_self=FALSE, distance = "euclidean", M=M, ef=ef)
-    list(index=out$idx, distance=out$dist)
+REFFUN <- function(X, k, M=16, ef_construction=200, ef=10) {
+    out <- RcppHNSW::hnsw_knn(X, k = k+1, distance = "euclidean", M=M, ef_construction = ef_construction, ef=ef)
+    list(index=out$idx[,-1,drop=FALSE], distance=out$dist[,-1,drop=FALSE])
 }
 
 set.seed(7001)
