@@ -19,11 +19,10 @@ setMethod("show", "KmknnParam", function(object) {
 
     all.args <- names(KmknnParam_kmeans_args(object))
     all.args[is.na(all.args)] <- ""
-    show.args <- head(all.args, 4)
-    if (length(all.args) >= 4L) show.args[4] <- "..."
+    N <- length(all.args)
+    if (N >= 4L) all.args <- c(all.args[seq_len(3)], "...")
 
-    cat(sprintf("kmeans args(%i): %s\n", length(all.args),
-        paste(show.args, collapse=" ")))
+    cat(sprintf("kmeans args(%i): %s\n", N, paste(all.args, collapse=" ")))
 })
 
 ##################################

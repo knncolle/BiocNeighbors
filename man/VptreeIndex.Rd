@@ -8,7 +8,7 @@
 \description{A class to hold the vantage point tree for exact nearest neighbor identification.}
 
 \usage{
-VptreeIndex(data, nodes, order, NAMES=NULL)
+VptreeIndex(data, nodes, order, NAMES=NULL, distance="Euclidean")
 
 VptreeIndex_nodes(x)
 }
