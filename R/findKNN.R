@@ -80,3 +80,18 @@ setMethod("findKNN", c("AnnoyIndex", "AnnoyParam"), function(..., BNINDEX, BNPAR
 setMethod("findKNN", c("AnnoyIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
     findAnnoy(..., precomputed=BNINDEX)
 })
+
+#' @export
+setMethod("findKNN", c("NULL", "HnswParam"), function(..., BNINDEX, BNPARAM) {
+    findHnsw(..., nlinks=HnswParam_nlinks(BNPARAM), ef.construction=HnswParam_ef_construction(BNPARAM), directory=HnswParam_directory(BNPARAM))
+})
+
+#' @export
+setMethod("findKNN", c("HnswIndex", "HnswParam"), function(..., BNINDEX, BNPARAM) {
+    findHnsw(..., precomputed=BNINDEX)
+})
+
+#' @export
+setMethod("findKNN", c("HnswIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+    findHnsw(..., precomputed=BNINDEX)
+})

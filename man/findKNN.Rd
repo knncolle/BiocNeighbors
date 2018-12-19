@@ -22,6 +22,10 @@
 \alias{findKNN,AnnoyIndex,NULL-method}
 \alias{findKNN,AnnoyIndex,AnnoyParam-method}
 
+\alias{findKNN,NULL,HnswParam-method}
+\alias{findKNN,HnswIndex,NULL-method}
+\alias{findKNN,HnswIndex,HnswParam-method}
+
 \title{Find k-nearest neighbors}
 \description{Find the k-nearest neighbors for each point in a data set, using exact or approximate algorithms.}
 
@@ -74,7 +78,8 @@ Aaron Lun
 \seealso{
 \code{\link{findKmknn}},
 \code{\link{findVptree}},
-and \code{\link{findAnnoy}} for specific methods.
+\code{\link{findAnnoy}}
+and \code{\link{findHnsw}} for specific methods.
 }
 
 \examples{

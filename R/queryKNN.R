@@ -80,3 +80,18 @@ setMethod("queryKNN", c("NULL", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
 setMethod("queryKNN", c("AnnoyIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
     queryAnnoy(..., precomputed=BNINDEX)
 })
+
+#' @export
+setMethod("queryKNN", c("HnswIndex", "HnswParam"), function(..., BNINDEX, BNPARAM) {
+    queryHnsw(..., precomputed=BNINDEX)
+})
+
+#' @export
+setMethod("queryKNN", c("NULL", "HnswParam"), function(..., BNINDEX, BNPARAM) {
+    queryHnsw(..., nlinks=HnswParam_nlinks(BNPARAM), ef.construction=HnswParam_ef_construction(BNPARAM), directory=HnswParam_directory(BNPARAM))
+})
+
+#' @export
+setMethod("queryKNN", c("HnswIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+    queryHnsw(..., precomputed=BNINDEX)
+})

@@ -30,3 +30,9 @@ setMethod("buildIndex", "VptreeParam", function(..., BNPARAM) {
 setMethod("buildIndex", "AnnoyParam", function(..., BNPARAM) {
     buildAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM), distance=bndistance(BNPARAM))
 })
+
+#' @export
+setMethod("buildIndex", "HnswParam", function(..., BNPARAM) {
+    buildHnsw(..., nlinks=HnswParam_nlinks(BNPARAM), ef.construction=HnswParam_ef_construction(BNPARAM), 
+        directory=HnswParam_directory(BNPARAM), distance=bndistance(BNPARAM))
+})

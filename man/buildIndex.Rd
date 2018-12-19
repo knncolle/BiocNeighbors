@@ -7,6 +7,7 @@
 \alias{buildIndex,KmknnParam-method}
 \alias{buildIndex,VptreeParam-method}
 \alias{buildIndex,AnnoyParam-method}
+\alias{buildIndex,HnswParam-method}
 
 \title{Build a nearest-neighbor index}
 \description{Build indices for nearest-neighbor searching with different algorithms.}
@@ -41,7 +42,8 @@ Aaron Lun
 \seealso{
 \code{\link{buildKmknn}},
 \code{\link{buildVptree}},
-and \code{\link{buildAnnoy}} for specific methods. 
+\code{\link{buildAnnoy}} 
+and \code{\link{buildHnsw}} for specific methods. 
 }
 
 \examples{
