@@ -15,6 +15,8 @@ buildHnsw <- function(X, transposed=FALSE, nlinks=16, ef.construction=200, direc
     if (!is.matrix(tX)) {
         tX <- as.matrix(tX)
     }
-    .Call(cxx_build_hnsw, tX, nlinks, ef.construction, fname, match.arg(distance))
-    HnswIndex(data=tX, path=fname, NAMES=colnames(tX))
+    distance <- match.arg(distance)
+
+    .Call(cxx_build_hnsw, tX, nlinks, ef.construction, fname, distance)
+    HnswIndex(data=tX, path=fname, NAMES=colnames(tX), distance=distance)
 }

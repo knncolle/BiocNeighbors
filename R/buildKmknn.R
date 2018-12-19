@@ -59,5 +59,5 @@ buildKmknn <- function(X, transposed=FALSE, distance=c("Euclidean", "Manhattan")
         accumulated <- accumulated + length(o)
     }
    
-    KmknnIndex(data=do.call(cbind, new.X), centers=t(out$centers), info=clust.info, order=unlist(ordering), NAMES=rownames(X))
+    KmknnIndex(data=do.call(cbind, new.X), centers=t(out$centers), info=clust.info, order=unlist(ordering), NAMES=rownames(X), distance=distance)
 } 

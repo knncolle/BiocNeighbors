@@ -14,6 +14,8 @@ buildAnnoy <- function(X, transposed=FALSE, ntrees=50, directory=tempdir(), fnam
     if (!is.matrix(tX)) {
         tX <- as.matrix(tX)
     }
-    .Call(cxx_build_annoy, tX, ntrees, fname, match.arg(distance))
-    AnnoyIndex(data=tX, path=fname, NAMES=colnames(tX))
+    distance <- match.arg(distance)
+
+    .Call(cxx_build_annoy, tX, ntrees, fname, distance)
+    AnnoyIndex(data=tX, path=fname, NAMES=colnames(tX), distance=distance)
 }
