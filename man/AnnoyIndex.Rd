@@ -9,7 +9,7 @@
 \description{A class to hold indexing structures for the Annoy algorithm for approximate nearest neighbor identification.}
 
 \usage{
-AnnoyIndex(data, path, NAMES=NULL)
+AnnoyIndex(data, path, NAMES=NULL, distance="Euclidean")
 
 AnnoyIndex_path(x)
 
@@ -20,6 +20,7 @@ AnnoyIndex_path(x)
     \item{data}{A numeric matrix with data points in columns and dimensions in rows.}
     \item{path}{A string specifying the path to the index file.}
     \item{NAMES}{A character vector of sample names or \code{NULL}.}
+    \item{distance}{A string specifying the distance metric to use.}
     \item{x, object}{A AnnoyIndex object.}
 }
 

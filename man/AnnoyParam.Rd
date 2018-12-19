@@ -9,7 +9,7 @@
 \description{A class to hold parameters for the Annoy algorithm for approximate nearest neighbor identification.}
 
 \usage{
-AnnoyParam(ntrees=50, directory=tempdir())
+AnnoyParam(ntrees=50, directory=tempdir(), distance="Euclidean")
 
 AnnoyParam_ntrees(x)
 
@@ -21,6 +21,7 @@ AnnoyParam_directory(x)
 \arguments{
     \item{ntrees}{Integer scalar, number of trees to use for index generation.}
     \item{directory}{String specifying the directory in which to save the index.}
+    \item{distance}{A string specifying the distance metric to use.}
     \item{x, object}{A AnnoyParam object.}
 }
 

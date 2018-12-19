@@ -9,7 +9,7 @@
 \description{A class to hold indexing structures for the HNSW algorithm for approximate nearest neighbor identification.}
 
 \usage{
-HnswIndex(data, path, NAMES=NULL)
+HnswIndex(data, path, NAMES=NULL, distance="Euclidean")
 
 HnswIndex_path(x)
 
@@ -20,6 +20,7 @@ HnswIndex_path(x)
     \item{data}{A numeric matrix with data points in columns and dimensions in rows.}
     \item{path}{A string specifying the path to the index file.}
     \item{NAMES}{A character vector of sample names or \code{NULL}.}
+    \item{distance}{A string specifying the distance metric to use.}
     \item{x, object}{A HnswIndex object.}
 }
 

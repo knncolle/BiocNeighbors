@@ -10,7 +10,7 @@
 \description{A class to hold parameters for the Hnsw algorithm for approximate nearest neighbor identification.}
 
 \usage{
-HnswParam(nlinks=16, ef.construction=200, directory=tempdir())
+HnswParam(nlinks=16, ef.construction=200, directory=tempdir(), distance="Euclidean")
 
 HnswParam_nlinks(x)
 
@@ -25,6 +25,7 @@ HnswParam_directory(x)
     \item{nlinks}{Integer scalar, number of bi-directional links per element for index generation.}
     \item{ef.construction}{Integer scalar, size of the dynamic list for index generation.}
     \item{directory}{String specifying the directory in which to save the index.}
+    \item{distance}{A string specifying the distance metric to use.}
     \item{x, object}{A HnswParam object.}
 }
 

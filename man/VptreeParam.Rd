@@ -6,7 +6,11 @@
 \description{A class to hold parameters for the VP tree algorithm for exact nearest neighbor identification.}
 
 \usage{
-VptreeParam()
+VptreeParam(distance="Euclidean")
+}
+
+\arguments{
+\item{distance}{A string specifying the distance metric to use.}
 }
 
 \value{
