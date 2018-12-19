@@ -41,7 +41,8 @@ which avoids wasting time on small steps in the early stages of the search where
 }
 
 \section{Distance metrics}{ 
-Currently, only Euclidean distances are supported, but support may be added for other distance types depending on demand.
+All algorithms support neighbor searching by both Euclidean and Manhattan distances.
+Note that KMKNN operates much more naturally with Euclidean distances, so your mileage may vary when using it with Manhattan distances.
 }
 
 \author{
