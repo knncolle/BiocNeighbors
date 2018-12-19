@@ -1,3 +1,7 @@
+##################################
+###### AnnoyParam methods ########
+##################################
+
 #' @export
 #' @importFrom methods new
 AnnoyParam <- function(ntrees=50, directory=tempdir()) {
@@ -23,6 +27,27 @@ setValidity2("AnnoyParam", function(object) {
 })
 
 #' @export
+AnnoyParam_ntrees <- function(x) {
+    x@ntrees
+}
+
+#' @export
+AnnoyParam_directory <- function(x) {
+    x@dir
+}
+
+#' @export
+setMethod("show", "AnnoyParam", function(object) {
+    callNextMethod()
+    cat(sprintf("ntrees: %i\n", AnnoyParam_ntrees(object)))
+    cat(sprintf("directory: %s\n", AnnoyParam_directory(object)))
+})
+
+##################################
+###### AnnoyIndex methods ########
+##################################
+
+#' @export
 #' @importFrom methods new
 AnnoyIndex <- function(data, path, NAMES=NULL) {
     new("AnnoyIndex", data=data, path=path, NAMES=NAMES)
@@ -37,11 +62,21 @@ setValidity2("AnnoyIndex", function(object) {
         msg <- c(msg, "'path' should be a string")
     }
 
-    NAMES <- rownames(object)
-    if (!is.null(NAMES) && length(NAMES)!=nrow(object)) {
-        msg <- c(msg, "length of non-NULL 'NAMES' is not equal to the number of rows")
-    }
-
     if (length(msg)) return(msg)
     return(TRUE)
 })
+
+#' @export
+setMethod("show", "AnnoyIndex", function(object) {
+    callNextMethod()
+    cat(sprintf("path: %s\n", AnnoyIndex_path(object)))
+})
+
+
+#' @export
+AnnoyIndex_path <- function(x) {
+    x@path
+}
+
+#' @export
+setMethod("bnorder", "AnnoyIndex", function(x) seq_len(ncol(bndata(x))) )

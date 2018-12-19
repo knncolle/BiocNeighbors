@@ -28,11 +28,12 @@ setValidity2("VptreeIndex", function(object) {
         msg <- c(msg, "node information vectors should have same length")
     }
 
-    NAMES <- rownames(object)
-    if (!is.null(NAMES) && length(NAMES)!=nrow(object)) {
-        msg <- c(msg, "length of non-NULL 'NAMES' is not equal to the number of rows")
-    }
-
     if (length(msg)) return(msg)
     return(TRUE)
 })
+
+#' @export
+VptreeIndex_nodes <- function(x) {
+    x@nodes
+}
+

@@ -1,3 +1,7 @@
+#############################
+##### HnswParam methods #####
+#############################
+
 #' @export
 #' @importFrom methods new
 HnswParam <- function(nlinks=16, ef.construction=200, directory=tempdir()) {
@@ -28,6 +32,33 @@ setValidity2("HnswParam", function(object) {
 })
 
 #' @export
+HnswParam_nlinks <- function(x) {
+    x@nlinks
+}
+
+#' @export
+HnswParam_ef_construction <- function(x) {
+    x@ef.construction
+}
+
+#' @export
+HnswParam_directory <- function(x) {
+    x@dir
+}
+
+#' @export
+setMethod("show", "HnswParam", function(object) {
+    callNextMethod()
+    cat(sprintf("nlinks: %i\n", HnswParam_nlinks(object)))
+    cat(sprintf("EF construction: %i\n", HnswParam_ef_construction(object)))
+    cat(sprintf("directory: %s\n", HnswParam_directory(object)))
+})
+
+#############################
+##### HnswIndex methods #####
+#############################
+
+#' @export
 #' @importFrom methods new
 HnswIndex <- function(data, path, NAMES=NULL) {
     new("HnswIndex", data=data, path=path, NAMES=NAMES)
@@ -42,11 +73,20 @@ setValidity2("HnswIndex", function(object) {
         msg <- c(msg, "'path' should be a string")
     }
 
-    NAMES <- rownames(object)
-    if (!is.null(NAMES) && length(NAMES)!=nrow(object)) {
-        msg <- c(msg, "length of non-NULL 'NAMES' is not equal to the number of rows")
-    }
-
     if (length(msg)) return(msg)
     return(TRUE)
+})
+
+#' @export
+HnswIndex_path <- function(x) {
+    x@path
+}
+
+#' @export
+setMethod("bnorder", "HnswIndex", function(x) seq_len(ncol(bndata(x))) )
+
+#' @export
+setMethod("show", "HnswIndex", function(object) {
+    callNextMethod()
+    cat(sprintf("path: %s\n", HnswIndex_path(object)))
 })

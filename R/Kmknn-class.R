@@ -1,8 +1,21 @@
+##################################
+###### KmknnParam methods ########
+##################################
+
 #' @export
 #' @importFrom methods new
 KmknnParam <- function(...) {
     new("KmknnParam", kmeans.args=list(...))
 }
+
+#' @export
+KmknnParam_kmeans_args <- function(x) {
+    x@kmeans.args
+}
+
+##################################
+###### KmknnIndex methods ########
+##################################
 
 #' @export
 #' @importFrom methods new
@@ -30,11 +43,26 @@ setValidity2("KmknnIndex", function(object) {
         msg <- c(msg, "number of observations is not consistent between 'data' and 'order'")
     }
 
-    NAMES <- rownames(object)
-    if (!is.null(NAMES) && length(NAMES)!=nrow(object)) {
-        msg <- c(msg, "length of non-NULL 'NAMES' is not equal to the number of rows")
-    }
-
     if (length(msg)) return(msg)
     return(TRUE)
 })
+
+
+#' @export
+setMethod("show", "KmknnIndex", function(object) {
+    callNextMethod()
+    cat(sprintf("clusters: %i\n", ncol(KmknnIndex_cluster_centers(object))))
+})
+
+        
+KmknnIndex_cluster_centers <- function(x) {
+    x@centers
+}
+
+#' @export
+KmknnIndex_cluster_info <- function(x) {
+    x@info
+}
+
+#' @export
+setMethod("bnorder", "KmknnIndex", function(x) x@order)
