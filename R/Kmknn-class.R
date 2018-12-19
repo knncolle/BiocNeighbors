@@ -66,7 +66,7 @@ setMethod("show", "KmknnIndex", function(object) {
     cat(sprintf("clusters: %i\n", ncol(KmknnIndex_cluster_centers(object))))
 })
 
-        
+#' @export        
 KmknnIndex_cluster_centers <- function(x) {
     x@centers
 }

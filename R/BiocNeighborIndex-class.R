@@ -9,6 +9,7 @@ setMethod("show", "BiocNeighborIndex", function(object) {
 #' @export
 setMethod("bndistance", "BiocNeighborIndex", function(x) x@distance)
 
+#' @export
 setMethod("dimnames", "BiocNeighborIndex", function(x) {
     list(x@NAMES, NULL)
 })
