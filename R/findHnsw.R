@@ -10,13 +10,14 @@ findHnsw <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPara
         buildFUN=buildHnsw, pathFUN=HnswIndex_path, searchFUN=.find_hnsw, searchArgsFUN=.find_hnsw_args, ...)
 }
 
-.find_hnsw <- function(jobs, data, fname, k, get.index, get.distance) {
-    .Call(cxx_find_hnsw, jobs, data, fname, k, get.index, get.distance)
+.find_hnsw <- function(jobs, data, fname, distance, k, get.index, get.distance) {
+    .Call(cxx_find_hnsw, jobs, data, fname, distance, k, get.index, get.distance)
 }
 
 .find_hnsw_args <- function(precomputed) {
     list(
         data=bndata(precomputed),
-        fname=HnswIndex_path(precomputed)
+        fname=HnswIndex_path(precomputed),
+        distance="Euclidean"
     )
 }

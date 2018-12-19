@@ -11,6 +11,6 @@ queryAnnoy <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=S
         buildFUN=buildAnnoy, pathFUN=AnnoyIndex_path, searchFUN=.query_annoy, searchArgsFUN=.find_annoy_args, ...)
 }
 
-.query_annoy <- function(jobs, query, ndims, fname, k, get.index, get.distance) {
-    .Call(cxx_query_annoy, jobs, query, ndims, fname, k, get.index, get.distance)
+.query_annoy <- function(jobs, query, ndims, fname, distance, k, get.index, get.distance) {
+    .Call(cxx_query_annoy, jobs, query, ndims, fname, distance, k, get.index, get.distance)
 }

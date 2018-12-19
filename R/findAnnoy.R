@@ -10,13 +10,14 @@ findAnnoy <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
         buildFUN=buildAnnoy, pathFUN=AnnoyIndex_path, searchFUN=.find_annoy, searchArgsFUN=.find_annoy_args, ...) 
 }
 
-.find_annoy <- function(jobs, ndims, fname, k, get.index, get.distance) {
-    .Call(cxx_find_annoy, jobs, ndims, fname, k, get.index, get.distance)
+.find_annoy <- function(jobs, ndims, fname, distance, k, get.index, get.distance) {
+    .Call(cxx_find_annoy, jobs, ndims, fname, distance, k, get.index, get.distance)
 }
 
 .find_annoy_args <- function(precomputed) {
     list(
         ndims=ncol(precomputed),
-        fname=AnnoyIndex_path(precomputed)
+        fname=AnnoyIndex_path(precomputed),
+        distance="Euclidean"
     )
 }

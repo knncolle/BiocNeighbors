@@ -1,6 +1,6 @@
 #' @export
 #' @importFrom BiocGenerics t
-buildAnnoy <- function(X, transposed=FALSE, ntrees=50, directory=tempdir(), fname=tempfile(tmpdir=directory, fileext=".idx")) 
+buildAnnoy <- function(X, transposed=FALSE, ntrees=50, directory=tempdir(), fname=tempfile(tmpdir=directory, fileext=".idx"), distance=c("Euclidean", "Manhattan")) 
 # Builds an Annoy index at the specified path.
 # 
 # written by Aaron Lun
@@ -14,6 +14,6 @@ buildAnnoy <- function(X, transposed=FALSE, ntrees=50, directory=tempdir(), fnam
     if (!is.matrix(tX)) {
         tX <- as.matrix(tX)
     }
-    .Call(cxx_build_annoy, tX, ntrees, fname) 
+    .Call(cxx_build_annoy, tX, ntrees, fname, match.arg(distance))
     AnnoyIndex(data=tX, path=fname, NAMES=colnames(tX))
 }
