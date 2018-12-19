@@ -7,13 +7,7 @@ test_that("rangeFindKmknn() behaves correctly on simple inputs", {
     for (ndim in c(1, 5, 10, 20)) {
         for (d in c(0.1, 0.5, 1)) {
             X <- matrix(runif(nobs * ndim), nrow=nobs)
-    
-            D <- unname(as.matrix(dist(X)))
-            ind <- which(D <= d, arr.ind=TRUE)
-            by.row <- split(ind[,2], ind[,1])
-            by.dist <- split(D[ind], ind[,1])
-            ref <- list(index=unname(by.row), distance=unname(by.dist))
-
+            ref <- refFindNeighbors(X, d)
             out <- rangeFindKmknn(X, threshold=d)
             expect_identical_re(out, ref)
         }
@@ -67,6 +61,19 @@ test_that("rangeFindKmknn() behaves correctly with alternative options", {
     pre <- buildKmknn(X)
     out4 <- rangeFindKmknn(X, threshold=d, precomputed=pre)
     expect_identical_re(out4, ref)
+})
+
+set.seed(1003001)
+test_that("rangeFindKmknn() works with euclidean distances", {
+    nobs <- 1000
+    for (ndim in c(1, 5, 10)) {
+        for (d in c(0.1, 0.5, 1)) {
+            X <- matrix(runif(nobs * ndim), nrow=nobs)
+            ref <- refFindNeighbors(X, d, type="manhattan")
+            out <- rangeFindKmknn(X, threshold=d, distance="Manhattan")
+            expect_identical_re(out, ref)
+        }
+    }
 })
 
 set.seed(100301)
