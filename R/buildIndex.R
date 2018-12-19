@@ -18,15 +18,15 @@ setMethod("buildIndex", "NULL", function(..., BNPARAM) {
 
 #' @export
 setMethod("buildIndex", "KmknnParam", function(..., BNPARAM) {
-    do.call(buildKmknn, c(list(...), KmknnParam_kmeans_args(BNPARAM)))
+    do.call(buildKmknn, c(list(..., distance=bndistance(BNPARAM)), KmknnParam_kmeans_args(BNPARAM)))
 })
 
 #' @export
 setMethod("buildIndex", "VptreeParam", function(..., BNPARAM) {
-    buildVptree(...)
+    buildVptree(..., distance=bndistance(BNPARAM))
 })
 
 #' @export
 setMethod("buildIndex", "AnnoyParam", function(..., BNPARAM) {
-    buildAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM))
+    buildAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM), distance=bndistance(BNPARAM))
 })
