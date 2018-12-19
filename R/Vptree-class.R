@@ -1,8 +1,16 @@
+##################################
+###### VptreeParam methods #######
+##################################
+
 #' @export
 #' @importFrom methods new
 VptreeParam <- function(distance="Euclidean") {
     new("VptreeParam", distance=distance)
 }
+
+##################################
+###### VptreeIndex methods #######
+##################################
 
 #' @export
 #' @importFrom methods new
@@ -37,3 +45,5 @@ VptreeIndex_nodes <- function(x) {
     x@nodes
 }
 
+#' @export
+setMethod("bnorder", "VptreeIndex", function(x) x@order)
