@@ -3,6 +3,7 @@
 \docType{class}
 
 \alias{show,BiocNeighborParam-method}
+\alias{bndistance,BiocNeighborParam-method}
 
 \title{The BiocNeighborParam class}
 \description{A virtual class for specifying the type of nearest-neighbor search algorithm and associated parameters.}
@@ -22,6 +23,7 @@ See the associated documentation pages for more details.
 \section{Methods}{
 \describe{
 \item{\code{show(object)}:}{Display the class of a BiocNeighborParam \code{object}.}
+\item{\code{bndistance(object)}:}{Return a string specifying the distance metric to be used for searching, usually \code{"Euclidean"} or \code{"Manhattan"}.}
 }
 }
 
