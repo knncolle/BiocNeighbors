@@ -4,8 +4,8 @@
 
 #' @export
 #' @importFrom methods new
-AnnoyParam <- function(ntrees=50, directory=tempdir()) {
-    new("AnnoyParam", ntrees=as.integer(ntrees), dir=directory)
+AnnoyParam <- function(ntrees=50, directory=tempdir(), distance="Euclidean") {
+    new("AnnoyParam", ntrees=as.integer(ntrees), dir=directory, distance=distance)
 }
 
 #' @importFrom S4Vectors setValidity2
@@ -49,8 +49,8 @@ setMethod("show", "AnnoyParam", function(object) {
 
 #' @export
 #' @importFrom methods new
-AnnoyIndex <- function(data, path, NAMES=NULL) {
-    new("AnnoyIndex", data=data, path=path, NAMES=NAMES)
+AnnoyIndex <- function(data, path, NAMES=NULL, distance="Euclidean") {
+    new("AnnoyIndex", data=data, path=path, NAMES=NAMES, distance=distance)
 }
 
 #' @importFrom S4Vectors setValidity2

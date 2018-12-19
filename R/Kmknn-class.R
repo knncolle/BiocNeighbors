@@ -4,8 +4,8 @@
 
 #' @export
 #' @importFrom methods new
-KmknnParam <- function(...) {
-    new("KmknnParam", kmeans.args=list(...))
+KmknnParam <- function(..., distance="Euclidean") {
+    new("KmknnParam", kmeans.args=list(...), distance=distance)
 }
 
 #' @export
@@ -19,8 +19,8 @@ KmknnParam_kmeans_args <- function(x) {
 
 #' @export
 #' @importFrom methods new
-KmknnIndex <- function(data, centers, info, order, NAMES=NULL) {
-    new("KmknnIndex", data=data, centers=centers, info=info, order=order, NAMES=NAMES)
+KmknnIndex <- function(data, centers, info, order, NAMES=NULL, distance="Euclidean") {
+    new("KmknnIndex", data=data, centers=centers, info=info, order=order, NAMES=NAMES, distance=distance)
 }
 
 #' @importFrom S4Vectors setValidity2

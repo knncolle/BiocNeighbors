@@ -1,13 +1,13 @@
 #' @export
 #' @importFrom methods new
-VptreeParam <- function() {
-    new("VptreeParam")
+VptreeParam <- function(distance="Euclidean") {
+    new("VptreeParam", distance=distance)
 }
 
 #' @export
 #' @importFrom methods new
-VptreeIndex <- function(data, nodes, order, NAMES=NULL) {
-    new("VptreeIndex", data=data, nodes=nodes, order=order, NAMES=NAMES)
+VptreeIndex <- function(data, nodes, order, NAMES=NULL, distance="Euclidean") {
+    new("VptreeIndex", data=data, nodes=nodes, order=order, NAMES=NAMES, distance=distance)
 }
 
 #' @importFrom S4Vectors setValidity2

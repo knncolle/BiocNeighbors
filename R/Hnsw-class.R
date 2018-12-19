@@ -4,8 +4,8 @@
 
 #' @export
 #' @importFrom methods new
-HnswParam <- function(nlinks=16, ef.construction=200, directory=tempdir()) {
-    new("HnswParam", nlinks=as.integer(nlinks), ef.construction=as.integer(ef.construction), dir=directory)
+HnswParam <- function(nlinks=16, ef.construction=200, directory=tempdir(), distance="Euclidean") {
+    new("HnswParam", nlinks=as.integer(nlinks), ef.construction=as.integer(ef.construction), dir=directory, distance=distance)
 }
 
 #' @importFrom S4Vectors setValidity2
@@ -60,8 +60,8 @@ setMethod("show", "HnswParam", function(object) {
 
 #' @export
 #' @importFrom methods new
-HnswIndex <- function(data, path, NAMES=NULL) {
-    new("HnswIndex", data=data, path=path, NAMES=NAMES)
+HnswIndex <- function(data, path, NAMES=NULL, distance="Euclidean") {
+    new("HnswIndex", data=data, path=path, NAMES=NAMES, distance=distance)
 }
 
 #' @importFrom S4Vectors setValidity2
