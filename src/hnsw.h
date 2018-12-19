@@ -8,7 +8,7 @@
 #define __ERROR_PRINTER_OVERRIDE__  REprintf
 
 // Avoid discrepancies with AVX.
-#define HNSW_PORTABLE 1
+#define NO_MANUAL_VECTORIZATION
 #include "hnswlib.h"
 
 template<class Space>
@@ -44,6 +44,7 @@ class L1Space : public hnswlib::SpaceInterface<float> {
     size_t dim_;
 public:
     L1Space(size_t dim);
+    ~L1Space();
     size_t get_data_size();
     hnswlib::DISTFUNC<float> get_dist_func();
     void *get_dist_func_param();

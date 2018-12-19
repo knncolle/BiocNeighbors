@@ -95,6 +95,8 @@ template class Hnsw<hnswlib::L2Space>;
 
 L1Space::L1Space(size_t ndim) : data_size_(ndim*sizeof(float)), dim_(ndim) {}
 
+L1Space::~L1Space() {}
+
 size_t L1Space::get_data_size() { return data_size_; }
 
 hnswlib::DISTFUNC<float> L1Space::get_dist_func() {
@@ -105,13 +107,14 @@ void * L1Space::get_dist_func_param() {
     return &dim_;
 }
 
-float L1Space::L1(const void *pVect1, const void *pVect2, const void *qty_ptr) {
+float L1Space::L1(const void *pVect1v, const void *pVect2v, const void *qty_ptr) {
     //return *((float *)pVect2);
+    const float* pVect1=static_cast<const float*>(pVect1v);
+    const float* pVect2=static_cast<const float*>(pVect2v);
     size_t qty = *((size_t *) qty_ptr);
     float res = 0;
-    for (unsigned i = 0; i < qty; i++) {
-        float t = ((float *) pVect1)[i] - ((float *) pVect2)[i];
-        res += std::fabs(t);
+    for (; qty > 0; --qty, ++pVect1, ++pVect2) {
+        res += std::fabs(*pVect1 - *pVect2);
     }
     return (res);
 }
