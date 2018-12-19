@@ -17,7 +17,6 @@ findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
 .find_kmknn_args <- function(precomputed) {
     list(
         centers=KmknnIndex_cluster_centers(precomputed),
-        info=KmknnIndex_cluster_info(precomputed), 
-        distance="Euclidean"
+        info=KmknnIndex_cluster_info(precomputed)
     )
 }

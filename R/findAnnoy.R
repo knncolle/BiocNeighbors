@@ -17,7 +17,6 @@ findAnnoy <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
 .find_annoy_args <- function(precomputed) {
     list(
         ndims=ncol(precomputed),
-        fname=AnnoyIndex_path(precomputed),
-        distance="Euclidean"
+        fname=AnnoyIndex_path(precomputed)
     )
 }

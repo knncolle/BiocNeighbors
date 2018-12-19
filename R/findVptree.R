@@ -16,7 +16,6 @@ findVptree <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPa
 
 .find_vptree_args <- function(precomputed) {
     list(
-        nodes=VptreeIndex_nodes(precomputed),
-        distance="Euclidean"
+        nodes=VptreeIndex_nodes(precomputed)
     )
 }

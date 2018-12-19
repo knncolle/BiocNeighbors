@@ -17,7 +17,6 @@ findHnsw <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPara
 .find_hnsw_args <- function(precomputed) {
     list(
         data=bndata(precomputed),
-        fname=HnswIndex_path(precomputed),
-        distance="Euclidean"
+        fname=HnswIndex_path(precomputed)
     )
 }

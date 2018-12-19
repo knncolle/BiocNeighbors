@@ -21,7 +21,10 @@
 
     k <- .refine_k(k, precomputed, query=FALSE)
     collected <- bpmapply(FUN=searchFUN, jobs,
-        MoreArgs=c(searchArgsFUN(precomputed), list(k=k, get.index=get.index, get.distance=get.distance)), 
+        MoreArgs=c(
+            searchArgsFUN(precomputed), 
+            list(k=k, get.index=get.index, get.distance=get.distance, distance=bndistance(precomputed))
+        ), 
         BPPARAM=BPPARAM, SIMPLIFY=FALSE)
 
     # Aggregating results across cores.
