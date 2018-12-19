@@ -72,6 +72,22 @@ test_that("findHnsw() behaves correctly with alternative options", {
     expect_identical(out4, out)
 })
 
+set.seed(70031)
+test_that("findHnsw() works with Manhattan distances", {
+    nobs <- 1000
+    ndim <- 10
+    k <- 5
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    # Can't compare directly as L1Space doesn't exist in RcppHNSW.
+    # We just check that the distance calculation is about-right.
+    out <- findHnsw(X, k=k, distance="Manhattan")
+    for (i in seq_len(k)) {
+        val <- rowSums(abs(X - X[out$index[,i],,drop=FALSE]))
+        expect_equal(out$distance[,i], val, tol=1e-6)
+    }
+})
+
 set.seed(7004)
 test_that("findHnsw() behaves correctly with parallelization", {
     library(BiocParallel)

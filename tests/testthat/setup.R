@@ -21,4 +21,17 @@ expect_identical_re <- function(left, right) {
     expect_equal(L$distance, R$distance)
 }
 
-
+findKNN.L1.EXACT <- function(X, k) {
+    collected.index <- collected.dist <- list()
+    tX <- t(X)
+    for (i in seq_len(nrow(X))) {
+        all.dist <- colSums(abs(tX - X[i,]))
+        o <- order(all.dist)
+        keep <- head(setdiff(o, i), k)
+        collected.index[[i]] <- keep
+        collected.dist[[i]] <- all.dist[keep]
+    }
+    
+    list(index=do.call(rbind, collected.index),
+        distance=do.call(rbind, collected.dist))
+}
