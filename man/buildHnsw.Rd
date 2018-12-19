@@ -40,6 +40,7 @@ A \linkS4class{HnswIndex} object containing:
 \item \code{path}, a string containing the path to the index file.
 \item \code{data}, a numeric matrix equivalent to \code{t(X)}.
 \item \code{NAMES}, a character vector or \code{NULL} equal to \code{rownames(X)}.
+\item \code{distance}, a string specifying the distance metric used.
 }
 }
 

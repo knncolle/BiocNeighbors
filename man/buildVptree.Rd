@@ -35,6 +35,7 @@ Each parallel element specifies a node.
 All indices here are zero-based, with child values set to -1 for leaf nodes.
 \item \code{order}, an integer vector specifying how rows in \code{X} have been reordered in columns of \code{data}.
 \item \code{NAMES}, a character vector or \code{NULL} equal to \code{rownames(X)}.
+\item \code{distance}, a string specifying the distance metric used.
 }
 }
 
