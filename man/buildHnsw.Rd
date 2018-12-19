@@ -6,7 +6,8 @@
 
 \usage{
 buildHnsw(X, transposed=FALSE, nlinks=16, ef.construction=200,
-    directory=tempdir(), fname=tempfile(tmpdir=directory, fileext=".idx"))
+    directory=tempdir(), fname=tempfile(tmpdir=directory, fileext=".idx"),
+    distance=c("Euclidean", "Manhattan"))
 }
 
 \arguments{
@@ -16,6 +17,7 @@ buildHnsw(X, transposed=FALSE, nlinks=16, ef.construction=200,
 \item{ef.construction}{Integer scalar specifying the size of the dynamic list during construction.}
 \item{directory}{String containing the path to the directory in which to save the index file.}
 \item{fname}{String containing the path to the index file.}
+\item{distance}{String specifying the type of distance to use.}
 }
 
 \details{
@@ -56,4 +58,3 @@ Y <- matrix(rnorm(100000), ncol=20)
 out <- buildHnsw(Y)
 out
 }
-

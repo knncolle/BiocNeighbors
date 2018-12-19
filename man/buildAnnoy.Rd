@@ -6,7 +6,8 @@
 
 \usage{
 buildAnnoy(X, transposed=FALSE, ntrees=50, directory=tempdir(),
-    fname=tempfile(tmpdir=directory, fileext=".idx")) 
+    fname=tempfile(tmpdir=directory, fileext=".idx"),
+    distance=c("Euclidean", "Manhattan"))
 }
 
 \arguments{
@@ -15,6 +16,7 @@ buildAnnoy(X, transposed=FALSE, ntrees=50, directory=tempdir(),
 \item{ntrees}{Integer scalar specifying the number of trees to build in the index.}
 \item{directory}{String containing the path to the directory in which to save the index file.}
 \item{fname}{String containing the path to the index file.}
+\item{distance}{String specifying the type of distance to use.}
 }
 
 \details{
@@ -55,4 +57,3 @@ Y <- matrix(rnorm(100000), ncol=20)
 out <- buildAnnoy(Y)
 out
 }
-
