@@ -4,13 +4,13 @@
 set.seed(1001)
 test_that("queryHnsw() behaves correctly with queries", {
     library(RcppHNSW)
-    REFFUN <- function(X, Y, k, M=16, ef_construction = 200, ef=10) {
+    REFFUN <- function(X, Y, k, M=16, ef_construction = 200, ef_search=ef_construction) {
         ann <- new(HnswL2, ncol(X), nrow(X), as.integer(M), as.integer(ef_construction))
         for (i in seq_len(nrow(X))) {
             ann$addItem(X[i,])
         }
     
-        ann$setEf(ef)
+        ann$setEf(ef_search)
         collected.dex <- collected.dist <- vector("list", nrow(X))
         for (i in seq_len(nrow(Y))) {
             available <- ann$getNNs(Y[i,], k)
@@ -99,7 +99,7 @@ test_that("queryHnsw() behaves correctly with alternative options", {
 })
 
 set.seed(1003001)
-test_that("queryKmknn() behaves correctly with queries", {
+test_that("queryKmknn() behaves correctly with Manhattan distances", {
     ndata <- 500 
     nquery <- 100
     ndim <- 5
@@ -114,6 +114,24 @@ test_that("queryKmknn() behaves correctly with queries", {
         val <- rowSums(abs(Y - X[out$index[,i],,drop=FALSE]))
         expect_equal(out$distance[,i], val, tol=1e-6)
     }
+})
+
+set.seed(1003002)
+test_that("queryAnnoy() responds to run-time 'ef.search'", {
+    nobs <- 1000
+    nquery <- 100
+    ndim <- 12
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+    k <- 7
+    ref <- queryHnsw(X, Y, k=k)
+    alt <- queryHnsw(X, Y, k=k, ef.search=20)
+    expect_false(identical(alt$index, ref$index))
+
+    # As a control:
+    alt <- queryHnsw(X, Y, k=k, ef.search=200)
+    expect_true(identical(alt$index, ref$index))
 })
 
 set.seed(100301)

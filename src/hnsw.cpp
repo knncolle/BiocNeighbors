@@ -2,7 +2,14 @@
 #include <cmath>
 
 template<class Space>
-Hnsw<Space>::Hnsw(SEXP dat, SEXP fname) : data(dat), space(data.nrow()), obj(&space, check_string(fname, "index file name")), holding(data.nrow()) {}
+Hnsw<Space>::Hnsw(SEXP dat, SEXP fname, SEXP efs) : data(dat), space(data.nrow()), obj(&space, check_string(fname, "index file name")), 
+    holding(data.nrow()), ef_search(check_integer_scalar(efs, "ef.search")) 
+{
+    if (ef_search < 1) {
+        throw std::runtime_error("ef.search should be a positive integer scalar");
+    }
+    return;
+}
 
 template<class Space>
 MatDim_t Hnsw<Space>::get_nobs() const { 
@@ -25,9 +32,16 @@ const std::deque<double>& Hnsw<Space>::get_distances () const {
 }
 
 template<class Space>
+void Hnsw<Space>::set_ef_search(NumNeighbors_t K) {
+    obj.ef_ = std::max(K, ef_search);
+    return;
+}
+
+template<class Space>
 void Hnsw<Space>::find_nearest_neighbors(CellIndex_t c, NumNeighbors_t K, const bool index, const bool distance) {
     auto curcol=data.column(c);
     std::copy(curcol.begin(), curcol.end(), holding.begin());
+    set_ef_search(K+1);
     auto Q=obj.searchKnn(holding.data(), K+1);
 
     // Auto-filter self.
@@ -64,6 +78,7 @@ void Hnsw<Space>::find_nearest_neighbors(CellIndex_t c, NumNeighbors_t K, const 
 template<class Space>
 void Hnsw<Space>::find_nearest_neighbors(const double* query, NumNeighbors_t K, const bool index, const bool distance) {
     std::copy(query, query+holding.size(), holding.begin());
+    set_ef_search(K);
     auto Q=obj.searchKnn(holding.data(), K);
     kept_idx.clear();
     kept_dist.clear();

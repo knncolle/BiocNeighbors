@@ -35,5 +35,5 @@ setMethod("buildIndex", "AnnoyParam", function(..., BNPARAM) {
 #' @export
 setMethod("buildIndex", "HnswParam", function(..., BNPARAM) {
     buildHnsw(..., nlinks=HnswParam_nlinks(BNPARAM), ef.construction=HnswParam_ef_construction(BNPARAM), 
-        directory=HnswParam_directory(BNPARAM), distance=bndistance(BNPARAM))
+        directory=HnswParam_directory(BNPARAM), ef.search=HnswParam_ef_search(BNPARAM), distance=bndistance(BNPARAM))
 })

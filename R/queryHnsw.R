@@ -11,6 +11,6 @@ queryHnsw <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=Se
         buildFUN=buildHnsw, pathFUN=HnswIndex_path, searchFUN=.query_hnsw, searchArgsFUN=.find_hnsw_args, ...)
 }
 
-.query_hnsw <- function(jobs, query, data, fname, distance, k, get.index, get.distance) {
-    .Call(cxx_query_hnsw, jobs, query, data, fname, distance, k, get.index, get.distance)
+.query_hnsw <- function(jobs, query, data, fname, ef.search, distance, k, get.index, get.distance) {
+    .Call(cxx_query_hnsw, jobs, query, data, fname, ef.search, distance, k, get.index, get.distance)
 }

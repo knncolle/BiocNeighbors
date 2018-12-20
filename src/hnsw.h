@@ -14,7 +14,7 @@
 template<class Space>
 class Hnsw {
 public:
-    Hnsw(SEXP, SEXP);
+    Hnsw(SEXP, SEXP, SEXP);
 
     void find_nearest_neighbors(CellIndex_t, NumNeighbors_t, const bool, const bool);
     void find_nearest_neighbors(const double*, NumNeighbors_t, const bool, const bool);
@@ -37,6 +37,9 @@ private:
     std::deque<CellIndex_t> kept_idx;
     std::deque<double> kept_dist;
     std::vector<Data_t> holding;
+
+    const NumNeighbors_t ef_search;
+    void set_ef_search(NumNeighbors_t);
 };
 
 class L1Space : public hnswlib::SpaceInterface<float> {

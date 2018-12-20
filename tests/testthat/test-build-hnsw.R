@@ -88,6 +88,19 @@ test_that("choice of parameters in buildHnsw() has an effect", {
     expect_true(identical(out1$index, out3$index))
 })
 
+set.seed(250003)
+test_that("choice of 'ef.search' in buildHnsw() has an effect", {
+    nobs <- 2101
+    ndim <- 23
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    idx <- buildHnsw(X)
+    expect_identical(HnswIndex_ef_search(idx), 200L)
+
+    idx <- buildHnsw(X, ef.search=100)
+    expect_identical(HnswIndex_ef_search(idx), 100L)
+})
+
 set.seed(2500021)
 test_that("buildHnsw() works with the Manhattan distance", {
     nobs <- 1011

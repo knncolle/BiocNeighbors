@@ -17,8 +17,8 @@ static const R_CallMethodDef all_call_entries[] = {
     REGISTER(query_annoy, 9),
 
     REGISTER(build_hnsw, 5),
-    REGISTER(find_hnsw, 7),
-    REGISTER(query_hnsw, 8),
+    REGISTER(find_hnsw, 8),
+    REGISTER(query_hnsw, 9),
 
     REGISTER(build_vptree, 2),
     REGISTER(find_vptree, 7),

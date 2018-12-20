@@ -102,7 +102,6 @@ test_that("findKNN dispatches correctly for HNSW", {
     outC <- findKNN(X, k=10, BNPARAM=HnswParam(), BNINDEX=buildHnsw(X)) 
     expect_equal(outA, outB)
     expect_equal(outA, outC)
-    expect_false(isTRUE(all.equal(outA, findKNN(X, k=10)))) # Checking that they're not exact.
 
     # Testing the behaviour of the NULL methods.
     outD <- findKNN(X, k=10, BNINDEX=buildHnsw(X), BNPARAM=NULL)
@@ -114,7 +113,10 @@ test_that("findKNN dispatches correctly for HNSW", {
     alt1 <- findKNN(X, k=10, BNPARAM=HnswParam(), BNINDEX=buildHnsw(X, nlinks=20)) 
     alt2 <- findKNN(X, k=10, BNPARAM=HnswParam(nlinks=20)) 
     expect_equal(alt1, alt2)
-    expect_false(isTRUE(all.equal(outA, alt1))) # Checking that they're not exact.
+
+    # Confirming that it's not exact.
+    outZ <- findKNN(X, k=10, BNINDEX=buildHnsw(X, ef.search=10)) 
+    expect_false(isTRUE(all.equal(outZ, findKNN(X, k=10)))) # Checking that they're not exact.
 })
 
 test_that("Illegal findKNN signatures fail", {
@@ -193,7 +195,6 @@ test_that("queryKNN dispatches correctly for Hnsw", {
     outC <- queryKNN(X, Y, k=10, BNPARAM=HnswParam(), BNINDEX=buildHnsw(X)) 
     expect_equal(outA, outB)
     expect_equal(outA, outC)
-    expect_false(isTRUE(all.equal(outA, queryKNN(X, Y, k=10)))) # Checking that they're not exact.
 
     # Testing the behaviour of the NULL methods.
     outD <- queryKNN(X, Y, k=10, BNINDEX=buildHnsw(X), BNPARAM=NULL)
@@ -205,7 +206,10 @@ test_that("queryKNN dispatches correctly for Hnsw", {
     alt1 <- queryKNN(X, Y, k=10, BNPARAM=HnswParam(), BNINDEX=buildHnsw(X, nlinks=25)) 
     alt2 <- queryKNN(X, Y, k=10, BNPARAM=HnswParam(nlinks=25)) 
     expect_equal(alt1, alt2)
-    expect_false(isTRUE(all.equal(outA, alt1))) # Checking that they're not exact.
+
+    # Checking that it's not exact.
+    outZ <- queryKNN(X, Y, k=10, BNINDEX=buildHnsw(X, ef.search=10)) 
+    expect_false(isTRUE(all.equal(outZ, queryKNN(X, Y, k=10)))) 
 })
 
 test_that("Illegal queryKNN signatures fail", {
