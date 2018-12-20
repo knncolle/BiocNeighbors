@@ -73,7 +73,8 @@ setMethod("queryKNN", c("AnnoyIndex", "AnnoyParam"), function(..., BNINDEX, BNPA
 
 #' @export
 setMethod("queryKNN", c("NULL", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
-    queryAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM), distance=bndistance(BNPARAM))
+    queryAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM), 
+        search.mult=AnnoyParam_search_mult(BNPARAM), distance=bndistance(BNPARAM))
 })
 
 #' @export

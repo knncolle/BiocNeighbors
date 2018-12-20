@@ -135,6 +135,24 @@ test_that("queryAnnoy() behaves correctly with Manhattan distances", {
     }
 })
 
+set.seed(1003002)
+test_that("queryAnnoy() responds to run-time search.k", {
+    nobs <- 1000
+    nquery <- 100
+    ndim <- 12
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+    k <- 7
+    ref <- queryAnnoy(X, Y, k=k)
+    alt <- queryAnnoy(X, Y, k=k, search.mult=20)
+    expect_false(identical(alt$index, ref$index))
+    
+    # As a control:
+    alt <- queryAnnoy(X, Y, k=k, search.mult=50)
+    expect_true(identical(alt$index, ref$index))
+})
+
 set.seed(100301)
 test_that("queryAnnoy() behaves correctly with parallelization", {
     library(BiocParallel)

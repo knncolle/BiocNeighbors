@@ -6,7 +6,7 @@
 
 \usage{
 buildAnnoy(X, transposed=FALSE, ntrees=50, directory=tempdir(),
-    fname=tempfile(tmpdir=directory, fileext=".idx"),
+    search.mult=ntrees, fname=tempfile(tmpdir=directory, fileext=".idx"),
     distance=c("Euclidean", "Manhattan"))
 }
 
@@ -15,6 +15,7 @@ buildAnnoy(X, transposed=FALSE, ntrees=50, directory=tempdir(),
 \item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
 \item{ntrees}{Integer scalar specifying the number of trees to build in the index.}
 \item{directory}{String containing the path to the directory in which to save the index file.}
+\item{search.mult}{Numeric scalar specifying the multiplier for the number of points to search.}
 \item{fname}{String containing the path to the index file.}
 \item{distance}{String specifying the type of distance to use.}
 }
@@ -29,6 +30,11 @@ Of course, if index files are manually constructed, the user is also responsible
 The \code{ntrees} parameter controls the trade-off between accuracy and computational work.
 More trees provide greater accuracy at the cost of more computational work (both in terms of the indexing time and search speed in downstream functions).
 
+The \code{search.mult} controls the parameter known as \code{search_k} in the original Annoy documentation. 
+Specifically, \code{search_k} is defined as \code{k * search.mult} where \code{k} is the number of nearest neighbors to identify in downstream functions.
+This represents the number of points to search exhaustively and determines the run-time balance between speed and accuracy.
+The default \code{search.mult=ntrees} represents the Annoy library defaults.
+
 Technically, the index construction algorithm is stochastic but, for various logistical reasons, the seed is hard-coded into the C++ code.
 This means that the results of the Annoy neighbor searches will be fully deterministic for the same inputs, even though the theory provides no such guarantees.
 }
@@ -38,6 +44,7 @@ A \linkS4class{AnnoyIndex} object containing:
 \itemize{
 \item \code{path}, a string containing the path to the index file.
 \item \code{data}, a numeric matrix equivalent to \code{t(X)}.
+\item \code{search.mult},a  numeric scalar specifying the number of points to search in downstream functions.
 \item \code{NAMES}, a character vector or \code{NULL} equal to \code{rownames(X)}.
 \item \code{distance}, a string specifying the distance metric used.
 }

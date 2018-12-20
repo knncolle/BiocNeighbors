@@ -1,9 +1,14 @@
 #include "annoy.h"
 
 template<class Distance>
-Annoy<Distance>::Annoy(SEXP ndim, SEXP fname) : NDims(check_integer_scalar(ndim, "number of dimensions")), obj(NDims), holding(NDims) {
+Annoy<Distance>::Annoy(SEXP ndim, SEXP fname, SEXP mult) : NDims(check_integer_scalar(ndim, "number of dimensions")), 
+        obj(NDims), holding(NDims), search_mult(check_numeric_scalar(mult, "search multiplier")) 
+{
     auto Fname=check_string(fname, "index file name");
     obj.load(Fname.c_str());
+    if (search_mult <= 1) {
+        throw std::runtime_error("search multiplier should be greater than 1");
+    }
     return;
 }
 
@@ -28,11 +33,16 @@ const std::vector<typename Annoy<Distance>::Data_t>& Annoy<Distance>::get_distan
 }
 
 template<class Distance>
+NumNeighbors_t Annoy<Distance>::get_search_k(NumNeighbors_t K) {
+    return search_mult * K + 0.5; // rounded up.
+}
+
+template<class Distance>
 void Annoy<Distance>::find_nearest_neighbors(CellIndex_t c, NumNeighbors_t K, const bool index, const bool distance) {
     kept_idx.clear();
     kept_dist.clear();
     std::vector<Data_t>* dptr=(distance ? &kept_dist : NULL);
-    obj.get_nns_by_item(c, K + 1, -1, &kept_idx, dptr); // +1, as it forgets to discard 'self'.
+    obj.get_nns_by_item(c, K + 1, get_search_k(K + 1), &kept_idx, dptr); // +1, as it forgets to discard 'self'.
     
     bool self_found=false;
     for (size_t idx=0; idx<kept_idx.size(); ++idx) { 
@@ -74,7 +84,7 @@ void Annoy<Distance>::find_nearest_neighbors(const double* query, NumNeighbors_t
     kept_dist.clear();
     std::vector<Data_t>* dptr=(distance ? &kept_dist: NULL);
     std::copy(query, query+NDims, holding.begin());
-    obj.get_nns_by_vector(holding.data(), K, -1, &kept_idx, dptr);
+    obj.get_nns_by_vector(holding.data(), K, get_search_k(K), &kept_idx, dptr);
     if (!index) {
         kept_idx.clear();
     }

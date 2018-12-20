@@ -124,6 +124,22 @@ test_that("findAnnoy() behaves correctly with Manhattan distances", {
     }
 })
 
+set.seed(70032)
+test_that("findAnnoy() responds to run-time search.k", {
+    nobs <- 1000
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    k <- 7
+    ref <- findAnnoy(X, k=k)
+    alt <- findAnnoy(X, k=k, search.mult=20)
+    expect_false(identical(alt$index, ref$index))
+
+    # As a control:
+    alt <- findAnnoy(X, k=k, search.mult=50)
+    expect_true(identical(alt$index, ref$index))
+})
+ 
 set.seed(7004)
 test_that("findAnnoy() behaves correctly with parallelization", {
     library(BiocParallel)

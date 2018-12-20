@@ -13,8 +13,8 @@ static const R_CallMethodDef all_call_entries[] = {
     REGISTER(range_query_kmknn, 9),
 
     REGISTER(build_annoy, 4),
-    REGISTER(find_annoy, 7),
-    REGISTER(query_annoy, 8),
+    REGISTER(find_annoy, 8),
+    REGISTER(query_annoy, 9),
 
     REGISTER(build_hnsw, 5),
     REGISTER(find_hnsw, 7),

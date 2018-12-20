@@ -28,7 +28,8 @@ setMethod("buildIndex", "VptreeParam", function(..., BNPARAM) {
 
 #' @export
 setMethod("buildIndex", "AnnoyParam", function(..., BNPARAM) {
-    buildAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM), distance=bndistance(BNPARAM))
+    buildAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM), 
+        search.mult=AnnoyParam_search_mult(BNPARAM), distance=bndistance(BNPARAM))
 })
 
 #' @export

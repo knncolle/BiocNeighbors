@@ -2,9 +2,11 @@
 
 export(AnnoyIndex)
 export(AnnoyIndex_path)
+export(AnnoyIndex_search_mult)
 export(AnnoyParam)
 export(AnnoyParam_directory)
 export(AnnoyParam_ntrees)
+export(AnnoyParam_search_mult)
 export(HnswIndex)
 export(HnswIndex_path)
 export(HnswParam)

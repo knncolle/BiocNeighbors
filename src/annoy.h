@@ -20,7 +20,7 @@
 template<class Distance>
 class Annoy {
 public:
-    Annoy(SEXP, SEXP);
+    Annoy(SEXP, SEXP, SEXP);
 
     void find_nearest_neighbors(CellIndex_t, NumNeighbors_t, const bool, const bool);
     void find_nearest_neighbors(const double*, NumNeighbors_t, const bool, const bool);
@@ -40,6 +40,9 @@ private:
 
     std::vector<Index_t> kept_idx;
     std::vector<Data_t> kept_dist, holding;
+
+    const double search_mult;
+    NumNeighbors_t get_search_k(NumNeighbors_t);
 };
 
 #endif

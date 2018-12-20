@@ -10,7 +10,7 @@ setClass("KmknnParam", contains="BiocNeighborParam", slots=c(kmeans.args="list")
 setClass("VptreeParam", contains="BiocNeighborParam")
 
 #' @export
-setClass("AnnoyParam", contains="BiocNeighborParam", slots=c(ntrees="integer", dir="character")) 
+setClass("AnnoyParam", contains="BiocNeighborParam", slots=c(ntrees="integer", dir="character", search.mult="numeric")) 
 
 #' @export
 setClass("HnswParam", contains="BiocNeighborParam", slots=c(nlinks="integer", ef.construction="integer", dir="character")) 
@@ -28,7 +28,7 @@ setClass("KmknnIndex", contains="BiocNeighborIndex", slots=c(centers="matrix", i
 setClass("VptreeIndex", contains="BiocNeighborIndex", slots=c(order="integer", nodes="list"))
 
 #' @export
-setClass("AnnoyIndex", contains="BiocNeighborIndex", slots=c(path="character"))
+setClass("AnnoyIndex", contains="BiocNeighborIndex", slots=c(path="character", search.mult="numeric"))
 
 #' @export
-setClass("HnswIndex", contains="BiocNeighborIndex", slots=c(path="character"))
+setClass("HnswIndex", contains="BiocNeighborIndex", slots=c(path="character", ef.search="integer"))

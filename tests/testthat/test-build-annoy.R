@@ -88,6 +88,19 @@ test_that("choice of 'ntrees' in buildAnnoy() has an effect", {
     expect_true(identical(out1$index, out3$index))
 })
 
+set.seed(250003)
+test_that("choice of 'search.mult' in buildAnnoy() has an effect", {
+    nobs <- 2101
+    ndim <- 23
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    idx <- buildAnnoy(X)
+    expect_identical(AnnoyIndex_search_mult(idx), 50)
+
+    idx <- buildAnnoy(X, search.mult=10)
+    expect_identical(AnnoyIndex_search_mult(idx), 10)
+})
+
 set.seed(2500021)
 test_that("buildAnnoy() works with the Manhattan distance", {
     nobs <- 1011
