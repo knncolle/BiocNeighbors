@@ -12,7 +12,7 @@
 
 \usage{
 HnswParam(nlinks=16, ef.construction=200, directory=tempdir(), 
-    ef.search=ef.construction, distance="Euclidean")
+    ef.search=10, distance="Euclidean")
 
 HnswParam_nlinks(x)
 

@@ -1,6 +1,6 @@
 #' @export
 #' @importFrom BiocGenerics t
-buildHnsw <- function(X, transposed=FALSE, nlinks=16, ef.construction=200, directory=tempdir(), ef.search=ef.construction,
+buildHnsw <- function(X, transposed=FALSE, nlinks=16, ef.construction=200, directory=tempdir(), ef.search=10,
     fname=tempfile(tmpdir=directory, fileext=".idx"), distance=c("Euclidean", "Manhattan"))
 # Builds an Hnsw index at the specified path.
 # 

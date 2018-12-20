@@ -4,13 +4,13 @@
 set.seed(1001)
 test_that("queryHnsw() behaves correctly with queries", {
     library(RcppHNSW)
-    REFFUN <- function(X, Y, k, M=16, ef_construction = 200, ef_search=ef_construction) {
+    REFFUN <- function(X, Y, k, M=16, ef_construction = 200, ef_search=10) {
         ann <- new(HnswL2, ncol(X), nrow(X), as.integer(M), as.integer(ef_construction))
         for (i in seq_len(nrow(X))) {
             ann$addItem(X[i,])
         }
     
-        ann$setEf(ef_search)
+        ann$setEf(max(ef_search, k))
         collected.dex <- collected.dist <- vector("list", nrow(X))
         for (i in seq_len(nrow(Y))) {
             available <- ann$getNNs(Y[i,], k)
@@ -130,7 +130,7 @@ test_that("queryAnnoy() responds to run-time 'ef.search'", {
     expect_false(identical(alt$index, ref$index))
 
     # As a control:
-    alt <- queryHnsw(X, Y, k=k, ef.search=200)
+    alt <- queryHnsw(X, Y, k=k, ef.search=10)
     expect_true(identical(alt$index, ref$index))
 })
 

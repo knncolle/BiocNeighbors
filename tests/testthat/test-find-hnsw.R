@@ -2,7 +2,7 @@
 # library(BiocNeighbors); library(testthat); source("test-find-hnsw.R")
 
 library(RcppHNSW)
-REFFUN <- function(X, k, M=16, ef_construction=200, ef_search=ef_construction) {
+REFFUN <- function(X, k, M=16, ef_construction=200, ef_search=10) {
     out <- RcppHNSW::hnsw_knn(X, k = k+1, distance = "euclidean", M=M, ef_construction = ef_construction, ef=ef_search)
     list(index=out$idx[,-1,drop=FALSE], distance=out$dist[,-1,drop=FALSE])
 }
@@ -96,11 +96,11 @@ test_that("findHnsw() responds to run-time 'ef.search'", {
 
     k <- 7
     ref <- findHnsw(X, k=k)
-    alt <- findHnsw(X, k=k, ef.search=10)
+    alt <- findHnsw(X, k=k, ef.search=20)
     expect_false(identical(alt$index, ref$index))
 
     # As a control:
-    alt <- findHnsw(X, k=k, ef.search=200)
+    alt <- findHnsw(X, k=k, ef.search=10)
     expect_true(identical(alt$index, ref$index))
 })
 

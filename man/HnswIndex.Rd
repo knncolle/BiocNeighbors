@@ -10,7 +10,7 @@
 \description{A class to hold indexing structures for the HNSW algorithm for approximate nearest neighbor identification.}
 
 \usage{
-HnswIndex(data, path, ef.search=200, NAMES=NULL, distance="Euclidean")
+HnswIndex(data, path, ef.search=10, NAMES=NULL, distance="Euclidean")
 
 HnswIndex_path(x)
 

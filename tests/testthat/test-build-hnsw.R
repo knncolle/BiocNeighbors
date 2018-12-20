@@ -95,7 +95,7 @@ test_that("choice of 'ef.search' in buildHnsw() has an effect", {
     X <- matrix(runif(nobs * ndim), nrow=nobs)
 
     idx <- buildHnsw(X)
-    expect_identical(HnswIndex_ef_search(idx), 200L)
+    expect_identical(HnswIndex_ef_search(idx), 10L)
 
     idx <- buildHnsw(X, ef.search=100)
     expect_identical(HnswIndex_ef_search(idx), 100L)

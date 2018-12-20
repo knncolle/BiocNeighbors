@@ -4,7 +4,7 @@
 
 #' @export
 #' @importFrom methods new
-HnswParam <- function(nlinks=16, ef.construction=200, directory=tempdir(), ef.search=ef.construction, distance="Euclidean") {
+HnswParam <- function(nlinks=16, ef.construction=200, directory=tempdir(), ef.search=10, distance="Euclidean") {
     new("HnswParam", nlinks=as.integer(nlinks), ef.construction=as.integer(ef.construction), dir=directory, ef.search=as.integer(ef.search), distance=distance)
 }
 
@@ -71,7 +71,7 @@ setMethod("show", "HnswParam", function(object) {
 
 #' @export
 #' @importFrom methods new
-HnswIndex <- function(data, path, ef.search=200, NAMES=NULL, distance="Euclidean") {
+HnswIndex <- function(data, path, ef.search=10, NAMES=NULL, distance="Euclidean") {
     new("HnswIndex", data=data, path=path, ef.search=as.integer(ef.search), NAMES=NAMES, distance=distance)
 }
 
