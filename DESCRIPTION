@@ -6,7 +6,7 @@ Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
         email="infinite.monkeys.with.keyboards@gmail.com"))
 Depends: R (>= 3.6)
 Imports: Rcpp, BiocGenerics, S4Vectors, BiocParallel, stats, methods
-Suggests: testthat, BiocStyle, knitr, rmarkdown, FNN, RcppAnnoy
+Suggests: testthat, BiocStyle, knitr, rmarkdown, FNN, RcppAnnoy, RcppHNSW
 biocViews: Clustering, Classification
 Description: Implements exact and approximate methods for nearest neighbor 
     detection, in a framework that allows them to be easily switched within 

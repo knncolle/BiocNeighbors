@@ -6,7 +6,7 @@
 
 \usage{
 buildHnsw(X, transposed=FALSE, nlinks=16, ef.construction=200, directory=tempdir(), 
-    ef.search=ef.construction, fname=tempfile(tmpdir=directory, fileext=".idx"),
+    ef.search=10, fname=tempfile(tmpdir=directory, fileext=".idx"),
     distance=c("Euclidean", "Manhattan"))
 }
 
