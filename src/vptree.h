@@ -1,13 +1,12 @@
 #ifndef VPTREE
 #define VPTREE
 
-#include <stdexcept>
-#include <algorithm>
-#include <deque>
-#include <vector>
 #include "Rcpp.h"
 #include "utils.h"
 #include "neighbor_queue.h"
+
+#include <deque>
+#include <vector>
 
 /* Adapted from http://stevehanov.ca/blog/index.php?id=130 */
 

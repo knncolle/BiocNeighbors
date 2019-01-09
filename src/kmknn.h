@@ -1,13 +1,11 @@
 #ifndef KMKNN_H
 #define KMKNN_H
 
-#include <stdexcept>
-#include <algorithm>
-#include <deque>
-
 #include "Rcpp.h"
 #include "utils.h"
 #include "neighbor_queue.h"
+
+#include <deque>
 
 template<class Distance>
 class Kmknn {

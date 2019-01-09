@@ -2,6 +2,9 @@
 #include "utils.h"
 #include "distances.h"
 
+#include <stdexcept>
+#include <algorithm>
+
 /***** Getter methods *****/
 
 template<class Distance>

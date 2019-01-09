@@ -2,6 +2,9 @@
 #include "distances.h"
 #include "utils.h"
 
+#include <stdexcept>
+#include <algorithm>
+
 #define USE_UPPER 0
 
 /****************** Constructor *********************/
