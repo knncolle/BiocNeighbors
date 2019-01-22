@@ -43,7 +43,7 @@ setMethod("queryKNN", c("KmknnIndex", "KmknnParam"), function(..., BNINDEX, BNPA
 
 #' @export
 setMethod("queryKNN", c("NULL", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
-    do.call(queryKmknn, c(list(...), KmknnParam_kmeans_args(BNPARAM)))
+    do.call(queryKmknn, c(list(..., distance=bndistance(BNPARAM)), KmknnParam_kmeans_args(BNPARAM)))
 })
 
 #' @export
@@ -58,7 +58,7 @@ setMethod("queryKNN", c("VptreeIndex", "VptreeParam"), function(..., BNINDEX, BN
 
 #' @export
 setMethod("queryKNN", c("NULL", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
-    queryVptree(...)
+    queryVptree(..., distance=bndistance(BNPARAM))
 })
 
 #' @export
@@ -73,10 +73,27 @@ setMethod("queryKNN", c("AnnoyIndex", "AnnoyParam"), function(..., BNINDEX, BNPA
 
 #' @export
 setMethod("queryKNN", c("NULL", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
-    queryAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM))
+    queryAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM), 
+        search.mult=AnnoyParam_search_mult(BNPARAM), distance=bndistance(BNPARAM))
 })
 
 #' @export
 setMethod("queryKNN", c("AnnoyIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
     queryAnnoy(..., precomputed=BNINDEX)
+})
+
+#' @export
+setMethod("queryKNN", c("HnswIndex", "HnswParam"), function(..., BNINDEX, BNPARAM) {
+    queryHnsw(..., precomputed=BNINDEX)
+})
+
+#' @export
+setMethod("queryKNN", c("NULL", "HnswParam"), function(..., BNINDEX, BNPARAM) {
+    queryHnsw(..., nlinks=HnswParam_nlinks(BNPARAM), ef.construction=HnswParam_ef_construction(BNPARAM),
+        directory=HnswParam_directory(BNPARAM), ef.search=HnswParam_ef_search(BNPARAM), distance=bndistance(BNPARAM))
+})
+
+#' @export
+setMethod("queryKNN", c("HnswIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+    queryHnsw(..., precomputed=BNINDEX)
 })

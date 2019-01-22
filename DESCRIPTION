@@ -1,24 +1,22 @@
 Package: BiocNeighbors
-Version: 1.1.6
-Date: 2018-12-11
+Version: 1.1.8
+Date: 2019-01-09
 Title: Nearest Neighbor Detection for Bioconductor Packages
 Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
         email="infinite.monkeys.with.keyboards@gmail.com"))
-Depends: R (>= 3.6)
-Imports: Rcpp, S4Vectors, BiocParallel, stats, methods
-Suggests: testthat, BiocStyle, knitr, rmarkdown, FNN, RcppAnnoy
+Imports: Rcpp, BiocGenerics, S4Vectors, BiocParallel, stats, methods
+Suggests: testthat, BiocStyle, knitr, rmarkdown, FNN, RcppAnnoy, RcppHNSW
 biocViews: Clustering, Classification
 Description: Implements exact and approximate methods for nearest neighbor 
     detection, in a framework that allows them to be easily switched within 
-    Bioconductor packages or workflows. The exact algorithm is implemented 
-    using pre-clustering with the k-means algorithm, as described by Wang 
-    (2012). This is faster than conventional kd-trees for neighbor searching 
-    in higher (> 20) dimensional data. The approximate method uses the Annoy 
-    algorithm. Functions are also provided to search for all neighbors within
-    a given distance. Parallelization is achieved for all methods using 
-    the BiocParallel framework.
+    Bioconductor packages or workflows. Exact searches can be performed using
+    the k-means for k-nearest neighbors algorithm or with vantage point trees.
+    Approximate searches can be performed using the Annoy or HNSW libraries.
+    Searching on either Euclidean or Manhattan distances is supported. 
+    Parallelization is achieved for all methods by using BiocParallel. Functions 
+    are also provided to search for all neighbors within a given distance. 
 License: GPL-3
-LinkingTo: Rcpp, RcppAnnoy
+LinkingTo: Rcpp, RcppAnnoy, RcppHNSW
 VignetteBuilder: knitr
 SystemRequirements: C++11
 RoxygenNote: 6.1.1

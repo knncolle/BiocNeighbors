@@ -1,7 +1,6 @@
 # Tests queryVptree().
-# library(BiocNeighbors); library(testthat); source("test-query-vptree.R")
+# library(BiocNeighbors); library(testthat); source("setup.R"); source("test-query-vptree.R")
 
-library(FNN)
 set.seed(1001)
 test_that("queryVptree() behaves correctly with queries", {
     ndata <- 1000
@@ -13,9 +12,9 @@ test_that("queryVptree() behaves correctly with queries", {
             Y <- matrix(runif(nquery * ndim), nrow=nquery)
 
             out <- queryVptree(X, k=k, query=Y)
-            ref <- get.knnx(data=X, query=Y, k=k)
-            expect_identical(out$index, ref$nn.index)
-            expect_equal(out$distance, ref$nn.dist)
+            ref <- refQueryKNN(X, Y, k=k)
+            expect_identical(out$index, ref$index)
+            expect_equal(out$distance, ref$distance)
         }
     }
 })
@@ -77,6 +76,24 @@ test_that("queryVptree() behaves correctly with alternative options", {
     # Checking transposition.
     out5 <- queryVptree(X, k=k, query=t(Y), transposed=TRUE)
     expect_identical(out5, out)
+})
+
+set.seed(1003001)
+test_that("queryVptree() works with Manhattan distances", {
+    ndata <- 500 # fewer points as refQueryKNN is a slow brute-force method.
+    nquery <- 100
+
+    for (ndim in c(1, 5, 10)) {
+        for (k in c(1, 5, 20)) {
+            X <- matrix(runif(ndata * ndim), nrow=ndata)
+            Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+            out <- queryVptree(X, k=k, query=Y, distance="Manhattan")
+            ref <- refQueryKNN(X, Y, k=k, type="manhattan")
+            expect_identical(out$index, ref$index)
+            expect_equal(out$distance, ref$distance)
+        }
+    }
 })
 
 set.seed(100301)

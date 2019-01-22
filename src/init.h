@@ -5,29 +5,35 @@
 
 extern "C" {
 
-SEXP find_kmknn(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP); 
+SEXP find_kmknn(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP); 
 
-SEXP query_kmknn(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP); 
+SEXP query_kmknn(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP); 
 
-SEXP range_find_kmknn(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP); 
+SEXP range_find_kmknn(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP); 
 
-SEXP range_query_kmknn(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP); 
+SEXP range_query_kmknn(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP); 
 
-SEXP build_annoy(SEXP, SEXP, SEXP);
+SEXP build_annoy(SEXP, SEXP, SEXP, SEXP);
 
-SEXP find_annoy(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP find_annoy(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
-SEXP query_annoy(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP query_annoy(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
-SEXP build_vptree(SEXP);
+SEXP build_hnsw(SEXP, SEXP, SEXP, SEXP, SEXP );
 
-SEXP find_vptree(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP find_hnsw(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
-SEXP query_vptree(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP query_hnsw(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
-SEXP range_find_vptree(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP build_vptree(SEXP, SEXP);
 
-SEXP range_query_vptree(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP find_vptree(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+
+SEXP query_vptree(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+
+SEXP range_find_vptree(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+
+SEXP range_query_vptree(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 }
 

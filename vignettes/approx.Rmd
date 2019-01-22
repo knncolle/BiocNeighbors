@@ -23,14 +23,21 @@ library(BiocNeighbors)
 
 # Introduction
 
-The `r Biocpkg("BiocNeighbors")` package provides an implementation of the [Annoy](https://github.com/spotify/annoy) (Approximate Nearest Neighbors Oh Yeah) method based on C++ code in the `CRANpkg("RcppAnnoy")` package.
-The aim is to provide an approximate method to complement the exact algorithms `r Biocpkg("BiocNeighbors", vignette="exact.html", label="described previously")`.
-Indeed, it is straightforward to switch from one algorithm to another by simply changing the `BNPARAM` argument in `findKNN` and `queryKNN`.
+The `r Biocpkg("BiocNeighbors")` package provides several algorithms for approximate neighbor searches:
 
-Briefly, the Annoy method works by building a tree where a random hyperplane partitions points into two child groups at each internal node.
+- The [Annoy](https://github.com/spotify/annoy) (Approximate Nearest Neighbors Oh Yeah) method uses C++ code in the `r CRANpkg("RcppAnnoy")` package.
+It works by building a tree where a random hyperplane partitions points into two child groups at each internal node.
 This is repeated to construct a forest of trees where the number of trees determines the accuracy of the search.
 Given a query data point, we identify all points in the same leaf node for each tree.
 We then take the union of leaf node sets across trees and search them exactly for the nearest neighbors.
+- The [HNSW](https://github.com/nmslib/hnswlib) (Hierarchical Navigable Small Worlds) method uses C++ code in the `r CRANpkg("RcppHNSW")` package.
+It works by building a series of nagivable small world graphs containing links between points across the entire data set.
+The algorithm walks through the graphs where each step is chosen to get closer to a given query point.
+Different graphs contain links of different lengths, yielding a hierarchy where earlier steps are large and later steps are small.
+The accuracy of the search is determined by the connectivity of the graphs and the size of the intermediate list of potential neighbors.
+
+These methods complement the exact algorithms `r Biocpkg("BiocNeighbors", vignette="exact.html", label="described previously")`.
+Again, it is straightforward to switch from one algorithm to another by simply changing the `BNPARAM` argument in `findKNN` and `queryKNN`.
 
 # Identifying nearest neighbors
 
@@ -57,6 +64,8 @@ qout <- queryKNN(data, query, k=5, BNPARAM=AnnoyParam())
 head(qout$index)
 head(qout$distance)
 ```
+
+It is similarly easy to use the HNSW algorithm by setting `BNPARAM=HnswParam()`.
 
 # Further options
 

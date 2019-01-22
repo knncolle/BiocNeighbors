@@ -31,14 +31,25 @@ For a given query point, each tree is searched to identify the subset of all poi
 The union of these subsets across all trees is exhaustively searched to identify the actual nearest neighbors to the query.
 }
 
+\section{Hierarchical navigable small worlds (HNSW)}{
+In the HNSW algorithm (Malkov and Yashunin, 2016), each point is a node in a \dQuote{nagivable small world} graph.
+The nearest neighbor search proceeds by starting at a node and walking through the graph to obtain closer neighbors to a given query point.
+Nagivable small world graphs are used to maintain connectivity across the data set by creating links between distant points.
+This speeds up the search by ensuring that the algorithm does not need to take many small steps to move from one cluster to another.
+The HNSW algorithm extends this idea by using a hierarchy of such graphs containing links of different lengths, 
+which avoids wasting time on small steps in the early stages of the search where the current node position is far from the query.
+}
+
 \section{Distance metrics}{ 
-Currently, only Euclidean distances are supported, but support may be added for other distance types depending on demand.
+All algorithms support neighbor searching by both Euclidean and Manhattan distances.
+Note that KMKNN operates much more naturally with Euclidean distances, so your mileage may vary when using it with Manhattan distances.
 }
 
 \author{
-Aaron Lun, using code from the \pkg{cydar} package (Lun et al., 2017) for the KMKNN implementation;
+Aaron Lun, using code from the \pkg{cydar} package for the KMKNN implementation;
 from Steve Hanov, for the VP tree implementation;
-and \pkg{RcppAnnoy}, for the Annoy implementation. 
+\pkg{RcppAnnoy}, for the Annoy implementation;
+and \pkg{RcppHNSW}, for the HNSW implementation.
 }
 
 \references{
@@ -46,21 +57,20 @@ Wang X (2012).
 A fast exact k-nearest neighbors algorithm for high dimensional search using k-means clustering and triangle inequality. 
 \emph{Proc Int Jt Conf Neural Netw}, 43, 6:2351-2358.
 
-Lun ATL, Richard AC, Marioni JC (2017). 
-Testing for differential abundance in mass cytometry data. 
-\emph{Nat. Methods}, 14, 7:707-709.
-
 Hanov S (2011).
 VP trees: A data structure for finding stuff fast.
 \url{http://stevehanov.ca/blog/index.php?id=130}
 
 Yianilos PN (1993).
 Data structures and algorithms for nearest neighbor search in general metric spaces.
-\emph{Proceedings of the Fourth Annual ACM-SIAM Symposium on Discrete Algorithms}, 311-321 
+\emph{Proceedings of the Fourth Annual ACM-SIAM Symposium on Discrete Algorithms}, 311-321.
 
 Bernhardsson E (2018).
 Annoy.
 \url{https://github.com/spotify/annoy}
+
+Malkov YA, Yashunin DA (2016).
+Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs.
+\emph{arXiv}.
+\url{https://arxiv.org/abs/1603.09320}
 }
-
-

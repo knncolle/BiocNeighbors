@@ -5,12 +5,13 @@
 \description{Build a vantage point tree in preparation for a nearest-neighbors search.}
 
 \usage{
-buildVptree(X, transposed=FALSE)
+buildVptree(X, transposed=FALSE, distance=c("Euclidean", "Manhattan"))
 }
 
 \arguments{
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
 \item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
+\item{distance}{String specifying the type of distance to use.}
 }
 
 \details{
@@ -34,6 +35,7 @@ Each parallel element specifies a node.
 All indices here are zero-based, with child values set to -1 for leaf nodes.
 \item \code{order}, an integer vector specifying how rows in \code{X} have been reordered in columns of \code{data}.
 \item \code{NAMES}, a character vector or \code{NULL} equal to \code{rownames(X)}.
+\item \code{distance}, a string specifying the distance metric used.
 }
 }
 

@@ -5,12 +5,13 @@
 \description{Perform k-means clustering in preparation for a KMKNN nearest-neighbors search.}
 
 \usage{
-buildKmknn(X, transposed=FALSE, ...)
+buildKmknn(X, transposed=FALSE, distance=c("Euclidean", "Manhattan"), ...)
 }
 
 \arguments{
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
 \item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
+\item{distance}{String specifying the type of distance to use.}
 \item{...}{Further arguments to pass to \code{\link{kmeans}}.}
 }
 
@@ -35,6 +36,7 @@ Specifically, points in the same cluster are contiguous and ordered by increasin
 }
 \item \code{order}, an integer vector specifying how rows in \code{X} have been reordered in columns of \code{data}.
 \item \code{NAMES}, a character vector or \code{NULL} equal to \code{rownames(X)}.
+\item \code{distance}, a string specifying the distance metric used.
 }
 }
 

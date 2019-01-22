@@ -38,7 +38,7 @@ setMethod("findNeighbors", c("NULL", "NULL"), function(..., BNINDEX, BNPARAM) {
 
 #' @export
 setMethod("findNeighbors", c("NULL", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
-    do.call(rangeFindKmknn, c(list(...), KmknnParam_kmeans_args(BNPARAM)))
+    do.call(rangeFindKmknn, c(list(..., distance=bndistance(BNPARAM)), KmknnParam_kmeans_args(BNPARAM)))
 })
 
 #' @export
@@ -53,7 +53,7 @@ setMethod("findNeighbors", c("KmknnIndex", "NULL"), function(..., BNINDEX, BNPAR
 
 #' @export
 setMethod("findNeighbors", c("NULL", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
-    rangeFindVptree(...)
+    rangeFindVptree(..., distance=bndistance(BNPARAM))
 })
 
 #' @export

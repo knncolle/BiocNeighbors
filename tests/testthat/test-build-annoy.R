@@ -11,6 +11,7 @@ test_that("buildAnnoy() works as expected", {
             out <- buildAnnoy(X)
             expect_identical(dirname(AnnoyIndex_path(out)), tmp.dir)
             expect_identical(dim(out), dim(X))
+            expect_identical(bndistance(out), "Euclidean")
         }
     }
 })
@@ -85,6 +86,34 @@ test_that("choice of 'ntrees' in buildAnnoy() has an effect", {
     idx3 <- buildAnnoy(X, ntrees=10)
     out3 <- findAnnoy(precomputed=idx3, k=20)
     expect_true(identical(out1$index, out3$index))
+})
+
+set.seed(250003)
+test_that("choice of 'search.mult' in buildAnnoy() has an effect", {
+    nobs <- 2101
+    ndim <- 23
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    idx <- buildAnnoy(X)
+    expect_identical(AnnoyIndex_search_mult(idx), 50)
+
+    idx <- buildAnnoy(X, search.mult=10)
+    expect_identical(AnnoyIndex_search_mult(idx), 10)
+})
+
+set.seed(2500021)
+test_that("buildAnnoy() works with the Manhattan distance", {
+    nobs <- 1011
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    set.seed(102)
+    ref <- buildAnnoy(X, distance="Manhattan")
+    expect_identical(bndistance(ref), "Manhattan")
+
+    res <- findAnnoy(precomputed=ref, k=5)
+    val <- findAnnoy(X, k=5, distance="Manhattan")
+    expect_identical(res, val)
 })
 
 set.seed(250003)

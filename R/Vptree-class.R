@@ -1,13 +1,21 @@
-#' @export
-#' @importFrom methods new
-VptreeParam <- function() {
-    new("VptreeParam")
-}
+##################################
+###### VptreeParam methods #######
+##################################
 
 #' @export
 #' @importFrom methods new
-VptreeIndex <- function(data, nodes, order, NAMES=NULL) {
-    new("VptreeIndex", data=data, nodes=nodes, order=order, NAMES=NAMES)
+VptreeParam <- function(distance="Euclidean") {
+    new("VptreeParam", distance=distance)
+}
+
+##################################
+###### VptreeIndex methods #######
+##################################
+
+#' @export
+#' @importFrom methods new
+VptreeIndex <- function(data, nodes, order, NAMES=NULL, distance="Euclidean") {
+    new("VptreeIndex", data=data, nodes=nodes, order=order, NAMES=NAMES, distance=distance)
 }
 
 #' @importFrom S4Vectors setValidity2
@@ -28,11 +36,14 @@ setValidity2("VptreeIndex", function(object) {
         msg <- c(msg, "node information vectors should have same length")
     }
 
-    NAMES <- rownames(object)
-    if (!is.null(NAMES) && length(NAMES)!=nrow(object)) {
-        msg <- c(msg, "length of non-NULL 'NAMES' is not equal to the number of rows")
-    }
-
     if (length(msg)) return(msg)
     return(TRUE)
 })
+
+#' @export
+VptreeIndex_nodes <- function(x) {
+    x@nodes
+}
+
+#' @export
+setMethod("bnorder", "VptreeIndex", function(x) x@order)

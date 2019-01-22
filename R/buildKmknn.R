@@ -2,7 +2,7 @@
 #' @importFrom stats kmeans
 #' @importFrom methods is
 #' @importFrom BiocGenerics t
-buildKmknn <- function(X, transposed=FALSE, ...) 
+buildKmknn <- function(X, transposed=FALSE, distance=c("Euclidean", "Manhattan"), ...) 
 # Reorganizing the matrix 'x' for fast lookup via K-means clustering.
 #
 # written by Aaron Lun
@@ -14,6 +14,7 @@ buildKmknn <- function(X, transposed=FALSE, ...)
     if (!is.matrix(X)) {
         X <- as.matrix(X)
     }
+    distance <- match.arg(distance)
 
     N <- ceiling(sqrt(nrow(X)))
     if (N==nrow(X)) {
@@ -42,7 +43,12 @@ buildKmknn <- function(X, transposed=FALSE, ...)
     for (clust in seq_len(nclust)) {
         chosen <- by.clust[[clust]]
         current.vals <- t(X[chosen,,drop=FALSE])
-        cur.dist <- sqrt(colSums((out$centers[clust,] - current.vals)^2))
+
+        diff <- out$centers[clust,] - current.vals
+        cur.dist <- switch(distance,
+            Euclidean=sqrt(colSums(diff^2)),
+            Manhattan=colSums(abs(diff))
+        )
 
         o <- order(cur.dist)
         new.X[[clust]] <- current.vals[,o,drop=FALSE]
@@ -53,5 +59,5 @@ buildKmknn <- function(X, transposed=FALSE, ...)
         accumulated <- accumulated + length(o)
     }
    
-    KmknnIndex(data=do.call(cbind, new.X), centers=t(out$centers), info=clust.info, order=unlist(ordering), NAMES=rownames(X))
+    KmknnIndex(data=do.call(cbind, new.X), centers=t(out$centers), info=clust.info, order=unlist(ordering), NAMES=rownames(X), distance=distance)
 } 

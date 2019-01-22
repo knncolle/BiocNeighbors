@@ -1,7 +1,6 @@
 # Tests findKmknn().
-# library(BiocNeighbors); library(testthat); source("test-find-kmknn.R")
+# library(BiocNeighbors); library(testthat); source("setup.R"); source("test-find-kmknn.R")
 
-library(FNN)
 set.seed(1001)
 test_that("findKmknn() behaves correctly on simple inputs", {
     nobs <- 1000
@@ -9,9 +8,9 @@ test_that("findKmknn() behaves correctly on simple inputs", {
         for (k in c(1, 5, 20)) { 
             X <- matrix(runif(nobs * ndim), nrow=nobs)
             out <- findKmknn(X, k=k)
-            ref <- get.knn(X, k=k)
-            expect_identical(out$index, ref$nn.index)
-            expect_equal(out$distance, ref$nn.dist)
+            ref <- refFindKNN(X, k=k)
+            expect_identical(out$index, ref$index)
+            expect_equal(out$distance, ref$distance)
         }
     }
 })
@@ -65,6 +64,20 @@ test_that("findKmknn() behaves correctly with alternative options", {
     pre <- buildKmknn(X)
     out4 <- findKmknn(k=k, precomputed=pre)
     expect_identical(out4, out)
+})
+
+set.seed(1003001)
+test_that("findKmknn() behaves correctly with Manhattan distances", {
+    nobs <- 500 # fewer observations, as refFindKNN is a slow brute-force method.
+    for (ndim in c(1, 5, 10)) {
+        for (k in c(1, 5, 20)) { 
+            X <- matrix(runif(nobs * ndim), nrow=nobs)
+            out <- findKmknn(X, k=k, distance="Manhattan")
+            ref <- refFindKNN(X, k=k, type="manhattan")
+            expect_identical(out$index, ref$index)
+            expect_equal(out$distance, ref$distance)
+        }
+    }
 })
 
 set.seed(100301)

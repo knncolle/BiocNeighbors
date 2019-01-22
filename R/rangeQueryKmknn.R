@@ -11,6 +11,6 @@ rangeQueryKmknn <- function(X, query, threshold, get.index=TRUE, get.distance=TR
         buildFUN=buildKmknn, searchFUN=.range_query_kmknn, searchArgsFUN=.find_kmknn_args, ...) 
 }
 
-.range_query_kmknn <- function(jobs, data, centers, info, threshold, query, get.index, get.distance) {
-    .Call(cxx_range_query_kmknn, jobs, data, centers, info, threshold, query, get.index, get.distance)
+.range_query_kmknn <- function(jobs, data, centers, info, distance, threshold, query, get.index, get.distance) {
+    .Call(cxx_range_query_kmknn, jobs, data, centers, info, distance, threshold, query, get.index, get.distance)
 }

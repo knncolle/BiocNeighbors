@@ -1,13 +1,38 @@
-#' @export
-#' @importFrom methods new
-KmknnParam <- function(...) {
-    new("KmknnParam", kmeans.args=list(...))
-}
+##################################
+###### KmknnParam methods ########
+##################################
 
 #' @export
 #' @importFrom methods new
-KmknnIndex <- function(data, centers, info, order, NAMES=NULL) {
-    new("KmknnIndex", data=data, centers=centers, info=info, order=order, NAMES=NAMES)
+KmknnParam <- function(..., distance="Euclidean") {
+    new("KmknnParam", kmeans.args=list(...), distance=distance)
+}
+
+#' @export
+KmknnParam_kmeans_args <- function(x) {
+    x@kmeans.args
+}
+
+#' @export
+setMethod("show", "KmknnParam", function(object) {
+    callNextMethod()
+
+    all.args <- names(KmknnParam_kmeans_args(object))
+    all.args[is.na(all.args)] <- ""
+    N <- length(all.args)
+    if (N >= 4L) all.args <- c(all.args[seq_len(3)], "...")
+
+    cat(sprintf("kmeans args(%i): %s\n", N, paste(all.args, collapse=" ")))
+})
+
+##################################
+###### KmknnIndex methods ########
+##################################
+
+#' @export
+#' @importFrom methods new
+KmknnIndex <- function(data, centers, info, order, NAMES=NULL, distance="Euclidean") {
+    new("KmknnIndex", data=data, centers=centers, info=info, order=order, NAMES=NAMES, distance=distance)
 }
 
 #' @importFrom S4Vectors setValidity2
@@ -30,11 +55,26 @@ setValidity2("KmknnIndex", function(object) {
         msg <- c(msg, "number of observations is not consistent between 'data' and 'order'")
     }
 
-    NAMES <- rownames(object)
-    if (!is.null(NAMES) && length(NAMES)!=nrow(object)) {
-        msg <- c(msg, "length of non-NULL 'NAMES' is not equal to the number of rows")
-    }
-
     if (length(msg)) return(msg)
     return(TRUE)
 })
+
+
+#' @export
+setMethod("show", "KmknnIndex", function(object) {
+    callNextMethod()
+    cat(sprintf("clusters: %i\n", ncol(KmknnIndex_cluster_centers(object))))
+})
+
+#' @export        
+KmknnIndex_cluster_centers <- function(x) {
+    x@centers
+}
+
+#' @export
+KmknnIndex_cluster_info <- function(x) {
+    x@info
+}
+
+#' @export
+setMethod("bnorder", "KmknnIndex", function(x) x@order)

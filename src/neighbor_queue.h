@@ -3,10 +3,10 @@
 
 #include <queue>
 #include <deque>
-#include <cmath>
 #include "Rcpp.h"
 #include "utils.h"
 
+template<class Distance>
 class neighbor_queue {
 public:
     void setup(NumNeighbors_t);

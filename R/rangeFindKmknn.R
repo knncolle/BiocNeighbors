@@ -5,7 +5,7 @@ rangeFindKmknn <- function(X, threshold, get.index=TRUE, get.distance=TRUE, BPPA
         buildFUN=buildKmknn, searchFUN=.range_find_kmknn, searchArgsFUN=.find_kmknn_args, ...)
 }
 
-.range_find_kmknn <- function(jobs, data, centers, info, threshold, get.index, get.distance) {
-    .Call(cxx_range_find_kmknn, jobs, data, centers, info, threshold, get.index, get.distance)
+.range_find_kmknn <- function(jobs, data, centers, info, distance, threshold, get.index, get.distance) {
+    .Call(cxx_range_find_kmknn, jobs, data, centers, info, distance, threshold, get.index, get.distance)
 }
 

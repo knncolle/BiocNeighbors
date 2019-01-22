@@ -12,6 +12,7 @@ test_that("buildVptree() works as expected", {
             expect_identical(rev(dim(bndata(out))), dim(X))
             expect_identical(sort(bnorder(out)), seq_len(nobs))
             expect_identical(bndata(out), t(X[bnorder(out),]))
+            expect_identical(bndistance(out), "Euclidean")
 
             node.data <- VptreeIndex_nodes(out)
             expect_identical(sort(node.data[[1]]), seq_len(nobs)-1L)
@@ -60,6 +61,21 @@ test_that("buildVptree() responds to transposition", {
     ref <- findVptree(X, k=5)
     out <- findVptree(t(X), k=5, transposed=TRUE)
     expect_identical(ref, out)
+})
+
+set.seed(200003)
+test_that("buildVptree() works with the Manhattan distance", {
+    nobs <- 1011
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    set.seed(102)
+    ref <- buildVptree(X, distance="Manhattan")
+    expect_identical(bndistance(ref), "Manhattan")
+
+    res <- findVptree(precomputed=ref, k=5)
+    val <- findVptree(X, k=5, distance="Manhattan")
+    expect_identical(res, val)
 })
 
 set.seed(20001)

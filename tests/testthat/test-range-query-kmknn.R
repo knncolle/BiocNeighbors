@@ -11,16 +11,8 @@ test_that("rangeQueryKmknn() behaves correctly with queries", {
             X <- matrix(runif(ndata * ndim), nrow=ndata)
             Y <- matrix(runif(nquery * ndim), nrow=nquery)
             out <- rangeQueryKmknn(X, threshold=d, query=Y)
-
-            out.dist <- out.indx <- vector("list", nquery)
-            for (j in seq_len(nquery)) {
-                targets <- sqrt(colSums((Y[j,] - t(X))^2))
-                chosen <- targets <= d
-                out.indx[[j]] <- which(chosen)
-                out.dist[[j]] <- targets[chosen]
-            }
-
-            expect_identical_re(out, list(index=out.indx, distance=out.dist))
+            ref <- refQueryNeighbors(X, Y, d)
+            expect_identical_re(out, ref)
         }
     }
 })
@@ -81,6 +73,22 @@ test_that("rangeQueryKmknn() behaves correctly with alternative options", {
     # Checking transposition.
     out5 <- rangeQueryKmknn(X, threshold=d, query=t(Y), transposed=TRUE)
     expect_identical_re(out5, ref)
+})
+
+set.seed(1003001)
+test_that("rangeQueryKmknn() works with Manhattan distances", {
+    ndata <- 1000
+    nquery <- 100
+
+    for (ndim in c(1, 5, 10)) {
+        for (d in c(0.1, 0.5, 1)) { 
+            X <- matrix(runif(ndata * ndim), nrow=ndata)
+            Y <- matrix(runif(nquery * ndim), nrow=nquery)
+            out <- rangeQueryKmknn(X, threshold=d, query=Y, distance="Manhattan")
+            ref <- refQueryNeighbors(X, Y, d, type="manhattan")
+            expect_identical_re(out, ref)
+        }
+    }
 })
 
 set.seed(100301)

@@ -29,6 +29,10 @@ test_that("buildIndex dispatches correctly", {
     # Handles Annoy:
     out <- buildIndex(X, BNPARAM=AnnoyParam())
     expect_s4_class(out, "AnnoyIndex")
+
+    # Handles Hnsw:
+    out <- buildIndex(X, BNPARAM=HnswParam())
+    expect_s4_class(out, "HnswIndex")
 })
 
 #######################################
@@ -87,6 +91,28 @@ test_that("findKNN dispatches correctly for Annoy", {
     # Parameters get passed down.
     alt1 <- findKNN(X, k=10, BNPARAM=AnnoyParam(), BNINDEX=buildAnnoy(X, ntrees=200)) 
     alt2 <- findKNN(X, k=10, BNPARAM=AnnoyParam(ntrees=200)) 
+    expect_equal(alt1, alt2)
+    expect_false(isTRUE(all.equal(outA, alt1))) # Checking that they're not exact.
+})
+
+test_that("findKNN dispatches correctly for HNSW", {
+    # Equivalent calls to Hnsw: 
+    outA <- findKNN(X, k=10, BNINDEX=buildHnsw(X)) 
+    outB <- findKNN(X, k=10, BNPARAM=HnswParam()) 
+    outC <- findKNN(X, k=10, BNPARAM=HnswParam(), BNINDEX=buildHnsw(X)) 
+    expect_equal(outA, outB)
+    expect_equal(outA, outC)
+    expect_false(isTRUE(all.equal(outA, findKNN(X, k=10)))) # Checking that they're not exact.
+
+    # Testing the behaviour of the NULL methods.
+    outD <- findKNN(X, k=10, BNINDEX=buildHnsw(X), BNPARAM=NULL)
+    outE <- findKNN(X, k=10, BNINDEX=NULL, BNPARAM=HnswParam())
+    expect_equal(outA, outD)
+    expect_equal(outA, outE)
+
+    # Parameters get passed down.
+    alt1 <- findKNN(X, k=10, BNPARAM=HnswParam(), BNINDEX=buildHnsw(X, nlinks=20)) 
+    alt2 <- findKNN(X, k=10, BNPARAM=HnswParam(nlinks=20)) 
     expect_equal(alt1, alt2)
     expect_false(isTRUE(all.equal(outA, alt1))) # Checking that they're not exact.
 })
@@ -156,6 +182,28 @@ test_that("queryKNN dispatches correctly for Annoy", {
     # Parameters get passed down.
     alt1 <- queryKNN(X, Y, k=10, BNPARAM=AnnoyParam(), BNINDEX=buildAnnoy(X, ntrees=200)) 
     alt2 <- queryKNN(X, Y, k=10, BNPARAM=AnnoyParam(ntrees=200)) 
+    expect_equal(alt1, alt2)
+    expect_false(isTRUE(all.equal(outA, alt1))) # Checking that they're not exact.
+})
+
+test_that("queryKNN dispatches correctly for Hnsw", {
+    # Equivalent calls to Hnsw: 
+    outA <- queryKNN(X, Y, k=10, BNINDEX=buildHnsw(X)) 
+    outB <- queryKNN(X, Y, k=10, BNPARAM=HnswParam()) 
+    outC <- queryKNN(X, Y, k=10, BNPARAM=HnswParam(), BNINDEX=buildHnsw(X)) 
+    expect_equal(outA, outB)
+    expect_equal(outA, outC)
+    expect_false(isTRUE(all.equal(outA, queryKNN(X, Y, k=10)))) # Checking that they're not exact.
+
+    # Testing the behaviour of the NULL methods.
+    outD <- queryKNN(X, Y, k=10, BNINDEX=buildHnsw(X), BNPARAM=NULL)
+    outE <- queryKNN(X, Y, k=10, BNINDEX=NULL, BNPARAM=HnswParam())
+    expect_equal(outA, outD)
+    expect_equal(outA, outE)
+
+    # Parameters get passed down.
+    alt1 <- queryKNN(X, Y, k=10, BNPARAM=HnswParam(), BNINDEX=buildHnsw(X, nlinks=25)) 
+    alt2 <- queryKNN(X, Y, k=10, BNPARAM=HnswParam(nlinks=25)) 
     expect_equal(alt1, alt2)
     expect_false(isTRUE(all.equal(outA, alt1))) # Checking that they're not exact.
 })

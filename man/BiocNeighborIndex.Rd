@@ -9,21 +9,26 @@
 \alias{bndata}
 \alias{bndata,BiocNeighborIndex-method}
 
+\alias{bndistance}
+\alias{bndistance,BiocNeighborIndex-method}
+
 \alias{bnorder}
 \alias{bnorder,KmknnIndex-method}
 \alias{bnorder,VptreeIndex-method}
 \alias{bnorder,AnnoyIndex-method}
+\alias{bnorder,HnswIndex-method}
 
 \title{The BiocNeighborIndex class}
 \description{A virtual class for indexing structures of different nearest-neighbor search algorithms.}
 
 \details{
 The BiocNeighborIndex class is a virtual base class on which other index objects are built.
-There are 3 concrete subclasses:
+There are 4 concrete subclasses:
 \describe{
     \item{}{\code{\link{KmknnIndex}}: exact nearest-neighbor search with the KMKNN algorithm.}
     \item{}{\code{\link{VptreeIndex}}: exact nearest-neighbor search with a VP tree.}
     \item{}{\code{\link{AnnoyIndex}}: approximate nearest-neighbor search with the Annoy algorithm.}
+    \item{}{\code{\link{HnswIndex}}: approximate nearest-neighbor search with the HNSW algorithm.}
 }
 
 These objects hold indexing structures for a given data set - see the associated documentation pages for more details.
@@ -50,13 +55,17 @@ More advanced methods (intended for developers of other packages) are:
     \item{\code{bnorder(object)}:}{Return an integer vector specifying the new ordering of columns in \code{bndata(object)}.
         This generally only needs to be considered if \code{raw.index=TRUE}, see \code{?"\link{BiocNeighbors-raw-index}"}.
     }
+    \item{\code{bndistance(object)}:}{Return a string specifying the distance metric to be used for searching, usually \code{"Euclidean"} or \code{"Manhattan"}.
+        Obviously, this should be the same as the distance metric used for constructing the index.
+    }
 }
 }
 
 \seealso{
 \code{\link{KmknnIndex}},
-\code{\link{VptreeIndex}}    
-and \code{\link{AnnoyIndex}} for direct constructors.
+\code{\link{VptreeIndex}},
+\code{\link{AnnoyIndex}},
+and \code{\link{HnswIndex}} for direct constructors.
 
 \code{\link{buildIndex}} for construction on an actual data set. 
 

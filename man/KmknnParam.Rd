@@ -8,7 +8,7 @@
 \description{A class to hold parameters for the KMKNN algorithm for exact nearest neighbor identification.}
 
 \usage{
-KmknnParam(...)
+KmknnParam(..., distance="Euclidean")
 
 KmknnParam_kmeans_args(x)
 
@@ -17,6 +17,7 @@ KmknnParam_kmeans_args(x)
 
 \arguments{
     \item{...}{Arguments to be passed to \code{\link{kmeans}}.}
+    \item{distance}{A string specifying the distance metric to use.}
     \item{x, object}{A KmknnParam object.}
 }
 

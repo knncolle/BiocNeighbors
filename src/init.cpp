@@ -7,20 +7,24 @@
 extern "C" {
 
 static const R_CallMethodDef all_call_entries[] = {
-    REGISTER(find_kmknn, 7),
-    REGISTER(query_kmknn, 8),
-    REGISTER(range_find_kmknn, 7),
-    REGISTER(range_query_kmknn, 8),
+    REGISTER(find_kmknn, 8),
+    REGISTER(query_kmknn, 9),
+    REGISTER(range_find_kmknn, 8),
+    REGISTER(range_query_kmknn, 9),
 
-    REGISTER(build_annoy, 3),
-    REGISTER(find_annoy, 6),
-    REGISTER(query_annoy, 7),
+    REGISTER(build_annoy, 4),
+    REGISTER(find_annoy, 8),
+    REGISTER(query_annoy, 9),
 
-    REGISTER(build_vptree, 1),
-    REGISTER(find_vptree, 6),
-    REGISTER(query_vptree, 7),
-    REGISTER(range_find_vptree, 6),
-    REGISTER(range_query_vptree, 7),
+    REGISTER(build_hnsw, 5),
+    REGISTER(find_hnsw, 8),
+    REGISTER(query_hnsw, 9),
+
+    REGISTER(build_vptree, 2),
+    REGISTER(find_vptree, 7),
+    REGISTER(query_vptree, 8),
+    REGISTER(range_find_vptree, 7),
+    REGISTER(range_query_vptree, 8),
     {NULL, NULL, 0}
 };
 

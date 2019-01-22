@@ -17,7 +17,10 @@
     # Dividing jobs up for NN finding (using bpmapply due to clash with 'X=').
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
     collected <- bpmapply(FUN=searchFUN, jobs,
-        MoreArgs=c(searchArgsFUN(precomputed), list(data=bndata(precomputed), k=k, get.index=get.index, get.distance=get.distance)), 
+        MoreArgs=c(
+            searchArgsFUN(precomputed), 
+            list(data=bndata(precomputed), k=k, get.index=get.index, get.distance=get.distance, distance=bndistance(precomputed))
+        ), 
         BPPARAM=BPPARAM, SIMPLIFY=FALSE)
 
     # Aggregating results across cores.

@@ -10,7 +10,7 @@
 \description{A class to hold indexing structures for the KMKNN algorithm for exact nearest neighbor identification.}
 
 \usage{
-KmknnIndex(data, centers, info, order, NAMES=NULL)
+KmknnIndex(data, centers, info, order, NAMES=NULL, distance="Euclidean")
 
 KmknnIndex_cluster_centers(x)
 
@@ -25,6 +25,7 @@ KmknnIndex_cluster_info(x)
     \item{info}{A list of statistics for each cluster.}
     \item{order}{An integer vector of length equal to \code{ncol(data)}, specifying the order of observations.}
     \item{NAMES}{A character vector of sample names or \code{NULL}.}
+    \item{distance}{A string specifying the distance metric to use.}
     \item{x, object}{A KmknnIndex object.}
 }
 

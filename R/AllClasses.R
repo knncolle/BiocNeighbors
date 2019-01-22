@@ -1,7 +1,7 @@
 # Defines the BiocNeighborParam class and derivatives.
 
 #' @export
-setClass("BiocNeighborParam", contains="VIRTUAL")
+setClass("BiocNeighborParam", contains="VIRTUAL", slots=c(distance="character"))
 
 #' @export
 setClass("KmknnParam", contains="BiocNeighborParam", slots=c(kmeans.args="list"))
@@ -10,13 +10,16 @@ setClass("KmknnParam", contains="BiocNeighborParam", slots=c(kmeans.args="list")
 setClass("VptreeParam", contains="BiocNeighborParam")
 
 #' @export
-setClass("AnnoyParam", contains="BiocNeighborParam", slots=c(ntrees="integer", dir="character")) 
+setClass("AnnoyParam", contains="BiocNeighborParam", slots=c(ntrees="integer", dir="character", search.mult="numeric")) 
+
+#' @export
+setClass("HnswParam", contains="BiocNeighborParam", slots=c(nlinks="integer", ef.construction="integer", dir="character", ef.search="integer")) 
 
 # Defines the BiocNeighborIndex class and derivatives.
 
 #' @export
 #' @importClassesFrom S4Vectors character_OR_NULL
-setClass("BiocNeighborIndex", contains="VIRTUAL", slots=c(data="matrix", NAMES="character_OR_NULL"))
+setClass("BiocNeighborIndex", contains="VIRTUAL", slots=c(data="matrix", NAMES="character_OR_NULL", distance="character"))
 
 #' @export
 setClass("KmknnIndex", contains="BiocNeighborIndex", slots=c(centers="matrix", info="list", order="integer"))
@@ -25,4 +28,7 @@ setClass("KmknnIndex", contains="BiocNeighborIndex", slots=c(centers="matrix", i
 setClass("VptreeIndex", contains="BiocNeighborIndex", slots=c(order="integer", nodes="list"))
 
 #' @export
-setClass("AnnoyIndex", contains="BiocNeighborIndex", slots=c(path="character"))
+setClass("AnnoyIndex", contains="BiocNeighborIndex", slots=c(path="character", search.mult="numeric"))
+
+#' @export
+setClass("HnswIndex", contains="BiocNeighborIndex", slots=c(path="character", ef.search="integer"))

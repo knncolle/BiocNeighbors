@@ -2,35 +2,30 @@
 # library(BiocNeighbors); library(testthat); source("test-find-annoy.R")
 
 library(RcppAnnoy)
-REFFUN <- function(X, k, ntrees=50) {
-    a <- new(AnnoyEuclidean, ncol(X))
-    for (i in seq_len(nrow(X))) {
-        a$addItem(i-1L, X[i,])
-    }
-    a$build(ntrees)
-
-    # Saving and then reloading.
-    tmploc <- tempfile()
-    a$save(tmploc)
-    b <- new(AnnoyEuclidean, ncol(X))
-    b$load(tmploc)
-
-    collected.dex <- collected.dist <- vector("list", nrow(X))
-    for (i in seq_len(nrow(X))) {
-        available <- b$getNNsByItem(i-1L, k+1) + 1L
-        available <- setdiff(available, i) # ignore self.
-        available <- head(available, k)
-
-        collected.dex[[i]] <- available
-        collected.dist[[i]] <- sqrt(colSums((X[i,] - t(X[available,,drop=FALSE]))^2))
-    }
-
-    list(index=do.call(rbind, collected.dex),
-        distance=do.call(rbind, collected.dist))            
-}
 
 set.seed(7001)
 test_that("findAnnoy() behaves correctly on simple inputs", {
+    REFFUN <- function(X, k, ntrees=50) {
+        a <- new(AnnoyEuclidean, ncol(X))
+        for (i in seq_len(nrow(X))) {
+            a$addItem(i-1L, X[i,])
+        }
+        a$build(ntrees)
+    
+        collected.dex <- collected.dist <- vector("list", nrow(X))
+        for (i in seq_len(nrow(X))) {
+            available <- a$getNNsByItem(i-1L, k+1) + 1L
+            available <- setdiff(available, i) # ignore self.
+            available <- head(available, k)
+    
+            collected.dex[[i]] <- available
+            collected.dist[[i]] <- sqrt(colSums((X[i,] - t(X[available,,drop=FALSE]))^2))
+        }
+    
+        list(index=do.call(rbind, collected.dex),
+            distance=do.call(rbind, collected.dist))            
+    }
+
     nobs <- 1000
     for (ndim in c(1, 5, 10, 20)) {
         for (k in c(1, 5, 20)) { 
@@ -94,6 +89,57 @@ test_that("findAnnoy() behaves correctly with alternative options", {
     expect_identical(out4, out)
 })
 
+set.seed(70031)
+test_that("findAnnoy() behaves correctly with Manhattan distances", {
+    REFFUN <- function(X, k, ntrees=50) {
+        a <- new(AnnoyManhattan, ncol(X))
+        for (i in seq_len(nrow(X))) {
+            a$addItem(i-1L, X[i,])
+        }
+        a$build(ntrees)
+    
+        collected.dex <- collected.dist <- vector("list", nrow(X))
+        for (i in seq_len(nrow(X))) {
+            available <- a$getNNsByItem(i-1L, k+1) + 1L
+            available <- setdiff(available, i) # ignore self.
+            available <- head(available, k)
+    
+            collected.dex[[i]] <- available
+            collected.dist[[i]] <- colSums(abs(X[i,] - t(X[available,,drop=FALSE])))
+        }
+    
+        list(index=do.call(rbind, collected.dex),
+            distance=do.call(rbind, collected.dist))            
+    }
+
+    nobs <- 1000
+    for (ndim in c(1, 5, 10, 20)) {
+        for (k in c(1, 5, 20)) { 
+            X <- matrix(runif(nobs * ndim), nrow=nobs)
+            out <- findAnnoy(X, k=k, distance="Manhattan")
+            ref <- REFFUN(X, k=k)
+            expect_identical(out$index, ref$index)
+            expect_equal(out$distance, ref$distance, tol=1e-6) # due to lower precision in Annoy.
+        }
+    }
+})
+
+set.seed(70032)
+test_that("findAnnoy() responds to run-time search.k", {
+    nobs <- 1000
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    k <- 7
+    ref <- findAnnoy(X, k=k)
+    alt <- findAnnoy(X, k=k, search.mult=20)
+    expect_false(identical(alt$index, ref$index))
+
+    # As a control:
+    alt <- findAnnoy(X, k=k, search.mult=50)
+    expect_true(identical(alt$index, ref$index))
+})
+ 
 set.seed(7004)
 test_that("findAnnoy() behaves correctly with parallelization", {
     library(BiocParallel)

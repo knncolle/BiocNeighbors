@@ -8,7 +8,7 @@
 \description{A class to hold the vantage point tree for exact nearest neighbor identification.}
 
 \usage{
-VptreeIndex(data, nodes, order, NAMES=NULL)
+VptreeIndex(data, nodes, order, NAMES=NULL, distance="Euclidean")
 
 VptreeIndex_nodes(x)
 }
@@ -18,6 +18,7 @@ VptreeIndex_nodes(x)
     \item{nodes}{A list of vectors specifying the structure of the VP tree.}
     \item{order}{An integer vector of length equal to \code{ncol(data)}, specifying the order of observations.}
     \item{NAMES}{A character vector of sample names or \code{NULL}.}
+    \item{distance}{A string specifying the distance metric to use.}
     \item{x}{A VptreeIndex object.}
 }
 

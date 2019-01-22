@@ -1,32 +1,48 @@
 #include "annoy.h"
 
-Annoy::Annoy(SEXP ndim, SEXP fname) : NDims(check_integer_scalar(ndim, "number of dimensions")), obj(NDims), holding(NDims) {
+template<class Distance>
+Annoy<Distance>::Annoy(SEXP ndim, SEXP fname, SEXP mult) : NDims(check_integer_scalar(ndim, "number of dimensions")), 
+        obj(NDims), holding(NDims), search_mult(check_numeric_scalar(mult, "search multiplier")) 
+{
     auto Fname=check_string(fname, "index file name");
     obj.load(Fname.c_str());
+    if (search_mult <= 1) {
+        throw std::runtime_error("search multiplier should be greater than 1");
+    }
     return;
 }
 
-MatDim_t Annoy::get_nobs() const {
+template<class Distance>
+MatDim_t Annoy<Distance>::get_nobs() const {
     return obj.get_n_items();
 }
 
-MatDim_t Annoy::get_ndims() const {
+template<class Distance>
+MatDim_t Annoy<Distance>::get_ndims() const {
     return NDims;
 }
 
-const std::vector<Annoy::Index_t>& Annoy::get_neighbors () const {
+template<class Distance>
+const std::vector<typename Annoy<Distance>::Index_t>& Annoy<Distance>::get_neighbors () const {
     return kept_idx;
 }
 
-const std::vector<Annoy::Data_t>& Annoy::get_distances () const {
+template<class Distance>
+const std::vector<typename Annoy<Distance>::Data_t>& Annoy<Distance>::get_distances () const {
     return kept_dist;
 }
 
-void Annoy::find_nearest_neighbors(CellIndex_t c, NumNeighbors_t K, const bool index, const bool distance) {
+template<class Distance>
+NumNeighbors_t Annoy<Distance>::get_search_k(NumNeighbors_t K) {
+    return search_mult * K + 0.5; // rounded up.
+}
+
+template<class Distance>
+void Annoy<Distance>::find_nearest_neighbors(CellIndex_t c, NumNeighbors_t K, const bool index, const bool distance) {
     kept_idx.clear();
     kept_dist.clear();
     std::vector<Data_t>* dptr=(distance ? &kept_dist : NULL);
-    obj.get_nns_by_item(c, K + 1, -1, &kept_idx, dptr); // +1, as it forgets to discard 'self'.
+    obj.get_nns_by_item(c, K + 1, get_search_k(K + 1), &kept_idx, dptr); // +1, as it forgets to discard 'self'.
     
     bool self_found=false;
     for (size_t idx=0; idx<kept_idx.size(); ++idx) { 
@@ -62,16 +78,18 @@ void Annoy::find_nearest_neighbors(CellIndex_t c, NumNeighbors_t K, const bool i
     return;
 }
 
-
-void Annoy::find_nearest_neighbors(const double* query, NumNeighbors_t K, const bool index, const bool distance) {
+template<class Distance>
+void Annoy<Distance>::find_nearest_neighbors(const double* query, NumNeighbors_t K, const bool index, const bool distance) {
     kept_idx.clear();
     kept_dist.clear();
     std::vector<Data_t>* dptr=(distance ? &kept_dist: NULL);
     std::copy(query, query+NDims, holding.begin());
-    obj.get_nns_by_vector(holding.data(), K, -1, &kept_idx, dptr);
+    obj.get_nns_by_vector(holding.data(), K, get_search_k(K), &kept_idx, dptr);
     if (!index) {
         kept_idx.clear();
     }
     return;
 }
 
+template class Annoy<Manhattan>;
+template class Annoy<Euclidean>;

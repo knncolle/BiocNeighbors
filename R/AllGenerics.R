@@ -18,3 +18,6 @@ setGeneric("bnorder", function(x) standardGeneric("bnorder"))
 
 #' @export
 setGeneric("bndata", function(x) standardGeneric("bndata"))
+
+#' @export
+setGeneric("bndistance", function(x) standardGeneric("bndistance"))

@@ -1,30 +1,28 @@
 # Tests queryAnnoy().
 # library(BiocNeighbors); library(testthat); source("test-query-annoy.R")
 
-library(RcppAnnoy)
-REFFUN <- function(X, Y, k, ntrees=50) {
-    a <- new(AnnoyEuclidean, ncol(X))
-    for (i in seq_len(nrow(X))) {
-        a$addItem(i-1L, X[i,])
-    }
-    a$build(ntrees)
-
-    collected.dex <- collected.dist <- vector("list", nrow(X))
-    for (i in seq_len(nrow(Y))) {
-        available <- a$getNNsByVector(Y[i,], k) + 1L
-        available <- head(available, k)
-        collected.dex[[i]] <- available
-        collected.dist[[i]] <- sqrt(colSums((Y[i,] - t(X[available,,drop=FALSE]))^2))
-    }
-
-    list(index=do.call(rbind, collected.dex),
-        distance=do.call(rbind, collected.dist))            
-}
-
-
-library(FNN)
 set.seed(1001)
 test_that("queryAnnoy() behaves correctly with queries", {
+    library(RcppAnnoy)
+    REFFUN <- function(X, Y, k, ntrees=50) {
+        a <- new(AnnoyEuclidean, ncol(X))
+        for (i in seq_len(nrow(X))) {
+            a$addItem(i-1L, X[i,])
+        }
+        a$build(ntrees)
+    
+        collected.dex <- collected.dist <- vector("list", nrow(X))
+        for (i in seq_len(nrow(Y))) {
+            available <- a$getNNsByVector(Y[i,], k) + 1L
+            available <- head(available, k)
+            collected.dex[[i]] <- available
+            collected.dist[[i]] <- sqrt(colSums((Y[i,] - t(X[available,,drop=FALSE]))^2))
+        }
+    
+        list(index=do.call(rbind, collected.dex),
+            distance=do.call(rbind, collected.dist))            
+    }
+
     ndata <- 1000
     nquery <- 100
 
@@ -98,6 +96,61 @@ test_that("queryAnnoy() behaves correctly with alternative options", {
     # Checking transposition.
     out5 <- queryAnnoy(X, k=k, query=t(Y), transposed=TRUE)
     expect_identical(out5, out)
+})
+
+set.seed(1003001)
+test_that("queryAnnoy() behaves correctly with Manhattan distances", {
+    REFFUN <- function(X, Y, k, ntrees=50) {
+        a <- new(AnnoyManhattan, ncol(X))
+        for (i in seq_len(nrow(X))) {
+            a$addItem(i-1L, X[i,])
+        }
+        a$build(ntrees)
+
+        collected.dex <- collected.dist <- vector("list", nrow(X))
+        for (i in seq_len(nrow(Y))) {
+            available <- a$getNNsByVector(Y[i,], k) + 1L
+            available <- head(available, k)
+            collected.dex[[i]] <- available
+            collected.dist[[i]] <- colSums(abs(Y[i,] - t(X[available,,drop=FALSE])))
+        }
+
+        list(index=do.call(rbind, collected.dex),
+            distance=do.call(rbind, collected.dist))            
+    }
+
+    ndata <- 1000
+    nquery <- 100
+
+    for (ndim in c(1, 5, 10, 20)) {
+        for (k in c(1, 5, 20)) { 
+            X <- matrix(runif(ndata * ndim), nrow=ndata)
+            Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+            out <- queryAnnoy(X, k=k, query=Y, distance="Manhattan")
+            ref <- REFFUN(X, Y, k=k)
+            expect_identical(out$index, ref$index)
+            expect_equal(out$distance, ref$distance, tol=1e-6) # imprecision due to RcppAnnoy's use of floats.
+        }
+    }
+})
+
+set.seed(1003002)
+test_that("queryAnnoy() responds to run-time search.k", {
+    nobs <- 1000
+    nquery <- 100
+    ndim <- 12
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+    k <- 7
+    ref <- queryAnnoy(X, Y, k=k)
+    alt <- queryAnnoy(X, Y, k=k, search.mult=20)
+    expect_false(identical(alt$index, ref$index))
+    
+    # As a control:
+    alt <- queryAnnoy(X, Y, k=k, search.mult=50)
+    expect_true(identical(alt$index, ref$index))
 })
 
 set.seed(100301)

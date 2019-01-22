@@ -22,6 +22,10 @@
 \alias{queryKNN,AnnoyIndex,NULL-method}
 \alias{queryKNN,AnnoyIndex,AnnoyParam-method}
 
+\alias{queryKNN,NULL,HnswParam-method}
+\alias{queryKNN,HnswIndex,NULL-method}
+\alias{queryKNN,HnswIndex,HnswParam-method}
+
 \title{Query k-nearest neighbors }
 \description{Find the k-nearest neighbors in one data set for each point in another query data set, using exact or approximate algorithms.}
 
@@ -76,7 +80,8 @@ Aaron Lun
 \seealso{
 \code{\link{queryKmknn}}, 
 \code{\link{queryVptree}},
-and \code{\link{queryAnnoy}} for specific methods.
+\code{\link{queryAnnoy}} 
+and \code{\link{queryHnsw}} for specific methods.
 }
 
 \examples{
