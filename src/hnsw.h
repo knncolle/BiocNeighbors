@@ -9,6 +9,10 @@
 
 // Avoid discrepancies with AVX.
 #define NO_MANUAL_VECTORIZATION
+
+// Avoid compilation problems on Windows.
+#define STRICT_R_HEADERS
+
 #include "hnswlib.h"
 
 template<class Space>
