@@ -58,6 +58,7 @@ void Hnsw<Space>::find_nearest_neighbors(CellIndex_t c, NumNeighbors_t K, const 
             if (distance) {
                 kept_dist.push_front(normalize(current.first));
             }
+        } else {
             found_self=true;
         }
         Q.pop();
