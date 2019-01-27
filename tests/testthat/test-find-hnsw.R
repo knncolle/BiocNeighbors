@@ -16,7 +16,7 @@ test_that("findHnsw() behaves correctly on simple inputs", {
             out <- findHnsw(X, k=k)
             ref <- REFFUN(X, k=k)
             expect_identical(out$index, ref$index)
-            expect_identical(out$distance, ref$distance)
+            expect_equal(out$distance, ref$distance) # imprecision due to differences between R and C++'s sqrt()?
         }
     }
 })
