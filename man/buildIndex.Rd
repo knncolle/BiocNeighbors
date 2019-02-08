@@ -3,7 +3,6 @@
 \docType{methods}
 
 \alias{buildIndex,missing-method}
-\alias{buildIndex,NULL-method}
 \alias{buildIndex,KmknnParam-method}
 \alias{buildIndex,VptreeParam-method}
 \alias{buildIndex,AnnoyParam-method}
@@ -13,14 +12,14 @@
 \description{Build indices for nearest-neighbor searching with different algorithms.}
 
 \usage{
-buildIndex(..., BNPARAM=NULL)
+buildIndex(..., BNPARAM)
 }
 
 \arguments{
 \item{...}{Further arguments to be passed to individual methods.
 The mandatory argument for all methods is \code{X}, a numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
 \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.
-This defaults to a \linkS4class{KmknnParam} object if \code{NULL}.}
+This defaults to a \linkS4class{KmknnParam} object if no argument is supplied.}
 }
 
 \details{
@@ -29,6 +28,8 @@ Supplying a \linkS4class{KmknnParam} object as \code{BNPARAM} will dispatch to \
 Supplying a \linkS4class{VptreeParam} object as \code{BNPARAM} will dispatch to \code{\link{buildVptree}}.
 
 Supplying an \linkS4class{AnnoyParam} object as \code{BNPARAM} will dispatch to \code{\link{buildAnnoy}}.
+
+Supplying an \linkS4class{HnswParam} object as \code{BNPARAM} will dispatch to \code{\link{buildHnsw}}.
 }
 
 \value{

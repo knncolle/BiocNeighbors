@@ -3,34 +3,28 @@
 \docType{methods}
 
 \alias{findKNN,missing,missing-method}
-\alias{findKNN,BiocNeighborIndex,missing-method}
-\alias{findKNN,missing,BiocNeighborParam-method}
 
-\alias{findKNN,missing,NULL-method}
-\alias{findKNN,NULL,missing-method}
-\alias{findKNN,NULL,NULL-method}
-
-\alias{findKNN,NULL,KmknnParam-method}
-\alias{findKNN,KmknnIndex,NULL-method}
+\alias{findKNN,missing,KmknnParam-method}
+\alias{findKNN,KmknnIndex,missing-method}
 \alias{findKNN,KmknnIndex,KmknnParam-method}
 
-\alias{findKNN,NULL,VptreeParam-method}
-\alias{findKNN,VptreeIndex,NULL-method}
+\alias{findKNN,missing,VptreeParam-method}
+\alias{findKNN,VptreeIndex,missing-method}
 \alias{findKNN,VptreeIndex,VptreeParam-method}
 
-\alias{findKNN,NULL,AnnoyParam-method}
-\alias{findKNN,AnnoyIndex,NULL-method}
+\alias{findKNN,missing,AnnoyParam-method}
+\alias{findKNN,AnnoyIndex,missing-method}
 \alias{findKNN,AnnoyIndex,AnnoyParam-method}
 
-\alias{findKNN,NULL,HnswParam-method}
-\alias{findKNN,HnswIndex,NULL-method}
+\alias{findKNN,missing,HnswParam-method}
+\alias{findKNN,HnswIndex,missing-method}
 \alias{findKNN,HnswIndex,HnswParam-method}
 
 \title{Find k-nearest neighbors}
 \description{Find the k-nearest neighbors for each point in a data set, using exact or approximate algorithms.}
 
 \usage{
-findKNN(..., BNINDEX=NULL, BNPARAM=NULL)
+findKNN(..., BNINDEX, BNPARAM)
 }
 
 \arguments{
@@ -45,8 +39,10 @@ findKNN(..., BNINDEX=NULL, BNPARAM=NULL)
             \item \code{BPPARAM}, a \linkS4class{BiocParallelParam} class for parallelization.
         }
     }
-    \item{BNINDEX}{A \linkS4class{BiocNeighborIndex} object, or \code{NULL}.}
-    \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object, or \code{NULL} if \code{BININDEX} is supplied.}
+    \item{BNINDEX}{A \linkS4class{BiocNeighborIndex} object containing precomputed index information.
+        This can be missing if \code{BNPARAM} is supplied, see Details.}
+    \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the algorithm to use.
+        This can be missing if \code{BNINDEX} is supplied, see Details.}
 }
 
 \value{
@@ -69,6 +65,8 @@ However, if both are defined, they cannot specify different algorithms.
 
 If \code{BNINDEX} is supplied, \code{X} does not need to be specified.
 In fact, any value of \code{X} will be ignored as all necessary information for the search is already present in \code{BNINDEX}.
+
+If both \code{BNINDEX} and \code{BNPARAM} are missing, the function will default to the KMKNN algorithm by setting \code{BNPARAM=KmknnParam()}.
 }
 
 \author{
@@ -88,11 +86,11 @@ str(k.out <- findKNN(Y, k=10))
 str(a.out <- findKNN(Y, k=10, BNPARAM=AnnoyParam()))
 
 k.dex <- buildKmknn(Y)
-str(k.out2 <- findKNN(Y, k=10, BNINDEX=k.dex, BNPARAM=NULL))
+str(k.out2 <- findKNN(Y, k=10, BNINDEX=k.dex))
 str(k.out3 <- findKNN(Y, k=10, BNINDEX=k.dex, BNPARAM=KmknnParam()))
 
 a.dex <- buildAnnoy(Y)
-str(a.out2 <- findKNN(Y, k=10, BNINDEX=a.dex, BNPARAM=NULL))
+str(a.out2 <- findKNN(Y, k=10, BNINDEX=a.dex))
 str(a.out3 <- findKNN(Y, k=10, BNINDEX=a.dex, BNPARAM=AnnoyParam()))
 }
 

@@ -3,26 +3,20 @@
 \docType{methods}
 
 \alias{findNeighbors,missing,missing-method}
-\alias{findNeighbors,BiocNeighborIndex,missing-method}
-\alias{findNeighbors,missing,BiocNeighborParam-method}
 
-\alias{findNeighbors,missing,NULL-method}
-\alias{findNeighbors,NULL,missing-method}
-\alias{findNeighbors,NULL,NULL-method}
-
-\alias{findNeighbors,NULL,KmknnParam-method}
-\alias{findNeighbors,KmknnIndex,NULL-method}
+\alias{findNeighbors,missing,KmknnParam-method}
+\alias{findNeighbors,KmknnIndex,missing-method}
 \alias{findNeighbors,KmknnIndex,KmknnParam-method}
 
-\alias{findNeighbors,NULL,VptreeParam-method}
-\alias{findNeighbors,VptreeIndex,NULL-method}
+\alias{findNeighbors,missing,VptreeParam-method}
+\alias{findNeighbors,VptreeIndex,missing-method}
 \alias{findNeighbors,VptreeIndex,VptreeParam-method}
 
 \title{Find all neighbors in range}
 \description{Find all neighbors within a given distance for each point in a data set, using exact or approximate algorithms.}
 
 \usage{
-findNeighbors(..., BNINDEX=NULL, BNPARAM=NULL)
+findNeighbors(..., BNINDEX, BNPARAM)
 }
 
 \arguments{
@@ -37,8 +31,10 @@ findNeighbors(..., BNINDEX=NULL, BNPARAM=NULL)
             \item \code{BPPARAM}, a \linkS4class{BiocParallelParam} class for parallelization.
         }
     }
-    \item{BNINDEX}{A \linkS4class{BiocNeighborIndex} object, or \code{NULL}.}
-    \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object, or \code{NULL} if \code{BININDEX} is supplied.}
+    \item{BNINDEX}{A \linkS4class{BiocNeighborIndex} object containing precomputed index information.
+        This can be missing if \code{BNPARAM} is supplied, see Details.}
+    \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the algorithm to use.
+        This can be missing if \code{BNINDEX} is supplied, see Details.}
 }
 
 \value{
@@ -61,6 +57,8 @@ However, if both are defined, they cannot specify different algorithms.
 
 If \code{BNINDEX} is supplied, \code{X} does not need to be specified.
 In fact, any value of \code{X} will be ignored as all necessary information for the search is already present in \code{BNINDEX}.
+
+If both \code{BNINDEX} and \code{BNPARAM} are missing, the function will default to the KMKNN algorithm by setting \code{BNPARAM=KmknnParam()}.
 }
 
 \author{
@@ -78,11 +76,11 @@ k.out <- findNeighbors(Y, threshold=1)
 a.out <- findNeighbors(Y, threshold=1, BNPARAM=VptreeParam())
 
 k.dex <- buildKmknn(Y)
-k.out2 <- findNeighbors(Y, threshold=1, BNINDEX=k.dex, BNPARAM=NULL)
+k.out2 <- findNeighbors(Y, threshold=1, BNINDEX=k.dex)
 k.out3 <- findNeighbors(Y, threshold=1, BNINDEX=k.dex, BNPARAM=KmknnParam())
 
 v.dex <- buildVptree(Y)
-v.out2 <- findNeighbors(Y, threshold=1, BNINDEX=v.dex, BNPARAM=NULL)
+v.out2 <- findNeighbors(Y, threshold=1, BNINDEX=v.dex)
 v.out3 <- findNeighbors(Y, threshold=1, BNINDEX=v.dex, BNPARAM=VptreeParam())
 }
 
