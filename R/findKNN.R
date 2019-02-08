@@ -1,35 +1,10 @@
 ####################
-# Further dispatch #
+# Default dispatch #
 ####################
 
 #' @export
 setMethod("findKNN", c("missing", "missing"), function(..., BNINDEX, BNPARAM) {
-    findKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("findKNN", c("missing", "BiocNeighborParam"), function(..., BNINDEX, BNPARAM) {
-    findKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("findKNN", c("BiocNeighborIndex", "missing"), function(..., BNINDEX, BNPARAM) {
-    findKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("findKNN", c("NULL", "missing"), function(..., BNINDEX, BNPARAM) {
-    findKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("findKNN", c("missing", "NULL"), function(..., BNINDEX, BNPARAM) {
-    findKNN(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("findKNN", c("NULL", "NULL"), function(..., BNINDEX, BNPARAM) {
-    findKNN(..., BNINDEX=BNINDEX, BNPARAM=KmknnParam())        
+    findKNN(..., BNPARAM=KmknnParam())
 })
 
 ####################
@@ -37,7 +12,7 @@ setMethod("findKNN", c("NULL", "NULL"), function(..., BNINDEX, BNPARAM) {
 ####################
 
 #' @export
-setMethod("findKNN", c("NULL", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
+setMethod("findKNN", c("missing", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
     do.call(findKmknn, c(list(..., distance=bndistance(BNPARAM)), KmknnParam_kmeans_args(BNPARAM)))
 })
 
@@ -47,12 +22,12 @@ setMethod("findKNN", c("KmknnIndex", "KmknnParam"), function(..., BNINDEX, BNPAR
 })
 
 #' @export
-setMethod("findKNN", c("KmknnIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+setMethod("findKNN", c("KmknnIndex", "missing"), function(..., BNINDEX, BNPARAM) {
     findKmknn(..., precomputed=BNINDEX)
 })
 
 #' @export
-setMethod("findKNN", c("NULL", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
+setMethod("findKNN", c("missing", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
     findVptree(..., distance=bndistance(BNPARAM))
 })
 
@@ -62,12 +37,12 @@ setMethod("findKNN", c("VptreeIndex", "VptreeParam"), function(..., BNINDEX, BNP
 })
 
 #' @export
-setMethod("findKNN", c("VptreeIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+setMethod("findKNN", c("VptreeIndex", "missing"), function(..., BNINDEX, BNPARAM) {
     findVptree(..., precomputed=BNINDEX)
 })
 
 #' @export
-setMethod("findKNN", c("NULL", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
+setMethod("findKNN", c("missing", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
     findAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM), 
         search.mult=AnnoyParam_search_mult(BNPARAM), distance=bndistance(BNPARAM))
 })
@@ -78,12 +53,12 @@ setMethod("findKNN", c("AnnoyIndex", "AnnoyParam"), function(..., BNINDEX, BNPAR
 })
 
 #' @export
-setMethod("findKNN", c("AnnoyIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+setMethod("findKNN", c("AnnoyIndex", "missing"), function(..., BNINDEX, BNPARAM) {
     findAnnoy(..., precomputed=BNINDEX)
 })
 
 #' @export
-setMethod("findKNN", c("NULL", "HnswParam"), function(..., BNINDEX, BNPARAM) {
+setMethod("findKNN", c("missing", "HnswParam"), function(..., BNINDEX, BNPARAM) {
     findHnsw(..., nlinks=HnswParam_nlinks(BNPARAM), ef.construction=HnswParam_ef_construction(BNPARAM), 
         directory=HnswParam_directory(BNPARAM), ef.search=HnswParam_ef_search(BNPARAM), distance=bndistance(BNPARAM))
 })
@@ -94,6 +69,6 @@ setMethod("findKNN", c("HnswIndex", "HnswParam"), function(..., BNINDEX, BNPARAM
 })
 
 #' @export
-setMethod("findKNN", c("HnswIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+setMethod("findKNN", c("HnswIndex", "missing"), function(..., BNINDEX, BNPARAM) {
     findHnsw(..., precomputed=BNINDEX)
 })

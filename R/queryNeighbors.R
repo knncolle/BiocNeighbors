@@ -1,35 +1,10 @@
 ####################
-# Further dispatch #
+# Default dispatch #
 ####################
 
 #' @export
 setMethod("queryNeighbors", c("missing", "missing"), function(..., BNINDEX, BNPARAM) {
-    queryNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("queryNeighbors", c("missing", "BiocNeighborParam"), function(..., BNINDEX, BNPARAM) {
-    queryNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("queryNeighbors", c("BiocNeighborIndex", "missing"), function(..., BNINDEX, BNPARAM) {
-    queryNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("queryNeighbors", c("NULL", "missing"), function(..., BNINDEX, BNPARAM) {
-    queryNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("queryNeighbors", c("missing", "NULL"), function(..., BNINDEX, BNPARAM) {
-    queryNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("queryNeighbors", c("NULL", "NULL"), function(..., BNINDEX, BNPARAM) {
-    queryNeighbors(..., BNINDEX=BNINDEX, BNPARAM=KmknnParam())
+    queryNeighbors(..., BNPARAM=KmknnParam())
 })
 
 ####################
@@ -42,12 +17,12 @@ setMethod("queryNeighbors", c("KmknnIndex", "KmknnParam"), function(..., BNINDEX
 })
 
 #' @export
-setMethod("queryNeighbors", c("NULL", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
+setMethod("queryNeighbors", c("missing", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
     do.call(rangeQueryKmknn, c(list(..., distance=bndistance(BNPARAM)), KmknnParam_kmeans_args(BNPARAM)))
 })
 
 #' @export
-setMethod("queryNeighbors", c("KmknnIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+setMethod("queryNeighbors", c("KmknnIndex", "missing"), function(..., BNINDEX, BNPARAM) {
     rangeQueryKmknn(..., precomputed=BNINDEX)
 })
 
@@ -57,11 +32,11 @@ setMethod("queryNeighbors", c("VptreeIndex", "VptreeParam"), function(..., BNIND
 })
 
 #' @export
-setMethod("queryNeighbors", c("NULL", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
+setMethod("queryNeighbors", c("missing", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
     rangeQueryVptree(..., distance=bndistance(BNPARAM))
 })
 
 #' @export
-setMethod("queryNeighbors", c("VptreeIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+setMethod("queryNeighbors", c("VptreeIndex", "missing"), function(..., BNINDEX, BNPARAM) {
     rangeQueryVptree(..., precomputed=BNINDEX)
 })

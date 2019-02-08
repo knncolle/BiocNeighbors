@@ -1,14 +1,9 @@
 ####################
-# Further dispatch #
+# Default dispatch #
 ####################
 
 #' @export
 setMethod("buildIndex", "missing", function(..., BNPARAM) {
-    buildIndex(..., BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("buildIndex", "NULL", function(..., BNPARAM) {
     buildIndex(..., BNPARAM=KmknnParam())
 })
 

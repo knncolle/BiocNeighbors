@@ -1,35 +1,10 @@
 ####################
-# Further dispatch #
+# Default dispatch #
 ####################
 
 #' @export
 setMethod("findNeighbors", c("missing", "missing"), function(..., BNINDEX, BNPARAM) {
-    findNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("findNeighbors", c("missing", "BiocNeighborParam"), function(..., BNINDEX, BNPARAM) {
-    findNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("findNeighbors", c("BiocNeighborIndex", "missing"), function(..., BNINDEX, BNPARAM) {
-    findNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("findNeighbors", c("NULL", "missing"), function(..., BNINDEX, BNPARAM) {
-    findNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("findNeighbors", c("missing", "NULL"), function(..., BNINDEX, BNPARAM) {
-    findNeighbors(..., BNINDEX=BNINDEX, BNPARAM=BNPARAM)
-})
-
-#' @export
-setMethod("findNeighbors", c("NULL", "NULL"), function(..., BNINDEX, BNPARAM) {
-    findNeighbors(..., BNINDEX=BNINDEX, BNPARAM=KmknnParam())        
+    findNeighbors(..., BNPARAM=KmknnParam())
 })
 
 ####################
@@ -37,7 +12,7 @@ setMethod("findNeighbors", c("NULL", "NULL"), function(..., BNINDEX, BNPARAM) {
 ####################
 
 #' @export
-setMethod("findNeighbors", c("NULL", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
+setMethod("findNeighbors", c("missing", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
     do.call(rangeFindKmknn, c(list(..., distance=bndistance(BNPARAM)), KmknnParam_kmeans_args(BNPARAM)))
 })
 
@@ -47,12 +22,12 @@ setMethod("findNeighbors", c("KmknnIndex", "KmknnParam"), function(..., BNINDEX,
 })
 
 #' @export
-setMethod("findNeighbors", c("KmknnIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+setMethod("findNeighbors", c("KmknnIndex", "missing"), function(..., BNINDEX, BNPARAM) {
     rangeFindKmknn(..., precomputed=BNINDEX)
 })
 
 #' @export
-setMethod("findNeighbors", c("NULL", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
+setMethod("findNeighbors", c("missing", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
     rangeFindVptree(..., distance=bndistance(BNPARAM))
 })
 
@@ -62,6 +37,6 @@ setMethod("findNeighbors", c("VptreeIndex", "VptreeParam"), function(..., BNINDE
 })
 
 #' @export
-setMethod("findNeighbors", c("VptreeIndex", "NULL"), function(..., BNINDEX, BNPARAM) {
+setMethod("findNeighbors", c("VptreeIndex", "missing"), function(..., BNINDEX, BNPARAM) {
     rangeFindVptree(..., precomputed=BNINDEX)
 })

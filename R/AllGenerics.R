@@ -1,17 +1,17 @@
 #' @export
-setGeneric("buildIndex", signature=c("BNPARAM"), function(..., BNPARAM=NULL) standardGeneric("buildIndex"))
+setGeneric("buildIndex", signature=c("BNPARAM"), function(..., BNPARAM) standardGeneric("buildIndex"))
 
 #' @export
-setGeneric("findKNN", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX=NULL, BNPARAM=NULL) standardGeneric("findKNN"))
+setGeneric("findKNN", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX, BNPARAM) standardGeneric("findKNN"))
 
 #' @export
-setGeneric("queryKNN", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX=NULL, BNPARAM=NULL) standardGeneric("queryKNN"))
+setGeneric("queryKNN", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX, BNPARAM) standardGeneric("queryKNN"))
 
 #' @export
-setGeneric("findNeighbors", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX=NULL, BNPARAM=NULL) standardGeneric("findNeighbors"))
+setGeneric("findNeighbors", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX, BNPARAM) standardGeneric("findNeighbors"))
 
 #' @export
-setGeneric("queryNeighbors", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX=NULL, BNPARAM=NULL) standardGeneric("queryNeighbors"))
+setGeneric("queryNeighbors", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX, BNPARAM) standardGeneric("queryNeighbors"))
 
 #' @export
 setGeneric("bnorder", function(x) standardGeneric("bnorder"))
