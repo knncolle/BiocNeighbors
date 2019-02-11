@@ -12,12 +12,13 @@
 \description{Build indices for nearest-neighbor searching with different algorithms.}
 
 \usage{
-buildIndex(..., BNPARAM)
+buildIndex(X, transposed=FALSE, ..., BNPARAM)
 }
 
 \arguments{
-\item{...}{Further arguments to be passed to individual methods.
-The mandatory argument for all methods is \code{X}, a numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
+\item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
+\item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
+\item{...}{Further arguments to be passed to individual methods.}
 \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.
 This defaults to a \linkS4class{KmknnParam} object if no argument is supplied.}
 }
@@ -33,7 +34,7 @@ Supplying an \linkS4class{HnswParam} object as \code{BNPARAM} will dispatch to \
 }
 
 \value{
-A \linkS4class{BiocNeighborIndex} object containing indexing structures for each algorithm.
+A \linkS4class{BiocNeighborIndex} object containing indexing structures for the specified algorithm.
 }
 
 \author{

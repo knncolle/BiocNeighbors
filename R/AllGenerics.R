@@ -1,5 +1,5 @@
 #' @export
-setGeneric("buildIndex", signature=c("BNPARAM"), function(..., BNPARAM) standardGeneric("buildIndex"))
+setGeneric("buildIndex", signature=c("BNPARAM"), function(X, transposed=FALSE, ..., BNPARAM) standardGeneric("buildIndex"))
 
 #' @export
 setGeneric("findKNN", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX, BNPARAM) standardGeneric("findKNN"))

@@ -3,8 +3,8 @@
 ####################
 
 #' @export
-setMethod("buildIndex", "missing", function(..., BNPARAM) {
-    buildIndex(..., BNPARAM=KmknnParam())
+setMethod("buildIndex", "missing", function(X, transposed=FALSE, ..., BNPARAM) {
+    buildIndex(X=X, transposed=transposed, ..., BNPARAM=KmknnParam())
 })
 
 ####################
@@ -12,23 +12,33 @@ setMethod("buildIndex", "missing", function(..., BNPARAM) {
 ####################
 
 #' @export
-setMethod("buildIndex", "KmknnParam", function(..., BNPARAM) {
-    do.call(buildKmknn, c(list(..., distance=bndistance(BNPARAM)), KmknnParam_kmeans_args(BNPARAM)))
+setMethod("buildIndex", "KmknnParam", function(X, transposed=FALSE, ..., BNPARAM) {
+    do.call(buildKmknn, 
+        c(
+            list(
+                X=X, transposed=transposed, ..., 
+                distance=bndistance(BNPARAM)
+            ), 
+            KmknnParam_kmeans_args(BNPARAM)
+        )
+    )
 })
 
 #' @export
-setMethod("buildIndex", "VptreeParam", function(..., BNPARAM) {
-    buildVptree(..., distance=bndistance(BNPARAM))
+setMethod("buildIndex", "VptreeParam", function(X, transposed=FALSE, ..., BNPARAM) {
+    buildVptree(X=X, transposed=transposed, ..., distance=bndistance(BNPARAM))
 })
 
 #' @export
-setMethod("buildIndex", "AnnoyParam", function(..., BNPARAM) {
-    buildAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM), 
+setMethod("buildIndex", "AnnoyParam", function(X, transposed=FALSE, ..., BNPARAM) {
+    buildAnnoy(X=X, transposed=transposed, ..., 
+        ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM), 
         search.mult=AnnoyParam_search_mult(BNPARAM), distance=bndistance(BNPARAM))
 })
 
 #' @export
-setMethod("buildIndex", "HnswParam", function(..., BNPARAM) {
-    buildHnsw(..., nlinks=HnswParam_nlinks(BNPARAM), ef.construction=HnswParam_ef_construction(BNPARAM), 
+setMethod("buildIndex", "HnswParam", function(X, transposed=FALSE, ..., BNPARAM) {
+    buildHnsw(X=X, transposed=transposed, ..., 
+        nlinks=HnswParam_nlinks(BNPARAM), ef.construction=HnswParam_ef_construction(BNPARAM), 
         directory=HnswParam_directory(BNPARAM), ef.search=HnswParam_ef_search(BNPARAM), distance=bndistance(BNPARAM))
 })
