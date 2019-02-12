@@ -45,6 +45,10 @@ test_that("findKNN dispatches correctly for KMKNN", {
     expect_equal(out1, out2)
     expect_equal(out1, out3)
     expect_equal(out1, out4)
+
+    # Doesn't need 'X'.
+    expect_equal(out1, findKNN(k=10, BNINDEX=buildKmknn(X)))
+    expect_equal(out1, findKNN(k=10, BNPARAM=KmknnParam(), BNINDEX=buildKmknn(X)))
 })
 
 test_that("findKNN dispatches correctly for VP trees", {
@@ -53,6 +57,10 @@ test_that("findKNN dispatches correctly for VP trees", {
     out3 <- findKNN(X, k=10, BNPARAM=VptreeParam(), BNINDEX=buildVptree(X)) 
     expect_equal(out1, out2)
     expect_equal(out1, out3)
+
+    # Doesn't need 'X'.
+    expect_equal(out1, findKNN(k=10, BNINDEX=buildVptree(X)))
+    expect_equal(out1, findKNN(k=10, BNPARAM=VptreeParam(), BNINDEX=buildVptree(X)))
 })
 
 test_that("findKNN dispatches correctly for Annoy", {
@@ -68,6 +76,10 @@ test_that("findKNN dispatches correctly for Annoy", {
     alt2 <- findKNN(X, k=10, BNPARAM=AnnoyParam(ntrees=200)) 
     expect_equal(alt1, alt2)
     expect_false(isTRUE(all.equal(outA, alt1))) # Checking that they're not exact.
+
+    # Doesn't need 'X'.
+    expect_equal(outA, findKNN(k=10, BNINDEX=buildAnnoy(X)))
+    expect_equal(outA, findKNN(k=10, BNPARAM=AnnoyParam(), BNINDEX=buildAnnoy(X)))
 })
 
 test_that("findKNN dispatches correctly for HNSW", {
@@ -83,6 +95,10 @@ test_that("findKNN dispatches correctly for HNSW", {
     alt2 <- findKNN(X, k=10, BNPARAM=HnswParam(nlinks=20)) 
     expect_equal(alt1, alt2)
     expect_false(isTRUE(all.equal(outA, alt1))) # Checking that they're not exact.
+
+    # Doesn't need 'X'.
+    expect_equal(outA, findKNN(k=10, BNINDEX=buildHnsw(X)))
+    expect_equal(outA, findKNN(k=10, BNPARAM=HnswParam(), BNINDEX=buildHnsw(X)))
 })
 
 test_that("Illegal findKNN signatures fail", {
@@ -104,6 +120,10 @@ test_that("queryKNN dispatches correctly for KMKNN", {
     expect_equal(out1, out2)
     expect_equal(out1, out3)
     expect_equal(out1, out4)
+
+    # Doesn't need 'X'.
+    expect_equal(out1, queryKNN(query=Y, k=10, BNINDEX=buildKmknn(X)))
+    expect_equal(out1, queryKNN(query=Y, k=10, BNPARAM=KmknnParam(), BNINDEX=buildKmknn(X)))
 })
 
 test_that("queryKNN dispatches correctly for VP trees", {
@@ -112,6 +132,10 @@ test_that("queryKNN dispatches correctly for VP trees", {
     out3 <- queryKNN(X, Y, k=10, BNPARAM=KmknnParam(), BNINDEX=buildKmknn(X)) 
     expect_equal(out1, out2)
     expect_equal(out1, out3)
+
+    # Doesn't need 'X'.
+    expect_equal(out1, queryKNN(query=Y, k=10, BNINDEX=buildVptree(X)))
+    expect_equal(out1, queryKNN(query=Y, k=10, BNPARAM=VptreeParam(), BNINDEX=buildVptree(X)))
 })
 
 test_that("queryKNN dispatches correctly for Annoy", {
@@ -127,6 +151,10 @@ test_that("queryKNN dispatches correctly for Annoy", {
     alt2 <- queryKNN(X, Y, k=10, BNPARAM=AnnoyParam(ntrees=200)) 
     expect_equal(alt1, alt2)
     expect_false(isTRUE(all.equal(outA, alt1))) # Checking that they're not exact.
+
+    # Doesn't need 'X'.
+    expect_equal(outA, queryKNN(query=Y, k=10, BNINDEX=buildAnnoy(X)))
+    expect_equal(outA, queryKNN(query=Y, k=10, BNPARAM=AnnoyParam(), BNINDEX=buildAnnoy(X)))
 })
 
 test_that("queryKNN dispatches correctly for Hnsw", {
@@ -142,6 +170,10 @@ test_that("queryKNN dispatches correctly for Hnsw", {
     alt2 <- queryKNN(X, Y, k=10, BNPARAM=HnswParam(nlinks=25)) 
     expect_equal(alt1, alt2)
     expect_false(isTRUE(all.equal(outA, alt1))) # Checking that they're not exact.
+
+    # Doesn't need 'X'.
+    expect_equal(outA, queryKNN(query=Y, k=10, BNINDEX=buildHnsw(X)))
+    expect_equal(outA, queryKNN(query=Y, k=10, BNPARAM=HnswParam(), BNINDEX=buildHnsw(X)))
 })
 
 test_that("Illegal queryKNN signatures fail", {
@@ -159,6 +191,10 @@ test_that("findNeighbors dispatches correctly for KMKNN", {
     expect_identical_re(out1, out2)
     expect_identical_re(out1, out3)
     expect_identical_re(out1, out4)
+
+    # Doesn't need 'X'.
+    expect_identical_re(out1, findNeighbors(threshold=1, BNINDEX=buildKmknn(X)))
+    expect_identical_re(out1, findNeighbors(threshold=1, BNPARAM=KmknnParam(), BNINDEX=buildKmknn(X)))
 })
 
 test_that("findNeighbors dispatches correctly for VP trees", {
@@ -167,6 +203,10 @@ test_that("findNeighbors dispatches correctly for VP trees", {
     out3 <- findNeighbors(X, threshold=1, BNPARAM=VptreeParam(), BNINDEX=buildVptree(X)) 
     expect_identical_re(out1, out2)
     expect_identical_re(out1, out3)
+
+    # Doesn't need 'X'.
+    expect_identical_re(out1, findNeighbors(threshold=1, BNINDEX=buildVptree(X)))
+    expect_identical_re(out1, findNeighbors(threshold=1, BNPARAM=VptreeParam(), BNINDEX=buildVptree(X)))
 })
 
 test_that("Illegal findNeighbors signatures fail", {
@@ -180,7 +220,7 @@ set.seed(101)
 nquery <- 500
 Y <- matrix(runif(nquery * ndim), nrow=nquery)
 
-test_that("queryNeighbors dispatches correctly for KMNeighbors", {
+test_that("queryNeighbors dispatches correctly for KMKNN", {
     out1 <- queryNeighbors(X, Y, threshold=1) 
     out2 <- queryNeighbors(X, Y, threshold=1, BNINDEX=buildKmknn(X)) 
     out3 <- queryNeighbors(X, Y, threshold=1, BNPARAM=KmknnParam()) 
@@ -188,19 +228,25 @@ test_that("queryNeighbors dispatches correctly for KMNeighbors", {
     expect_identical_re(out1, out2)
     expect_identical_re(out1, out3)
     expect_identical_re(out1, out4)
+
+    # Doesn't need 'X'.
+    expect_identical_re(out1, queryNeighbors(query=Y, threshold=1, BNINDEX=buildKmknn(X)))
+    expect_identical_re(out1, queryNeighbors(query=Y, threshold=1, BNPARAM=KmknnParam(), BNINDEX=buildKmknn(X)))
 })
 
 test_that("queryNeighbors dispatches correctly for VP trees", {
-    out1 <- queryNeighbors(X, Y, threshold=1, BNINDEX=buildKmknn(X)) 
-    out2 <- queryNeighbors(X, Y, threshold=1, BNPARAM=KmknnParam()) 
-    out3 <- queryNeighbors(X, Y, threshold=1, BNPARAM=KmknnParam(), BNINDEX=buildKmknn(X)) 
+    out1 <- queryNeighbors(X, Y, threshold=1, BNINDEX=buildVptree(X)) 
+    out2 <- queryNeighbors(X, Y, threshold=1, BNPARAM=VptreeParam()) 
+    out3 <- queryNeighbors(X, Y, threshold=1, BNPARAM=VptreeParam(), BNINDEX=buildVptree(X)) 
     expect_identical_re(out1, out2)
     expect_identical_re(out1, out3)
+
+    # Doesn't need 'X'.
+    expect_identical_re(out1, queryNeighbors(query=Y, threshold=1, BNINDEX=buildVptree(X)))
+    expect_identical_re(out1, queryNeighbors(query=Y, threshold=1, BNPARAM=VptreeParam(), BNINDEX=buildVptree(X)))
 })
 
 test_that("Illegal queryNeighbors signatures fail", {
     expect_error(queryNeighbors(X, BNPARAM=VptreeParam(), BNINDEX=buildKmknn(X)), "unable to find an inherited method")
     expect_error(queryNeighbors(X, BNPARAM=KmknnParam(), BNINDEX=buildVptree(X)), "unable to find an inherited method")
 })
-
-
