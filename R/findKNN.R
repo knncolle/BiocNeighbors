@@ -1,74 +1,65 @@
+#' @importFrom BiocParallel SerialParam
+.FINDKNN_GENERATOR <- function(FUN, ARGS=spill_args) {
+    function(X, k, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM) {
+        do.call(FUN, 
+            c(
+                list(X=X, k=k, subset=subset, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, ...),
+                ARGS(BNPARAM)
+            )
+        )
+    }
+}
+
+#' @importFrom BiocParallel SerialParam
+.FINDKNN_GENERATOR_NOX <- function(FUN) {
+    function(X, k, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM) {
+        FUN(k=k, subset=subset, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, ..., precomputed=BNINDEX)
+    }
+}
+
 ####################
 # Default dispatch #
 ####################
 
 #' @export
-setMethod("findKNN", c("missing", "missing"), function(..., BNINDEX, BNPARAM) {
-    findKNN(..., BNPARAM=KmknnParam())
-})
+setMethod("findKNN", c("missing", "missing"), .FINDKNN_GENERATOR(findKNN, function(BNPARAM) list(BNPARAM=KmknnParam())))
 
 ####################
 # Specific methods #
 ####################
 
 #' @export
-setMethod("findKNN", c("missing", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
-    do.call(findKmknn, c(list(..., distance=bndistance(BNPARAM)), KmknnParam_kmeans_args(BNPARAM)))
-})
+setMethod("findKNN", c("missing", "KmknnParam"), .FINDKNN_GENERATOR(findKmknn))
 
 #' @export
-setMethod("findKNN", c("KmknnIndex", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
-    findKmknn(..., precomputed=BNINDEX)
-})
+setMethod("findKNN", c("KmknnIndex", "KmknnParam"), .FINDKNN_GENERATOR_NOX(findKmknn))
 
 #' @export
-setMethod("findKNN", c("KmknnIndex", "missing"), function(..., BNINDEX, BNPARAM) {
-    findKmknn(..., precomputed=BNINDEX)
-})
+setMethod("findKNN", c("KmknnIndex", "missing"), .FINDKNN_GENERATOR_NOX(findKmknn))
 
 #' @export
-setMethod("findKNN", c("missing", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
-    findVptree(..., distance=bndistance(BNPARAM))
-})
+setMethod("findKNN", c("missing", "VptreeParam"), .FINDKNN_GENERATOR(findVptree))
 
 #' @export
-setMethod("findKNN", c("VptreeIndex", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
-    findVptree(..., precomputed=BNINDEX)
-})
+setMethod("findKNN", c("VptreeIndex", "VptreeParam"), .FINDKNN_GENERATOR_NOX(findVptree))
 
 #' @export
-setMethod("findKNN", c("VptreeIndex", "missing"), function(..., BNINDEX, BNPARAM) {
-    findVptree(..., precomputed=BNINDEX)
-})
+setMethod("findKNN", c("VptreeIndex", "missing"), .FINDKNN_GENERATOR_NOX(findVptree))
 
 #' @export
-setMethod("findKNN", c("missing", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
-    findAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM), 
-        search.mult=AnnoyParam_search_mult(BNPARAM), distance=bndistance(BNPARAM))
-})
+setMethod("findKNN", c("missing", "AnnoyParam"), .FINDKNN_GENERATOR(findAnnoy))
 
 #' @export
-setMethod("findKNN", c("AnnoyIndex", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
-    findAnnoy(..., precomputed=BNINDEX)
-})
+setMethod("findKNN", c("AnnoyIndex", "AnnoyParam"), .FINDKNN_GENERATOR_NOX(findAnnoy))
 
 #' @export
-setMethod("findKNN", c("AnnoyIndex", "missing"), function(..., BNINDEX, BNPARAM) {
-    findAnnoy(..., precomputed=BNINDEX)
-})
+setMethod("findKNN", c("AnnoyIndex", "missing"), .FINDKNN_GENERATOR_NOX(findAnnoy))
 
 #' @export
-setMethod("findKNN", c("missing", "HnswParam"), function(..., BNINDEX, BNPARAM) {
-    findHnsw(..., nlinks=HnswParam_nlinks(BNPARAM), ef.construction=HnswParam_ef_construction(BNPARAM), 
-        directory=HnswParam_directory(BNPARAM), ef.search=HnswParam_ef_search(BNPARAM), distance=bndistance(BNPARAM))
-})
+setMethod("findKNN", c("missing", "HnswParam"), .FINDKNN_GENERATOR(findHnsw))
 
 #' @export
-setMethod("findKNN", c("HnswIndex", "HnswParam"), function(..., BNINDEX, BNPARAM) {
-    findHnsw(..., precomputed=BNINDEX)
-})
+setMethod("findKNN", c("HnswIndex", "HnswParam"), .FINDKNN_GENERATOR_NOX(findHnsw))
 
 #' @export
-setMethod("findKNN", c("HnswIndex", "missing"), function(..., BNINDEX, BNPARAM) {
-    findHnsw(..., precomputed=BNINDEX)
-})
+setMethod("findKNN", c("HnswIndex", "missing"), .FINDKNN_GENERATOR_NOX(findHnsw))

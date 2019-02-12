@@ -24,21 +24,19 @@
 \description{Find the k-nearest neighbors for each point in a data set, using exact or approximate algorithms.}
 
 \usage{
-findKNN(..., BNINDEX, BNPARAM)
+findKNN(X, k, subset=NULL, get.index=TRUE, get.distance=TRUE,
+    BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM) 
 }
 
 \arguments{
-    \item{...}{Further arguments to pass to specific methods, including:
-        \itemize{
-            \item \code{X}, a numeric data matrix where rows are points and columns are dimensions.
-            \item \code{k}, an integer scalar for the number of nearest neighbors.
-            This is the only strictly mandatory parameter.
-            \item \code{subset}, a vector specifying the subset of points in \code{X} to search.
-            \item \code{get.index}, a logical scalar indicating whether to return row indices of the neighbors.
-            \item \code{get.distance}, a logical scalar indicating whether to return distances to neighbors.
-            \item \code{BPPARAM}, a \linkS4class{BiocParallelParam} class for parallelization.
-        }
-    }
+    \item{X}{A numeric data matrix where rows are points and columns are dimensions.
+        This can be missing if \code{BNINDEX} is supplied.}
+    \item{k}{An integer scalar for the number of nearest neighbors.}
+    \item{subset}{A vector specifying the subset of points in \code{X} to search.}
+    \item{get.index}{A logical scalar indicating whether to return row indices of the neighbors.}
+    \item{get.distance}{A logical scalar indicating whether to return distances to neighbors.}
+    \item{BPPARAM}{a \linkS4class{BiocParallelParam} class for parallelization.}
+    \item{...}{Further arguments to pass to individual methods.}
     \item{BNINDEX}{A \linkS4class{BiocNeighborIndex} object containing precomputed index information.
         This can be missing if \code{BNPARAM} is supplied, see Details.}
     \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the algorithm to use.
