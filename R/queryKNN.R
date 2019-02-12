@@ -1,74 +1,65 @@
+#' @importFrom BiocParallel SerialParam
+.QUERYKNN_GENERATOR <- function(FUN, ARGS=spill_args) {
+    function(X, query, k, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), transposed=FALSE, ..., BNINDEX, BNPARAM) {
+        do.call(FUN, 
+            c(
+                list(X=X, query=query, k=k, subset=subset, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, transposed=transposed, ...),
+                ARGS(BNPARAM)
+            )
+        )
+    }
+}
+
+#' @importFrom BiocParallel SerialParam
+.QUERYKNN_GENERATOR_NOX <- function(FUN) {
+    function(X, query, k, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), transposed=FALSE, ..., BNINDEX, BNPARAM) {
+        FUN(query=query, k=k, subset=subset, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, transposed=transposed, ..., precomputed=BNINDEX)
+    }
+}
+
 ####################
 # Default dispatch #
 ####################
 
 #' @export
-setMethod("queryKNN", c("missing", "missing"), function(..., BNINDEX, BNPARAM) {
-    queryKNN(..., BNPARAM=KmknnParam())
-})
+setMethod("queryKNN", c("missing", "missing"), .QUERYKNN_GENERATOR(queryKNN, function(BNPARAM) list(BNPARAM=KmknnParam())))
 
 ####################
 # Specific methods #
 ####################
 
 #' @export
-setMethod("queryKNN", c("KmknnIndex", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
-    queryKmknn(..., precomputed=BNINDEX)
-})
+setMethod("queryKNN", c("missing", "KmknnParam"), .QUERYKNN_GENERATOR(queryKmknn))
 
 #' @export
-setMethod("queryKNN", c("missing", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
-    do.call(queryKmknn, c(list(..., distance=bndistance(BNPARAM)), KmknnParam_kmeans_args(BNPARAM)))
-})
+setMethod("queryKNN", c("KmknnIndex", "missing"), .QUERYKNN_GENERATOR_NOX(queryKmknn))
 
 #' @export
-setMethod("queryKNN", c("KmknnIndex", "missing"), function(..., BNINDEX, BNPARAM) {
-    queryKmknn(..., precomputed=BNINDEX)
-})
+setMethod("queryKNN", c("KmknnIndex", "KmknnParam"), .QUERYKNN_GENERATOR_NOX(queryKmknn))
 
 #' @export
-setMethod("queryKNN", c("VptreeIndex", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
-    queryVptree(..., precomputed=BNINDEX)
-})
+setMethod("queryKNN", c("missing", "VptreeParam"), .QUERYKNN_GENERATOR(queryVptree))
 
 #' @export
-setMethod("queryKNN", c("missing", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
-    queryVptree(..., distance=bndistance(BNPARAM))
-})
+setMethod("queryKNN", c("VptreeIndex", "missing"), .QUERYKNN_GENERATOR_NOX(queryVptree))
 
 #' @export
-setMethod("queryKNN", c("VptreeIndex", "missing"), function(..., BNINDEX, BNPARAM) {
-    queryVptree(..., precomputed=BNINDEX)
-})
+setMethod("queryKNN", c("VptreeIndex", "VptreeParam"), .QUERYKNN_GENERATOR_NOX(queryVptree))
 
 #' @export
-setMethod("queryKNN", c("AnnoyIndex", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
-    queryAnnoy(..., precomputed=BNINDEX)
-})
+setMethod("queryKNN", c("missing", "AnnoyParam"), .QUERYKNN_GENERATOR(queryAnnoy))
 
 #' @export
-setMethod("queryKNN", c("missing", "AnnoyParam"), function(..., BNINDEX, BNPARAM) {
-    queryAnnoy(..., ntrees=AnnoyParam_ntrees(BNPARAM), directory=AnnoyParam_directory(BNPARAM), 
-        search.mult=AnnoyParam_search_mult(BNPARAM), distance=bndistance(BNPARAM))
-})
+setMethod("queryKNN", c("AnnoyIndex", "missing"), .QUERYKNN_GENERATOR_NOX(queryAnnoy))
 
 #' @export
-setMethod("queryKNN", c("AnnoyIndex", "missing"), function(..., BNINDEX, BNPARAM) {
-    queryAnnoy(..., precomputed=BNINDEX)
-})
+setMethod("queryKNN", c("AnnoyIndex", "AnnoyParam"), .QUERYKNN_GENERATOR_NOX(queryAnnoy))
 
 #' @export
-setMethod("queryKNN", c("HnswIndex", "HnswParam"), function(..., BNINDEX, BNPARAM) {
-    queryHnsw(..., precomputed=BNINDEX)
-})
+setMethod("queryKNN", c("missing", "HnswParam"), .QUERYKNN_GENERATOR(queryHnsw))
 
 #' @export
-setMethod("queryKNN", c("missing", "HnswParam"), function(..., BNINDEX, BNPARAM) {
-    queryHnsw(..., nlinks=HnswParam_nlinks(BNPARAM), ef.construction=HnswParam_ef_construction(BNPARAM),
-        directory=HnswParam_directory(BNPARAM), ef.search=HnswParam_ef_search(BNPARAM), distance=bndistance(BNPARAM))
-})
+setMethod("queryKNN", c("HnswIndex", "missing"), .QUERYKNN_GENERATOR_NOX(queryHnsw))
 
 #' @export
-setMethod("queryKNN", c("HnswIndex", "missing"), function(..., BNINDEX, BNPARAM) {
-    queryHnsw(..., precomputed=BNINDEX)
-})
+setMethod("queryKNN", c("HnswIndex", "HnswParam"), .QUERYKNN_GENERATOR_NOX(queryHnsw))

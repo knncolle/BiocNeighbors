@@ -9,7 +9,11 @@ setGeneric("findKNN", signature=c("BNINDEX", "BNPARAM"),
 )
 
 #' @export
-setGeneric("queryKNN", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX, BNPARAM) standardGeneric("queryKNN"))
+#' @importFrom BiocParallel SerialParam
+setGeneric("queryKNN", signature=c("BNINDEX", "BNPARAM"), 
+    function(X, query, k, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), transposed=FALSE, ..., BNINDEX, BNPARAM) 
+        standardGeneric("queryKNN")
+)
 
 #' @export
 setGeneric("findNeighbors", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX, BNPARAM) standardGeneric("findNeighbors"))
