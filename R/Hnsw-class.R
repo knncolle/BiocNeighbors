@@ -65,6 +65,11 @@ setMethod("show", "HnswParam", function(object) {
     cat(sprintf("EF search: %i\n", HnswParam_ef_search(object)))
 })
 
+setMethod("spill_args", "HnswParam", function(x) {
+    list(nlinks=HnswParam_nlinks(x), ef.construction=HnswParam_ef_construction(x), 
+        directory=HnswParam_directory(x), ef.search=HnswParam_ef_search(x), distance=bndistance(x))
+})
+
 #############################
 ##### HnswIndex methods #####
 #############################

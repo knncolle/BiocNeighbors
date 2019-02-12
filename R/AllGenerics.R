@@ -2,7 +2,11 @@
 setGeneric("buildIndex", signature=c("BNPARAM"), function(X, transposed=FALSE, ..., BNPARAM) standardGeneric("buildIndex"))
 
 #' @export
-setGeneric("findKNN", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX, BNPARAM) standardGeneric("findKNN"))
+#' @importFrom BiocParallel SerialParam
+setGeneric("findKNN", signature=c("BNINDEX", "BNPARAM"), 
+    function(X, k, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM) 
+        standardGeneric("findKNN")
+)
 
 #' @export
 setGeneric("queryKNN", signature=c("BNINDEX", "BNPARAM"), function(..., BNINDEX, BNPARAM) standardGeneric("queryKNN"))
@@ -21,3 +25,6 @@ setGeneric("bndata", function(x) standardGeneric("bndata"))
 
 #' @export
 setGeneric("bndistance", function(x) standardGeneric("bndistance"))
+
+# Generic purely for internal use, to help in defining other S4 methods.
+setGeneric("spill_args", function(x) standardGeneric("spill_args"))

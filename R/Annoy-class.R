@@ -53,6 +53,11 @@ setMethod("show", "AnnoyParam", function(object) {
     cat(sprintf("search multiplier: %i\n", AnnoyParam_search_mult(object)))
 })
 
+setMethod("spill_args", "AnnoyParam", function(x) {
+    list(ntrees=AnnoyParam_ntrees(x), directory=AnnoyParam_directory(x), 
+        search.mult=AnnoyParam_search_mult(x), distance=bndistance(x))
+})
+
 ##################################
 ###### AnnoyIndex methods ########
 ##################################

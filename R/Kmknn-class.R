@@ -25,6 +25,10 @@ setMethod("show", "KmknnParam", function(object) {
     cat(sprintf("kmeans args(%i): %s\n", N, paste(all.args, collapse=" ")))
 })
 
+setMethod("spill_args", "KmknnParam", function(x) {
+    c(list(distance=bndistance(x)), KmknnParam_kmeans_args(x))
+})
+
 ##################################
 ###### KmknnIndex methods ########
 ##################################

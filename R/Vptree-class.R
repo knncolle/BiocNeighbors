@@ -8,6 +8,10 @@ VptreeParam <- function(distance="Euclidean") {
     new("VptreeParam", distance=distance)
 }
 
+setMethod("spill_args", "VptreeParam", function(x) {
+    list(distance=bndistance(x))
+})
+
 ##################################
 ###### VptreeIndex methods #######
 ##################################
