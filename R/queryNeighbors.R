@@ -1,42 +1,48 @@
+#' @importFrom BiocParallel SerialParam
+.QUERYNEIGHBORS_GENERATOR <- function(FUN, ARGS=spill_args) {
+    function(X, query, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM) {
+        do.call(FUN, 
+            c(
+                list(X=X, query=query, threshold=threshold, subset=subset, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, ...),
+                ARGS(BNPARAM)
+            )
+        )
+    }
+}
+
+#' @importFrom BiocParallel SerialParam
+.QUERYNEIGHBORS_GENERATOR_NOX <- function(FUN) {
+    function(X, query, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM) {
+        FUN(query=query, threshold=threshold, subset=subset, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, ..., precomputed=BNINDEX)
+    }
+}
+
+
 ####################
 # Default dispatch #
 ####################
 
 #' @export
-setMethod("queryNeighbors", c("missing", "missing"), function(..., BNINDEX, BNPARAM) {
-    queryNeighbors(..., BNPARAM=KmknnParam())
-})
+setMethod("queryNeighbors", c("missing", "missing"), .QUERYNEIGHBORS_GENERATOR(queryNeighbors, function(BNPARAM) list(BNPARAM=KmknnParam())))
 
 ####################
 # Specific methods #
 ####################
 
 #' @export
-setMethod("queryNeighbors", c("KmknnIndex", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
-    rangeQueryKmknn(..., precomputed=BNINDEX)
-})
+setMethod("queryNeighbors", c("missing", "KmknnParam"), .QUERYNEIGHBORS_GENERATOR(rangeQueryKmknn))
 
 #' @export
-setMethod("queryNeighbors", c("missing", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
-    do.call(rangeQueryKmknn, c(list(..., distance=bndistance(BNPARAM)), KmknnParam_kmeans_args(BNPARAM)))
-})
+setMethod("queryNeighbors", c("KmknnIndex", "missing"), .QUERYNEIGHBORS_GENERATOR_NOX(rangeQueryKmknn))
 
 #' @export
-setMethod("queryNeighbors", c("KmknnIndex", "missing"), function(..., BNINDEX, BNPARAM) {
-    rangeQueryKmknn(..., precomputed=BNINDEX)
-})
+setMethod("queryNeighbors", c("KmknnIndex", "KmknnParam"), .QUERYNEIGHBORS_GENERATOR_NOX(rangeQueryKmknn))
 
 #' @export
-setMethod("queryNeighbors", c("VptreeIndex", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
-    rangeQueryVptree(..., precomputed=BNINDEX)
-})
+setMethod("queryNeighbors", c("missing", "VptreeParam"), .QUERYNEIGHBORS_GENERATOR(rangeQueryVptree))
 
 #' @export
-setMethod("queryNeighbors", c("missing", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
-    rangeQueryVptree(..., distance=bndistance(BNPARAM))
-})
+setMethod("queryNeighbors", c("VptreeIndex", "missing"), .QUERYNEIGHBORS_GENERATOR_NOX(rangeQueryVptree))
 
 #' @export
-setMethod("queryNeighbors", c("VptreeIndex", "missing"), function(..., BNINDEX, BNPARAM) {
-    rangeQueryVptree(..., precomputed=BNINDEX)
-})
+setMethod("queryNeighbors", c("VptreeIndex", "VptreeParam"), .QUERYNEIGHBORS_GENERATOR_NOX(rangeQueryVptree))

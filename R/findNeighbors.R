@@ -1,42 +1,47 @@
+#' @importFrom BiocParallel SerialParam
+.FINDNEIGHBORS_GENERATOR <- function(FUN, ARGS=spill_args) {
+    function(X, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM) {
+        do.call(FUN, 
+            c(
+                list(X=X, threshold=threshold, subset=subset, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, ...),
+                ARGS(BNPARAM)
+            )
+        )
+    }
+}
+
+#' @importFrom BiocParallel SerialParam
+.FINDNEIGHBORS_GENERATOR_NOX <- function(FUN) {
+    function(X, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM) {
+        FUN(threshold=threshold, subset=subset, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, ..., precomputed=BNINDEX)
+    }
+}
+
 ####################
 # Default dispatch #
 ####################
 
 #' @export
-setMethod("findNeighbors", c("missing", "missing"), function(..., BNINDEX, BNPARAM) {
-    findNeighbors(..., BNPARAM=KmknnParam())
-})
+setMethod("findNeighbors", c("missing", "missing"), .FINDNEIGHBORS_GENERATOR(findNeighbors, function(BNPARAM) list(BNPARAM=KmknnParam())))
 
 ####################
 # Specific methods #
 ####################
 
 #' @export
-setMethod("findNeighbors", c("missing", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
-    do.call(rangeFindKmknn, c(list(..., distance=bndistance(BNPARAM)), KmknnParam_kmeans_args(BNPARAM)))
-})
+setMethod("findNeighbors", c("missing", "KmknnParam"), .FINDNEIGHBORS_GENERATOR(rangeFindKmknn))
 
 #' @export
-setMethod("findNeighbors", c("KmknnIndex", "KmknnParam"), function(..., BNINDEX, BNPARAM) {
-    rangeFindKmknn(..., precomputed=BNINDEX)
-})
+setMethod("findNeighbors", c("KmknnIndex", "missing"), .FINDNEIGHBORS_GENERATOR_NOX(rangeFindKmknn))
 
 #' @export
-setMethod("findNeighbors", c("KmknnIndex", "missing"), function(..., BNINDEX, BNPARAM) {
-    rangeFindKmknn(..., precomputed=BNINDEX)
-})
+setMethod("findNeighbors", c("KmknnIndex", "KmknnParam"), .FINDNEIGHBORS_GENERATOR_NOX(rangeFindKmknn))
 
 #' @export
-setMethod("findNeighbors", c("missing", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
-    rangeFindVptree(..., distance=bndistance(BNPARAM))
-})
+setMethod("findNeighbors", c("missing", "VptreeParam"), .FINDNEIGHBORS_GENERATOR(rangeFindVptree))
 
 #' @export
-setMethod("findNeighbors", c("VptreeIndex", "VptreeParam"), function(..., BNINDEX, BNPARAM) {
-    rangeFindVptree(..., precomputed=BNINDEX)
-})
+setMethod("findNeighbors", c("VptreeIndex", "missing"), .FINDNEIGHBORS_GENERATOR_NOX(rangeFindVptree))
 
 #' @export
-setMethod("findNeighbors", c("VptreeIndex", "missing"), function(..., BNINDEX, BNPARAM) {
-    rangeFindVptree(..., precomputed=BNINDEX)
-})
+setMethod("findNeighbors", c("VptreeIndex", "VptreeParam"), .FINDNEIGHBORS_GENERATOR_NOX(rangeFindVptree))

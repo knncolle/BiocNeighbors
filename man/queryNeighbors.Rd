@@ -16,23 +16,21 @@
 \description{Find all neighbors in one data set that are in range of each point in another query data set, using exact or approximate algorithms.}
 
 \usage{
-queryNeighbors(..., BNINDEX, BNPARAM)
+queryNeighbors(X, query, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE, 
+    BPPARAM=SerialParam(), transposed=FALSE, ..., BNINDEX, BNPARAM) 
 }
 
 \arguments{
-    \item{...}{Further arguments to pass to specific methods, including:
-        \itemize{
-            \item \code{X}, a numeric data matrix where rows are points and columns are dimensions.
-            \item \code{threshold}, a numeric scalar or vector specifying the maximum distance for considering neighbors.
-            \item \code{k}, an integer scalar for the number of nearest neighbors.
-            \item \code{subset}, a vector specifying the subset of points in \code{X} to search.
-            \item \code{get.index}, a logical scalar indicating whether to return row indices of the neighbors.
-            \item \code{get.distance}, a logical scalar indicating whether to return distances to neighbors.
-            \item \code{BPPARAM}, a \linkS4class{BiocParallelParam} object for parallelization.
-            \item \code{transposed}, a logical scalar indicating whether \code{query} is transposed, i.e., with columns as points.
-        }
-        Of these, only \code{query} and \code{k} are strictly mandatory.
-    }
+    \item{X}{A numeric data matrix where rows are points and columns are dimensions.}
+    \item{query}{A numeric query matrix where rows are points and columns are dimensions.}
+    \item{threshold}{A numeric scalar or vector specifying the maximum distance for considering neighbors.}
+    \item{k}{An integer scalar for the number of nearest neighbors.}
+    \item{subset}{A vector specifying the subset of points in \code{X} to search.}
+    \item{get.index}{A logical scalar indicating whether to return row indices of the neighbors.}
+    \item{get.distance}{A logical scalar indicating whether to return distances to neighbors.}
+    \item{BPPARAM}{A \linkS4class{BiocParallelParam} object for parallelization.}
+    \item{transposed}{A logical scalar indicating whether \code{query} is transposed, i.e., with columns as points.}
+    \item{...}{Further arguments to pass to specific methods.}
     \item{BNINDEX}{A \linkS4class{BiocNeighborIndex} object containing precomputed index information.
         This can be missing if \code{BNPARAM} is supplied, see Details.}
     \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the algorithm to use.
