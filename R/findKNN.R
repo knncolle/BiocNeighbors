@@ -22,7 +22,7 @@
 ####################
 
 #' @export
-setMethod("findKNN", c("missing", "missing"), .FINDKNN_GENERATOR(findKNN, function(BNPARAM) list(BNPARAM=KmknnParam())))
+setMethod("findKNN", c("missing", "missing"), .FINDKNN_GENERATOR(findKNN, .default_param))
 
 ####################
 # Specific methods #

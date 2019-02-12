@@ -9,9 +9,7 @@
 ####################
 
 #' @export
-setMethod("buildIndex", "missing", .BUILDINDEX_GENERATOR(buildIndex, 
-    function(BNPARAM) list(BNPARAM=KmknnParam())
-))
+setMethod("buildIndex", "missing", .BUILDINDEX_GENERATOR(buildIndex, .default_param))
 
 ####################
 # Specific methods #

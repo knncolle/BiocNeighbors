@@ -22,7 +22,7 @@
 ####################
 
 #' @export
-setMethod("queryKNN", c("missing", "missing"), .QUERYKNN_GENERATOR(queryKNN, function(BNPARAM) list(BNPARAM=KmknnParam())))
+setMethod("queryKNN", c("missing", "missing"), .QUERYKNN_GENERATOR(queryKNN, .default_param))
 
 ####################
 # Specific methods #

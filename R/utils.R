@@ -65,3 +65,6 @@
     out[reorder] <- out
     out
 }
+
+# To use in missing,missing-method definitions.
+.default_param <- function(x) list(BNPARAM=KmknnParam())

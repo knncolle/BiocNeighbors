@@ -23,7 +23,7 @@
 ####################
 
 #' @export
-setMethod("queryNeighbors", c("missing", "missing"), .QUERYNEIGHBORS_GENERATOR(queryNeighbors, function(BNPARAM) list(BNPARAM=KmknnParam())))
+setMethod("queryNeighbors", c("missing", "missing"), .QUERYNEIGHBORS_GENERATOR(queryNeighbors, .default_param))
 
 ####################
 # Specific methods #
