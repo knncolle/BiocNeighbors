@@ -24,7 +24,6 @@ queryNeighbors(X, query, threshold, subset=NULL, get.index=TRUE, get.distance=TR
     \item{X}{A numeric data matrix where rows are points and columns are dimensions.}
     \item{query}{A numeric query matrix where rows are points and columns are dimensions.}
     \item{threshold}{A numeric scalar or vector specifying the maximum distance for considering neighbors.}
-    \item{k}{An integer scalar for the number of nearest neighbors.}
     \item{subset}{A vector specifying the subset of points in \code{X} to search.}
     \item{get.index}{A logical scalar indicating whether to return row indices of the neighbors.}
     \item{get.distance}{A logical scalar indicating whether to return distances to neighbors.}

@@ -24,7 +24,7 @@ setGeneric("findNeighbors", signature=c("BNINDEX", "BNPARAM"),
 
 #' @export
 setGeneric("queryNeighbors", signature=c("BNINDEX", "BNPARAM"), 
-    function(X, query, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM)
+    function(X, query, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), transposed=FALSE, ..., BNINDEX, BNPARAM)
         standardGeneric("queryNeighbors")
 )
 
