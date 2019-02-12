@@ -63,6 +63,7 @@ However, if both are defined, they cannot specify different algorithms.
 
 If \code{BNINDEX} is supplied, \code{X} does not need to be specified.
 In fact, any value of \code{X} will be ignored as all necessary information for the search is already present in \code{BNINDEX}.
+Similarly, any parameters in \code{BNPARAM} will be ignored.
 
 If both \code{BNINDEX} and \code{BNPARAM} are missing, the function will default to the KMKNN algorithm by setting \code{BNPARAM=KmknnParam()}.
 }
