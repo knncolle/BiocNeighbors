@@ -92,8 +92,8 @@ Note that the argument for a precomputed index is `precomputed`:
 
 ```{r}
 pre <- buildIndex(data, BNPARAM=KmknnParam())
-fout.pre <- findNeighbors(precomputed=pre, threshold=1)
-qout.pre <- queryNeighbors(precomputed=pre, query=query, threshold=1)
+fout.pre <- findNeighbors(BNINDEX=pre, threshold=1)
+qout.pre <- queryNeighbors(BNINDEX=pre, query=query, threshold=1)
 ```
 
 Users are referred to the documentation of each function for specific details.
