@@ -151,7 +151,7 @@ test_that("findAnnoy() behaves correctly with parallelization", {
     out <- findAnnoy(X, k=k)
   
     # Trying out different types of parallelization.
-    out1 <- findAnnoy(X, k=k, BPPARAM=MulticoreParam(2))
+    out1 <- findAnnoy(X, k=k, BPPARAM=safeBPParam(2))
     expect_identical(out$index, out1$index)
     expect_identical(out$distance, out1$distance)
 

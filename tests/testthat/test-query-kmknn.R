@@ -109,7 +109,7 @@ test_that("queryKmknn() behaves correctly with parallelization", {
     out <- queryKmknn(X, Y, k=k)
   
     # Trying out different types of parallelization.
-    out1 <- queryKmknn(X, Y, k=k, BPPARAM=MulticoreParam(2))
+    out1 <- queryKmknn(X, Y, k=k, BPPARAM=safeBPParam(2))
     expect_identical(out$index, out1$index)
     expect_identical(out$distance, out1$distance)
 

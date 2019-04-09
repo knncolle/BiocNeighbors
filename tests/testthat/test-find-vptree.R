@@ -91,7 +91,7 @@ test_that("findVptree() behaves correctly with parallelization", {
     out <- findVptree(X, k=k)
   
     # Trying out different types of parallelization.
-    out1 <- findVptree(X, k=k, BPPARAM=MulticoreParam(2))
+    out1 <- findVptree(X, k=k, BPPARAM=safeBPParam(2))
     expect_identical(out$index, out1$index)
     expect_identical(out$distance, out1$distance)
 

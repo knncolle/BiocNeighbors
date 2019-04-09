@@ -147,7 +147,7 @@ test_that("queryHnsw() behaves correctly with parallelization", {
     out <- queryHnsw(X, Y, k=k)
   
     # Trying out different types of parallelization.
-    out1 <- queryHnsw(X, Y, k=k, BPPARAM=MulticoreParam(2))
+    out1 <- queryHnsw(X, Y, k=k, BPPARAM=safeBPParam(2))
     expect_identical(out$index, out1$index)
     expect_identical(out$distance, out1$distance)
 

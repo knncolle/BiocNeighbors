@@ -166,7 +166,7 @@ test_that("queryAnnoy() behaves correctly with parallelization", {
     out <- queryAnnoy(X, Y, k=k)
   
     # Trying out different types of parallelization.
-    out1 <- queryAnnoy(X, Y, k=k, BPPARAM=MulticoreParam(2))
+    out1 <- queryAnnoy(X, Y, k=k, BPPARAM=safeBPParam(2))
     expect_identical(out$index, out1$index)
     expect_identical(out$distance, out1$distance)
 

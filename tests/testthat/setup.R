@@ -92,3 +92,16 @@ refQueryKNN <- function(X, Y, k, type="euclidean") {
     list(index=do.call(rbind, collected.index),
         distance=do.call(rbind, collected.dist))
 }
+
+#################################################
+# Setting up some safe BPPARAM functions.
+
+# Because SnowParam() is too slow, yet MulticoreParam() fails on Windows.
+# See discussion at https://github.com/Bioconductor/BiocParallel/issues/98.
+safeBPParam <- function(nworkers) {
+    if (.Platform$OS.type=="windows") {
+        BiocParallel::SerialParam()
+    } else {
+        BiocParallel::MulticoreParam(nworkers)
+    }
+}

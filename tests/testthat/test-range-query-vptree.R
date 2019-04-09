@@ -105,7 +105,7 @@ test_that("rangeQueryVptree() behaves correctly with parallelization", {
     expect_true(length(unique(lengths(ref$index))) > 1L) # some variety; not all, not single.
   
     # Trying out different types of parallelization.
-    out1 <- rangeQueryVptree(X, Y, threshold=d, BPPARAM=MulticoreParam(2))
+    out1 <- rangeQueryVptree(X, Y, threshold=d, BPPARAM=safeBPParam(2))
     expect_identical_re(out1, ref)
 
     out2 <- rangeQueryVptree(X, Y, threshold=d, BPPARAM=SnowParam(3))
@@ -174,7 +174,7 @@ test_that("rangeQueryVptree() behaves with variable distances", {
     expect_identical_re(out2, lapply(out, "[", i=scrambled))
 
     # Handles parallelization.
-    expect_identical_re(out, rangeQueryVptree(X, Y, threshold=d, BPPARAM=MulticoreParam(3)))
+    expect_identical_re(out, rangeQueryVptree(X, Y, threshold=d, BPPARAM=safeBPParam(3)))
 })
 
 set.seed(1004)
