@@ -1,5 +1,5 @@
 #' @export
-#' @importFrom BiocGenerics t
+#' @importFrom Matrix t
 buildVptree <- function(X, transposed=FALSE, distance=c("Euclidean", "Manhattan"))
 # Builds an VP tree index.
 # 

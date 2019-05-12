@@ -1,7 +1,7 @@
 #' @export
 #' @importFrom stats kmeans
 #' @importFrom methods is
-#' @importFrom BiocGenerics t
+#' @importFrom Matrix t
 buildKmknn <- function(X, transposed=FALSE, distance=c("Euclidean", "Manhattan"), ...) 
 # Reorganizing the matrix 'x' for fast lookup via K-means clustering.
 #

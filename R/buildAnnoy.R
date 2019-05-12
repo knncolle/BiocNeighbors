@@ -1,5 +1,5 @@
 #' @export
-#' @importFrom BiocGenerics t
+#' @importFrom Matrix t
 buildAnnoy <- function(X, transposed=FALSE, ntrees=50, directory=tempdir(), search.mult=ntrees, 
     fname=tempfile(tmpdir=directory, fileext=".idx"), distance=c("Euclidean", "Manhattan")) 
 # Builds an Annoy index at the specified path.
