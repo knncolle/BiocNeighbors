@@ -1,11 +1,24 @@
 Package: BiocNeighbors
-Version: 1.3.0
-Date: 2019-04-08
+Version: 1.3.1
+Date: 2019-05-12
 Title: Nearest Neighbor Detection for Bioconductor Packages
 Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
         email="infinite.monkeys.with.keyboards@gmail.com"))
-Imports: Rcpp, BiocGenerics, S4Vectors, BiocParallel, stats, methods
-Suggests: testthat, BiocStyle, knitr, rmarkdown, FNN, RcppAnnoy, RcppHNSW
+Imports: 
+    Rcpp, 
+    S4Vectors, 
+    BiocParallel, 
+    stats, 
+    methods, 
+    Matrix
+Suggests: 
+    testthat, 
+    BiocStyle, 
+    knitr, 
+    rmarkdown, 
+    FNN, 
+    RcppAnnoy, 
+    RcppHNSW
 biocViews: Clustering, Classification
 Description: Implements exact and approximate methods for nearest neighbor 
     detection, in a framework that allows them to be easily switched within 
