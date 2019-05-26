@@ -1,5 +1,5 @@
-\name{kmknnnews}
-\title{kmknn News}
+\name{BiocNeighborsnews}
+\title{BiocNeighbors News}
 \encoding{UTF-8}
 
 \section{Version 1.2.0}{\itemize{
@@ -24,6 +24,6 @@ Created bnorder(), bndata() generics to obtain (possibly reordered) input matric
 
 \section{Version 1.0.0}{\itemize{
 \item
-New package kmknn, for k-means-based k-nearest neighbor detection.
+New package BiocNeighbors, for k-means-based k-nearest neighbor detection.
 }}
 
