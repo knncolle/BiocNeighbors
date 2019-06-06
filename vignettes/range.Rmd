@@ -23,7 +23,7 @@ library(BiocNeighbors)
 
 # Identifying all neighbors within range
 
-Another application of the KMKNN or VP tree algorithms is to identify all neighboring points within a certain (Euclidean) distance of the current point.
+Another application of the KMKNN or VP tree algorithms is to identify all neighboring points within a certain distance^[The default here is Euclidean, but again, we can set `distance="Manhattan"` in the `BNPARAM` object if so desired.] of the current point.
 We first mock up some data:
 
 ```{r}

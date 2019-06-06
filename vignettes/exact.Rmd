@@ -136,6 +136,13 @@ out1 <- findKNN(BNINDEX=pre, k=5)
 out2 <- queryKNN(BNINDEX=pre, query=query, k=2)
 ```
 
+The default setting is to search on the Euclidean distance.
+Alternatively, we can use the Manhattan distance by setting `distance="Manhattan"` in the `BiocNeighborParam` object.
+
+```{r}
+out.m <- findKNN(data, k=5, BNPARAM=KmknnParam(distance="Manhattan"))
+```
+
 Advanced users may also be interested in the `raw.index=` argument, which returns indices directly to the precomputed object rather than to `data`.
 This may be useful inside package functions where it may be more convenient to work on a common precomputed object.
 
