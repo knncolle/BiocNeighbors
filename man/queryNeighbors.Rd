@@ -13,7 +13,7 @@
 \alias{queryNeighbors,VptreeIndex,VptreeParam-method}
 
 \title{Query all neighbors}
-\description{Find all neighbors in one data set that are in range of each point in another query data set, using exact or approximate algorithms.}
+\description{Find all neighbors in one data set that are in range of each point in another query data set.}
 
 \usage{
 queryNeighbors(X, query, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE, 

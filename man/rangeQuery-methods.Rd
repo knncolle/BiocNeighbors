@@ -30,7 +30,8 @@ For \code{rangeFindVptree}, this should be a \linkS4class{VptreeIndex} from \cod
 in which case \code{query} is assumed to contain dimensions in the rows and data points in the columns.}
 \item{subset}{A vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the neighbors should be identified.}
 \item{raw.index}{A logial scalar indicating whether raw column indices should be returned, see \code{?"\link{BiocNeighbors-raw-index}"}.}
-\item{...}{Further arguments to pass to the respective \code{build*} function for each algorithm.}
+\item{...}{Further arguments to pass to the respective \code{build*} function for each algorithm.
+This includes \code{distance}, a string specifying whether \code{"Euclidean"} or \code{"Manhattan"} distances are to be used.}
 }
 
 \details{

@@ -13,7 +13,7 @@
 \alias{findNeighbors,VptreeIndex,VptreeParam-method}
 
 \title{Find all neighbors in range}
-\description{Find all neighbors within a given distance for each point in a data set, using exact or approximate algorithms.}
+\description{Find all neighbors within a given distance for each point in a data set.}
 
 \usage{
 findNeighbors(X, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE,
