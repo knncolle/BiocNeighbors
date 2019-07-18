@@ -6,6 +6,27 @@
 #include "Rcpp.h"
 #include "utils.h"
 
+/* The neighbor_queue class is a priority queue that contains indices and
+ * distances in decreasing order from the top of the queue. Existing elements
+ * are displaced by incoming elements that have shorter distances, thus making
+ * it a useful data structure for retaining the k-nearest neighbors.
+ *
+ * We augment a normal priority queue with some extra features to:
+ *
+ * - remove self-matches for kNN searches. In such cases, the size of the queue
+ *   is set to k+1 during the search, and any self-match is removed when the
+ *   neighbors are reported to yield exactly k neighbors.  We cannot simply
+ *   remove the closest neighbor in case of duplicates.
+ * - warn about ties for exact searches. In such cases, the size of the queue
+ *   is set to k+1 search. Reporting will check for tied distances among queue
+ *   elements and emit one R warning per lifetime of the queue (to avoid
+ *   saturating the warning counter in practical settings).
+ *
+ * Both of these options can be applied together, in which case the size of the
+ * queue is set to k+2, any self-matches are removed, and distances are
+ * searched for ties.
+ */
+
 class neighbor_queue {
 public:
     neighbor_queue(bool t) : ties(t) {}
