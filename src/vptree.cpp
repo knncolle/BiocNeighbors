@@ -22,7 +22,7 @@ std::deque<double>& VpTree<Distance>::get_distances () { return distances; }
 /***** Methods to build the VP tree *****/
 
 template<class Distance>
-VpTree<Distance>::VpTree(Rcpp::NumericMatrix vals) : reference(vals), ndim(vals.nrow()) {
+VpTree<Distance>::VpTree(Rcpp::NumericMatrix vals) : reference(vals), ndim(vals.nrow()), nearest(true) {
     const MatDim_t nelements=vals.ncol();
     items.reserve(nelements);
     const double * ptr = vals.begin();
@@ -115,7 +115,9 @@ Rcpp::List VpTree<Distance>::save() {
 }
 
 template<class Distance>
-VpTree<Distance>::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data) : reference(vals), ndim(vals.nrow()) {
+VpTree<Distance>::VpTree(Rcpp::NumericMatrix vals, Rcpp::List node_data, bool warn_ties) : 
+    reference(vals), ndim(vals.nrow()), nearest(warn_ties)
+{
     const MatDim_t nelements=reference.ncol();
 
     { // Filling the item index.
@@ -173,7 +175,7 @@ void VpTree<Distance>::find_nearest_neighbors (CellIndex_t cell, NumNeighbors_t 
     nearest.setup(k, cell);
     auto curcol=reference.column(cell);
     search_nn(0, curcol.begin(), nearest);
-    nearest.report(neighbors, distances, index, dist);
+    nearest.report<Distance>(neighbors, distances, index, dist);
     return;
 }
 
@@ -182,12 +184,12 @@ void VpTree<Distance>::find_nearest_neighbors (const double* current, NumNeighbo
     tau = DBL_MAX;
     nearest.setup(k);
     search_nn(0, current, nearest);
-    nearest.report(neighbors, distances, index, dist);
+    nearest.report<Distance>(neighbors, distances, index, dist);
     return;
 }
 
 template<class Distance>
-void VpTree<Distance>::search_nn(NodeIndex_t curnode_index, const double* target, neighbor_queue<Distance>& nearest) { 
+void VpTree<Distance>::search_nn(NodeIndex_t curnode_index, const double* target, neighbor_queue& nearest) { 
     // final argument is not strictly necessary but makes dependencies more obvious.
 
     if (curnode_index == LEAF_MARKER) { // indicates that we're done here

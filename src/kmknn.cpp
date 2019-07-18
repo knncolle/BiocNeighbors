@@ -10,8 +10,11 @@
 /****************** Constructor *********************/
 
 template<class Distance>
-Kmknn<Distance>::Kmknn(Rcpp::NumericMatrix ex, Rcpp::NumericMatrix cen, Rcpp::List info) : exprs(ex), centers(cen) {
+Kmknn<Distance>::Kmknn(Rcpp::NumericMatrix ex, Rcpp::NumericMatrix cen, Rcpp::List info, bool warn_ties) : 
+    exprs(ex), centers(cen), nearest(warn_ties)
+{
     const MatDim_t ncenters=centers.ncol();
+
     for (MatDim_t i=0; i<ncenters; ++i) {
         Rcpp::List current(info[i]);
         if (current.size()!=2) {
@@ -69,7 +72,7 @@ void Kmknn<Distance>::find_nearest_neighbors (CellIndex_t cell, NumNeighbors_t n
     auto curcol=exprs.column(cell);
     nearest.setup(nn, cell);
     search_nn(curcol.begin(), nearest);
-    nearest.report(neighbors, distances, index, dist, true);
+    nearest.report<Distance>(neighbors, distances, index, dist);
     return;
 }
 
@@ -77,7 +80,7 @@ template<class Distance>
 void Kmknn<Distance>::find_nearest_neighbors (const double* current, NumNeighbors_t nn, const bool index, const bool dist) {
     nearest.setup(nn);
     search_nn(current, nearest);
-    nearest.report(neighbors, distances, index, dist, true);
+    nearest.report<Distance>(neighbors, distances, index, dist);
     return;
 }
 
@@ -136,7 +139,7 @@ void Kmknn<Distance>::search_all (const double* current, double threshold, const
 }
 
 template<class Distance>
-void Kmknn<Distance>::search_nn(const double* current, neighbor_queue<Distance>& nearest) { 
+void Kmknn<Distance>::search_nn(const double* current, neighbor_queue& nearest) { 
     // final argument is not strictly necessary but makes dependencies more obvious.
 
     const MatDim_t ndims=exprs.nrow();

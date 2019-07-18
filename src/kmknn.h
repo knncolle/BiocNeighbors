@@ -10,7 +10,7 @@
 template<class Distance>
 class Kmknn {
 public:
-    Kmknn(Rcpp::NumericMatrix, Rcpp::NumericMatrix, Rcpp::List);
+    Kmknn(Rcpp::NumericMatrix, Rcpp::NumericMatrix, Rcpp::List, bool=true);
 
     void find_neighbors(CellIndex_t, double, const bool, const bool);
     void find_neighbors(const double*, double, const bool, const bool);
@@ -30,8 +30,8 @@ protected:
     std::deque<double> distances;
     void search_all(const double*, double, const bool, const bool);
 
-    neighbor_queue<Distance> nearest;
-    void search_nn(const double*, neighbor_queue<Distance>&);
+    neighbor_queue nearest;
+    void search_nn(const double*, neighbor_queue&);
 
     // Cluster-related data members.
     const Rcpp::NumericMatrix centers;

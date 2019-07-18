@@ -14,7 +14,7 @@ template<class Distance>
 class VpTree {
 public:    
     VpTree(Rcpp::NumericMatrix); 
-    VpTree(Rcpp::NumericMatrix, Rcpp::List);
+    VpTree(Rcpp::NumericMatrix, Rcpp::List, bool=true);
     Rcpp::List save();
 
     void find_neighbors(CellIndex_t, double, const bool, const bool);
@@ -55,8 +55,8 @@ private:
     std::deque<double> distances;
     double tau;
 
-    neighbor_queue<Distance> nearest;
-    void search_nn(NodeIndex_t, const double*, neighbor_queue<Distance>&);
+    neighbor_queue nearest;
+    void search_nn(NodeIndex_t, const double*, neighbor_queue&);
     void search_all(NodeIndex_t, const double*, double, bool, bool);
 };
 
