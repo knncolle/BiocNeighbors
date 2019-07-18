@@ -3,15 +3,11 @@
 #include "utils.h"
 
 template <class Searcher>
-SEXP find_knn(Searcher& finder, SEXP to_check, SEXP nn, SEXP get_index, SEXP get_distance) {
+SEXP find_knn(Searcher& finder, Rcpp::IntegerVector to_check, int nn, bool store_neighbors, bool store_distances) {
     // Checking NN's and indices.
     const NumNeighbors_t NN=check_k(nn);
     const Rcpp::IntegerVector points=check_indices(to_check, finder.get_nobs());
     const VecSize_t nobs=points.size();
-
-    // Getting the output mode.
-    const bool store_neighbors=check_logical_scalar(get_index, "'get.index'");
-    const bool store_distances=check_logical_scalar(get_distance, "'get.distance'");
 
     Rcpp::NumericMatrix out_dist;
     if (store_distances) {

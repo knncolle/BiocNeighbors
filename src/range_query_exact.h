@@ -3,7 +3,9 @@
 #include "utils.h"
 
 template<class Searcher>
-SEXP range_query_exact(Searcher& finder, SEXP to_check, SEXP dist_thresh, SEXP query, SEXP get_index, SEXP get_distance) {
+Rcpp::RObject range_query_exact(Searcher& finder, Rcpp::IntegerVector to_check, Rcpp::NumericVector dist_thresh, 
+    Rcpp::NumericMatrix query, bool store_neighbors, bool store_distances) 
+{
     const MatDim_t ndim=finder.get_ndims();
 
     // Examining the query matrix and checking it against the subset indices.
@@ -17,9 +19,6 @@ SEXP range_query_exact(Searcher& finder, SEXP to_check, SEXP dist_thresh, SEXP q
     const Rcpp::NumericVector thresholds=check_distances(dist_thresh, nobs);
 
     // Getting the output mode.
-    const bool store_neighbors=check_logical_scalar(get_index, "'get.index'");
-    const bool store_distances=check_logical_scalar(get_distance, "'get.distance'");
-
     Rcpp::List out_dist;
     if (store_distances) {
         out_dist=Rcpp::List(nobs);

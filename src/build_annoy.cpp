@@ -1,9 +1,7 @@
-#include "init.h"
 #include "annoy.h"
 
 template<class Distance>
-SEXP build_annoy_internal (SEXP mat, SEXP ntrees, SEXP fname) {
-    Rcpp::NumericMatrix Mat(mat);
+Rcpp::RObject build_annoy_internal (Rcpp::NumericMatrix Mat, int Ntrees, const std::string& Fname) {
     const int ndim=Mat.nrow();
     const int ncells=Mat.ncol();
 
@@ -15,22 +13,17 @@ SEXP build_annoy_internal (SEXP mat, SEXP ntrees, SEXP fname) {
         obj.add_item(i, tmp.data());
     }
 
-    const int Ntrees=check_integer_scalar(ntrees, "number of trees");
     obj.build(Ntrees);
-
-    auto Fname=check_string(fname, "index file name");
     obj.save(Fname.c_str());
 
     return R_NilValue;
 }
 
-SEXP build_annoy(SEXP mat, SEXP ntrees, SEXP fname, SEXP dtype) {
-    BEGIN_RCPP
-    auto Mode=check_string(dtype, "distance type");
-    if (Mode=="Manhattan") {
+// [[Rcpp::export(rng=false)]]
+Rcpp::RObject build_annoy(Rcpp::NumericMatrix mat, int ntrees, std::string fname, std::string dtype) {
+    if (dtype=="Manhattan") {
         return build_annoy_internal<Manhattan>(mat, ntrees, fname);
     } else {
         return build_annoy_internal<Euclidean>(mat, ntrees, fname);
     }
-    END_RCPP
 }

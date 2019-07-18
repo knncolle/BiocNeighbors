@@ -1,16 +1,15 @@
-#include "init.h"
 #include "annoy.h"
 #include "query_knn.h"
 
-SEXP query_annoy (SEXP to_check, SEXP query, SEXP ndims, SEXP fname, SEXP search_mult, SEXP dtype, SEXP nn, SEXP get_index, SEXP get_distance) {
-    BEGIN_RCPP
-    auto Mode=check_string(dtype, "distance type");
-    if (Mode=="Manhattan") {
+// [[Rcpp::export(rng=false)]]
+Rcpp::RObject query_annoy (Rcpp::IntegerVector to_check, Rcpp::NumericMatrix query, int ndims, std::string fname, double search_mult, 
+    std::string dtype, int nn, bool get_index, bool get_distance) 
+{
+    if (dtype=="Manhattan") {
         Annoy<Manhattan> nn_finder(ndims, fname, search_mult);
         return query_knn(nn_finder, to_check, nn, query, get_index, get_distance);
      } else {
         Annoy<Euclidean> nn_finder(ndims, fname, search_mult);
         return query_knn(nn_finder, to_check, nn, query, get_index, get_distance);
     }
-    END_RCPP
 }

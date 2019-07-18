@@ -10,17 +10,19 @@
 /****************** Constructor *********************/
 
 template<class Distance>
-Kmknn<Distance>::Kmknn(SEXP ex, SEXP cen, SEXP info) : exprs(ex), centers(cen) {
+Kmknn<Distance>::Kmknn(Rcpp::NumericMatrix ex, Rcpp::NumericMatrix cen, Rcpp::List info) : exprs(ex), centers(cen) {
     const MatDim_t ncenters=centers.ncol();
-
-    Rcpp::List Info(info);
     for (MatDim_t i=0; i<ncenters; ++i) {
-        Rcpp::List current(Info[i]);
+        Rcpp::List current(info[i]);
         if (current.size()!=2) {
             throw std::runtime_error("cluster information list elements must be of length 2");
         }
 
-        clust_start.push_back(check_integer_scalar(current[0], "starting ID"));
+        Rcpp::IntegerVector starting=current[0];
+        if (starting.size()!=1) {
+            throw std::runtime_error("starting ID must be an integer scalar");
+        }
+        clust_start.push_back(starting[0]);
 
         const Rcpp::NumericVector distances(current[1]);
         clust_dist.push_back(distances);

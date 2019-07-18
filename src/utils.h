@@ -14,17 +14,9 @@ typedef int NumNeighbors_t;
 
 // Input functions.
 
-bool check_logical_scalar(Rcpp::RObject x, const char* thing);
-
-int check_integer_scalar(Rcpp::RObject x, const char* thing);
-
-double check_numeric_scalar(Rcpp::RObject x, const char* thing);
-
-std::string check_string(Rcpp::RObject x, const char* thing);
-
 Rcpp::IntegerVector check_indices(Rcpp::IntegerVector, int);
 
-NumNeighbors_t check_k(Rcpp::RObject);
+NumNeighbors_t check_k(int);
 
 Rcpp::NumericVector check_distances(Rcpp::NumericVector, VecSize_t);
 

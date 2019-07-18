@@ -3,7 +3,7 @@
 #include "utils.h"
 
 template <class Searcher>
-SEXP query_knn(Searcher& finder, SEXP to_check, SEXP nn, SEXP query, SEXP get_index, SEXP get_distance) {
+SEXP query_knn(Searcher& finder, Rcpp::IntegerVector to_check, int nn, Rcpp::NumericMatrix query, bool store_neighbors, bool store_distances) {
     const MatDim_t ndim=finder.get_ndims();
     const NumNeighbors_t NN=check_k(nn);
 
@@ -17,9 +17,6 @@ SEXP query_knn(Searcher& finder, SEXP to_check, SEXP nn, SEXP query, SEXP get_in
     const VecSize_t nobs=points.size();
 
     // Getting the output mode.
-    const bool store_neighbors=check_logical_scalar(get_index, "'get.index'");
-    const bool store_distances=check_logical_scalar(get_distance, "'get.distance'");
-
     Rcpp::NumericMatrix out_dist;
     if (store_distances) { 
         out_dist=Rcpp::NumericMatrix(NN, nobs);

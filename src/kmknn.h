@@ -10,7 +10,7 @@
 template<class Distance>
 class Kmknn {
 public:
-    Kmknn(SEXP, SEXP, SEXP);
+    Kmknn(Rcpp::NumericMatrix, Rcpp::NumericMatrix, Rcpp::List);
 
     void find_neighbors(CellIndex_t, double, const bool, const bool);
     void find_neighbors(const double*, double, const bool, const bool);
