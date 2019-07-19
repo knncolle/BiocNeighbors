@@ -72,7 +72,7 @@ void Kmknn<Distance>::find_nearest_neighbors (CellIndex_t cell, NumNeighbors_t n
     auto curcol=exprs.column(cell);
     nearest.setup(nn, cell);
     search_nn(curcol.begin(), nearest);
-    nearest.report<Distance>(neighbors, distances, index, dist);
+    nearest.report<Distance>(neighbors, distances, index, dist, true);
     return;
 }
 
@@ -80,7 +80,7 @@ template<class Distance>
 void Kmknn<Distance>::find_nearest_neighbors (const double* current, NumNeighbors_t nn, const bool index, const bool dist) {
     nearest.setup(nn);
     search_nn(current, nearest);
-    nearest.report<Distance>(neighbors, distances, index, dist);
+    nearest.report<Distance>(neighbors, distances, index, dist, true);
     return;
 }
 

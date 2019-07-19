@@ -66,7 +66,7 @@ public:
     }
 
     template<class Distance>
-    void report(std::deque<CellIndex_t>& neighbors, std::deque<double>& distances, bool index, bool dist) {
+    void report(std::deque<CellIndex_t>& neighbors, std::deque<double>& distances, bool index, bool dist, bool normalize=false) {
         neighbors.clear();
         distances.clear();
         if (nearest.empty()) {
@@ -104,7 +104,7 @@ public:
         }
 
         // Square rooting if the distances were squared.
-        if (!distances.empty()) {
+        if (normalize && !distances.empty()) {
             for (auto& d : distances) { d=Distance::normalize(d); }
         }
 
