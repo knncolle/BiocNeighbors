@@ -24,8 +24,17 @@
     }
 
     # Dividing jobs up for NN finding.
-    jobs <- .assign_jobs(job.id - 1L, BPPARAM)
-    thresholds <- .assign_jobs(thresholds, BPPARAM)
+    if (bpnworkers(BPPARAM)==1L) {
+        jobs <- list(job.id-1L)
+        thresh <- list(thresholds)
+    } else {
+        jobs <- .assign_jobs(job.id, BPPARAM)
+        thresh <- vector("list", length(jobs))
+        for (i in seq_along(jobs)) {
+            thresh[[i]] <- thresholds[jobs[[i]]]
+            jobs[[i]] <- jobs[[i]] - 1L
+        }
+    }
 
     collected <- bpmapply(FUN=searchFUN, 
         jobs=jobs, threshold=thresholds,

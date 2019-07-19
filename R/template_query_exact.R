@@ -14,12 +14,13 @@
     job.id <- q.out$index
     reorder <- q.out$reorder
 
-    # Dividing jobs up for NN finding.
-    jobs <- .assign_jobs(job.id - 1L, BPPARAM)
-    collected <- bpmapply(jobs, FUN=searchFUN, 
+    # Dividing jobs up for NN finding (subsetting here
+    # to avoid serializing the entire matrix to all workers).
+    Q <- .split_matrix_for_workers(query, BPPARAM)
+    collected <- bpmapply(FUN=searchFUN, query=Q,
         MoreArgs=c(
             searchArgsFUN(precomputed), 
-            list(data=bndata(precomputed), k=k, query=query, get.index=get.index, get.distance=get.distance, distance=bndistance(precomputed))
+            list(data=bndata(precomputed), k=k, get.index=get.index, get.distance=get.distance, distance=bndistance(precomputed))
         ), 
         BPPARAM=BPPARAM, SIMPLIFY=FALSE)
 
