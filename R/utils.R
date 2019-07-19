@@ -4,8 +4,11 @@
 # Returns a list of job indices, one per worker.
 {
     ncores <- bpnworkers(BPPARAM)
-    njobs <- length(jobs)
+    if (ncores==1L) {
+        return(list(jobs))
+    }
 
+    njobs <- length(jobs)
     starting <- as.integer(seq(1, njobs + 1, length.out = ncores + 1))
     jobsize <- diff(starting)
     starting <- starting[-length(starting)]
@@ -15,8 +18,22 @@
         idx <- starting[i] - 1L + seq_len(jobsize[i])
         output[[i]] <- jobs[idx]
     }
-    
-    return(output)
+    output
+}
+
+#' @importFrom BiocParallel bpnworkers
+.split_matrix_for_workers <- function(mat, job.id, BPPARAM) {
+    # Avoid unnecessary allocation where possible.
+    if (bpnworkers(BPPARAM)==1L) {
+        if (identical(job.id, seq_along(job.id))) {
+            list(mat)
+        } else {
+            list(mat[,job.id,drop=FALSE])
+        }
+    } else {
+        jobs <- .assign_jobs(job.id, BPPARAM)
+        lapply(jobs, function(x) mat[,x,drop=FALSE])
+    }
 }
 
 .subset_to_index <- function(subset, x, byrow=TRUE) 

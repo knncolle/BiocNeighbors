@@ -1,25 +1,15 @@
-#ifndef RANGE_QUERY_EXACT_H
-#define RANGE_QUERY_EXACT_H
+#ifndef RANGE_NEIGHBORS_H
+#define RANGE_NEIGHBORS_H
 #include "utils.h"
 
 template<class Searcher>
-SEXP range_query_exact(Searcher& finder, SEXP to_check, SEXP dist_thresh, SEXP query, SEXP get_index, SEXP get_distance) {
-    const MatDim_t ndim=finder.get_ndims();
-
-    // Examining the query matrix and checking it against the subset indices.
-    Rcpp::NumericMatrix Query(query);
-    if (Query.nrow()!=ndim) {
-        throw std::runtime_error("'query' and 'X' have different dimensionality");
-    }
-
-    const Rcpp::IntegerVector points=check_indices(to_check, Query.ncol());
+SEXP range_neighbors(Searcher& finder, Rcpp::IntegerVector to_check, Rcpp::NumericVector dist_thresh, bool store_neighbors, bool store_distances) {
+    // Figuring out which indices we're using.
+    const Rcpp::IntegerVector points=check_indices(to_check, finder.get_nobs());
     const VecSize_t nobs=points.size();
     const Rcpp::NumericVector thresholds=check_distances(dist_thresh, nobs);
 
     // Getting the output mode.
-    const bool store_neighbors=check_logical_scalar(get_index, "'get.index'");
-    const bool store_distances=check_logical_scalar(get_distance, "'get.distance'");
-
     Rcpp::List out_dist;
     if (store_distances) {
         out_dist=Rcpp::List(nobs);
@@ -29,10 +19,10 @@ SEXP range_query_exact(Searcher& finder, SEXP to_check, SEXP dist_thresh, SEXP q
     if (store_neighbors) {
         out_idx=Rcpp::List(nobs);
     }
-        
+
     // Iterating across cells, finding NNs and storing distances or neighbors.
     for (VecSize_t ix=0; ix<nobs; ++ix) {
-        finder.find_neighbors(Query.begin() + ndim * points[ix], thresholds[ix], store_neighbors, store_distances); 
+        finder.find_neighbors(points[ix], thresholds[ix], store_neighbors, store_distances);
 
         if (store_neighbors) {
             const auto& neighbors=finder.get_neighbors();

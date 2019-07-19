@@ -26,14 +26,24 @@
     }
 
     # Dividing jobs up for NN finding.
-    jobs <- .assign_jobs(job.id - 1L, BPPARAM)
-    thresholds <- .assign_jobs(thresholds, BPPARAM)
+    Q <- .split_matrix_for_workers(query, job.id, BPPARAM)
+    if (length(Q)==1L){ 
+        thresh <- list(thresholds)
+    } else {
+        thresh <- vector("list", length(Q))
+        last <- 0L
+        for (i in seq_along(Q)) {
+            N <- ncol(Q[[i]])
+            ind <- seq_len(N) + last
+            thresh[[i]] <- thresholds[ind]
+            last <- last + N
+        }
+    }
 
-    collected <- bpmapply(FUN=searchFUN,
-        jobs=jobs, threshold=thresholds,
+    collected <- bpmapply(FUN=searchFUN, query=Q, dist_thresh=thresh,
         MoreArgs=c(
             searchArgsFUN(precomputed), 
-            list(data=bndata(precomputed), query=query, get.index=get.index, get.distance=get.distance, distance=bndistance(precomputed))
+            list(X=bndata(precomputed), dtype=bndistance(precomputed), get_index=get.index, get_distance=get.distance)
         ), 
         BPPARAM=BPPARAM, SIMPLIFY=FALSE)
 

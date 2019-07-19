@@ -1,17 +1,12 @@
-#include "init.h"
 #include "hnsw.h"
 
 template<class Space>
-SEXP build_hnsw_internal (SEXP mat, SEXP nlinks, SEXP ef_construct, SEXP fname) {
-    Rcpp::NumericMatrix Mat(mat);
+Rcpp::RObject build_hnsw_internal (Rcpp::NumericMatrix Mat, int nlinks, int ef_construct, const std::string& Fname) {
     const int ndim=Mat.nrow();
     const int ncells=Mat.ncol();
 
     Space space(ndim);
-    typename Hnsw<Space>::_index obj(&space, ncells, 
-        check_integer_scalar(nlinks, "number of bidirectional links"),
-        check_integer_scalar(ef_construct, "size of dynamic list")
-    );
+    typename Hnsw<Space>::_index obj(&space, ncells, nlinks, ef_construct);
 
     std::vector<typename Hnsw<Space>::Data_t> tmp(ndim);
     auto mIt=Mat.begin();
@@ -20,20 +15,16 @@ SEXP build_hnsw_internal (SEXP mat, SEXP nlinks, SEXP ef_construct, SEXP fname) 
         obj.addPoint(tmp.data(), i);
     }
 
-    auto Fname=check_string(fname, "index file name");
     obj.saveIndex(Fname);
 
     return R_NilValue;
 }
 
-SEXP build_hnsw(SEXP mat, SEXP nlinks, SEXP ef_construct, SEXP fname, SEXP dtype) {
-    BEGIN_RCPP
-    auto Mode=check_string(dtype, "distance type");
-    if (Mode=="Manhattan") {
+// [[Rcpp::export(rng=false)]]
+Rcpp::RObject build_hnsw(Rcpp::NumericMatrix mat, int nlinks, int ef_construct, std::string fname, std::string dtype) {
+    if (dtype=="Manhattan") {
         return build_hnsw_internal<L1Space>(mat, nlinks, ef_construct, fname);
     } else {
         return build_hnsw_internal<hnswlib::L2Space>(mat, nlinks, ef_construct, fname);
     }
-    END_RCPP
 }
-

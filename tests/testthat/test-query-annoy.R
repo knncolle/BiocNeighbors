@@ -1,5 +1,5 @@
 # Tests queryAnnoy().
-# library(BiocNeighbors); library(testthat); source("test-query-annoy.R")
+# library(BiocNeighbors); library(testthat); source("setup.R"); source("test-query-annoy.R")
 
 set.seed(1001)
 test_that("queryAnnoy() behaves correctly with queries", {
@@ -131,6 +131,27 @@ test_that("queryAnnoy() behaves correctly with Manhattan distances", {
             ref <- REFFUN(X, Y, k=k)
             expect_identical(out$index, ref$index)
             expect_equal(out$distance, ref$distance, tol=1e-6) # imprecision due to RcppAnnoy's use of floats.
+        }
+    }
+})
+
+set.seed(1003001)
+test_that("queryAnnoy() works to only obtain the last distance", {
+    ndata <- 500 
+    nquery <- 100
+
+    for (ndim in c(1, 5, 10)) {
+        for (k in c(1, 5, 20)) {
+            X <- matrix(runif(ndata * ndim), nrow=ndata)
+            Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+            ref <- queryAnnoy(X, k=k, query=Y)
+            out <- queryAnnoy(X, k=k, query=Y, get.distance=FALSE, get.index=FALSE)
+            expect_identical(out, ref$distance[,k])
+
+            ref <- queryAnnoy(X, k=k, query=Y, distance="Manhattan")
+            out <- queryAnnoy(X, k=k, query=Y, distance="Manhattan", get.distance=FALSE, get.index=FALSE)
+            expect_identical(out, ref$distance[,k])
         }
     }
 })

@@ -1,11 +1,10 @@
 #include "annoy.h"
 
 template<class Distance>
-Annoy<Distance>::Annoy(SEXP ndim, SEXP fname, SEXP mult) : NDims(check_integer_scalar(ndim, "number of dimensions")), 
-        obj(NDims), holding(NDims), search_mult(check_numeric_scalar(mult, "search multiplier")) 
+Annoy<Distance>::Annoy(int ndim, const std::string& fname, double mult) : 
+    NDims(ndim), obj(NDims), holding(NDims), search_mult(mult)
 {
-    auto Fname=check_string(fname, "index file name");
-    obj.load(Fname.c_str());
+    obj.load(fname.c_str());
     if (search_mult <= 1) {
         throw std::runtime_error("search multiplier should be greater than 1");
     }

@@ -124,6 +124,24 @@ test_that("findAnnoy() behaves correctly with Manhattan distances", {
     }
 })
 
+set.seed(700311)
+test_that("findAnnoy() behaves correctly when only the last distance is requested", {
+    nobs <- 500 
+    for (ndim in c(1, 5, 10)) {
+        for (k in c(1, 5, 20)) { 
+            X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+            ref <- findAnnoy(X, k=k)
+            out <- findAnnoy(X, k=k, get.index=FALSE, get.distance=FALSE)
+            expect_identical(out, ref$distance[,k])
+
+            ref <- findAnnoy(X, k=k, distance="Manhattan")
+            out <- findAnnoy(X, k=k, get.index=FALSE, get.distance=FALSE, distance="Manhattan")
+            expect_identical(out, ref$distance[,k])
+        }
+    }
+})
+
 set.seed(70032)
 test_that("findAnnoy() responds to run-time search.k", {
     nobs <- 1000

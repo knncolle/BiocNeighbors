@@ -116,6 +116,27 @@ test_that("queryKmknn() behaves correctly with Manhattan distances", {
     }
 })
 
+set.seed(1003001)
+test_that("queryHnsw() works to only obtain the last distance", {
+    ndata <- 500
+    nquery <- 100
+
+    for (ndim in c(1, 5, 10)) {
+        for (k in c(1, 5, 20)) {
+            X <- matrix(runif(ndata * ndim), nrow=ndata)
+            Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+            ref <- queryHnsw(X, k=k, query=Y)
+            out <- queryHnsw(X, k=k, query=Y, get.distance=FALSE, get.index=FALSE)
+            expect_identical(out, ref$distance[,k])
+
+            ref <- queryHnsw(X, k=k, query=Y, distance="Manhattan")
+            out <- queryHnsw(X, k=k, query=Y, distance="Manhattan", get.distance=FALSE, get.index=FALSE)
+            expect_identical(out, ref$distance[,k])
+        }
+    }
+})
+
 set.seed(1003002)
 test_that("queryAnnoy() responds to run-time 'ef.search'", {
     nobs <- 1000

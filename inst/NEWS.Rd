@@ -2,6 +2,10 @@
 \title{BiocNeighbors News}
 \encoding{UTF-8}
 
+\section{Version 1.4.0}{\itemize{
+\item Allow memory-efficient retrieval of the distance to the k-th neighbor only.
+}}
+
 \section{Version 1.2.0}{\itemize{
 \item findNeighbors() and queryNeighbors() now accept a vector of point-specific thresholds.
 

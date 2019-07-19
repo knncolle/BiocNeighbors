@@ -1,16 +1,29 @@
-#include "init.h"
 #include "annoy.h"
 #include "find_knn.h"
+#include "find_dist_to_k.h"
 
-SEXP find_annoy (SEXP to_check, SEXP ndims, SEXP fname, SEXP search_mult, SEXP dtype, SEXP nn, SEXP get_index, SEXP get_distance) {
-    BEGIN_RCPP
-    auto Mode=check_string(dtype, "distance type");
-    if (Mode=="Manhattan") {
+// [[Rcpp::export(rng=false)]]
+Rcpp::RObject find_annoy (Rcpp::IntegerVector to_check, int ndims, std::string fname, double search_mult, 
+    std::string dtype, int nn, bool get_index, bool get_distance) 
+{
+    if (dtype=="Manhattan") {
         Annoy<Manhattan> searcher(ndims, fname, search_mult);
         return find_knn(searcher, to_check, nn, get_index, get_distance);
     } else {
         Annoy<Euclidean> searcher(ndims, fname, search_mult);
         return find_knn(searcher, to_check, nn, get_index, get_distance);
     }
-    END_RCPP
+}
+
+// [[Rcpp::export(rng=false)]]
+Rcpp::RObject find_dist_to_annoy (Rcpp::IntegerVector to_check, int ndims, std::string fname, double search_mult, 
+    std::string dtype, int nn)
+{
+    if (dtype=="Manhattan") {
+        Annoy<Manhattan> searcher(ndims, fname, search_mult);
+        return find_dist_to_k(searcher, to_check, nn);
+    } else {
+        Annoy<Euclidean> searcher(ndims, fname, search_mult);
+        return find_dist_to_k(searcher, to_check, nn);
+    }
 }

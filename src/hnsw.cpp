@@ -2,8 +2,8 @@
 #include <cmath>
 
 template<class Space>
-Hnsw<Space>::Hnsw(SEXP dat, SEXP fname, SEXP efs) : data(dat), space(data.nrow()), obj(&space, check_string(fname, "index file name")), 
-    holding(data.nrow()), ef_search(check_integer_scalar(efs, "ef.search")) 
+Hnsw<Space>::Hnsw(Rcpp::NumericMatrix dat, const std::string& fname, int efs) : 
+    data(dat), space(data.nrow()), obj(&space, fname), holding(data.nrow()), ef_search(efs)
 {
     if (ef_search < 1) {
         throw std::runtime_error("ef.search should be a positive integer scalar");

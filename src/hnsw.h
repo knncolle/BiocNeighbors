@@ -18,7 +18,7 @@
 template<class Space>
 class Hnsw {
 public:
-    Hnsw(SEXP, SEXP, SEXP);
+    Hnsw(Rcpp::NumericMatrix, const std::string&, int);
 
     void find_nearest_neighbors(CellIndex_t, NumNeighbors_t, const bool, const bool);
     void find_nearest_neighbors(const double*, NumNeighbors_t, const bool, const bool);

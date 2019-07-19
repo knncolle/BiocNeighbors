@@ -73,4 +73,10 @@ test_that("ties are correctly detected at zero distance", {
     expect_warning(out <- findKmknn(precomputed=pre, k=1), "tied distances detected")
 })
 
-
+test_that("ties are not reported when only distance is of interest", {
+    coordinates <- matrix(0, 10, 5)
+    expect_warning(out <- findKmknn(coordinates, k=2, get.distance=FALSE, get.index=FALSE), NA)
+    expect_warning(out <- findVptree(coordinates, k=2, get.distance=FALSE, get.index=FALSE), NA)
+    expect_warning(out <- queryKmknn(coordinates, query=coordinates, k=2, get.distance=FALSE, get.index=FALSE), NA)
+    expect_warning(out <- queryVptree(coordinates, query=coordinates, k=2, get.distance=FALSE, get.index=FALSE), NA)
+})

@@ -1,6 +1,7 @@
 #' @importFrom BiocParallel SerialParam bpmapply
-.template_find_exact <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, 
-    buildFUN, searchFUN, searchArgsFUN, ...)
+.template_find_exact <- function(X, k, get.index=TRUE, get.distance=TRUE, 
+    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, 
+    buildFUN, searchFUN, searchArgsFUN, distFUN, ...)
 # Provides an R template for different methods for exact neighbor searching,
 # assuming that all of them involve rearranging columns in the index.
 #
@@ -16,26 +17,34 @@
 
     # Dividing jobs up for NN finding (using bpmapply due to clash with 'X=').
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
-    collected <- bpmapply(FUN=searchFUN, jobs,
-        MoreArgs=c(
-            searchArgsFUN(precomputed), 
-            list(data=bndata(precomputed), k=k, get.index=get.index, get.distance=get.distance, distance=bndistance(precomputed))
-        ), 
-        BPPARAM=BPPARAM, SIMPLIFY=FALSE)
+    common.args <- c(searchArgsFUN(precomputed), 
+        list(X=bndata(precomputed), dtype=bndistance(precomputed), nn=k))
 
-    # Aggregating results across cores.
-    output <- list()
-    if (get.index) {
-        neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
-        if (!raw.index) {
-            neighbors[] <- bnorder(precomputed)[neighbors]
+    if (get.index || get.distance) {
+        collected <- bpmapply(FUN=searchFUN, to_check=jobs,
+            MoreArgs=c(common.args, list(get_index=get.index, get_distance=get.distance)), 
+            BPPARAM=BPPARAM, SIMPLIFY=FALSE)
+
+        # Aggregating results across cores.
+        output <- list()
+        if (get.index) {
+            neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
+            if (!raw.index) {
+                neighbors[] <- bnorder(precomputed)[neighbors]
+            }
+            output$index <- neighbors
+        } 
+        if (get.distance) {
+            output$distance <- .combine_matrices(collected, i=2, reorder=reorder)
         }
-        output$index <- neighbors
-    } 
-    if (get.distance) {
-        output$distance <- .combine_matrices(collected, i=2, reorder=reorder)
+    } else {
+        collected <- bpmapply(FUN=distFUN, to_check=jobs, MoreArgs=common.args,
+            BPPARAM=BPPARAM, SIMPLIFY=FALSE)
+        output <- unlist(collected, use.names=FALSE)
+        output[reorder] <- output
     }
-    return(output)
+
+    output
 }
 
 .setup_precluster <- function(X, precomputed, raw.index, buildFUN, ...) 
@@ -52,8 +61,9 @@
 }
 
 .refine_k <- function(k, precomputed, query=FALSE)
-# Protection against silliness when k is greater than or equal to the number of observations (for self-searching),
-# or simply greater than the number of observation (for querying).
+# Protection against silliness when k is greater than or equal to the number of
+# observations (for self-searching), or simply greater than the number of
+# observation (for querying).
 {
     if (!query) {
         max <- nrow(precomputed) - 1L

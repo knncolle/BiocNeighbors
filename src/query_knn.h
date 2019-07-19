@@ -3,7 +3,7 @@
 #include "utils.h"
 
 template <class Searcher>
-SEXP query_knn(Searcher& finder, SEXP to_check, SEXP nn, SEXP query, SEXP get_index, SEXP get_distance) {
+SEXP query_knn(Searcher& finder, Rcpp::NumericMatrix query, int nn, bool store_neighbors, bool store_distances) {
     const MatDim_t ndim=finder.get_ndims();
     const NumNeighbors_t NN=check_k(nn);
 
@@ -12,14 +12,9 @@ SEXP query_knn(Searcher& finder, SEXP to_check, SEXP nn, SEXP query, SEXP get_in
     if (Query.nrow()!=ndim) {
         throw std::runtime_error("'query' and 'X' have different dimensionality");
     }
-
-    const Rcpp::IntegerVector points=check_indices(to_check, Query.ncol());
-    const VecSize_t nobs=points.size();
+    const MatDim_t nobs=Query.ncol();
 
     // Getting the output mode.
-    const bool store_neighbors=check_logical_scalar(get_index, "'get.index'");
-    const bool store_distances=check_logical_scalar(get_distance, "'get.distance'");
-
     Rcpp::NumericMatrix out_dist;
     if (store_distances) { 
         out_dist=Rcpp::NumericMatrix(NN, nobs);
@@ -33,8 +28,10 @@ SEXP query_knn(Searcher& finder, SEXP to_check, SEXP nn, SEXP query, SEXP get_in
     auto oiIt=out_idx.begin();
         
     // Iterating across cells, finding NNs and storing distances or neighbors.
-    for (auto h : points) {
-        finder.find_nearest_neighbors(Query.begin() + ndim * h, NN, store_neighbors, store_distances); 
+    // Don't use qIt in range, as it fails for zero-dimension matrices.
+    auto qIt=Query.begin();
+    for (MatDim_t i=0; i<nobs; ++i, qIt+=ndim) {
+        finder.find_nearest_neighbors(qIt, NN, store_neighbors, store_distances); 
         const auto& distances=finder.get_distances();
         const auto& neighbors=finder.get_neighbors();
 
