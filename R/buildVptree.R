@@ -16,7 +16,7 @@ buildVptree <- function(X, transposed=FALSE, distance=c("Euclidean", "Manhattan"
     }
     distance <- match.arg(distance)
 
-    build_vptree(tX, distance)
+    out <- build_vptree(tX, distance)
     ordering <- out[[1]]
     VptreeIndex(data=tX[,ordering,drop=FALSE], order=ordering, nodes=out[-1], NAMES=colnames(tX), distance=distance)
 }
