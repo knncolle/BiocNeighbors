@@ -22,11 +22,16 @@
 }
 
 #' @importFrom BiocParallel bpnworkers
-.split_matrix_for_workers <- function(mat, BPPARAM) {
+.split_matrix_for_workers <- function(mat, job.id, BPPARAM) {
+    # Avoid unnecessary allocation where possible.
     if (bpnworkers(BPPARAM)==1L) {
-        list(mat)
+        if (identical(job.id, seq_along(job.id))) {
+            list(mat)
+        } else {
+            list(mat[,job.id,drop=FALSE])
+        }
     } else {
-        jobs <- .assign_jobs(seq_len(ncol(mat)), BPPARAM)
+        jobs <- .assign_jobs(job.id, BPPARAM)
         lapply(jobs, function(x) mat[,x,drop=FALSE])
     }
 }

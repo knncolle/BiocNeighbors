@@ -1,6 +1,7 @@
 #' @importFrom BiocParallel SerialParam bpmapply
-.template_query_approx <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL,
-    buildFUN, pathFUN, searchFUN, searchArgsFUN, ...)
+.template_query_approx <- function(X, query, k, get.index=TRUE, get.distance=TRUE, 
+    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL,
+    buildFUN, pathFUN, searchFUN, searchArgsFUN, distFUN, ...)
 # Provides a R template for approximate nearest neighbors querying, 
 # assuming that all of them use a file-backed index.
 #
@@ -21,7 +22,7 @@
 
     # Dividing jobs up for NN finding (subsetting here
     # to avoid serializing the entire matrix to all workers).
-    Q <- .split_matrix_for_workers(query, BPPARAM)
+    Q <- .split_matrix_for_workers(query, job.id, BPPARAM)
     common.args <- c(searchArgsFUN(precomputed), 
         list(dtype=bndistance(precomputed), nn=k))
 
@@ -40,7 +41,7 @@
             output$distance <- .combine_matrices(collected, i=2, reorder=reorder)
         }
     } else {
-        collected <- bpmapply(FUN=searchFUN, query=Q, MoreArgs=common.args,
+        collected <- bpmapply(FUN=distFUN, query=Q, MoreArgs=common.args,
             BPPARAM=BPPARAM, SIMPLIFY=FALSE)
         output <- unlist(collected, use.names=FALSE)
     }

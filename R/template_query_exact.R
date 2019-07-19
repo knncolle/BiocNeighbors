@@ -17,7 +17,7 @@
 
     # Dividing jobs up for NN finding (subsetting here
     # to avoid serializing the entire matrix to all workers).
-    Q <- .split_matrix_for_workers(query, BPPARAM)
+    Q <- .split_matrix_for_workers(query, job.id, BPPARAM)
     common.args <- c(searchArgsFUN(precomputed), 
         list(X=bndata(precomputed), dtype=bndistance(precomputed), nn=k))
 
