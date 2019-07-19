@@ -22,10 +22,10 @@ Rcpp::RObject query_dist_to_vptree(Rcpp::NumericMatrix query, Rcpp::NumericMatri
     std::string dtype, int nn)
 {
     if (dtype=="Manhattan") {
-        VpTree<BNManhattan> nn_finder(X, nodes);
+        VpTree<BNManhattan> nn_finder(X, nodes, false);
         return query_dist_to_k(nn_finder, query, nn);
      } else {
-        VpTree<BNEuclidean> nn_finder(X, nodes);
+        VpTree<BNEuclidean> nn_finder(X, nodes, false);
         return query_dist_to_k(nn_finder, query, nn);
     }
 }
