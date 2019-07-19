@@ -1,3 +1,7 @@
+##############
+# S4 Factory #
+##############
+
 #' @importFrom BiocParallel SerialParam
 .QUERYKNN_GENERATOR <- function(FUN, ARGS=spill_args) {
     function(X, query, k, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), transposed=FALSE, ..., BNINDEX, BNPARAM) {

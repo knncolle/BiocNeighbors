@@ -25,7 +25,7 @@
     collected <- bpmapply(FUN=searchFUN, query=Q,
         MoreArgs=c(
             searchArgsFUN(precomputed), 
-            list(k=k, get.index=get.index, get.distance=get.distance, distance=bndistance(precomputed))
+            list(dtype=bndistance(precomputed), nn=k, get_index=get.index, get_distance=get.distance)
         ), 
         BPPARAM=BPPARAM, SIMPLIFY=FALSE)
 
