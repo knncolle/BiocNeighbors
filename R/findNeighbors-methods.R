@@ -1,3 +1,7 @@
+##############
+# S4 Factory #
+##############
+
 #' @importFrom BiocParallel SerialParam
 .FINDNEIGHBORS_GENERATOR <- function(FUN, ARGS=spill_args) {
     function(X, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM) {

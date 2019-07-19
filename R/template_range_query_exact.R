@@ -39,10 +39,10 @@
         }
     }
 
-    collected <- bpmapply(FUN=searchFUN, query=Q, threshold=thresh,
+    collected <- bpmapply(FUN=searchFUN, query=Q, dist_thresh=thresh,
         MoreArgs=c(
             searchArgsFUN(precomputed), 
-            list(data=bndata(precomputed), get.index=get.index, get.distance=get.distance, distance=bndistance(precomputed))
+            list(X=bndata(precomputed), dtype=bndistance(precomputed), get_index=get.index, get_distance=get.distance)
         ), 
         BPPARAM=BPPARAM, SIMPLIFY=FALSE)
 
