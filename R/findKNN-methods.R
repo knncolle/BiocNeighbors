@@ -1,3 +1,7 @@
+##############
+# S4 Factory #
+##############
+
 #' @importFrom BiocParallel SerialParam
 .FINDKNN_GENERATOR <- function(FUN, ARGS=spill_args) {
     function(X, k, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM) {
