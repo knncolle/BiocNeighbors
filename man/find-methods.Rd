@@ -69,6 +69,9 @@ A list is returned containing:
     This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
 }
 
+If both \code{get.index} and \code{get.distance} are \code{FALSE}, 
+a numeric vector is instead returned containing the distance from each point to its \code{k}th neighbor.
+
 If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
 
 See \code{?"\link{BiocNeighbors-raw-index}"} for an explanation of the output when \code{raw.index=TRUE} for the functions that support it.
