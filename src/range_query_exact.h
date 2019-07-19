@@ -3,8 +3,8 @@
 #include "utils.h"
 
 template<class Searcher>
-Rcpp::RObject range_query_exact(Searcher& finder, Rcpp::IntegerVector to_check, Rcpp::NumericVector dist_thresh, 
-    Rcpp::NumericMatrix query, bool store_neighbors, bool store_distances) 
+Rcpp::RObject range_query_exact(Searcher& finder, Rcpp::NumericMatrix query, 
+    Rcpp::NumericVector dist_thresh, bool store_neighbors, bool store_distances) 
 {
     const MatDim_t ndim=finder.get_ndims();
 
@@ -13,9 +13,7 @@ Rcpp::RObject range_query_exact(Searcher& finder, Rcpp::IntegerVector to_check, 
     if (Query.nrow()!=ndim) {
         throw std::runtime_error("'query' and 'X' have different dimensionality");
     }
-
-    const Rcpp::IntegerVector points=check_indices(to_check, Query.ncol());
-    const VecSize_t nobs=points.size();
+    const VecSize_t nobs=Query.ncol();
     const Rcpp::NumericVector thresholds=check_distances(dist_thresh, nobs);
 
     // Getting the output mode.
@@ -30,8 +28,9 @@ Rcpp::RObject range_query_exact(Searcher& finder, Rcpp::IntegerVector to_check, 
     }
         
     // Iterating across cells, finding NNs and storing distances or neighbors.
-    for (VecSize_t ix=0; ix<nobs; ++ix) {
-        finder.find_neighbors(Query.begin() + ndim * points[ix], thresholds[ix], store_neighbors, store_distances); 
+    size_t ix=0;
+    for (auto qIt=Query.begin(); qIt!=Query.end(); qIt+=ndim, ++ix) {
+        finder.find_neighbors(qIt, thresholds[ix], store_neighbors, store_distances); 
 
         if (store_neighbors) {
             const auto& neighbors=finder.get_neighbors();

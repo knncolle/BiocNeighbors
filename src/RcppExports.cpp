@@ -111,11 +111,10 @@ BEGIN_RCPP
 END_RCPP
 }
 // query_annoy
-Rcpp::RObject query_annoy(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix query, int ndims, std::string fname, double search_mult, std::string dtype, int nn, bool get_index, bool get_distance);
-RcppExport SEXP _BiocNeighbors_query_annoy(SEXP to_checkSEXP, SEXP querySEXP, SEXP ndimsSEXP, SEXP fnameSEXP, SEXP search_multSEXP, SEXP dtypeSEXP, SEXP nnSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP) {
+Rcpp::RObject query_annoy(Rcpp::NumericMatrix query, int ndims, std::string fname, double search_mult, std::string dtype, int nn, bool get_index, bool get_distance);
+RcppExport SEXP _BiocNeighbors_query_annoy(SEXP querySEXP, SEXP ndimsSEXP, SEXP fnameSEXP, SEXP search_multSEXP, SEXP dtypeSEXP, SEXP nnSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type to_check(to_checkSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type query(querySEXP);
     Rcpp::traits::input_parameter< int >::type ndims(ndimsSEXP);
     Rcpp::traits::input_parameter< std::string >::type fname(fnameSEXP);
@@ -124,16 +123,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type nn(nnSEXP);
     Rcpp::traits::input_parameter< bool >::type get_index(get_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type get_distance(get_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(query_annoy(to_check, query, ndims, fname, search_mult, dtype, nn, get_index, get_distance));
+    rcpp_result_gen = Rcpp::wrap(query_annoy(query, ndims, fname, search_mult, dtype, nn, get_index, get_distance));
     return rcpp_result_gen;
 END_RCPP
 }
 // query_hnsw
-SEXP query_hnsw(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix query, Rcpp::NumericMatrix vals, std::string fname, int ef_search, std::string dtype, int nn, bool get_index, bool get_distance);
-RcppExport SEXP _BiocNeighbors_query_hnsw(SEXP to_checkSEXP, SEXP querySEXP, SEXP valsSEXP, SEXP fnameSEXP, SEXP ef_searchSEXP, SEXP dtypeSEXP, SEXP nnSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP) {
+SEXP query_hnsw(Rcpp::NumericMatrix query, Rcpp::NumericMatrix vals, std::string fname, int ef_search, std::string dtype, int nn, bool get_index, bool get_distance);
+RcppExport SEXP _BiocNeighbors_query_hnsw(SEXP querySEXP, SEXP valsSEXP, SEXP fnameSEXP, SEXP ef_searchSEXP, SEXP dtypeSEXP, SEXP nnSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type to_check(to_checkSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type query(querySEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type vals(valsSEXP);
     Rcpp::traits::input_parameter< std::string >::type fname(fnameSEXP);
@@ -142,16 +140,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type nn(nnSEXP);
     Rcpp::traits::input_parameter< bool >::type get_index(get_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type get_distance(get_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(query_hnsw(to_check, query, vals, fname, ef_search, dtype, nn, get_index, get_distance));
+    rcpp_result_gen = Rcpp::wrap(query_hnsw(query, vals, fname, ef_search, dtype, nn, get_index, get_distance));
     return rcpp_result_gen;
 END_RCPP
 }
 // query_kmknn
-Rcpp::RObject query_kmknn(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix query, Rcpp::NumericMatrix X, Rcpp::NumericMatrix clust_centers, Rcpp::List clust_info, std::string dtype, int nn, bool get_index, bool get_distance);
-RcppExport SEXP _BiocNeighbors_query_kmknn(SEXP to_checkSEXP, SEXP querySEXP, SEXP XSEXP, SEXP clust_centersSEXP, SEXP clust_infoSEXP, SEXP dtypeSEXP, SEXP nnSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP) {
+Rcpp::RObject query_kmknn(Rcpp::NumericMatrix query, Rcpp::NumericMatrix X, Rcpp::NumericMatrix clust_centers, Rcpp::List clust_info, std::string dtype, int nn, bool get_index, bool get_distance);
+RcppExport SEXP _BiocNeighbors_query_kmknn(SEXP querySEXP, SEXP XSEXP, SEXP clust_centersSEXP, SEXP clust_infoSEXP, SEXP dtypeSEXP, SEXP nnSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type to_check(to_checkSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type query(querySEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type X(XSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type clust_centers(clust_centersSEXP);
@@ -160,16 +157,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type nn(nnSEXP);
     Rcpp::traits::input_parameter< bool >::type get_index(get_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type get_distance(get_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(query_kmknn(to_check, query, X, clust_centers, clust_info, dtype, nn, get_index, get_distance));
+    rcpp_result_gen = Rcpp::wrap(query_kmknn(query, X, clust_centers, clust_info, dtype, nn, get_index, get_distance));
     return rcpp_result_gen;
 END_RCPP
 }
 // query_vptree
-Rcpp::RObject query_vptree(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix query, Rcpp::NumericMatrix X, Rcpp::List nodes, std::string dtype, int nn, bool get_index, bool get_distance);
-RcppExport SEXP _BiocNeighbors_query_vptree(SEXP to_checkSEXP, SEXP querySEXP, SEXP XSEXP, SEXP nodesSEXP, SEXP dtypeSEXP, SEXP nnSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP) {
+Rcpp::RObject query_vptree(Rcpp::NumericMatrix query, Rcpp::NumericMatrix X, Rcpp::List nodes, std::string dtype, int nn, bool get_index, bool get_distance);
+RcppExport SEXP _BiocNeighbors_query_vptree(SEXP querySEXP, SEXP XSEXP, SEXP nodesSEXP, SEXP dtypeSEXP, SEXP nnSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type to_check(to_checkSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type query(querySEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type X(XSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type nodes(nodesSEXP);
@@ -177,7 +173,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type nn(nnSEXP);
     Rcpp::traits::input_parameter< bool >::type get_index(get_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type get_distance(get_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(query_vptree(to_check, query, X, nodes, dtype, nn, get_index, get_distance));
+    rcpp_result_gen = Rcpp::wrap(query_vptree(query, X, nodes, dtype, nn, get_index, get_distance));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -215,11 +211,10 @@ BEGIN_RCPP
 END_RCPP
 }
 // range_query_kmknn
-Rcpp::RObject range_query_kmknn(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix query, Rcpp::NumericMatrix X, Rcpp::NumericMatrix clust_centers, Rcpp::List clust_info, std::string dtype, Rcpp::NumericVector dist_thresh, bool get_index, bool get_distance);
-RcppExport SEXP _BiocNeighbors_range_query_kmknn(SEXP to_checkSEXP, SEXP querySEXP, SEXP XSEXP, SEXP clust_centersSEXP, SEXP clust_infoSEXP, SEXP dtypeSEXP, SEXP dist_threshSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP) {
+Rcpp::RObject range_query_kmknn(Rcpp::NumericMatrix query, Rcpp::NumericMatrix X, Rcpp::NumericMatrix clust_centers, Rcpp::List clust_info, std::string dtype, Rcpp::NumericVector dist_thresh, bool get_index, bool get_distance);
+RcppExport SEXP _BiocNeighbors_range_query_kmknn(SEXP querySEXP, SEXP XSEXP, SEXP clust_centersSEXP, SEXP clust_infoSEXP, SEXP dtypeSEXP, SEXP dist_threshSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type to_check(to_checkSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type query(querySEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type X(XSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type clust_centers(clust_centersSEXP);
@@ -228,16 +223,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type dist_thresh(dist_threshSEXP);
     Rcpp::traits::input_parameter< bool >::type get_index(get_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type get_distance(get_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(range_query_kmknn(to_check, query, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance));
+    rcpp_result_gen = Rcpp::wrap(range_query_kmknn(query, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance));
     return rcpp_result_gen;
 END_RCPP
 }
 // range_query_vptree
-Rcpp::RObject range_query_vptree(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix query, Rcpp::NumericMatrix X, Rcpp::List nodes, std::string dtype, Rcpp::NumericVector dist_thresh, bool get_index, bool get_distance);
-RcppExport SEXP _BiocNeighbors_range_query_vptree(SEXP to_checkSEXP, SEXP querySEXP, SEXP XSEXP, SEXP nodesSEXP, SEXP dtypeSEXP, SEXP dist_threshSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP) {
+Rcpp::RObject range_query_vptree(Rcpp::NumericMatrix query, Rcpp::NumericMatrix X, Rcpp::List nodes, std::string dtype, Rcpp::NumericVector dist_thresh, bool get_index, bool get_distance);
+RcppExport SEXP _BiocNeighbors_range_query_vptree(SEXP querySEXP, SEXP XSEXP, SEXP nodesSEXP, SEXP dtypeSEXP, SEXP dist_threshSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type to_check(to_checkSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type query(querySEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type X(XSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type nodes(nodesSEXP);
@@ -245,7 +239,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type dist_thresh(dist_threshSEXP);
     Rcpp::traits::input_parameter< bool >::type get_index(get_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type get_distance(get_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(range_query_vptree(to_check, query, X, nodes, dtype, dist_thresh, get_index, get_distance));
+    rcpp_result_gen = Rcpp::wrap(range_query_vptree(query, X, nodes, dtype, dist_thresh, get_index, get_distance));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -258,14 +252,14 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BiocNeighbors_find_hnsw", (DL_FUNC) &_BiocNeighbors_find_hnsw, 8},
     {"_BiocNeighbors_find_kmknn", (DL_FUNC) &_BiocNeighbors_find_kmknn, 8},
     {"_BiocNeighbors_find_vptree", (DL_FUNC) &_BiocNeighbors_find_vptree, 7},
-    {"_BiocNeighbors_query_annoy", (DL_FUNC) &_BiocNeighbors_query_annoy, 9},
-    {"_BiocNeighbors_query_hnsw", (DL_FUNC) &_BiocNeighbors_query_hnsw, 9},
-    {"_BiocNeighbors_query_kmknn", (DL_FUNC) &_BiocNeighbors_query_kmknn, 9},
-    {"_BiocNeighbors_query_vptree", (DL_FUNC) &_BiocNeighbors_query_vptree, 8},
+    {"_BiocNeighbors_query_annoy", (DL_FUNC) &_BiocNeighbors_query_annoy, 8},
+    {"_BiocNeighbors_query_hnsw", (DL_FUNC) &_BiocNeighbors_query_hnsw, 8},
+    {"_BiocNeighbors_query_kmknn", (DL_FUNC) &_BiocNeighbors_query_kmknn, 8},
+    {"_BiocNeighbors_query_vptree", (DL_FUNC) &_BiocNeighbors_query_vptree, 7},
     {"_BiocNeighbors_range_find_kmknn", (DL_FUNC) &_BiocNeighbors_range_find_kmknn, 8},
     {"_BiocNeighbors_range_find_vptree", (DL_FUNC) &_BiocNeighbors_range_find_vptree, 7},
-    {"_BiocNeighbors_range_query_kmknn", (DL_FUNC) &_BiocNeighbors_range_query_kmknn, 9},
-    {"_BiocNeighbors_range_query_vptree", (DL_FUNC) &_BiocNeighbors_range_query_vptree, 8},
+    {"_BiocNeighbors_range_query_kmknn", (DL_FUNC) &_BiocNeighbors_range_query_kmknn, 8},
+    {"_BiocNeighbors_range_query_vptree", (DL_FUNC) &_BiocNeighbors_range_query_vptree, 7},
     {NULL, NULL, 0}
 };
 
