@@ -8,9 +8,5 @@ queryVptree <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=
 {
     .template_query_exact(X, query, k, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, precomputed=precomputed, 
         transposed=transposed, subset=subset, raw.index=raw.index, 
-        buildFUN=buildVptree, searchFUN=.query_vptree, searchArgsFUN=.find_vptree_args, ...)
-}
-
-.query_vptree <- function(jobs, data, nodes, distance, k, query, get.index, get.distance) {
-    .Call(cxx_query_vptree, jobs, data, nodes, distance, k, query, get.index, get.distance)
+        buildFUN=buildVptree, searchFUN=query_vptree, searchArgsFUN=.find_vptree_args, ...)
 }

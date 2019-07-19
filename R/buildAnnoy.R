@@ -17,6 +17,6 @@ buildAnnoy <- function(X, transposed=FALSE, ntrees=50, directory=tempdir(), sear
     }
     distance <- match.arg(distance)
 
-    .Call(cxx_build_annoy, tX, ntrees, fname, distance)
+    build_annoy(tX, ntrees, fname, distance)
     AnnoyIndex(data=tX, path=fname, search.mult=search.mult, NAMES=colnames(tX), distance=distance)
 }

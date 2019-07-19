@@ -8,9 +8,5 @@ rangeQueryKmknn <- function(X, query, threshold, get.index=TRUE, get.distance=TR
 {
     .template_range_query_exact(X, query, threshold, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, precomputed=precomputed, 
         transposed=transposed, subset=subset, raw.index=raw.index, 
-        buildFUN=buildKmknn, searchFUN=.range_query_kmknn, searchArgsFUN=.find_kmknn_args, ...) 
-}
-
-.range_query_kmknn <- function(jobs, data, centers, info, distance, threshold, query, get.index, get.distance) {
-    .Call(cxx_range_query_kmknn, jobs, data, centers, info, distance, threshold, query, get.index, get.distance)
+        buildFUN=buildKmknn, searchFUN=range_query_kmknn, searchArgsFUN=.find_kmknn_args, ...) 
 }

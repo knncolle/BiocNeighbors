@@ -7,11 +7,7 @@ findAnnoy <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPar
 # created 25 September June 2018
 {
     .template_find_approx(X, k, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
-        buildFUN=buildAnnoy, pathFUN=AnnoyIndex_path, searchFUN=.find_annoy, searchArgsFUN=.find_annoy_args, ...) 
-}
-
-.find_annoy <- function(jobs, ndims, fname, search.mult, distance, k, get.index, get.distance) {
-    .Call(cxx_find_annoy, jobs, ndims, fname, search.mult, distance, k, get.index, get.distance)
+        buildFUN=buildAnnoy, pathFUN=AnnoyIndex_path, searchFUN=find_annoy, searchArgsFUN=.find_annoy_args, ...) 
 }
 
 .find_annoy_args <- function(precomputed) {

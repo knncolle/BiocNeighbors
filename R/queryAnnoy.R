@@ -8,9 +8,5 @@ queryAnnoy <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=S
 {
     .template_query_approx(X, query, k, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, precomputed=precomputed,
         transposed=transposed, subset=subset, 
-        buildFUN=buildAnnoy, pathFUN=AnnoyIndex_path, searchFUN=.query_annoy, searchArgsFUN=.find_annoy_args, ...)
-}
-
-.query_annoy <- function(jobs, query, ndims, fname, search.mult, distance, k, get.index, get.distance) {
-    .Call(cxx_query_annoy, jobs, query, ndims, fname, search.mult, distance, k, get.index, get.distance)
+        buildFUN=buildAnnoy, pathFUN=AnnoyIndex_path, searchFUN=query_annoy, searchArgsFUN=.find_annoy_args, ...)
 }

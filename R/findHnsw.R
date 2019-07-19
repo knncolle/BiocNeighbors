@@ -7,11 +7,7 @@ findHnsw <- function(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialPara
 # created 14 December 2018
 {
     .template_find_approx(X, k, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
-        buildFUN=buildHnsw, pathFUN=HnswIndex_path, searchFUN=.find_hnsw, searchArgsFUN=.find_hnsw_args, ...)
-}
-
-.find_hnsw <- function(jobs, data, fname, ef.search, distance, k, get.index, get.distance) {
-    .Call(cxx_find_hnsw, jobs, data, fname, ef.search, distance, k, get.index, get.distance)
+        buildFUN=buildHnsw, pathFUN=HnswIndex_path, searchFUN=find_hnsw, searchArgsFUN=.find_hnsw_args, ...)
 }
 
 .find_hnsw_args <- function(precomputed) {
