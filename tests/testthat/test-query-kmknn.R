@@ -96,6 +96,27 @@ test_that("queryKmknn() works with Manhattan distances", {
     }
 })
 
+set.seed(1003001)
+test_that("queryKmknn() works to only obtain the last distance", {
+    ndata <- 500 # fewer points as refQueryKNN is a slow brute-force method.
+    nquery <- 100
+
+    for (ndim in c(1, 5, 10)) {
+        for (k in c(1, 5, 20)) { 
+            X <- matrix(runif(ndata * ndim), nrow=ndata)
+            Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+            ref <- queryKmknn(X, k=k, query=Y)
+            out <- queryKmknn(X, k=k, query=Y, get.distance=FALSE, get.index=FALSE)
+            expect_identical(out, ref$distance[,k])
+
+            ref <- queryKmknn(X, k=k, query=Y, distance="Manhattan")
+            out <- queryKmknn(X, k=k, query=Y, distance="Manhattan", get.distance=FALSE, get.index=FALSE)
+            expect_identical(out, ref$distance[,k])
+        }
+    }
+})
+
 set.seed(100301)
 test_that("queryKmknn() behaves correctly with parallelization", {
     library(BiocParallel)

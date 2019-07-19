@@ -80,6 +80,24 @@ test_that("findKmknn() behaves correctly with Manhattan distances", {
     }
 })
 
+set.seed(1003002)
+test_that("findKmknn() behaves correctly when only the last distance is requested", {
+    nobs <- 500 # fewer observations, as refFindKNN is a slow brute-force method.
+    for (ndim in c(1, 5, 10)) {
+        for (k in c(1, 5, 20)) { 
+            X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+            ref <- findKmknn(X, k=k)
+            out <- findKmknn(X, k=k, get.index=FALSE, get.distance=FALSE)
+            expect_identical(out, ref$distance[,k])
+
+            ref <- findKmknn(X, k=k, distance="Manhattan")
+            out <- findKmknn(X, k=k, get.index=FALSE, get.distance=FALSE, distance="Manhattan")
+            expect_identical(out, ref$distance[,k])
+        }
+    }
+})
+
 set.seed(100301)
 test_that("findKmknn() behaves correctly with parallelization", {
     library(BiocParallel)
