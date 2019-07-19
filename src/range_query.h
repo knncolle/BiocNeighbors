@@ -28,8 +28,9 @@ Rcpp::RObject range_query_exact(Searcher& finder, Rcpp::NumericMatrix query,
     }
         
     // Iterating across cells, finding NNs and storing distances or neighbors.
-    size_t ix=0;
-    for (auto qIt=Query.begin(); qIt!=Query.end(); qIt+=ndim, ++ix) {
+    // Don't use for range ver qIt, as this fails for zero-dimension inputs.
+    auto qIt=Query.begin(); 
+    for (VecSize_t ix=0; ix<nobs; ++ix, qIt+=ndim) {
         finder.find_neighbors(qIt, thresholds[ix], store_neighbors, store_distances); 
 
         if (store_neighbors) {

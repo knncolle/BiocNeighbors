@@ -28,7 +28,9 @@ SEXP query_knn(Searcher& finder, Rcpp::NumericMatrix query, int nn, bool store_n
     auto oiIt=out_idx.begin();
         
     // Iterating across cells, finding NNs and storing distances or neighbors.
-    for (auto qIt=Query.begin(); qIt!=Query.end(); qIt+=ndim) {
+    // Don't use qIt in range, as it fails for zero-dimension matrices.
+    auto qIt=Query.begin();
+    for (MatDim_t i=0; i<nobs; ++i, qIt+=ndim) {
         finder.find_nearest_neighbors(qIt, NN, store_neighbors, store_distances); 
         const auto& distances=finder.get_distances();
         const auto& neighbors=finder.get_neighbors();

@@ -26,16 +26,17 @@
     }
 
     # Dividing jobs up for NN finding.
-    if (bpnworkers(BPPARAM)==1L) {
-        Q <- list(query)
+    Q <- .split_matrix_for_workers(query, job.id, BPPARAM)
+    if (length(Q)==1L){ 
         thresh <- list(thresholds)
     } else {
-        jobs <- .assign_jobs(job.id, BPPARAM)
-        Q <- thresh <- vector("list", length(jobs))
-        for (i in seq_along(jobs)) {
-            ind <- jobs[[i]]
-            Q[[i]] <- query[,ind,drop=FALSE]
+        thresh <- vector("list", length(Q))
+        last <- 0L
+        for (i in seq_along(Q)) {
+            N <- ncol(Q[[i]])
+            ind <- seq_len(N) + last
             thresh[[i]] <- thresholds[ind]
+            last <- last + N
         }
     }
 
