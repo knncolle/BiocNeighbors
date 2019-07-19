@@ -92,9 +92,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// find_dist_to_k
-Rcpp::RObject find_dist_to_k(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix vals, std::string fname, int ef_search, std::string dtype, int nn);
-RcppExport SEXP _BiocNeighbors_find_dist_to_k(SEXP to_checkSEXP, SEXP valsSEXP, SEXP fnameSEXP, SEXP ef_searchSEXP, SEXP dtypeSEXP, SEXP nnSEXP) {
+// find_dist_to_hnsw
+Rcpp::RObject find_dist_to_hnsw(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix vals, std::string fname, int ef_search, std::string dtype, int nn);
+RcppExport SEXP _BiocNeighbors_find_dist_to_hnsw(SEXP to_checkSEXP, SEXP valsSEXP, SEXP fnameSEXP, SEXP ef_searchSEXP, SEXP dtypeSEXP, SEXP nnSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type to_check(to_checkSEXP);
@@ -103,7 +103,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type ef_search(ef_searchSEXP);
     Rcpp::traits::input_parameter< std::string >::type dtype(dtypeSEXP);
     Rcpp::traits::input_parameter< int >::type nn(nnSEXP);
-    rcpp_result_gen = Rcpp::wrap(find_dist_to_k(to_check, vals, fname, ef_search, dtype, nn));
+    rcpp_result_gen = Rcpp::wrap(find_dist_to_hnsw(to_check, vals, fname, ef_search, dtype, nn));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -369,7 +369,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BiocNeighbors_find_annoy", (DL_FUNC) &_BiocNeighbors_find_annoy, 8},
     {"_BiocNeighbors_find_dist_to_annoy", (DL_FUNC) &_BiocNeighbors_find_dist_to_annoy, 6},
     {"_BiocNeighbors_find_hnsw", (DL_FUNC) &_BiocNeighbors_find_hnsw, 8},
-    {"_BiocNeighbors_find_dist_to_k", (DL_FUNC) &_BiocNeighbors_find_dist_to_k, 6},
+    {"_BiocNeighbors_find_dist_to_hnsw", (DL_FUNC) &_BiocNeighbors_find_dist_to_hnsw, 6},
     {"_BiocNeighbors_find_kmknn", (DL_FUNC) &_BiocNeighbors_find_kmknn, 8},
     {"_BiocNeighbors_find_dist_to_kmknn", (DL_FUNC) &_BiocNeighbors_find_dist_to_kmknn, 6},
     {"_BiocNeighbors_range_find_kmknn", (DL_FUNC) &_BiocNeighbors_range_find_kmknn, 8},

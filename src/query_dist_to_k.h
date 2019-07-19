@@ -17,7 +17,7 @@ SEXP query_dist_to_k(Searcher& finder, Rcpp::NumericMatrix query, int nn) {
     auto odIt=out_dist.begin();
 
     // Iterating across cells, finding NNs and storing distances. 
-    for (auto qIt=query.begin(); qIt!=query.end(); qIt+=ndim) {
+    for (auto qIt=query.begin(); qIt!=query.end(); qIt+=ndim, ++odIt) {
         finder.find_nearest_neighbors(qIt, NN, false, true);
         const auto& distances=finder.get_distances();
         *odIt=distances[NN-1];

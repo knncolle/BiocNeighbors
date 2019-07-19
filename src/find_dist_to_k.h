@@ -17,6 +17,7 @@ SEXP find_dist_to_k(Searcher& finder, Rcpp::IntegerVector to_check, int nn) {
         finder.find_nearest_neighbors(h, NN, false, true);
         const auto& distances=finder.get_distances();
         *odIt=distances[NN-1];
+        ++odIt;
     }
 
     return out_dist;

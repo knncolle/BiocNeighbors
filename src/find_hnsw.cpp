@@ -16,7 +16,7 @@ Rcpp::RObject find_hnsw (Rcpp::IntegerVector to_check, Rcpp::NumericMatrix vals,
 }
 
 // [[Rcpp::export(rng=false)]]
-Rcpp::RObject find_dist_to_k(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix vals, std::string fname, int ef_search,
+Rcpp::RObject find_dist_to_hnsw(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix vals, std::string fname, int ef_search,
     std::string dtype, int nn)
 {
     if (dtype=="Manhattan") {
