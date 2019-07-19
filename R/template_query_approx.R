@@ -22,22 +22,29 @@
     # Dividing jobs up for NN finding (subsetting here
     # to avoid serializing the entire matrix to all workers).
     Q <- .split_matrix_for_workers(query, BPPARAM)
-    collected <- bpmapply(FUN=searchFUN, query=Q,
-        MoreArgs=c(
-            searchArgsFUN(precomputed), 
-            list(dtype=bndistance(precomputed), nn=k, get_index=get.index, get_distance=get.distance)
-        ), 
-        BPPARAM=BPPARAM, SIMPLIFY=FALSE)
+    common.args <- c(searchArgsFUN(precomputed), 
+        list(dtype=bndistance(precomputed), nn=k))
 
-    # Aggregating results across cores.
-    output <- list()
-    if (get.index) {
-        neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
-        output$index <- neighbors
-    } 
-    if (get.distance) {
-        output$distance <- .combine_matrices(collected, i=2, reorder=reorder)
+    if (get.index || get.distance) {
+        collected <- bpmapply(FUN=searchFUN, query=Q,
+            MoreArgs=c(common.args, list(get_index=get.index, get_distance=get.distance)),
+            BPPARAM=BPPARAM, SIMPLIFY=FALSE)
+
+        # Aggregating results across cores.
+        output <- list()
+        if (get.index) {
+            neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
+            output$index <- neighbors
+        } 
+        if (get.distance) {
+            output$distance <- .combine_matrices(collected, i=2, reorder=reorder)
+        }
+    } else {
+        collected <- bpmapply(FUN=searchFUN, query=Q, MoreArgs=common.args,
+            BPPARAM=BPPARAM, SIMPLIFY=FALSE)
+        output <- unlist(collected, use.names=FALSE)
     }
-    return(output)
+
+    output
 }
 

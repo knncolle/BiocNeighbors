@@ -1,6 +1,7 @@
 #' @importFrom BiocParallel SerialParam bpmapply
-.template_query_exact <- function(X, query, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, 
-    buildFUN, searchFUN, searchArgsFUN, ...)
+.template_query_exact <- function(X, query, k, get.index=TRUE, get.distance=TRUE, 
+    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, 
+    buildFUN, searchFUN, searchArgsFUN, distFUN, ...)
 # Identifies nearest neighbours in 'X' from a query set.
 #
 # written by Aaron Lun
@@ -17,26 +18,34 @@
     # Dividing jobs up for NN finding (subsetting here
     # to avoid serializing the entire matrix to all workers).
     Q <- .split_matrix_for_workers(query, BPPARAM)
-    collected <- bpmapply(FUN=searchFUN, query=Q,
-        MoreArgs=c(
-            searchArgsFUN(precomputed), 
-            list(X=bndata(precomputed), dtype=bndistance(precomputed), nn=k, get_index=get.index, get_distance=get.distance)
-        ), 
-        BPPARAM=BPPARAM, SIMPLIFY=FALSE)
+    common.args <- c(searchArgsFUN(precomputed), 
+        list(X=bndata(precomputed), dtype=bndistance(precomputed), nn=k))
 
-    # Aggregating results across cores.
-    output <- list()
-    if (get.index) {
-        neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
-        if (!raw.index) {
-            neighbors[] <- bnorder(precomputed)[neighbors]
+    if (get.distance || get.index) {
+        collected <- bpmapply(FUN=searchFUN, query=Q,
+            MoreArgs=c(common.args, list(get_index=get.index, get_distance=get.distance)),
+            BPPARAM=BPPARAM, SIMPLIFY=FALSE)
+
+        # Aggregating results across cores.
+        output <- list()
+        if (get.index) {
+            neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
+            if (!raw.index) {
+                neighbors[] <- bnorder(precomputed)[neighbors]
+            }
+            output$index <- neighbors
+        } 
+        if (get.distance) {
+            output$distance <- .combine_matrices(collected, i=2, reorder=reorder)
         }
-        output$index <- neighbors
-    } 
-    if (get.distance) {
-        output$distance <- .combine_matrices(collected, i=2, reorder=reorder)
+    } else {
+        collected <- bpmapply(FUN=distFUN, query=Q, MoreArgs=common.args,
+            BPPARAM=BPPARAM, SIMPLIFY=FALSE)
+        output <- unlist(collected, use.names=FALSE)
+        output[reorder] <- output
     }
-    return(output)
+
+    output
 }
 
 .setup_query <- function(query, transposed, subset) 
