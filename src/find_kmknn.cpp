@@ -2,6 +2,7 @@
 #include "distances.h"
 #include "find_knn.h"
 #include "range_find.h"
+#include "find_dist_to_k.h"
 
 // [[Rcpp::export(rng=false)]]
 Rcpp::RObject find_kmknn(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix X, Rcpp::NumericMatrix clust_centers, Rcpp::List clust_info, 
@@ -13,6 +14,20 @@ Rcpp::RObject find_kmknn(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix X, Rc
      } else {
         Kmknn<BNEuclidean> nn_finder(X, clust_centers, clust_info);
         return find_knn(nn_finder, to_check, nn, get_index, get_distance);
+    }
+}
+
+// [[Rcpp::export(rng=false)]]
+Rcpp::RObject find_dist_to_kmknn(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix X, 
+    Rcpp::NumericMatrix clust_centers, Rcpp::List clust_info, 
+    std::string dtype, int nn)
+{
+    if (dtype=="Manhattan") {
+        Kmknn<BNManhattan> nn_finder(X, clust_centers, clust_info, false);
+        return find_dist_to_k(nn_finder, to_check, nn);
+     } else {
+        Kmknn<BNEuclidean> nn_finder(X, clust_centers, clust_info, false);
+        return find_dist_to_k(nn_finder, to_check, nn);
     }
 }
 

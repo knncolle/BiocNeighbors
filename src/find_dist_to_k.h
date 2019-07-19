@@ -3,7 +3,7 @@
 #include "utils.h"
 
 template <class Searcher>
-SEXP find_dist_to_k(Searcher& finder, SEXP to_check, SEXP nn, SEXP get_index, SEXP get_distance) {
+SEXP find_dist_to_k(Searcher& finder, Rcpp::IntegerVector to_check, int nn) {
     // Checking NN's and indices.
     const NumNeighbors_t NN=check_k(nn);
     const Rcpp::IntegerVector points=check_indices(to_check, finder.get_nobs());
