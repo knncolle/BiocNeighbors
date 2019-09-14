@@ -8,17 +8,19 @@
 \description{Find the nearest neighbors of each point in a dataset, using a variety of algorithms.}
 
 \usage{
-findKmknn(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), 
-    precomputed=NULL, subset=NULL, raw.index=FALSE, ...)
+findKmknn(X, k, get.index=TRUE, get.distance=TRUE, last=k, 
+    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, 
+    raw.index=FALSE, ...)
 
-findVptree(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), 
-    precomputed=NULL, subset=NULL, raw.index=FALSE, ...)
+findVptree(X, k, get.index=TRUE, get.distance=TRUE, last=k, 
+    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, 
+    raw.index=FALSE, ...)
 
-findAnnoy(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), 
-    precomputed=NULL, subset=NULL, ...)
+findAnnoy(X, k, get.index=TRUE, get.distance=TRUE, last=k,
+    BPPARAM=SerialParam(),  precomputed=NULL, subset=NULL, ...)
 
-findHnsw(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), 
-    precomputed=NULL, subset=NULL, ...)
+findHnsw(X, k, get.index=TRUE, get.distance=TRUE, last=k,
+    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, ...)
 }
 
 \arguments{
@@ -26,6 +28,7 @@ findHnsw(X, k, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(),
 \item{k}{A positive integer scalar specifying the number of nearest neighbors to retrieve.}
 \item{get.index}{A logical scalar indicating whether the indices of the nearest neighbors should be recorded.}
 \item{get.distance}{A logical scalar indicating whether distances to the nearest neighbors should be recorded.}
+\item{last}{An integer scalar specifying the number of furthest neighbors for which statistics should be returned.}
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
 \item{precomputed}{A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
 For \code{findKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{buildKmknn}};
@@ -51,6 +54,10 @@ Turning off \code{get.index} or \code{get.distance} will not return the correspo
 This may provide a slight speed boost when these returned values are not of interest.
 Using \code{BPPARAM} will also split the search across multiple workers, which should increase speed proportionally (in theory) to the number of cores.
 
+Setting \code{last} will return indices and/or distances for the \code{k - last + 1}-th closest neighbor to the \code{k}-th neighbor.
+This can be used to improve memory efficiency, e.g., by only returning statistics for the \code{k}-th nearest neighbor by setting \code{last=1}.
+Note that this is entirely orthogonal to \code{subset}.
+
 If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} (e.g., with \code{\link{buildKmknn}}).
 The resulting BiocNeighborIndex object can be supplied as \code{precomputed} to multiple function calls, avoiding the need to repeat index construction in each call.
 Note that when \code{precomputed} is supplied, the value of \code{X} is completely ignored.
@@ -68,10 +75,7 @@ A list is returned containing:
     \item \code{distance}, if \code{get.distance=TRUE}.
     This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
 }
-
-If both \code{get.index} and \code{get.distance} are \code{FALSE}, 
-a numeric vector is instead returned containing the distance from each point to its \code{k}th neighbor.
-
+Each matrix contains \code{last} columns.
 If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
 
 See \code{?"\link{BiocNeighbors-raw-index}"} for an explanation of the output when \code{raw.index=TRUE} for the functions that support it.

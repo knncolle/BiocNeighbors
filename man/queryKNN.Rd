@@ -25,7 +25,7 @@
 
 \usage{
 queryKNN(X, query, k, subset=NULL, get.index=TRUE, get.distance=TRUE, 
-    BPPARAM=SerialParam(), transposed=FALSE, ..., BNINDEX, BNPARAM) 
+    last=k, BPPARAM=SerialParam(), transposed=FALSE, ..., BNINDEX, BNPARAM)
 }
 
 \arguments{
@@ -35,6 +35,7 @@ queryKNN(X, query, k, subset=NULL, get.index=TRUE, get.distance=TRUE,
     \item{subset}{A vector specifying the subset of points in \code{X} to search.}
     \item{get.index}{A logical scalar indicating whether to return row indices of the neighbors.}
     \item{get.distance}{A logical scalar indicating whether to return distances to neighbors.}
+    \item{last}{An integer scalar specifying the number of furthest neighbors for which statistics should be returned.}
     \item{BPPARAM}{A \linkS4class{BiocParallelParam} object for parallelization.}
     \item{transposed}{A logical scalar indicating whether \code{query} is transposed, i.e., with columns as points.}
     \item{...}{Further arguments to pass to specific methods.}
@@ -53,10 +54,7 @@ A list is returned containing:
     \item \code{distance}, if \code{get.distance=TRUE}.
     This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
 }
-
-If both \code{get.index} and \code{get.distance} are \code{FALSE},
-a numeric vector is instead returned containing the distance from each point to its \code{k}th neighbor.
-
+Each matrix contains \code{last} columns.
 If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
 }
 
