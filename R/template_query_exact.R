@@ -1,14 +1,25 @@
 #' @importFrom BiocParallel SerialParam bpmapply
-.template_query_exact <- function(X, query, k, get.index=TRUE, get.distance=TRUE, 
-    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, 
-    buildFUN, searchFUN, searchArgsFUN, distFUN, ...)
+.template_query_knn <- function(X, query, k, get.index=TRUE, get.distance=TRUE, 
+    last=k, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, 
+    buildFUN, pathFUN, searchFUN, searchArgsFUN, ..., exact=TRUE)
 # Identifies nearest neighbours in 'X' from a query set.
 #
 # written by Aaron Lun
 # created 19 June 2018
 {
-    precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildFUN, ...)
+    if (exact) {
+        precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildFUN, ...)
+        common.args <- list(X=bndata(precomputed))
+    } else {
+        if (is.null(precomputed)) {
+            precomputed <- buildFUN(X, ...)
+            on.exit(unlink(pathFUN(precomputed)))
+        }
+        common.args <- list()
+    }
+
     k <- .refine_k(k, precomputed, query=TRUE)
+    last <- min(last, k)
 
     q.out <- .setup_query(query, transposed, subset)
     query <- q.out$query        
@@ -18,31 +29,24 @@
     # Dividing jobs up for NN finding (subsetting here
     # to avoid serializing the entire matrix to all workers).
     Q <- .split_matrix_for_workers(query, job.id, BPPARAM)
-    common.args <- c(searchArgsFUN(precomputed), 
-        list(X=bndata(precomputed), dtype=bndistance(precomputed), nn=k))
+    common.args <- c(searchArgsFUN(precomputed), common.args,
+        list(dtype=bndistance(precomputed), nn=k, last=last))
 
-    if (get.distance || get.index) {
-        collected <- bpmapply(FUN=searchFUN, query=Q,
-            MoreArgs=c(common.args, list(get_index=get.index, get_distance=get.distance)),
-            BPPARAM=BPPARAM, SIMPLIFY=FALSE)
+    collected <- bpmapply(FUN=searchFUN, query=Q,
+        MoreArgs=c(common.args, list(get_index=get.index, get_distance=get.distance)),
+        BPPARAM=BPPARAM, SIMPLIFY=FALSE)
 
-        # Aggregating results across cores.
-        output <- list()
-        if (get.index) {
-            neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
-            if (!raw.index) {
-                neighbors[] <- bnorder(precomputed)[neighbors]
-            }
-            output$index <- neighbors
-        } 
-        if (get.distance) {
-            output$distance <- .combine_matrices(collected, i=2, reorder=reorder)
+    # Aggregating results across cores.
+    output <- list()
+    if (get.index) {
+        neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
+        if (exact && !raw.index) {
+            neighbors[] <- bnorder(precomputed)[neighbors]
         }
-    } else {
-        collected <- bpmapply(FUN=distFUN, query=Q, MoreArgs=common.args,
-            BPPARAM=BPPARAM, SIMPLIFY=FALSE)
-        output <- unlist(collected, use.names=FALSE)
-        output[reorder] <- output
+        output$index <- neighbors
+    } 
+    if (get.distance) {
+        output$distance <- .combine_matrices(collected, i=2, reorder=reorder)
     }
 
     output
@@ -67,5 +71,5 @@
         job.id <- seq_len(ncol(query))
         reorder <- NULL
     }
-    return(list(query=query, index=job.id, reorder=reorder))
+    list(query=query, index=job.id, reorder=reorder)
 }

@@ -1,47 +1,60 @@
 #' @importFrom BiocParallel SerialParam bpmapply
-.template_find_exact <- function(X, k, get.index=TRUE, get.distance=TRUE, 
-    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, 
-    buildFUN, searchFUN, searchArgsFUN, distFUN, ...)
+.template_find_knn <- function(X, k, get.index=TRUE, get.distance=TRUE, 
+    last=k, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, 
+    buildFUN, pathFUN, searchFUN, searchArgsFUN, ..., exact=TRUE)
 # Provides an R template for different methods for exact neighbor searching,
 # assuming that all of them involve rearranging columns in the index.
 #
 # written by Aaron Lun
 # created 2 December 2018
 {
-    precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildFUN, ...)
-    k <- .refine_k(k, precomputed, query=FALSE)
+    if (exact) {
+        precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildFUN, ...)
 
-    ind.out <- .setup_indices(precomputed, subset, raw.index)
-    job.id <- ind.out$index
-    reorder <- ind.out$reorder
+        ind.out <- .setup_indices(precomputed, subset, raw.index)
+        job.id <- ind.out$index
+        reorder <- ind.out$reorder
+
+        common.args <- list(X=bndata(precomputed))
+    } else {
+        if (is.null(precomputed)) {
+            precomputed <- buildFUN(X, ...)
+            on.exit(unlink(pathFUN(precomputed)))
+        }
+
+        if (is.null(subset)) {
+            job.id <- seq_len(nrow(precomputed))
+        } else {
+            job.id <- .subset_to_index(subset, precomputed, byrow=TRUE)
+        }
+
+        common.args <- list()
+        reorder <- NULL
+    }
+
+    k <- .refine_k(k, precomputed, query=FALSE)
+    last <- min(last, k)
 
     # Dividing jobs up for NN finding (using bpmapply due to clash with 'X=').
     jobs <- .assign_jobs(job.id - 1L, BPPARAM)
-    common.args <- c(searchArgsFUN(precomputed), 
-        list(X=bndata(precomputed), dtype=bndistance(precomputed), nn=k))
+    common.args <- c(common.args, searchArgsFUN(precomputed),
+        list(dtype=bndistance(precomputed), nn=k, last=last))
 
-    if (get.index || get.distance) {
-        collected <- bpmapply(FUN=searchFUN, to_check=jobs,
-            MoreArgs=c(common.args, list(get_index=get.index, get_distance=get.distance)), 
-            BPPARAM=BPPARAM, SIMPLIFY=FALSE)
+    collected <- bpmapply(FUN=searchFUN, to_check=jobs,
+        MoreArgs=c(common.args, list(get_index=get.index, get_distance=get.distance)), 
+        BPPARAM=BPPARAM, SIMPLIFY=FALSE)
 
-        # Aggregating results across cores.
-        output <- list()
-        if (get.index) {
-            neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
-            if (!raw.index) {
-                neighbors[] <- bnorder(precomputed)[neighbors]
-            }
-            output$index <- neighbors
-        } 
-        if (get.distance) {
-            output$distance <- .combine_matrices(collected, i=2, reorder=reorder)
+    # Aggregating results across cores.
+    output <- list()
+    if (get.index) {
+        neighbors <- .combine_matrices(collected, i=1, reorder=reorder)
+        if (exact && !raw.index) {
+            neighbors[] <- bnorder(precomputed)[neighbors]
         }
-    } else {
-        collected <- bpmapply(FUN=distFUN, to_check=jobs, MoreArgs=common.args,
-            BPPARAM=BPPARAM, SIMPLIFY=FALSE)
-        output <- unlist(collected, use.names=FALSE)
-        output[reorder] <- output
+        output$index <- neighbors
+    } 
+    if (get.distance) {
+        output$distance <- .combine_matrices(collected, i=2, reorder=reorder)
     }
 
     output

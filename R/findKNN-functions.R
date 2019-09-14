@@ -4,17 +4,17 @@
 
 #' @export
 #' @importFrom BiocParallel SerialParam 
-findAnnoy <- function(X, k, get.index=TRUE, get.distance=TRUE, 
+findAnnoy <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
     BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, ...)
-# Identifies nearest neighbours with the Kmknn algorithm.
+# Identifies nearest neighbours with the Annoy algorithm.
 #
 # written by Aaron Lun
 # created 25 September June 2018
 {
-    .template_find_approx(X, k, get.index=get.index, get.distance=get.distance, 
-        BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
+    .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
+        last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
         buildFUN=buildAnnoy, pathFUN=AnnoyIndex_path, searchFUN=find_annoy, 
-        searchArgsFUN=.find_annoy_args, distFUN=find_dist_to_annoy, ...) 
+        searchArgsFUN=.find_annoy_args, ..., exact=FALSE)
 }
 
 .find_annoy_args <- function(precomputed) {
@@ -31,17 +31,17 @@ findAnnoy <- function(X, k, get.index=TRUE, get.distance=TRUE,
 
 #' @export
 #' @importFrom BiocParallel SerialParam
-findHnsw <- function(X, k, get.index=TRUE, get.distance=TRUE, 
+findHnsw <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k, 
     BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, ...)
 # Find nearest neighbors using the Hnsw approximate nearest neighbors algorithm.
 # 
 # written by Aaron Lun
 # created 14 December 2018
 {
-    .template_find_approx(X, k, get.index=get.index, get.distance=get.distance, 
-        BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
+    .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
+        last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
         buildFUN=buildHnsw, pathFUN=HnswIndex_path, searchFUN=find_hnsw, 
-        searchArgsFUN=.find_hnsw_args, distFUN=find_dist_to_hnsw, ...)
+        searchArgsFUN=.find_hnsw_args, ..., exact=FALSE)
 }
 
 .find_hnsw_args <- function(precomputed) {
@@ -58,17 +58,16 @@ findHnsw <- function(X, k, get.index=TRUE, get.distance=TRUE,
 
 #' @export
 #' @importFrom BiocParallel SerialParam 
-findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, 
+findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
     BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, ...)
 # Identifies nearest neighbours with the Kmknn algorithm.
 #
 # written by Aaron Lun
 # created 19 June 2018
 {
-    .template_find_exact(X, k, get.index=get.index, get.distance=get.distance, 
-        BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, raw.index=raw.index, 
-        buildFUN=buildKmknn, searchFUN=find_kmknn, searchArgsFUN=.find_kmknn_args, 
-        distFUN=find_dist_to_kmknn, ...) 
+    .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
+        last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, raw.index=raw.index, 
+        buildFUN=buildKmknn, searchFUN=find_kmknn, searchArgsFUN=.find_kmknn_args, ...) 
 }
 
 .find_kmknn_args <- function(precomputed) {
@@ -84,17 +83,16 @@ findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE,
 
 #' @export
 #' @importFrom BiocParallel SerialParam 
-findVptree <- function(X, k, get.index=TRUE, get.distance=TRUE, 
+findVptree <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k, 
     BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, ...)
 # Identifies nearest neighbours with the Kmknn algorithm.
 #
 # written by Aaron Lun
 # created 19 June 2018
 {
-    .template_find_exact(X, k, get.index=get.index, get.distance=get.distance, 
-        BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, raw.index=raw.index, 
-        buildFUN=buildVptree, searchFUN=find_vptree, searchArgsFUN=.find_vptree_args, 
-        distFUN=find_dist_to_vptree, ...)
+    .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
+        last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, raw.index=raw.index, 
+        buildFUN=buildVptree, searchFUN=find_vptree, searchArgsFUN=.find_vptree_args, ...)
 }
 
 .find_vptree_args <- function(precomputed) {
