@@ -107,12 +107,14 @@ test_that("queryVptree() works to only obtain the last distance", {
             Y <- matrix(runif(nquery * ndim), nrow=nquery)
 
             ref <- queryVptree(X, k=k, query=Y)
-            out <- queryVptree(X, k=k, query=Y, get.distance=FALSE, get.index=FALSE)
-            expect_identical(out, ref$distance[,k])
+            out <- queryVptree(X, k=k, query=Y, last=1)
+            expect_identical(out$distance, ref$distance[,k,drop=FALSE])
+            expect_identical(out$index, ref$index[,k,drop=FALSE])
 
             ref <- queryVptree(X, k=k, query=Y, distance="Manhattan")
-            out <- queryVptree(X, k=k, query=Y, distance="Manhattan", get.distance=FALSE, get.index=FALSE)
-            expect_identical(out, ref$distance[,k])
+            out <- queryVptree(X, k=k, query=Y, distance="Manhattan", last=1)
+            expect_identical(out$distance, ref$distance[,k,drop=FALSE])
+            expect_identical(out$index, ref$index[,k,drop=FALSE])
         }
     }
 })
@@ -208,4 +210,7 @@ test_that("queryVptree() behaves correctly with silly inputs", {
     AA <- data.frame(Y)
     colnames(AA) <- NULL
     expect_equal(queryVptree(X, Y, k=20), queryVptree(X, AA, k=20))
+
+    # What happens with nothing.
+    expect_identical(queryVptree(X, Y, k=10, get.distance=FALSE, get.index=FALSE), list())
 })

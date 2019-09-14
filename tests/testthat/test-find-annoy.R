@@ -132,12 +132,14 @@ test_that("findAnnoy() behaves correctly when only the last distance is requeste
             X <- matrix(runif(nobs * ndim), nrow=nobs)
 
             ref <- findAnnoy(X, k=k)
-            out <- findAnnoy(X, k=k, get.index=FALSE, get.distance=FALSE)
-            expect_identical(out, ref$distance[,k])
+            out <- findAnnoy(X, k=k, last=1)
+            expect_identical(out$distance, ref$distance[,k,drop=FALSE])
+            expect_identical(out$index, ref$index[,k,drop=FALSE])
 
             ref <- findAnnoy(X, k=k, distance="Manhattan")
-            out <- findAnnoy(X, k=k, get.index=FALSE, get.distance=FALSE, distance="Manhattan")
-            expect_identical(out, ref$distance[,k])
+            out <- findAnnoy(X, k=k, last=1, distance="Manhattan")
+            expect_identical(out$distance, ref$distance[,k,drop=FALSE])
+            expect_identical(out$index, ref$index[,k,drop=FALSE])
         }
     }
 })
@@ -200,4 +202,7 @@ test_that("findAnnoy() behaves correctly with silly inputs", {
     expect_identical(ncol(out$index), 20L)
     expect_identical(dim(out$index), dim(out$distance))
     expect_true(all(out$distance==0))
+
+    # What happens with nothing.
+    expect_identical(findAnnoy(X, k=10, get.distance=FALSE, get.index=FALSE), list())
 })

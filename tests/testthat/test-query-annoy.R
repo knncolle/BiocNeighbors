@@ -146,12 +146,14 @@ test_that("queryAnnoy() works to only obtain the last distance", {
             Y <- matrix(runif(nquery * ndim), nrow=nquery)
 
             ref <- queryAnnoy(X, k=k, query=Y)
-            out <- queryAnnoy(X, k=k, query=Y, get.distance=FALSE, get.index=FALSE)
-            expect_identical(out, ref$distance[,k])
+            out <- queryAnnoy(X, k=k, query=Y, last=1)
+            expect_identical(out$distance, ref$distance[,k,drop=FALSE])
+            expect_identical(out$index, ref$index[,k,drop=FALSE])
 
             ref <- queryAnnoy(X, k=k, query=Y, distance="Manhattan")
-            out <- queryAnnoy(X, k=k, query=Y, distance="Manhattan", get.distance=FALSE, get.index=FALSE)
-            expect_identical(out, ref$distance[,k])
+            out <- queryAnnoy(X, k=k, query=Y, last=1, distance="Manhattan")
+            expect_identical(out$distance, ref$distance[,k,drop=FALSE])
+            expect_identical(out$index, ref$index[,k,drop=FALSE])
         }
     }
 })
@@ -229,4 +231,7 @@ test_that("queryAnnoy() behaves correctly with silly inputs", {
     AA <- data.frame(Y)
     colnames(AA) <- NULL
     expect_equal(queryAnnoy(X, Y, k=20), queryAnnoy(X, AA, k=20))
+
+    # What happens with nothing.
+    expect_identical(queryAnnoy(X, Y, k=10, get.distance=FALSE, get.index=FALSE), list())
 })

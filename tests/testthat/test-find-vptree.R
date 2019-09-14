@@ -88,12 +88,14 @@ test_that("findVptree() behaves correctly when only the last distance is request
             X <- matrix(runif(nobs * ndim), nrow=nobs)
 
             ref <- findVptree(X, k=k)
-            out <- findVptree(X, k=k, get.index=FALSE, get.distance=FALSE)
-            expect_identical(out, ref$distance[,k])
+            out <- findVptree(X, k=k, last=1)
+            expect_identical(out$distance, ref$distance[,k,drop=FALSE])
+            expect_identical(out$index, ref$index[,k,drop=FALSE])
 
             ref <- findVptree(X, k=k, distance="Manhattan")
-            out <- findVptree(X, k=k, get.index=FALSE, get.distance=FALSE, distance="Manhattan")
-            expect_identical(out, ref$distance[,k])
+            out <- findVptree(X, k=k, last=1, distance="Manhattan")
+            expect_identical(out$distance, ref$distance[,k,drop=FALSE])
+            expect_identical(out$index, ref$index[,k,drop=FALSE])
         }
     }
 })
@@ -175,4 +177,7 @@ test_that("findVptree() behaves correctly with silly inputs", {
 
     # What happens when we request raw.index without precomputed.
     expect_error(findVptree(X, k=20, raw.index=TRUE), "not valid")
+
+    # What happens with nothing.
+    expect_identical(findVptree(X, k=10, get.distance=FALSE, get.index=FALSE), list())
 })
