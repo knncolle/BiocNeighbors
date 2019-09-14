@@ -1,5 +1,5 @@
 # Tests findHnsw().
-# library(BiocNeighbors); library(testthat); source("test-find-hnsw.R")
+# library(BiocNeighbors); library(testthat); source('setup.R'); source("test-find-hnsw.R")
 
 library(RcppHNSW)
 REFFUN <- function(X, k, M=16, ef_construction=200, ef_search=10) {

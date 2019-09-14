@@ -1,5 +1,5 @@
 # Tests findAnnoy().
-# library(BiocNeighbors); library(testthat); source("test-find-annoy.R")
+# library(BiocNeighbors); library(testthat); source("setup.R"); source("test-find-annoy.R")
 
 library(RcppAnnoy)
 

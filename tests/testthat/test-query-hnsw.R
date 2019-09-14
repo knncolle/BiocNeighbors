@@ -1,5 +1,5 @@
 # Tests queryHnsw().
-# library(BiocNeighbors); library(testthat); source("test-query-hnsw.R")
+# library(BiocNeighbors); library(testthat); source("setup.R"); source("test-query-hnsw.R")
 
 set.seed(1001)
 test_that("queryHnsw() behaves correctly with queries", {
