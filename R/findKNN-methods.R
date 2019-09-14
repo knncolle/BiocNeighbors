@@ -4,22 +4,15 @@
 
 #' @importFrom BiocParallel SerialParam
 .FINDKNN_GENERATOR <- function(FUN, ARGS=spill_args) {
-    function(X, k, subset=NULL, get.index=TRUE, get.distance=TRUE, last=k, BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM) {
-        do.call(FUN, 
-            c(
-                list(X=X, k=k, subset=subset, get.index=get.index, get.distance=get.distance, 
-                    last=last, BPPARAM=BPPARAM, ...),
-                ARGS(BNPARAM)
-            )
-        )
+    function(X, k, ..., BNINDEX, BNPARAM) {
+        do.call(FUN, c(list(X=X, k=k, ...), ARGS(BNPARAM)))
     }
 }
 
 #' @importFrom BiocParallel SerialParam
 .FINDKNN_GENERATOR_NOX <- function(FUN) {
-    function(X, k, subset=NULL, get.index=TRUE, get.distance=TRUE, last=k, BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM) {
-        FUN(k=k, subset=subset, get.index=get.index, get.distance=get.distance, 
-            last=last, BPPARAM=BPPARAM, ..., precomputed=BNINDEX)
+    function(X, k, ..., BNINDEX, BNPARAM) {
+        FUN(k=k, ..., precomputed=BNINDEX)
     }
 }
 

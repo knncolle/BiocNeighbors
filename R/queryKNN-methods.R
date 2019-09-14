@@ -4,26 +4,15 @@
 
 #' @importFrom BiocParallel SerialParam
 .QUERYKNN_GENERATOR <- function(FUN, ARGS=spill_args) {
-    function(X, query, k, subset=NULL, get.index=TRUE, get.distance=TRUE, last=k, 
-        BPPARAM=SerialParam(), transposed=FALSE, ..., BNINDEX, BNPARAM) 
-    {
-        do.call(FUN, 
-            c(
-                list(X=X, query=query, k=k, subset=subset, get.index=get.index, get.distance=get.distance, 
-                    last=last, BPPARAM=BPPARAM, transposed=transposed, ...),
-                ARGS(BNPARAM)
-            )
-        )
+    function(X, query, k, ..., BNINDEX, BNPARAM) {
+        do.call(FUN, c(list(X=X, query=query, k=k, ...), ARGS(BNPARAM)))
     }
 }
 
 #' @importFrom BiocParallel SerialParam
 .QUERYKNN_GENERATOR_NOX <- function(FUN) {
-    function(X, query, k, subset=NULL, get.index=TRUE, get.distance=TRUE, last=k,
-        BPPARAM=SerialParam(), transposed=FALSE, ..., BNINDEX, BNPARAM) 
-    {
-        FUN(query=query, k=k, subset=subset, get.index=get.index, get.distance=get.distance, 
-            last=last, BPPARAM=BPPARAM, transposed=transposed, ..., precomputed=BNINDEX)
+    function(X, query, k, ..., BNINDEX, BNPARAM) {
+        FUN(query=query, k=k, ..., precomputed=BNINDEX)
     }
 }
 

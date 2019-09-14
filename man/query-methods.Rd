@@ -1,4 +1,5 @@
-\name{query methods}
+\name{queryKNN methods}
+\alias{queryKNN-methods}
 \alias{queryKmknn}
 \alias{queryVptree}
 \alias{queryAnnoy}

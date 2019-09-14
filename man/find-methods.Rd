@@ -1,4 +1,5 @@
-\name{find methods}
+\name{findKNN methods}
+\alias{findKNN-methods}
 \alias{findKmknn}
 \alias{findVptree}
 \alias{findAnnoy}

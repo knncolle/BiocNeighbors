@@ -1,4 +1,5 @@
 \name{rangeQuery methods}
+\alias{rangeQuery-methods}
 \alias{rangeQueryKmknn}
 \alias{rangeQueryVptree}
 

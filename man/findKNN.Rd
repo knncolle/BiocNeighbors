@@ -24,20 +24,17 @@
 \description{Find the k-nearest neighbors for each point in a data set, using exact or approximate algorithms.}
 
 \usage{
-findKNN(X, k, subset=NULL, get.index=TRUE, get.distance=TRUE, last=k,
-    BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM) 
+findKNN(X, k, ..., BNINDEX, BNPARAM) 
 }
 
 \arguments{
     \item{X}{A numeric data matrix where rows are points and columns are dimensions.
         This can be missing if \code{BNINDEX} is supplied.}
     \item{k}{An integer scalar for the number of nearest neighbors.}
-    \item{subset}{A vector specifying the subset of points in \code{X} to search.}
-    \item{get.index}{A logical scalar indicating whether to return row indices of the neighbors.}
-    \item{get.distance}{A logical scalar indicating whether to return distances to neighbors.}
-    \item{last}{An integer scalar specifying the number of furthest neighbors for which statistics should be returned.}
-    \item{BPPARAM}{a \linkS4class{BiocParallelParam} class for parallelization.}
-    \item{...}{Further arguments to pass to individual methods.}
+    \item{...}{Further arguments to pass to individual methods.
+    This is guaranteed to include \code{subset}, \code{get.index}, \code{get.distance}, \code{last},
+    \code{warn.ties}, \code{raw.index} and \code{BPPARAM}.
+    See \code{?"\link{findKNN-methods}"} for more details.}
     \item{BNINDEX}{A \linkS4class{BiocNeighborIndex} object containing precomputed index information.
         This can be missing if \code{BNPARAM} is supplied, see Details.}
     \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the algorithm to use.
@@ -45,16 +42,9 @@ findKNN(X, k, subset=NULL, get.index=TRUE, get.distance=TRUE, last=k,
 }
 
 \value{
-A list is returned containing:
-\itemize{
-    \item \code{index}, if \code{get.index=TRUE}.
-    This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{X}.
-    The row for \eqn{i} contains the row indices of \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
-    \item \code{distance}, if \code{get.distance=TRUE}.
-    This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
-}
-Each matrix contains \code{last} columns.
-If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
+A list is returned containing \code{index}, an integer matrix of neighbor identities;
+and \code{distance}, a numeric matrix of distances to those neighbors.
+See \code{?"\link{findKNN-methods}"} for more details.
 }
 
 \details{

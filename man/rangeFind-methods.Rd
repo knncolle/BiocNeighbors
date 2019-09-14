@@ -1,4 +1,5 @@
 \name{rangeFind methods}
+\alias{rangeFind-methods}
 \alias{rangeFindKmknn}
 \alias{rangeFindVptree}
 

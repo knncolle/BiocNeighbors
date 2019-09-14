@@ -1,31 +1,33 @@
 #' @export
-setGeneric("buildIndex", signature=c("BNPARAM"), function(X, transposed=FALSE, ..., BNPARAM) standardGeneric("buildIndex"))
+setGeneric("buildIndex", signature=c("BNPARAM"), 
+    function(X, ..., BNPARAM) 
+        standardGeneric("buildIndex")
+)
 
 #' @export
 #' @importFrom BiocParallel SerialParam
 setGeneric("findKNN", signature=c("BNINDEX", "BNPARAM"), 
-    function(X, k, subset=NULL, get.index=TRUE, get.distance=TRUE, last=k, BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM) 
+    function(X, k, ..., BNINDEX, BNPARAM) 
         standardGeneric("findKNN")
 )
 
 #' @export
 #' @importFrom BiocParallel SerialParam
 setGeneric("queryKNN", signature=c("BNINDEX", "BNPARAM"), 
-    function(X, query, k, subset=NULL, get.index=TRUE, get.distance=TRUE, last=k,
-        BPPARAM=SerialParam(), transposed=FALSE, ..., BNINDEX, BNPARAM) 
+    function(X, query, k, ..., BNINDEX, BNPARAM) 
         standardGeneric("queryKNN")
 )
 
 #' @export
 #' @importFrom BiocParallel SerialParam
 setGeneric("findNeighbors", signature=c("BNINDEX", "BNPARAM"), 
-    function(X, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM)
+    function(X, threshold, ..., BNINDEX, BNPARAM)
         standardGeneric("findNeighbors")
 )
 
 #' @export
 setGeneric("queryNeighbors", signature=c("BNINDEX", "BNPARAM"), 
-    function(X, query, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), transposed=FALSE, ..., BNINDEX, BNPARAM)
+    function(X, query, threshold, ..., BNINDEX, BNPARAM)
         standardGeneric("queryNeighbors")
 )
 

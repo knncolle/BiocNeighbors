@@ -12,13 +12,13 @@
 \description{Build indices for nearest-neighbor searching with different algorithms.}
 
 \usage{
-buildIndex(X, transposed=FALSE, ..., BNPARAM)
+buildIndex(X, ..., BNPARAM)
 }
 
 \arguments{
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
-\item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
-\item{...}{Further arguments to be passed to individual methods.}
+\item{...}{Further arguments to be passed to individual methods.
+This is guaranteed to include \code{transposed}.}
 \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.
 This defaults to a \linkS4class{KmknnParam} object if no argument is supplied.}
 }

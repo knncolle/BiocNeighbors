@@ -1,22 +1,20 @@
+##############
+# S4 Factory #
+##############
+
 #' @importFrom BiocParallel SerialParam
 .QUERYNEIGHBORS_GENERATOR <- function(FUN, ARGS=spill_args) {
-    function(X, query, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), transposed=FALSE, ..., BNINDEX, BNPARAM) {
-        do.call(FUN, 
-            c(
-                list(X=X, query=query, threshold=threshold, subset=subset, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, transposed=transposed, ...),
-                ARGS(BNPARAM)
-            )
-        )
+    function(X, query, threshold, ..., BNINDEX, BNPARAM) {
+        do.call(FUN, c(list(X=X, query=query, threshold=threshold, ...), ARGS(BNPARAM)))
     }
 }
 
 #' @importFrom BiocParallel SerialParam
 .QUERYNEIGHBORS_GENERATOR_NOX <- function(FUN) {
-    function(X, query, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), transposed=FALSE, ..., BNINDEX, BNPARAM) {
-        FUN(query=query, threshold=threshold, subset=subset, get.index=get.index, get.distance=get.distance, BPPARAM=BPPARAM, transposed=transposed, ..., precomputed=BNINDEX)
+    function(X, query, threshold, ..., BNINDEX, BNPARAM) {
+        FUN(query=query, threshold=threshold, ..., precomputed=BNINDEX)
     }
 }
-
 
 ####################
 # Default dispatch #

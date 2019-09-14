@@ -16,18 +16,15 @@
 \description{Find all neighbors within a given distance for each point in a data set.}
 
 \usage{
-findNeighbors(X, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE,
-    BPPARAM=SerialParam(), ..., BNINDEX, BNPARAM)
+findNeighbors(X, threshold, ..., BNINDEX, BNPARAM)
 }
 
 \arguments{
     \item{X}{A numeric data matrix where rows are points and columns are dimensions.}
     \item{threshold}{A numeric scalar or vector specifying the maximum distance for considering neighbors.}
-    \item{subset}{A vector specifying the subset of points in \code{X} to search.}
-    \item{get.index}{A logical scalar indicating whether to return row indices of the neighbors.}
-    \item{get.distance}{A logical scalar indicating whether to return distances to neighbors.}
-    \item{BPPARAM}{A \linkS4class{BiocParallelParam} class for parallelization.}
-    \item{...}{Further arguments to pass to specific methods.}
+    \item{...}{Further arguments to pass to specific methods.
+    This is guaranteed to include \code{subset}, \code{get.index}, \code{get.distance} \code{BPPARAM} and \code{raw.index}.
+    See \code{?"\link{rangeFind-methods}"} for more details.}
     \item{BNINDEX}{A \linkS4class{BiocNeighborIndex} object containing precomputed index information.
         This can be missing if \code{BNPARAM} is supplied, see Details.}
     \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the algorithm to use.
@@ -35,16 +32,9 @@ findNeighbors(X, threshold, subset=NULL, get.index=TRUE, get.distance=TRUE,
 }
 
 \value{
-A list is returned containing:
-\itemize{
-    \item \code{index}, if \code{get.index=TRUE}.
-    This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{X}.
-    The row for \eqn{i} contains the row indices of \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
-    \item \code{distance}, if \code{get.distance=TRUE}.
-    This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
-}
-
-If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
+A list is returned containing \code{index}, a list of integer vectors specifying the identities of the neighbors of each point;
+and \code{distance}, a list of numeric vectors containing the distances to those neighbors.
+See \code{?"\link{rangeFind-methods}"} for more details.
 }
 
 \details{
