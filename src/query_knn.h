@@ -3,9 +3,10 @@
 #include "utils.h"
 
 template <class Searcher>
-SEXP query_knn(Searcher& finder, Rcpp::NumericMatrix query, int nn, bool store_neighbors, bool store_distances) {
+SEXP query_knn(Searcher& finder, Rcpp::NumericMatrix query, int nn, bool store_neighbors, bool store_distances, int last) {
     const MatDim_t ndim=finder.get_ndims();
     const NumNeighbors_t NN=check_k(nn);
+    const NumNeighbors_t offset=nn - last;
 
     // Examining the query matrix and checking it against the subset indices.
     Rcpp::NumericMatrix Query(query);
@@ -17,18 +18,18 @@ SEXP query_knn(Searcher& finder, Rcpp::NumericMatrix query, int nn, bool store_n
     // Getting the output mode.
     Rcpp::NumericMatrix out_dist;
     if (store_distances) { 
-        out_dist=Rcpp::NumericMatrix(NN, nobs);
+        out_dist=Rcpp::NumericMatrix(last, nobs);
     }
     auto odIt=out_dist.begin();
 
     Rcpp::IntegerMatrix out_idx;
     if (store_neighbors) {
-        out_idx=Rcpp::IntegerMatrix(NN, nobs);
+        out_idx=Rcpp::IntegerMatrix(last, nobs);
     }
     auto oiIt=out_idx.begin();
         
     // Iterating across cells, finding NNs and storing distances or neighbors.
-    // Don't use qIt in range, as it fails for zero-dimension matrices.
+    // Don't use qIt in range-based for(), as it fails for zero-dimension matrices.
     auto qIt=Query.begin();
     for (MatDim_t i=0; i<nobs; ++i, qIt+=ndim) {
         finder.find_nearest_neighbors(qIt, NN, store_neighbors, store_distances); 
@@ -36,12 +37,12 @@ SEXP query_knn(Searcher& finder, Rcpp::NumericMatrix query, int nn, bool store_n
         const auto& neighbors=finder.get_neighbors();
 
         if (store_distances) {
-            std::copy(distances.begin(), distances.end(), odIt);
-            odIt+=NN;
+            std::copy(distances.begin() + offset, distances.end(), odIt);
+            odIt+=last;
         }
         if (store_neighbors) {
-            std::copy(neighbors.begin(), neighbors.end(), oiIt);
-            for (NumNeighbors_t i=0; i<NN; ++i, ++oiIt) {
+            std::copy(neighbors.begin() + offset, neighbors.end(), oiIt);
+            for (NumNeighbors_t i=0; i<last; ++i, ++oiIt) {
                 ++(*oiIt); // getting back to 1-indexed.
             }
         }

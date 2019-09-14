@@ -6,14 +6,14 @@
 
 // [[Rcpp::export(rng=false)]]
 Rcpp::RObject find_vptree(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix X, Rcpp::List nodes, 
-    std::string dtype, int nn, bool get_index, bool get_distance) 
+    std::string dtype, int nn, bool get_index, bool get_distance, int last) 
 {
     if (dtype=="Manhattan") {
         VpTree<BNManhattan> nn_finder(X, nodes);
-        return find_knn(nn_finder, to_check, nn, get_index, get_distance);
+        return find_knn(nn_finder, to_check, nn, get_index, get_distance, last);
      } else {
         VpTree<BNEuclidean> nn_finder(X, nodes);
-        return find_knn(nn_finder, to_check, nn, get_index, get_distance);
+        return find_knn(nn_finder, to_check, nn, get_index, get_distance, last);
      }
 }
 

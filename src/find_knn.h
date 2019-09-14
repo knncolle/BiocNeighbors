@@ -3,21 +3,22 @@
 #include "utils.h"
 
 template <class Searcher>
-SEXP find_knn(Searcher& finder, Rcpp::IntegerVector to_check, int nn, bool store_neighbors, bool store_distances) {
+SEXP find_knn(Searcher& finder, Rcpp::IntegerVector to_check, int nn, bool store_neighbors, bool store_distances, int last) {
     // Checking NN's and indices.
     const NumNeighbors_t NN=check_k(nn);
     const Rcpp::IntegerVector points=check_indices(to_check, finder.get_nobs());
     const VecSize_t nobs=points.size();
+    const NumNeighbors_t offset=NN - last;
 
     Rcpp::NumericMatrix out_dist;
     if (store_distances) {
-        out_dist=Rcpp::NumericMatrix(NN, nobs);
+        out_dist=Rcpp::NumericMatrix(last, nobs);
     }
     auto odIt=out_dist.begin();
 
     Rcpp::IntegerMatrix out_idx;
     if (store_neighbors) {
-        out_idx=Rcpp::IntegerMatrix(NN, nobs);
+        out_idx=Rcpp::IntegerMatrix(last, nobs);
     }
     auto oiIt=out_idx.begin();
 
@@ -28,12 +29,12 @@ SEXP find_knn(Searcher& finder, Rcpp::IntegerVector to_check, int nn, bool store
         const auto& neighbors=finder.get_neighbors();
 
         if (store_distances) {
-            std::copy(distances.begin(), distances.end(), odIt);
-            odIt+=NN;
+            std::copy(distances.begin() + offset, distances.end(), odIt);
+            odIt+=last;
         }
         if (store_neighbors) {
-            std::copy(neighbors.begin(), neighbors.end(), oiIt);
-            for (NumNeighbors_t i=0; i<NN; ++i, ++oiIt) {
+            std::copy(neighbors.begin() + offset, neighbors.end(), oiIt);
+            for (NumNeighbors_t i=0; i<last; ++i, ++oiIt) {
                 ++(*oiIt); // getting back to 1-indexed.
             }
         }
