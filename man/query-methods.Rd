@@ -10,17 +10,19 @@
 \usage{
 queryKmknn(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
     BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, 
-    raw.index=FALSE, ...)
+    raw.index=FALSE, warn.ties=TRUE, ...)
 
 queryVptree(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
     BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, 
-    raw.index=FALSE, ...)
+    raw.index=FALSE, warn.ties=TRUE, ...)
 
 queryAnnoy(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
-    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, ...)
+    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL,
+    raw.index=NA, warn.ties=NA, ...)
 
 queryHnsw(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
-    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, ...)
+    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL,
+    raw.index=NA, warn.ties=NA, ...)
 }
 
 \arguments{
@@ -39,7 +41,11 @@ and for \code{queryHnsw}, this should be a \linkS4class{HnswIndex} from \code{\l
 \item{transposed}{A logical scalar indicating whether the \code{query} is transposed, 
 in which case \code{query} is assumed to contain dimensions in the rows and data points in the columns.}
 \item{subset}{A vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the nearest neighbors should be identified.}
-\item{raw.index}{A logial scalar indicating whether raw column indices should be returned, see \code{?"\link{BiocNeighbors-raw-index}"}.}
+\item{raw.index}{A logial scalar indicating whether raw column indices should be returned, 
+see \code{?"\link{BiocNeighbors-raw-index}"}.
+This argument is ignored for \code{queryAnnoy} and \code{queryHnsw}.}
+\item{warn.ties}{Logical scalar indicating whether a warning should be raised if any of the \code{k+1} neighbors have tied distances.
+This argument is ignored for \code{queryAnnoy} and \code{queryHnsw}.}
 \item{...}{Further arguments to pass to the respective \code{build*} function for each algorithm.
 This includes \code{distance}, a string specifying whether \code{"Euclidean"} or \code{"Manhattan"} distances are to be used.}
 }

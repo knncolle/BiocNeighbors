@@ -72,3 +72,11 @@ test_that("ties are correctly detected at zero distance", {
     pre <- MOCKUP(coordinates2)
     expect_warning(out <- findKmknn(precomputed=pre, k=1), "tied distances detected")
 })
+
+test_that("ties are not warned if we turn off warnings", {
+    coordinates <- matrix(0, 10, 5)
+    expect_warning(out <- findKmknn(coordinates, k=2, warn.ties=FALSE), NA)
+    expect_warning(out <- findVptree(coordinates, k=2, warn.ties=FALSE), NA)
+    expect_warning(out <- queryKmknn(coordinates, coordinates, k=2, warn.ties=FALSE), NA)
+    expect_warning(out <- queryVptree(coordinates, coordinates, k=2, warn.ties=FALSE), NA)
+})

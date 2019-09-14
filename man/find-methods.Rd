@@ -10,17 +10,19 @@
 \usage{
 findKmknn(X, k, get.index=TRUE, get.distance=TRUE, last=k, 
     BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, 
-    raw.index=FALSE, ...)
+    raw.index=FALSE, warn.ties=TRUE, ...)
 
 findVptree(X, k, get.index=TRUE, get.distance=TRUE, last=k, 
     BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, 
-    raw.index=FALSE, ...)
+    raw.index=FALSE, warn.ties=TRUE, ...)
 
 findAnnoy(X, k, get.index=TRUE, get.distance=TRUE, last=k,
-    BPPARAM=SerialParam(),  precomputed=NULL, subset=NULL, ...)
+    BPPARAM=SerialParam(),  precomputed=NULL, subset=NULL, 
+    raw.index=NA, warn.ties=NA, ...)
 
 findHnsw(X, k, get.index=TRUE, get.distance=TRUE, last=k,
-    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, ...)
+    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, 
+    raw.index=NA, warn.ties=NA, ...)
 }
 
 \arguments{
@@ -36,7 +38,11 @@ for \code{findVptree}, this should be a \linkS4class{VptreeIndex} from \code{\li
 for \code{findAnnoy}, this should be a \linkS4class{AnnoyIndex} from \code{\link{buildAnnoy}};
 and for \code{findHnsw}, this should be a \linkS4class{HnswIndex} from \code{\link{buildHnsw}}.}
 \item{subset}{A vector indicating the rows of \code{X} for which the nearest neighbors should be identified.}
-\item{raw.index}{A logial scalar indicating whether raw column indices should be returned, see \code{?"\link{BiocNeighbors-raw-index}"}.}
+\item{raw.index}{A logial scalar indicating whether raw column indices should be returned, 
+see \code{?"\link{BiocNeighbors-raw-index}"}.
+This argument is ignored for \code{findAnnoy} and \code{findHnsw}.}
+\item{warn.ties}{Logical scalar indicating whether a warning should be raised if any of the \code{k+1} neighbors have tied distances.
+This argument is ignored for \code{findAnnoy} and \code{findHnsw}.}
 \item{...}{Further arguments to pass to the respective \code{build*} function for each algorithm.
 This includes \code{distance}, a string specifying whether \code{"Euclidean"} or \code{"Manhattan"} distances are to be used.}
 }
