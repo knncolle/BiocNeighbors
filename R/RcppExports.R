@@ -13,80 +13,48 @@ build_vptree <- function(Mat, dtype) {
     .Call('_BiocNeighbors_build_vptree', PACKAGE = 'BiocNeighbors', Mat, dtype)
 }
 
-find_annoy <- function(to_check, ndims, fname, search_mult, dtype, nn, get_index, get_distance) {
-    .Call('_BiocNeighbors_find_annoy', PACKAGE = 'BiocNeighbors', to_check, ndims, fname, search_mult, dtype, nn, get_index, get_distance)
+find_annoy <- function(to_check, ndims, fname, search_mult, dtype, nn, get_index, get_distance, last) {
+    .Call('_BiocNeighbors_find_annoy', PACKAGE = 'BiocNeighbors', to_check, ndims, fname, search_mult, dtype, nn, get_index, get_distance, last)
 }
 
-find_dist_to_annoy <- function(to_check, ndims, fname, search_mult, dtype, nn) {
-    .Call('_BiocNeighbors_find_dist_to_annoy', PACKAGE = 'BiocNeighbors', to_check, ndims, fname, search_mult, dtype, nn)
+find_hnsw <- function(to_check, vals, fname, ef_search, dtype, nn, get_index, get_distance, last) {
+    .Call('_BiocNeighbors_find_hnsw', PACKAGE = 'BiocNeighbors', to_check, vals, fname, ef_search, dtype, nn, get_index, get_distance, last)
 }
 
-find_hnsw <- function(to_check, vals, fname, ef_search, dtype, nn, get_index, get_distance) {
-    .Call('_BiocNeighbors_find_hnsw', PACKAGE = 'BiocNeighbors', to_check, vals, fname, ef_search, dtype, nn, get_index, get_distance)
-}
-
-find_dist_to_hnsw <- function(to_check, vals, fname, ef_search, dtype, nn) {
-    .Call('_BiocNeighbors_find_dist_to_hnsw', PACKAGE = 'BiocNeighbors', to_check, vals, fname, ef_search, dtype, nn)
-}
-
-find_kmknn <- function(to_check, X, clust_centers, clust_info, dtype, nn, get_index, get_distance) {
-    .Call('_BiocNeighbors_find_kmknn', PACKAGE = 'BiocNeighbors', to_check, X, clust_centers, clust_info, dtype, nn, get_index, get_distance)
-}
-
-find_dist_to_kmknn <- function(to_check, X, clust_centers, clust_info, dtype, nn) {
-    .Call('_BiocNeighbors_find_dist_to_kmknn', PACKAGE = 'BiocNeighbors', to_check, X, clust_centers, clust_info, dtype, nn)
+find_kmknn <- function(to_check, X, clust_centers, clust_info, dtype, nn, get_index, get_distance, last, warn_ties) {
+    .Call('_BiocNeighbors_find_kmknn', PACKAGE = 'BiocNeighbors', to_check, X, clust_centers, clust_info, dtype, nn, get_index, get_distance, last, warn_ties)
 }
 
 range_find_kmknn <- function(to_check, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance) {
     .Call('_BiocNeighbors_range_find_kmknn', PACKAGE = 'BiocNeighbors', to_check, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance)
 }
 
-find_vptree <- function(to_check, X, nodes, dtype, nn, get_index, get_distance) {
-    .Call('_BiocNeighbors_find_vptree', PACKAGE = 'BiocNeighbors', to_check, X, nodes, dtype, nn, get_index, get_distance)
-}
-
-find_dist_to_vptree <- function(to_check, X, nodes, dtype, nn) {
-    .Call('_BiocNeighbors_find_dist_to_vptree', PACKAGE = 'BiocNeighbors', to_check, X, nodes, dtype, nn)
+find_vptree <- function(to_check, X, nodes, dtype, nn, get_index, get_distance, last, warn_ties) {
+    .Call('_BiocNeighbors_find_vptree', PACKAGE = 'BiocNeighbors', to_check, X, nodes, dtype, nn, get_index, get_distance, last, warn_ties)
 }
 
 range_find_vptree <- function(to_check, X, nodes, dtype, dist_thresh, get_index, get_distance) {
     .Call('_BiocNeighbors_range_find_vptree', PACKAGE = 'BiocNeighbors', to_check, X, nodes, dtype, dist_thresh, get_index, get_distance)
 }
 
-query_annoy <- function(query, ndims, fname, search_mult, dtype, nn, get_index, get_distance) {
-    .Call('_BiocNeighbors_query_annoy', PACKAGE = 'BiocNeighbors', query, ndims, fname, search_mult, dtype, nn, get_index, get_distance)
+query_annoy <- function(query, ndims, fname, search_mult, dtype, nn, get_index, get_distance, last) {
+    .Call('_BiocNeighbors_query_annoy', PACKAGE = 'BiocNeighbors', query, ndims, fname, search_mult, dtype, nn, get_index, get_distance, last)
 }
 
-query_dist_to_annoy <- function(query, ndims, fname, search_mult, dtype, nn) {
-    .Call('_BiocNeighbors_query_dist_to_annoy', PACKAGE = 'BiocNeighbors', query, ndims, fname, search_mult, dtype, nn)
+query_hnsw <- function(query, vals, fname, ef_search, dtype, nn, get_index, get_distance, last) {
+    .Call('_BiocNeighbors_query_hnsw', PACKAGE = 'BiocNeighbors', query, vals, fname, ef_search, dtype, nn, get_index, get_distance, last)
 }
 
-query_hnsw <- function(query, vals, fname, ef_search, dtype, nn, get_index, get_distance) {
-    .Call('_BiocNeighbors_query_hnsw', PACKAGE = 'BiocNeighbors', query, vals, fname, ef_search, dtype, nn, get_index, get_distance)
-}
-
-query_dist_to_hnsw <- function(query, vals, fname, ef_search, dtype, nn) {
-    .Call('_BiocNeighbors_query_dist_to_hnsw', PACKAGE = 'BiocNeighbors', query, vals, fname, ef_search, dtype, nn)
-}
-
-query_kmknn <- function(query, X, clust_centers, clust_info, dtype, nn, get_index, get_distance) {
-    .Call('_BiocNeighbors_query_kmknn', PACKAGE = 'BiocNeighbors', query, X, clust_centers, clust_info, dtype, nn, get_index, get_distance)
-}
-
-query_dist_to_kmknn <- function(query, X, clust_centers, clust_info, dtype, nn) {
-    .Call('_BiocNeighbors_query_dist_to_kmknn', PACKAGE = 'BiocNeighbors', query, X, clust_centers, clust_info, dtype, nn)
+query_kmknn <- function(query, X, clust_centers, clust_info, dtype, nn, get_index, get_distance, last, warn_ties) {
+    .Call('_BiocNeighbors_query_kmknn', PACKAGE = 'BiocNeighbors', query, X, clust_centers, clust_info, dtype, nn, get_index, get_distance, last, warn_ties)
 }
 
 range_query_kmknn <- function(query, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance) {
     .Call('_BiocNeighbors_range_query_kmknn', PACKAGE = 'BiocNeighbors', query, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance)
 }
 
-query_vptree <- function(query, X, nodes, dtype, nn, get_index, get_distance) {
-    .Call('_BiocNeighbors_query_vptree', PACKAGE = 'BiocNeighbors', query, X, nodes, dtype, nn, get_index, get_distance)
-}
-
-query_dist_to_vptree <- function(query, X, nodes, dtype, nn) {
-    .Call('_BiocNeighbors_query_dist_to_vptree', PACKAGE = 'BiocNeighbors', query, X, nodes, dtype, nn)
+query_vptree <- function(query, X, nodes, dtype, nn, get_index, get_distance, last, warn_ties) {
+    .Call('_BiocNeighbors_query_vptree', PACKAGE = 'BiocNeighbors', query, X, nodes, dtype, nn, get_index, get_distance, last, warn_ties)
 }
 
 range_query_vptree <- function(query, X, nodes, dtype, dist_thresh, get_index, get_distance) {
