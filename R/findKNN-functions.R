@@ -5,7 +5,7 @@
 #' @export
 #' @importFrom BiocParallel SerialParam 
 findAnnoy <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
-    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, ...)
+    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=NA, warn.ties=NA, ...)
 # Identifies nearest neighbours with the Annoy algorithm.
 #
 # written by Aaron Lun
@@ -13,8 +13,8 @@ findAnnoy <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
 {
     .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
         last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
-        buildFUN=buildAnnoy, pathFUN=AnnoyIndex_path, searchFUN=find_annoy, 
-        searchArgsFUN=.find_annoy_args, ..., exact=FALSE)
+        exact=FALSE, warn.ties=FALSE, raw.index=FALSE,
+        buildFUN=buildAnnoy, pathFUN=AnnoyIndex_path, searchFUN=find_annoy, searchArgsFUN=.find_annoy_args, ...)
 }
 
 .find_annoy_args <- function(precomputed) {
@@ -32,7 +32,7 @@ findAnnoy <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
 #' @export
 #' @importFrom BiocParallel SerialParam
 findHnsw <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k, 
-    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, ...)
+    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=NA, warn.ties=NA, ...)
 # Find nearest neighbors using the Hnsw approximate nearest neighbors algorithm.
 # 
 # written by Aaron Lun
@@ -40,8 +40,8 @@ findHnsw <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
 {
     .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
         last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
-        buildFUN=buildHnsw, pathFUN=HnswIndex_path, searchFUN=find_hnsw, 
-        searchArgsFUN=.find_hnsw_args, ..., exact=FALSE)
+        exact=FALSE, warn.ties=FALSE, raw.index=FALSE,
+        buildFUN=buildHnsw, pathFUN=HnswIndex_path, searchFUN=find_hnsw, searchArgsFUN=.find_hnsw_args, ...)
 }
 
 .find_hnsw_args <- function(precomputed) {
@@ -59,14 +59,15 @@ findHnsw <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
 #' @export
 #' @importFrom BiocParallel SerialParam 
 findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
-    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, ...)
+    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, warn.ties=TRUE, ...)
 # Identifies nearest neighbours with the Kmknn algorithm.
 #
 # written by Aaron Lun
 # created 19 June 2018
 {
     .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
-        last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, raw.index=raw.index, 
+        last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
+        exact=TRUE, warn.ties=warn.ties, raw.index=raw.index, 
         buildFUN=buildKmknn, searchFUN=find_kmknn, searchArgsFUN=.find_kmknn_args, ...) 
 }
 
@@ -84,14 +85,15 @@ findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
 #' @export
 #' @importFrom BiocParallel SerialParam 
 findVptree <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k, 
-    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, ...)
+    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, warn.ties=TRUE, ...)
 # Identifies nearest neighbours with the Kmknn algorithm.
 #
 # written by Aaron Lun
 # created 19 June 2018
 {
     .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
-        last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, raw.index=raw.index, 
+        last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
+        exact=TRUE, warn.ties=warn.ties, raw.index=raw.index, 
         buildFUN=buildVptree, searchFUN=find_vptree, searchArgsFUN=.find_vptree_args, ...)
 }
 

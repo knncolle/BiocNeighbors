@@ -1,7 +1,8 @@
 #' @importFrom BiocParallel SerialParam bpmapply
 .template_query_knn <- function(X, query, k, get.index=TRUE, get.distance=TRUE, 
-    last=k, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, 
-    buildFUN, pathFUN, searchFUN, searchArgsFUN, ..., exact=TRUE)
+    last=k, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, 
+    exact=TRUE, raw.index=FALSE, warn.ties=TRUE,
+    buildFUN, pathFUN, searchFUN, searchArgsFUN, ...)
 # Identifies nearest neighbours in 'X' from a query set.
 #
 # written by Aaron Lun
@@ -9,7 +10,7 @@
 {
     if (exact) {
         precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildFUN, ...)
-        common.args <- list(X=bndata(precomputed))
+        common.args <- list(X=bndata(precomputed), warn_ties=warn.ties)
     } else {
         if (is.null(precomputed)) {
             precomputed <- buildFUN(X, ...)

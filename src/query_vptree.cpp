@@ -5,13 +5,13 @@
 
 // [[Rcpp::export(rng=false)]]
 Rcpp::RObject query_vptree(Rcpp::NumericMatrix query, Rcpp::NumericMatrix X, Rcpp::List nodes, 
-    std::string dtype, int nn, bool get_index, bool get_distance, int last) 
+    std::string dtype, int nn, bool get_index, bool get_distance, int last, bool warn_ties) 
 {
     if (dtype=="Manhattan") {
-        VpTree<BNManhattan> nn_finder(X, nodes);
+        VpTree<BNManhattan> nn_finder(X, nodes, warn_ties);
         return query_knn(nn_finder, query, nn, get_index, get_distance, last);
      } else {
-        VpTree<BNEuclidean> nn_finder(X, nodes);
+        VpTree<BNEuclidean> nn_finder(X, nodes, warn_ties);
         return query_knn(nn_finder, query, nn, get_index, get_distance, last);
     }
 }

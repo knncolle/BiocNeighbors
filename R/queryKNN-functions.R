@@ -5,7 +5,7 @@
 #' @export
 #' @importFrom BiocParallel SerialParam 
 queryAnnoy <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k, 
-    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, ...)
+    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=NA, warn.ties=NA, ...)
 # Identifies nearest neighbours in 'X' from a query set.
 #
 # written by Aaron Lun
@@ -13,8 +13,8 @@ queryAnnoy <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
 {
     .template_query_knn(X, query, k, get.index=get.index, get.distance=get.distance, 
         last=last, BPPARAM=BPPARAM, precomputed=precomputed, transposed=transposed, subset=subset, 
-        buildFUN=buildAnnoy, pathFUN=AnnoyIndex_path, searchFUN=query_annoy, 
-        searchArgsFUN=.find_annoy_args, ..., exact=FALSE)
+        exact=FALSE, warn.ties=FALSE, raw.index=FALSE,
+        buildFUN=buildAnnoy, pathFUN=AnnoyIndex_path, searchFUN=query_annoy, searchArgsFUN=.find_annoy_args, ...)
 }
 
 ########
@@ -24,7 +24,7 @@ queryAnnoy <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
 #' @export
 #' @importFrom BiocParallel SerialParam 
 queryHnsw <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k, 
-    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, ...)
+    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=NA, warn.ties=NA, ...)
 # Identifies nearest neighbours in 'X' from a query set.
 #
 # written by Aaron Lun
@@ -32,8 +32,8 @@ queryHnsw <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
 {
     .template_query_knn(X, query, k, get.index=get.index, get.distance=get.distance, 
         last=last, BPPARAM=BPPARAM, precomputed=precomputed, transposed=transposed, subset=subset, 
-        buildFUN=buildHnsw, pathFUN=HnswIndex_path, searchFUN=query_hnsw, 
-        searchArgsFUN=.find_hnsw_args, ..., exact=FALSE)
+        exact=FALSE, warn.ties=FALSE, raw.index=FALSE,
+        buildFUN=buildHnsw, pathFUN=HnswIndex_path, searchFUN=query_hnsw, searchArgsFUN=.find_hnsw_args, ...)
 }
 
 #########
@@ -43,14 +43,16 @@ queryHnsw <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
 #' @export
 #' @importFrom BiocParallel SerialParam bpmapply
 queryKmknn <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
-    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, ...)
+    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, 
+    raw.index=FALSE, warn.ties=TRUE, ...)
 # Identifies nearest neighbours in 'X' from a query set.
 #
 # written by Aaron Lun
 # created 19 June 2018
 {
     .template_query_knn(X, query, k, get.index=get.index, get.distance=get.distance, 
-        last=last, BPPARAM=BPPARAM, precomputed=precomputed, transposed=transposed, subset=subset, raw.index=raw.index, 
+        last=last, BPPARAM=BPPARAM, precomputed=precomputed, transposed=transposed, subset=subset,
+        exact=TRUE, warn.ties=warn.ties, raw.index=raw.index, 
         buildFUN=buildKmknn, searchFUN=query_kmknn, searchArgsFUN=.find_kmknn_args, ...)
 }
 
@@ -61,13 +63,15 @@ queryKmknn <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
 #' @export
 #' @importFrom BiocParallel SerialParam bpmapply
 queryVptree <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k, 
-    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, ...)
+    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, 
+    raw.index=FALSE, warn.ties=TRUE, ...)
 # Identifies nearest neighbours in 'X' from a query set.
 #
 # written by Aaron Lun
 # created 2 December 2018
 {
     .template_query_knn(X, query, k, get.index=get.index, get.distance=get.distance, 
-        last=last, BPPARAM=BPPARAM, precomputed=precomputed, transposed=transposed, subset=subset, raw.index=raw.index, 
+        last=last, BPPARAM=BPPARAM, precomputed=precomputed, transposed=transposed, subset=subset, 
+        exact=TRUE, warn.ties=warn.ties, raw.index=raw.index, 
         buildFUN=buildVptree, searchFUN=query_vptree, searchArgsFUN=.find_vptree_args, ...)
 }

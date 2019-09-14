@@ -1,7 +1,8 @@
 #' @importFrom BiocParallel SerialParam bpmapply
 .template_find_knn <- function(X, k, get.index=TRUE, get.distance=TRUE, 
-    last=k, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, 
-    buildFUN, pathFUN, searchFUN, searchArgsFUN, ..., exact=TRUE)
+    last=k, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, 
+    exact=TRUE, warn.ties=TRUE, raw.index=FALSE, 
+    buildFUN, pathFUN, searchFUN, searchArgsFUN, ...) 
 # Provides an R template for different methods for exact neighbor searching,
 # assuming that all of them involve rearranging columns in the index.
 #
@@ -15,7 +16,7 @@
         job.id <- ind.out$index
         reorder <- ind.out$reorder
 
-        common.args <- list(X=bndata(precomputed))
+        common.args <- list(X=bndata(precomputed), warn_ties=warn.ties)
     } else {
         if (is.null(precomputed)) {
             precomputed <- buildFUN(X, ...)
