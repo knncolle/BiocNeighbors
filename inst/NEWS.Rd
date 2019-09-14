@@ -3,7 +3,9 @@
 \encoding{UTF-8}
 
 \section{Version 1.4.0}{\itemize{
-\item Allow memory-efficient retrieval of the distance to the k-th neighbor only.
+\item Allow memory-efficient retrieval of the distance to the furthest neighbors.
+
+\item Added a warn.ties= argument to turn off tie-related warnings in the KMKNN and VP tree algorithms.
 }}
 
 \section{Version 1.2.0}{\itemize{
