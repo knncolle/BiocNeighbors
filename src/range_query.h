@@ -17,6 +17,8 @@ Rcpp::RObject range_query_exact(Searcher& finder, Rcpp::NumericMatrix query,
     const Rcpp::NumericVector thresholds=check_distances(dist_thresh, nobs);
 
     // Getting the output mode.
+    bool get_counts=!store_neighbors && !store_distances;
+
     Rcpp::List out_dist;
     if (store_distances) {
         out_dist=Rcpp::List(nobs);
@@ -26,12 +28,17 @@ Rcpp::RObject range_query_exact(Searcher& finder, Rcpp::NumericMatrix query,
     if (store_neighbors) {
         out_idx=Rcpp::List(nobs);
     }
-        
+
+    Rcpp::IntegerVector out_counts;
+    if (get_counts) {
+        out_counts=Rcpp::IntegerVector(nobs);
+    }
+
     // Iterating across cells, finding NNs and storing distances or neighbors.
     // Don't use for range ver qIt, as this fails for zero-dimension inputs.
     auto qIt=Query.begin(); 
     for (VecSize_t ix=0; ix<nobs; ++ix, qIt+=ndim) {
-        finder.find_neighbors(qIt, thresholds[ix], store_neighbors, store_distances); 
+        finder.find_neighbors(qIt, thresholds[ix], store_neighbors || get_counts, store_distances); 
 
         if (store_neighbors) {
             const auto& neighbors=finder.get_neighbors();
@@ -44,6 +51,15 @@ Rcpp::RObject range_query_exact(Searcher& finder, Rcpp::NumericMatrix query,
             const auto& distances=finder.get_distances();
             out_dist[ix]=Rcpp::NumericVector(distances.begin(), distances.end());
         }
+
+        if (get_counts) {
+            const auto& neighbors=finder.get_neighbors();
+            out_counts[ix]=neighbors.size();
+        }
+    }
+
+    if (get_counts) {
+        return out_counts;
     }
 
     Rcpp::List output(2, R_NilValue);
