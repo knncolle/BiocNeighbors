@@ -6,6 +6,8 @@
 \item Allow memory-efficient retrieval of the distance to the furthest neighbors.
 
 \item Added a warn.ties= argument to turn off tie-related warnings in the KMKNN and VP tree algorithms.
+
+\item Return neighbor counts in rangeFind*() and rangeQuery*() functions when get.index=FALSE and get.distance=FALSE.
 }}
 
 \section{Version 1.2.0}{\itemize{
