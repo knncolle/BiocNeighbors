@@ -64,7 +64,7 @@ test_that("rangeFindVptree() behaves correctly with alternative options", {
 })
 
 set.seed(1003001)
-test_that("rangeFindKmknn() works with euclidean distances", {
+test_that("rangeFindVptree() works with Manhattan distances", {
     nobs <- 1000
     for (ndim in c(1, 5, 10)) {
         for (d in c(0.1, 0.5, 1)) {
@@ -72,6 +72,23 @@ test_that("rangeFindKmknn() works with euclidean distances", {
             ref <- refFindNeighbors(X, d, type="manhattan")
             out <- rangeFindVptree(X, threshold=d, distance="Manhattan")
             expect_identical_re(out, ref)
+        }
+    }
+})
+
+set.seed(1003002)
+test_that("rangeFindVptree() works with counting only", {
+    nobs <- 1000
+    for (ndim in c(1, 5, 10)) {
+        for (d in c(0.1, 0.5, 1)) {
+            X <- matrix(runif(nobs * ndim), nrow=nobs)
+            ref <- rangeFindVptree(X, threshold=d)
+            out <- rangeFindVptree(X, threshold=d, get.index=FALSE, get.distance=FALSE)
+            expect_identical(out, lengths(ref$index))
+
+            subset <- sample(nobs, 200)
+            out.sub <- rangeFindVptree(X, subset=subset, threshold=d, get.index=FALSE, get.distance=FALSE)
+            expect_identical(out[subset], out.sub)
         }
     }
 })

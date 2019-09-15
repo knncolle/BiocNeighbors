@@ -62,15 +62,15 @@ Aaron Lun
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
 Z <- matrix(rnorm(10000), ncol=20)
-k.out <- queryNeighbors(Y, Z, threshold=1)
-v.out <- queryNeighbors(Y, Z, threshold=1, BNPARAM=VptreeParam())
+k.out <- queryNeighbors(Y, Z, threshold=3)
+v.out <- queryNeighbors(Y, Z, threshold=3, BNPARAM=VptreeParam())
 
 k.dex <- buildKmknn(Y)
-k.out2 <- queryNeighbors(Y,Z,  threshold=1, BNINDEX=k.dex)
-k.out3 <- queryNeighbors(Y,Z,  threshold=1, BNINDEX=k.dex, BNPARAM=KmknnParam())
+k.out2 <- queryNeighbors(Y,Z,  threshold=3, BNINDEX=k.dex)
+k.out3 <- queryNeighbors(Y,Z,  threshold=3, BNINDEX=k.dex, BNPARAM=KmknnParam())
 
 v.dex <- buildVptree(Y)
-v.out2 <- queryNeighbors(Y,Z,  threshold=1, BNINDEX=v.dex)
-v.out3 <- queryNeighbors(Y,Z,  threshold=1, BNINDEX=v.dex, BNPARAM=VptreeParam())
+v.out2 <- queryNeighbors(Y,Z,  threshold=3, BNINDEX=v.dex)
+v.out3 <- queryNeighbors(Y,Z,  threshold=3, BNINDEX=v.dex, BNPARAM=VptreeParam())
 }
 

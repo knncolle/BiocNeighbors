@@ -91,6 +91,27 @@ test_that("rangeQueryKmknn() works with Manhattan distances", {
     }
 })
 
+set.seed(1003002)
+test_that("rangeQueryKmknn() works with counting only", {
+    ndata <- 1000
+    nquery <- 100
+
+    for (ndim in c(1, 5, 10)) {
+        for (d in c(0.1, 0.5, 1)) { 
+            X <- matrix(runif(ndata * ndim), nrow=ndata)
+            Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+            ref <- rangeQueryKmknn(X, threshold=d, query=Y) 
+            out <- rangeQueryKmknn(X, threshold=d, query=Y, get.distance=FALSE, get.index=FALSE) 
+            expect_identical(out, lengths(ref$index))
+
+            subset <- sample(nquery, 50)
+            out.sub <- rangeQueryKmknn(X, subset=subset, threshold=d, query=Y, get.index=FALSE, get.distance=FALSE)
+            expect_identical(out[subset], out.sub)
+        }
+    }
+})
+
 set.seed(100301)
 test_that("rangeQueryKmknn() behaves correctly with parallelization", {
     library(BiocParallel)

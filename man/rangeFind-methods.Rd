@@ -44,8 +44,10 @@ If \code{threshold} is a vector, each entry is assumed to specify a (possibly di
 If \code{subset} is also specified, each entry is assumed to specify a threshold for each point in \code{subset}.
 An error will be raised if \code{threshold} is a vector of incorrect length.
 
-Turning off \code{get.index} or \code{get.distance} may provide a slight speed boost when these returned values are not of interest.
-Using \code{BPPARAM} will also split the search by query points, which usually provides a linear increase in speed.
+Turning off \code{get.index} or \code{get.distance} will provide a slight speed boost and reduce memory usage when these returned values are not of interest.
+If both \code{get.index=FALSE} and \code{get.distance=FALSE}, an integer vector containing the number of neighbors to each point is returned instead, which is more memory efficient when the identities of/distances to the neighbors are not required.
+
+Using \code{BPPARAM} will parallelize the search across points, which usually provides a linear increase in speed.
 
 If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} (e.g., with \code{\link{buildKmknn}}).
 The resulting BiocNeighborIndex object can be supplied as \code{precomputed} to multiple function calls, avoiding the need to repeat index construction in each call.
@@ -63,8 +65,9 @@ A list is returned containing:
         This is a list of numeric vectors where each entry corresponds to a point (as above) and contains the distances of the neighbors from \eqn{i}.
         Elements of each vector in \code{distance} match to elements of the corresponding vector in \code{index}.
 }
+If \code{get.index=FALSE} and \code{get.distance=FALSE}, an integer vector is returned instead containing the number of neighbors to \eqn{i}.
 
-If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
+If \code{subset} is not \code{NULL}, each entry of the above lists corresponds to a point in the subset, in the same order as supplied in \code{subset}.
 
 See \code{?"\link{BiocNeighbors-raw-index}"} for an explanation of the output when \code{raw.index=TRUE}.
 }
@@ -81,7 +84,7 @@ See \code{?"\link{BiocNeighbors-algorithms}"} for an overview of the available a
 
 \examples{
 Y <- matrix(runif(100000), ncol=20)
-out <- rangeFindKmknn(Y, threshold=1)
-out2 <- rangeFindVptree(Y, threshold=1)
+out <- rangeFindKmknn(Y, threshold=3)
+out2 <- rangeFindVptree(Y, threshold=3)
 }
 
