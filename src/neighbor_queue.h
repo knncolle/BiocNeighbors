@@ -109,12 +109,11 @@ public:
         }
 
         if (ties) {
-            constexpr double TOLERANCE=1.00000001;
             for (size_t d=1; d<distances.size(); ++d) {
-                if (distances[d-1] * TOLERANCE >= distances[d]) {
+                if (distances[d-1] >= distances[d]) {
                     // Setting ties to false, as we've found the first instance.
                     ties=false;
-                    Rcpp::warning("tied distances detected in nearest-neighbor calculation");
+                    Rcpp::warning("detected tied distances to neighbors, see ?'BiocNeighbors-ties'");
                     break;
                 }
             }
