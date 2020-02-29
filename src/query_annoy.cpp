@@ -1,3 +1,5 @@
+#ifdef USE_ANNOY
+
 #include "annoy.h"
 #include "query_knn.h"
 
@@ -13,3 +15,5 @@ Rcpp::RObject query_annoy (Rcpp::NumericMatrix query, int ndims, std::string fna
         return query_knn(nn_finder, query, nn, get_index, get_distance, last);
     }
 }
+
+#endif

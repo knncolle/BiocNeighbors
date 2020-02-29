@@ -92,3 +92,10 @@ void Annoy<Distance>::find_nearest_neighbors(const double* query, NumNeighbors_t
 
 template class Annoy<Manhattan>;
 template class Annoy<Euclidean>;
+
+#define USE_ANNOY
+#include "build_annoy.cpp"
+
+#include "query_annoy.cpp"
+
+#include "find_annoy.cpp"
