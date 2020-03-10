@@ -1,5 +1,3 @@
-#ifdef USE_ANNOY
-
 #include "annoy.h"
 #include "find_knn.h"
 
@@ -15,5 +13,3 @@ Rcpp::RObject find_annoy (Rcpp::IntegerVector to_check, int ndims, std::string f
         return find_knn(searcher, to_check, nn, get_index, get_distance, last);
     }
 }
-
-#endif
