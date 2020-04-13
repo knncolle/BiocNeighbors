@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "neighbor_queue.h"
 
+#include <vector>
 #include <deque>
 
 template<class Distance>
@@ -35,8 +36,8 @@ protected:
 
     // Cluster-related data members.
     const Rcpp::NumericMatrix centers;
-    std::deque<CellIndex_t> clust_start, clust_nobs;
-    std::deque<Rcpp::NumericVector> clust_dist;
+    std::vector<CellIndex_t> clust_start, clust_nobs;
+    std::vector<Rcpp::NumericVector> clust_dist;
 };
 
 #endif
