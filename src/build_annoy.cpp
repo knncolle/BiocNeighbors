@@ -1,4 +1,3 @@
-#ifdef USE_ANNOY
 #include "annoy.h"
 
 template<class Distance>
@@ -28,5 +27,3 @@ Rcpp::RObject build_annoy(Rcpp::NumericMatrix mat, int ntrees, std::string fname
         return build_annoy_internal<Euclidean>(mat, ntrees, fname);
     }
 }
-
-#endif
