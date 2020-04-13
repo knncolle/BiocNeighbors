@@ -1,6 +1,8 @@
 # Tests queryAnnoy().
 # library(BiocNeighbors); library(testthat); source("setup.R"); source("test-query-annoy.R")
 
+skip_on_os("windows") # ??? Who knows. 32-bit, huh.
+
 set.seed(1001)
 test_that("queryAnnoy() behaves correctly with queries", {
     library(RcppAnnoy)

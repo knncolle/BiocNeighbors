@@ -1,10 +1,11 @@
 # Tests findAnnoy().
 # library(BiocNeighbors); library(testthat); source("setup.R"); source("test-find-annoy.R")
 
-library(RcppAnnoy)
+skip_on_os("windows") # ??? Who knows. 32-bit, huh.
 
 set.seed(7001)
 test_that("findAnnoy() behaves correctly on simple inputs", {
+    library(RcppAnnoy)
     REFFUN <- function(X, k, ntrees=50) {
         a <- new(AnnoyEuclidean, ncol(X))
         for (i in seq_len(nrow(X))) {
