@@ -1,8 +1,6 @@
 # Tests queryAnnoy().
 # library(BiocNeighbors); library(testthat); source("setup.R"); source("test-query-annoy.R")
 
-skip_on_os("windows") # ??? Who knows. 32-bit, huh.
-
 set.seed(1001)
 test_that("queryAnnoy() behaves correctly with queries", {
     library(RcppAnnoy)
@@ -15,10 +13,9 @@ test_that("queryAnnoy() behaves correctly with queries", {
     
         collected.dex <- collected.dist <- vector("list", nrow(X))
         for (i in seq_len(nrow(Y))) {
-            available <- a$getNNsByVector(Y[i,], k) + 1L
-            available <- head(available, k)
-            collected.dex[[i]] <- available
-            collected.dist[[i]] <- sqrt(colSums((Y[i,] - t(X[available,,drop=FALSE]))^2))
+            available <- a$getNNsByVectorList(Y[i,], k, search_k=-1, include_distances=TRUE)
+            collected.dex[[i]] <- available$item + 1L
+            collected.dist[[i]] <- available$distance
         }
     
         list(index=do.call(rbind, collected.dex),
@@ -36,7 +33,7 @@ test_that("queryAnnoy() behaves correctly with queries", {
             out <- queryAnnoy(X, k=k, query=Y)
             ref <- REFFUN(X, Y, k=k)
             expect_identical(out$index, ref$index)
-            expect_equal(out$distance, ref$distance, tol=1e-6) # imprecision due to RcppAnnoy's use of floats.
+            expect_equal(out$distance, ref$distance)
         }
     }
 })
@@ -111,10 +108,9 @@ test_that("queryAnnoy() behaves correctly with Manhattan distances", {
 
         collected.dex <- collected.dist <- vector("list", nrow(X))
         for (i in seq_len(nrow(Y))) {
-            available <- a$getNNsByVector(Y[i,], k) + 1L
-            available <- head(available, k)
-            collected.dex[[i]] <- available
-            collected.dist[[i]] <- colSums(abs(Y[i,] - t(X[available,,drop=FALSE])))
+            available <- a$getNNsByVectorList(Y[i,], k, search_k=-1, include_distances=TRUE)
+            collected.dex[[i]] <- available$item + 1L
+            collected.dist[[i]] <- available$distance
         }
 
         list(index=do.call(rbind, collected.dex),
@@ -132,7 +128,7 @@ test_that("queryAnnoy() behaves correctly with Manhattan distances", {
             out <- queryAnnoy(X, k=k, query=Y, distance="Manhattan")
             ref <- REFFUN(X, Y, k=k)
             expect_identical(out$index, ref$index)
-            expect_equal(out$distance, ref$distance, tol=1e-6) # imprecision due to RcppAnnoy's use of floats.
+            expect_equal(out$distance, ref$distance)
         }
     }
 })

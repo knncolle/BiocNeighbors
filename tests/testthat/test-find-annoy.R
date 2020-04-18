@@ -1,8 +1,6 @@
 # Tests findAnnoy().
 # library(BiocNeighbors); library(testthat); source("setup.R"); source("test-find-annoy.R")
 
-skip_on_os("windows") # ??? Who knows. 32-bit, huh.
-
 set.seed(7001)
 test_that("findAnnoy() behaves correctly on simple inputs", {
     library(RcppAnnoy)
@@ -15,12 +13,15 @@ test_that("findAnnoy() behaves correctly on simple inputs", {
     
         collected.dex <- collected.dist <- vector("list", nrow(X))
         for (i in seq_len(nrow(X))) {
-            available <- a$getNNsByItem(i-1L, k+1) + 1L
-            available <- setdiff(available, i) # ignore self.
-            available <- head(available, k)
-    
-            collected.dex[[i]] <- available
-            collected.dist[[i]] <- sqrt(colSums((X[i,] - t(X[available,,drop=FALSE]))^2))
+            available <- a$getNNsByItemList(i-1L, k+1, search_k=-1, include_distances=TRUE)
+            
+            # Ignore self, but otherwise take the top 'k'.
+            available$item <- available$item + 1L
+            keep <- available$item!=i
+            available <- lapply(available, function(x) head(x[keep], k))
+
+            collected.dex[[i]] <- available$item
+            collected.dist[[i]] <- available$distance
         }
     
         list(index=do.call(rbind, collected.dex),
@@ -34,7 +35,7 @@ test_that("findAnnoy() behaves correctly on simple inputs", {
             out <- findAnnoy(X, k=k)
             ref <- REFFUN(X, k=k)
             expect_identical(out$index, ref$index)
-            expect_equal(out$distance, ref$distance, tol=1e-6) # due to lower precision in Annoy.
+            expect_equal(out$distance, ref$distance)
         }
     }
 })
@@ -101,12 +102,14 @@ test_that("findAnnoy() behaves correctly with Manhattan distances", {
     
         collected.dex <- collected.dist <- vector("list", nrow(X))
         for (i in seq_len(nrow(X))) {
-            available <- a$getNNsByItem(i-1L, k+1) + 1L
-            available <- setdiff(available, i) # ignore self.
-            available <- head(available, k)
-    
-            collected.dex[[i]] <- available
-            collected.dist[[i]] <- colSums(abs(X[i,] - t(X[available,,drop=FALSE])))
+            available <- a$getNNsByItemList(i-1L, k+1, search_k=-1, include_distances=TRUE)
+
+            available$item <- available$item + 1L
+            keep <- available$item!=i
+            available <- lapply(available, function(x) head(x[keep], k))
+
+            collected.dex[[i]] <- available$item
+            collected.dist[[i]] <- available$distance
         }
     
         list(index=do.call(rbind, collected.dex),
@@ -120,7 +123,7 @@ test_that("findAnnoy() behaves correctly with Manhattan distances", {
             out <- findAnnoy(X, k=k, distance="Manhattan")
             ref <- REFFUN(X, k=k)
             expect_identical(out$index, ref$index)
-            expect_equal(out$distance, ref$distance, tol=1e-6) # due to lower precision in Annoy.
+            expect_equal(out$distance, ref$distance) 
         }
     }
 })
