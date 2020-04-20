@@ -1,6 +1,8 @@
 # Tests findAnnoy().
 # library(BiocNeighbors); library(testthat); source("setup.R"); source("test-find-annoy.R")
 
+if (.Platform$r_arch=="i386") skip("giving up!")
+
 set.seed(7001)
 test_that("findAnnoy() behaves correctly on simple inputs", {
     library(RcppAnnoy)
