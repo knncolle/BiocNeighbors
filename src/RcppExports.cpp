@@ -61,6 +61,38 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// find_full
+Rcpp::RObject find_full(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix X, std::string dtype, int nn, bool get_index, bool get_distance, int last, bool warn_ties);
+RcppExport SEXP _BiocNeighbors_find_full(SEXP to_checkSEXP, SEXP XSEXP, SEXP dtypeSEXP, SEXP nnSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP, SEXP lastSEXP, SEXP warn_tiesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type to_check(to_checkSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type X(XSEXP);
+    Rcpp::traits::input_parameter< std::string >::type dtype(dtypeSEXP);
+    Rcpp::traits::input_parameter< int >::type nn(nnSEXP);
+    Rcpp::traits::input_parameter< bool >::type get_index(get_indexSEXP);
+    Rcpp::traits::input_parameter< bool >::type get_distance(get_distanceSEXP);
+    Rcpp::traits::input_parameter< int >::type last(lastSEXP);
+    Rcpp::traits::input_parameter< bool >::type warn_ties(warn_tiesSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_full(to_check, X, dtype, nn, get_index, get_distance, last, warn_ties));
+    return rcpp_result_gen;
+END_RCPP
+}
+// range_find_full
+Rcpp::RObject range_find_full(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix X, std::string dtype, Rcpp::NumericVector dist_thresh, bool get_index, bool get_distance);
+RcppExport SEXP _BiocNeighbors_range_find_full(SEXP to_checkSEXP, SEXP XSEXP, SEXP dtypeSEXP, SEXP dist_threshSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type to_check(to_checkSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type X(XSEXP);
+    Rcpp::traits::input_parameter< std::string >::type dtype(dtypeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type dist_thresh(dist_threshSEXP);
+    Rcpp::traits::input_parameter< bool >::type get_index(get_indexSEXP);
+    Rcpp::traits::input_parameter< bool >::type get_distance(get_distanceSEXP);
+    rcpp_result_gen = Rcpp::wrap(range_find_full(to_check, X, dtype, dist_thresh, get_index, get_distance));
+    return rcpp_result_gen;
+END_RCPP
+}
 // find_hnsw
 Rcpp::RObject find_hnsw(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix vals, std::string fname, int ef_search, std::string dtype, int nn, bool get_index, bool get_distance, int last);
 RcppExport SEXP _BiocNeighbors_find_hnsw(SEXP to_checkSEXP, SEXP valsSEXP, SEXP fnameSEXP, SEXP ef_searchSEXP, SEXP dtypeSEXP, SEXP nnSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP, SEXP lastSEXP) {
@@ -261,6 +293,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BiocNeighbors_build_hnsw", (DL_FUNC) &_BiocNeighbors_build_hnsw, 5},
     {"_BiocNeighbors_build_vptree", (DL_FUNC) &_BiocNeighbors_build_vptree, 2},
     {"_BiocNeighbors_find_annoy", (DL_FUNC) &_BiocNeighbors_find_annoy, 9},
+    {"_BiocNeighbors_find_full", (DL_FUNC) &_BiocNeighbors_find_full, 8},
+    {"_BiocNeighbors_range_find_full", (DL_FUNC) &_BiocNeighbors_range_find_full, 6},
     {"_BiocNeighbors_find_hnsw", (DL_FUNC) &_BiocNeighbors_find_hnsw, 9},
     {"_BiocNeighbors_find_kmknn", (DL_FUNC) &_BiocNeighbors_find_kmknn, 10},
     {"_BiocNeighbors_range_find_kmknn", (DL_FUNC) &_BiocNeighbors_range_find_kmknn, 8},

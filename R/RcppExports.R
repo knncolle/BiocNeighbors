@@ -17,6 +17,14 @@ find_annoy <- function(to_check, ndims, fname, search_mult, dtype, nn, get_index
     .Call('_BiocNeighbors_find_annoy', PACKAGE = 'BiocNeighbors', to_check, ndims, fname, search_mult, dtype, nn, get_index, get_distance, last)
 }
 
+find_full <- function(to_check, X, dtype, nn, get_index, get_distance, last, warn_ties) {
+    .Call('_BiocNeighbors_find_full', PACKAGE = 'BiocNeighbors', to_check, X, dtype, nn, get_index, get_distance, last, warn_ties)
+}
+
+range_find_full <- function(to_check, X, dtype, dist_thresh, get_index, get_distance) {
+    .Call('_BiocNeighbors_range_find_full', PACKAGE = 'BiocNeighbors', to_check, X, dtype, dist_thresh, get_index, get_distance)
+}
+
 find_hnsw <- function(to_check, vals, fname, ef_search, dtype, nn, get_index, get_distance, last) {
     .Call('_BiocNeighbors_find_hnsw', PACKAGE = 'BiocNeighbors', to_check, vals, fname, ef_search, dtype, nn, get_index, get_distance, last)
 }
