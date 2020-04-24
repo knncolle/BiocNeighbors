@@ -49,6 +49,14 @@ query_annoy <- function(query, ndims, fname, search_mult, dtype, nn, get_index, 
     .Call('_BiocNeighbors_query_annoy', PACKAGE = 'BiocNeighbors', query, ndims, fname, search_mult, dtype, nn, get_index, get_distance, last)
 }
 
+query_full <- function(query, X, dtype, nn, get_index, get_distance, last, warn_ties) {
+    .Call('_BiocNeighbors_query_full', PACKAGE = 'BiocNeighbors', query, X, dtype, nn, get_index, get_distance, last, warn_ties)
+}
+
+range_query_full <- function(query, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance) {
+    .Call('_BiocNeighbors_range_query_full', PACKAGE = 'BiocNeighbors', query, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance)
+}
+
 query_hnsw <- function(query, vals, fname, ef_search, dtype, nn, get_index, get_distance, last) {
     .Call('_BiocNeighbors_query_hnsw', PACKAGE = 'BiocNeighbors', query, vals, fname, ef_search, dtype, nn, get_index, get_distance, last)
 }
