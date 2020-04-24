@@ -17,12 +17,12 @@ find_annoy <- function(to_check, ndims, fname, search_mult, dtype, nn, get_index
     .Call('_BiocNeighbors_find_annoy', PACKAGE = 'BiocNeighbors', to_check, ndims, fname, search_mult, dtype, nn, get_index, get_distance, last)
 }
 
-find_full <- function(to_check, X, dtype, nn, get_index, get_distance, last, warn_ties) {
-    .Call('_BiocNeighbors_find_full', PACKAGE = 'BiocNeighbors', to_check, X, dtype, nn, get_index, get_distance, last, warn_ties)
+find_exhaustive <- function(to_check, X, dtype, nn, get_index, get_distance, last, warn_ties) {
+    .Call('_BiocNeighbors_find_exhaustive', PACKAGE = 'BiocNeighbors', to_check, X, dtype, nn, get_index, get_distance, last, warn_ties)
 }
 
-range_find_full <- function(to_check, X, dtype, dist_thresh, get_index, get_distance) {
-    .Call('_BiocNeighbors_range_find_full', PACKAGE = 'BiocNeighbors', to_check, X, dtype, dist_thresh, get_index, get_distance)
+range_find_exhaustive <- function(to_check, X, dtype, dist_thresh, get_index, get_distance) {
+    .Call('_BiocNeighbors_range_find_exhaustive', PACKAGE = 'BiocNeighbors', to_check, X, dtype, dist_thresh, get_index, get_distance)
 }
 
 find_hnsw <- function(to_check, vals, fname, ef_search, dtype, nn, get_index, get_distance, last) {
@@ -49,12 +49,12 @@ query_annoy <- function(query, ndims, fname, search_mult, dtype, nn, get_index, 
     .Call('_BiocNeighbors_query_annoy', PACKAGE = 'BiocNeighbors', query, ndims, fname, search_mult, dtype, nn, get_index, get_distance, last)
 }
 
-query_full <- function(query, X, dtype, nn, get_index, get_distance, last, warn_ties) {
-    .Call('_BiocNeighbors_query_full', PACKAGE = 'BiocNeighbors', query, X, dtype, nn, get_index, get_distance, last, warn_ties)
+query_exhaustive <- function(query, X, dtype, nn, get_index, get_distance, last, warn_ties) {
+    .Call('_BiocNeighbors_query_exhaustive', PACKAGE = 'BiocNeighbors', query, X, dtype, nn, get_index, get_distance, last, warn_ties)
 }
 
-range_query_full <- function(query, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance) {
-    .Call('_BiocNeighbors_range_query_full', PACKAGE = 'BiocNeighbors', query, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance)
+range_query_exhaustive <- function(query, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance) {
+    .Call('_BiocNeighbors_range_query_exhaustive', PACKAGE = 'BiocNeighbors', query, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance)
 }
 
 query_hnsw <- function(query, vals, fname, ef_search, dtype, nn, get_index, get_distance, last) {

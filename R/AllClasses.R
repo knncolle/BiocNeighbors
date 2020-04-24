@@ -4,7 +4,7 @@
 setClass("BiocNeighborParam", contains="VIRTUAL", slots=c(distance="character"))
 
 #' @export
-setClass("FullParam", contains="BiocNeighborParam")
+setClass("ExhaustiveParam", contains="BiocNeighborParam")
 
 #' @export
 setClass("KmknnParam", contains="BiocNeighborParam", slots=c(kmeans.args="list"))
@@ -25,7 +25,7 @@ setClass("HnswParam", contains="BiocNeighborParam", slots=c(nlinks="integer", ef
 setClass("BiocNeighborIndex", contains="VIRTUAL", slots=c(data="matrix", NAMES="character_OR_NULL", distance="character"))
 
 #' @export
-setClass("FullIndex", contains="BiocNeighborIndex", slots=c(order="integer"))
+setClass("ExhaustiveIndex", contains="BiocNeighborIndex", slots=c(order="integer"))
 
 #' @export
 setClass("KmknnIndex", contains="BiocNeighborIndex", slots=c(centers="matrix", info="list", order="integer"))
