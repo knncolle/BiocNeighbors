@@ -62,3 +62,12 @@ setMethod("queryKNN", c("HnswIndex", "missing"), .QUERYKNN_GENERATOR_NOX(queryHn
 
 #' @export
 setMethod("queryKNN", c("HnswIndex", "HnswParam"), .QUERYKNN_GENERATOR_NOX(queryHnsw))
+
+#' @export
+setMethod("queryKNN", c("missing", "FullParam"), .QUERYKNN_GENERATOR(queryFull))
+
+#' @export
+setMethod("queryKNN", c("FullIndex", "missing"), .QUERYKNN_GENERATOR_NOX(queryFull))
+
+#' @export
+setMethod("queryKNN", c("FullIndex", "FullParam"), .QUERYKNN_GENERATOR_NOX(queryFull))

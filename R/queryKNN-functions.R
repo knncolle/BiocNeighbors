@@ -75,3 +75,23 @@ queryVptree <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
         exact=TRUE, warn.ties=warn.ties, raw.index=raw.index, 
         buildFUN=buildVptree, searchFUN=query_vptree, searchArgsFUN=.find_vptree_args, ...)
 }
+
+########
+# Full #
+########
+
+#' @export
+#' @importFrom BiocParallel SerialParam bpmapply
+queryFull <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k, 
+    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, 
+    raw.index=FALSE, warn.ties=TRUE, ...)
+# Identifies nearest neighbours in 'X' from a query set.
+#
+# created 21 April 2020
+{
+    .template_query_knn(X, query, k, get.index=get.index, get.distance=get.distance, 
+        last=last, BPPARAM=BPPARAM, precomputed=precomputed, transposed=transposed, subset=subset, 
+        exact=TRUE, warn.ties=warn.ties, raw.index=raw.index, 
+        buildFUN=buildFull, searchFUN=query_full, searchArgsFUN=.find_full_args, ...)
+}
+
