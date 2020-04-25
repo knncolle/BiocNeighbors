@@ -66,7 +66,6 @@ void Exhaustive<Distance>::find_nearest_neighbors (const double* current, NumNei
     return;
 }
 
-/****************** Convex search methods *********************/
 template<class Distance>
 void Exhaustive<Distance>::search_all (const double* current, double threshold, const bool index, const bool dist) {
     neighbors.clear();
