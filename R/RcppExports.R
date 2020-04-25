@@ -53,8 +53,8 @@ query_exhaustive <- function(query, X, dtype, nn, get_index, get_distance, last,
     .Call('_BiocNeighbors_query_exhaustive', PACKAGE = 'BiocNeighbors', query, X, dtype, nn, get_index, get_distance, last, warn_ties)
 }
 
-range_query_exhaustive <- function(query, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance) {
-    .Call('_BiocNeighbors_range_query_exhaustive', PACKAGE = 'BiocNeighbors', query, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance)
+range_query_exhaustive <- function(query, X, dtype, dist_thresh, get_index, get_distance) {
+    .Call('_BiocNeighbors_range_query_exhaustive', PACKAGE = 'BiocNeighbors', query, X, dtype, dist_thresh, get_index, get_distance)
 }
 
 query_hnsw <- function(query, vals, fname, ef_search, dtype, nn, get_index, get_distance, last) {

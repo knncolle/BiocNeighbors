@@ -217,19 +217,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // range_query_exhaustive
-Rcpp::RObject range_query_exhaustive(Rcpp::NumericMatrix query, Rcpp::NumericMatrix X, Rcpp::NumericMatrix clust_centers, Rcpp::List clust_info, std::string dtype, Rcpp::NumericVector dist_thresh, bool get_index, bool get_distance);
-RcppExport SEXP _BiocNeighbors_range_query_exhaustive(SEXP querySEXP, SEXP XSEXP, SEXP clust_centersSEXP, SEXP clust_infoSEXP, SEXP dtypeSEXP, SEXP dist_threshSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP) {
+Rcpp::RObject range_query_exhaustive(Rcpp::NumericMatrix query, Rcpp::NumericMatrix X, std::string dtype, Rcpp::NumericVector dist_thresh, bool get_index, bool get_distance);
+RcppExport SEXP _BiocNeighbors_range_query_exhaustive(SEXP querySEXP, SEXP XSEXP, SEXP dtypeSEXP, SEXP dist_threshSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type query(querySEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type X(XSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type clust_centers(clust_centersSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type clust_info(clust_infoSEXP);
     Rcpp::traits::input_parameter< std::string >::type dtype(dtypeSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type dist_thresh(dist_threshSEXP);
     Rcpp::traits::input_parameter< bool >::type get_index(get_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type get_distance(get_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(range_query_exhaustive(query, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance));
+    rcpp_result_gen = Rcpp::wrap(range_query_exhaustive(query, X, dtype, dist_thresh, get_index, get_distance));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -336,7 +334,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BiocNeighbors_range_find_vptree", (DL_FUNC) &_BiocNeighbors_range_find_vptree, 7},
     {"_BiocNeighbors_query_annoy", (DL_FUNC) &_BiocNeighbors_query_annoy, 9},
     {"_BiocNeighbors_query_exhaustive", (DL_FUNC) &_BiocNeighbors_query_exhaustive, 8},
-    {"_BiocNeighbors_range_query_exhaustive", (DL_FUNC) &_BiocNeighbors_range_query_exhaustive, 8},
+    {"_BiocNeighbors_range_query_exhaustive", (DL_FUNC) &_BiocNeighbors_range_query_exhaustive, 6},
     {"_BiocNeighbors_query_hnsw", (DL_FUNC) &_BiocNeighbors_query_hnsw, 9},
     {"_BiocNeighbors_query_kmknn", (DL_FUNC) &_BiocNeighbors_query_kmknn, 10},
     {"_BiocNeighbors_range_query_kmknn", (DL_FUNC) &_BiocNeighbors_range_query_kmknn, 8},
