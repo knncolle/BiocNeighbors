@@ -17,7 +17,7 @@ Rcpp::RObject query_exhaustive(Rcpp::NumericMatrix query, Rcpp::NumericMatrix X,
 }
 
 // [[Rcpp::export(rng=false)]]
-Rcpp::RObject range_query_exhaustive(Rcpp::NumericMatrix query, Rcpp::NumericMatrix X, Rcpp::NumericMatrix clust_centers, Rcpp::List clust_info,
+Rcpp::RObject range_query_exhaustive(Rcpp::NumericMatrix query, Rcpp::NumericMatrix X,
     std::string dtype, Rcpp::NumericVector dist_thresh, bool get_index, bool get_distance)
 {
     if (dtype=="Manhattan") {
