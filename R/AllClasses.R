@@ -25,7 +25,7 @@ setClass("HnswParam", contains="BiocNeighborParam", slots=c(nlinks="integer", ef
 setClass("BiocNeighborIndex", contains="VIRTUAL", slots=c(data="matrix", NAMES="character_OR_NULL", distance="character"))
 
 #' @export
-setClass("ExhaustiveIndex", contains="BiocNeighborIndex", slots=c(order="integer"))
+setClass("ExhaustiveIndex", contains="BiocNeighborIndex")
 
 #' @export
 setClass("KmknnIndex", contains="BiocNeighborIndex", slots=c(centers="matrix", info="list", order="integer"))

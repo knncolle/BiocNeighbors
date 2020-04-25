@@ -15,5 +15,5 @@ buildExhaustive <- function(X, transposed=FALSE, distance=c("Euclidean", "Manhat
     }
     distance <- match.arg(distance)
 
-    ExhaustiveIndex(data=tX, order=seq_len(ncol(tX)), NAMES=colnames(tX), distance=distance)
+    ExhaustiveIndex(data=tX, NAMES=colnames(tX), distance=distance)
 }

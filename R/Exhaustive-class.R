@@ -8,12 +8,6 @@ ExhaustiveParam <- function(..., distance="Euclidean") {
     new("ExhaustiveParam", distance=distance)
 }
 
-#' @export
-setMethod("show", "ExhaustiveParam", function(object) {
-    callNextMethod()
-})
-
-
 setMethod("spill_args", "ExhaustiveParam", function(x) {
     c(list(distance=bndistance(x)))
 })
@@ -25,7 +19,7 @@ setMethod("spill_args", "ExhaustiveParam", function(x) {
 #' @export
 #' @importFrom methods new
 ExhaustiveIndex <- function(data, order, NAMES=NULL, distance="Euclidean") {
-    new("ExhaustiveIndex", data=data, order=order, NAMES=NAMES, distance=distance)
+    new("ExhaustiveIndex", data=data, NAMES=NAMES, distance=distance)
 }
 
 
@@ -51,5 +45,5 @@ setMethod("show", "ExhaustiveIndex", function(object) {
 
 
 #' @export
-setMethod("bnorder", "ExhaustiveIndex", function(x) x@order)
+setMethod("bnorder", "ExhaustiveIndex", function(x) seq_len(ncol(bndata(x))))
 
