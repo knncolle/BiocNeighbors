@@ -15,6 +15,7 @@ setMethod("spill_args", "ExhaustiveParam", function(x) {
 #######################################
 ###### ExhaustiveIndex methods ########
 #######################################
+
 #' The ExhaustiveIndex class
 #'
 #' A class to hold the data for exact nearest neighbor identification. 
@@ -52,13 +53,11 @@ setValidity2("ExhaustiveIndex", function(object) {
 })
 
 
-#' @aliases show,ExhaustiveIndex-method
-#' @export
+#' @exportMethod show
 setMethod("show", "ExhaustiveIndex", function(object) {
     callNextMethod()
 })
 
-#' @aliases bnorder,ExhaustiveIndex-method
-#' @export
+#' @exportMethod bnorder
 setMethod("bnorder", "ExhaustiveIndex", function(x) seq_len(ncol(bndata(x))))
 

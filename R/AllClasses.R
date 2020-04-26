@@ -3,8 +3,7 @@
 #' @export
 setClass("BiocNeighborParam", contains="VIRTUAL", slots=c(distance="character"))
 
-#' @aliases ExhaustiveParam-class
-#' @export
+#' @exportClass
 setClass("ExhaustiveParam", contains="BiocNeighborParam")
 
 #' @export
@@ -25,8 +24,7 @@ setClass("HnswParam", contains="BiocNeighborParam", slots=c(nlinks="integer", ef
 #' @importClassesFrom S4Vectors character_OR_NULL
 setClass("BiocNeighborIndex", contains="VIRTUAL", slots=c(data="matrix", NAMES="character_OR_NULL", distance="character"))
 
-#' @alias ExhaustiveIndex-class
-#' @export
+#' @exportClass
 setClass("ExhaustiveIndex", contains="BiocNeighborIndex")
 
 #' @export
