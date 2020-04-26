@@ -2,8 +2,8 @@
 ###### ExhaustiveParam methods ########
 #######################################
 
-#' @export
 #' @importFrom methods new
+#' @export
 ExhaustiveParam <- function(..., distance="Euclidean") {
     new("ExhaustiveParam", distance=distance)
 }
@@ -28,8 +28,10 @@ setMethod("spill_args", "ExhaustiveParam", function(x) {
 #' instances of ExhaustiveIndex classes with \code{\link{buildExhaustive}}.
 #'
 #' @return An ExhaustiveIndex object. 
-#' @export
+#'
+#' @aliases ExhaustiveIndex-class
 #' @importFrom methods new
+#' @export
 ExhaustiveIndex <- function(data, NAMES=NULL, distance="Euclidean") {
     new("ExhaustiveIndex", data=data, NAMES=NAMES, distance=distance)
 }
@@ -50,12 +52,13 @@ setValidity2("ExhaustiveIndex", function(object) {
 })
 
 
+#' @aliases show,ExhaustiveIndex-method
 #' @export
 setMethod("show", "ExhaustiveIndex", function(object) {
     callNextMethod()
 })
 
-
+#' @aliases bnorder,ExhaustiveIndex-method
 #' @export
 setMethod("bnorder", "ExhaustiveIndex", function(x) seq_len(ncol(bndata(x))))
 

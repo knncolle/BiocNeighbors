@@ -1,5 +1,6 @@
 \name{queryKNN methods}
 \alias{queryKNN-methods}
+\alias{queryExhaustive}
 \alias{queryKmknn}
 \alias{queryVptree}
 \alias{queryAnnoy}
@@ -9,6 +10,10 @@
 \description{Query a dataset for nearest neighbors of points in another dataset, using a variety of algorithms.}
 
 \usage{
+queryExhaustive(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
+    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL,
+    raw.index=FALSE, warn.ties=TRUE, ...)
+
 queryKmknn(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
     BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, 
     raw.index=FALSE, warn.ties=TRUE, ...)
@@ -35,6 +40,7 @@ queryHnsw(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
 \item{last}{An integer scalar specifying the number of furthest neighbors for which statistics should be returned.}
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
 \item{precomputed}{A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
+For \code{queryExhaustive}, this should be a \linkS4class{ExhaustiveIndex} from \code{\link{buildExhaustive}};
 For \code{queryKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{buildKmknn}};
 for \code{queryVptree}, this should be a \linkS4class{VptreeIndex} from \code{\link{buildVptree}};
 for \code{queryAnnoy}, this should be a \linkS4class{AnnoyIndex} from \code{\link{buildAnnoy}};
@@ -53,7 +59,7 @@ This includes \code{distance}, a string specifying whether \code{"Euclidean"} or
 
 \details{
 All of these functions identify points in \code{X} that are the \code{k} nearest neighbors of each point in \code{query}.
-\code{queryAnnoy} performs an approximate search, while \code{queryKmknn} and \code{queryVptree} are exact.
+\code{queryAnnoy} performs an approximate search, while \code{queryExhaustive}, \code{queryKmknn} and \code{queryVptree} are exact.
 This requires both \code{X} and \code{query} to have the same number of dimensions.
 Moreover, the upper bound for \code{k} is set at the number of points in \code{X}.
 
@@ -97,6 +103,7 @@ Aaron Lun
 }
 
 \seealso{
+\code{\link{buildExhaustive}}, 
 \code{\link{buildKmknn}}, 
 \code{\link{buildVptree}},
 or \code{\link{buildAnnoy}} to build an index ahead of time.
@@ -107,9 +114,13 @@ See \code{?"\link{BiocNeighbors-algorithms}"} for an overview of the available a
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
 Z <- matrix(rnorm(20000), ncol=20)
-out <- queryKmknn(Y, query=Z, k=5)
+out <- queryExhaustive(Y, query=Z, k=5)
 head(out$index)
 head(out$distance)
+
+out1 <- queryKmknn(Y, query=Z, k=5)
+head(out1$index)
+head(out1$distance)
 
 out2 <- queryVptree(Y, query=Z, k=5)
 head(out2$index)

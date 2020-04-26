@@ -4,6 +4,10 @@
 
 \alias{queryKNN,missing,missing-method}
 
+\alias{queryKNN,missing,ExhaustiveParam-method}
+\alias{queryKNN,ExhaustiveIndex,missing-method}
+\alias{queryKNN,ExhaustiveIndex,ExhaustiveParam-method}
+
 \alias{queryKNN,missing,KmknnParam-method}
 \alias{queryKNN,KmknnIndex,missing-method}
 \alias{queryKNN,KmknnIndex,KmknnParam-method}
@@ -64,6 +68,7 @@ Aaron Lun
 }
 
 \seealso{
+\code{\link{queryExhaustive}}, 
 \code{\link{queryKmknn}}, 
 \code{\link{queryVptree}},
 \code{\link{queryAnnoy}} 
@@ -75,6 +80,10 @@ Y <- matrix(rnorm(100000), ncol=20)
 Z <- matrix(rnorm(10000), ncol=20)
 str(k.out <- queryKNN(Y, Z, k=10))
 str(a.out <- queryKNN(Y, Z, k=10, BNPARAM=AnnoyParam()))
+
+e.dex <- buildExhaustive(Y)
+str(k.out2 <- queryKNN(Y,Z,  k=10, BNINDEX=e.dex))
+str(k.out3 <- queryKNN(Y,Z,  k=10, BNINDEX=e.dex, BNPARAM=ExhaustiveParam()))
 
 k.dex <- buildKmknn(Y)
 str(k.out2 <- queryKNN(Y,Z,  k=10, BNINDEX=k.dex))

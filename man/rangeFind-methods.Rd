@@ -2,6 +2,7 @@
 \alias{rangeFind-methods}
 \alias{rangeFindKmknn}
 \alias{rangeFindVptree}
+\alias{rangeFindExhaustive}
 
 \title{Find all neighbors in range}
 \description{Find all neighboring data points within a certain distance of each point.}
@@ -14,6 +15,10 @@ rangeFindKmknn(X, threshold, get.index=TRUE, get.distance=TRUE,
 rangeFindVptree(X, threshold, get.index=TRUE, get.distance=TRUE,
     BPPARAM=SerialParam(), precomputed=NULL, subset=NULL,
     raw.index=FALSE, ...)
+
+rangeFindExhaustive(X, threshold, get.index=TRUE, get.distance=TRUE,
+    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL,
+    raw.index=FALSE, ...)
 }
 
 \arguments{
@@ -24,6 +29,7 @@ Alternatively, a vector containing a different distance threshold for each point
 \item{get.distance}{A logical scalar indicating whether distances to the neighbors should be recorded.}
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
 \item{precomputed}{A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
+For \code{rangeFindExhaustive}, this should be a \linkS4class{ExhaustiveIndex} from \code{\link{rangeFindExhaustive}}.
 For \code{rangeFindKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{rangeFindKmknn}}.
 For \code{rangeFindVptree}, this should be a \linkS4class{VptreeIndex} from \code{\link{rangeFindVptree}}.}
 \item{subset}{A vector indicating the rows of \code{X} for which the neighbors should be identified.}
@@ -77,7 +83,7 @@ Aaron Lun
 }
 
 \seealso{
-\code{\link{buildKmknn}} or \code{\link{buildVptree}} to build an index ahead of time.
+\code{\link{buildExhaustive}, \link{buildKmknn}} or \code{\link{buildVptree}} to build an index ahead of time.
 
 See \code{?"\link{BiocNeighbors-algorithms}"} for an overview of the available algorithms.
 }
@@ -86,5 +92,6 @@ See \code{?"\link{BiocNeighbors-algorithms}"} for an overview of the available a
 Y <- matrix(runif(100000), ncol=20)
 out <- rangeFindKmknn(Y, threshold=3)
 out2 <- rangeFindVptree(Y, threshold=3)
+out3 <- rangeFindExhaustive(Y, threshold=3)
 }
 
