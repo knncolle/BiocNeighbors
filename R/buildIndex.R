@@ -26,3 +26,6 @@ setMethod("buildIndex", "AnnoyParam", .BUILDINDEX_GENERATOR(buildAnnoy))
 
 #' @export
 setMethod("buildIndex", "HnswParam", .BUILDINDEX_GENERATOR(buildHnsw))
+
+#' @export
+setMethod("buildIndex", "ExhaustiveParam", .BUILDINDEX_GENERATOR(buildExhaustive))

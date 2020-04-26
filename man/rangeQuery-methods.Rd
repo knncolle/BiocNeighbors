@@ -2,6 +2,7 @@
 \alias{rangeQuery-methods}
 \alias{rangeQueryKmknn}
 \alias{rangeQueryVptree}
+\alias{rangeQueryExhaustive}
 
 \title{Query neighbors in range}
 \description{Find all neighboring data points within a certain distance of a query point.}
@@ -12,6 +13,10 @@ rangeQueryKmknn(X, query, threshold, get.index=TRUE, get.distance=TRUE,
     raw.index=FALSE, ...)
 
 rangeQueryVptree(X, query, threshold, get.index=TRUE, get.distance=TRUE, 
+    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL,
+    raw.index=FALSE, ...)
+
+rangeQueryExhaustive(X, query, threshold, get.index=TRUE, get.distance=TRUE, 
     BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL,
     raw.index=FALSE, ...)
 }
@@ -25,6 +30,7 @@ Alternatively, a vector containing a different distance threshold for each query
 \item{get.distance}{A logical scalar indicating whether distances to the neighbors should be recorded.}
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
 \item{precomputed}{A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
+For \code{queryExhaustive}, this should be a \linkS4class{ExhaustiveIndex} from \code{\link{buildExhaustive}};
 For \code{rangeFindKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{rangeFindKmknn}}.
 For \code{rangeFindVptree}, this should be a \linkS4class{VptreeIndex} from \code{\link{rangeFindVptree}}.}
 \item{transposed}{A logical scalar indicating whether the \code{query} is transposed, 
@@ -98,4 +104,7 @@ out2 <- rangeQueryVptree(Y, query=Z, threshold=1)
 head(out2$index)
 head(out2$distance)
 
+out3 <- rangeQueryExhaustive(Y, query=Z, threshold=1)
+head(out3$index)
+head(out3$distance)
 }

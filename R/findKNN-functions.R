@@ -102,3 +102,25 @@ findVptree <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
         nodes=VptreeIndex_nodes(precomputed)
     )
 }
+
+##############
+# Exhaustive #
+##############
+
+#' @export
+#' @importFrom BiocParallel SerialParam 
+findExhaustive <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k, 
+    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, warn.ties=TRUE, ...)
+# Identifies nearest neighbours with all versus all distance calculations.
+#
+# created April 12 2020 
+{
+    .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
+        last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
+        exact=TRUE, warn.ties=warn.ties, raw.index=raw.index, 
+        buildFUN=buildExhaustive, searchFUN=find_exhaustive, searchArgsFUN=.find_exhaustive_args, ...)
+}
+
+.find_exhaustive_args <- function(precomputed) {
+    list()
+}

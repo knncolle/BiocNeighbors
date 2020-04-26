@@ -4,6 +4,9 @@
 setClass("BiocNeighborParam", contains="VIRTUAL", slots=c(distance="character"))
 
 #' @export
+setClass("ExhaustiveParam", contains="BiocNeighborParam")
+
+#' @export
 setClass("KmknnParam", contains="BiocNeighborParam", slots=c(kmeans.args="list"))
 
 #' @export
@@ -20,6 +23,9 @@ setClass("HnswParam", contains="BiocNeighborParam", slots=c(nlinks="integer", ef
 #' @export
 #' @importClassesFrom S4Vectors character_OR_NULL
 setClass("BiocNeighborIndex", contains="VIRTUAL", slots=c(data="matrix", NAMES="character_OR_NULL", distance="character"))
+
+#' @export
+setClass("ExhaustiveIndex", contains="BiocNeighborIndex")
 
 #' @export
 setClass("KmknnIndex", contains="BiocNeighborIndex", slots=c(centers="matrix", info="list", order="integer"))

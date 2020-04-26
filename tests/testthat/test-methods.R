@@ -101,7 +101,13 @@ test_that("findKNN dispatches correctly for HNSW", {
     expect_equal(outA, findKNN(k=10, BNPARAM=HnswParam(), BNINDEX=buildHnsw(X)))
 })
 
+# TODO: 
+#test_that("findKNN dispatches correctly for Exhaustive", {
+#    outA <- findKNN()
+#})
+
 test_that("Illegal findKNN signatures fail", {
+    # TODO: Fill me once some dispatch stuff is added in here. 
     expect_error(findKNN(X, BNPARAM=AnnoyParam(), BNINDEX=buildKmknn(X)), "unable to find an inherited method")
     expect_error(findKNN(X, BNPARAM=KmknnParam(), BNINDEX=buildAnnoy(X)), "unable to find an inherited method")
 })

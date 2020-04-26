@@ -28,6 +28,15 @@ setMethod("findKNN", c("missing", "missing"), .FINDKNN_GENERATOR(findKNN, .defau
 ####################
 
 #' @export
+setMethod("findKNN", c("missing", "ExhaustiveParam"), .FINDKNN_GENERATOR(findExhaustive))
+
+#' @export
+setMethod("findKNN", c("ExhaustiveIndex", "ExhaustiveParam"), .FINDKNN_GENERATOR_NOX(findExhaustive))
+
+#' @export
+setMethod("findKNN", c("ExhaustiveIndex", "missing"), .FINDKNN_GENERATOR_NOX(findExhaustive))
+
+#' @export
 setMethod("findKNN", c("missing", "KmknnParam"), .FINDKNN_GENERATOR(findKmknn))
 
 #' @export

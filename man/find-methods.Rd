@@ -1,5 +1,6 @@
 \name{findKNN methods}
 \alias{findKNN-methods}
+\alias{findExhaustive}
 \alias{findKmknn}
 \alias{findVptree}
 \alias{findAnnoy}
@@ -9,6 +10,10 @@
 \description{Find the nearest neighbors of each point in a dataset, using a variety of algorithms.}
 
 \usage{
+findExhaustive(X, k, get.index=TRUE, get.distance=TRUE, last=k, 
+    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, 
+    raw.index=FALSE, warn.ties=TRUE, ...)
+
 findKmknn(X, k, get.index=TRUE, get.distance=TRUE, last=k, 
     BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, 
     raw.index=FALSE, warn.ties=TRUE, ...)
@@ -34,6 +39,7 @@ findHnsw(X, k, get.index=TRUE, get.distance=TRUE, last=k,
 \item{last}{An integer scalar specifying the number of furthest neighbors for which statistics should be returned.}
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
 \item{precomputed}{A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
+For \code{findExhaustive}, this should be a \linkS4class{ExhaustiveIndex} from \code{\link{buildExhaustive}};
 For \code{findKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{buildKmknn}};
 for \code{findVptree}, this should be a \linkS4class{VptreeIndex} from \code{\link{buildVptree}};
 for \code{findAnnoy}, this should be a \linkS4class{AnnoyIndex} from \code{\link{buildAnnoy}};
@@ -93,6 +99,7 @@ Aaron Lun
 }
 
 \seealso{
+\code{\link{buildExhaustive}}, 
 \code{\link{buildKmknn}}, 
 \code{\link{buildVptree}},
 \code{\link{buildAnnoy}},
@@ -103,9 +110,13 @@ See \code{?"\link{BiocNeighbors-algorithms}"} for an overview of the available a
 
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
-out <- findKmknn(Y, k=8)
+out <- findExhaustive(Y, k=8)
 head(out$index)
 head(out$distance)
+
+out1 <- findKmknn(Y, k=8)
+head(out1$index)
+head(out1$distance)
 
 out2 <- findVptree(Y, k=8)
 head(out2$index)

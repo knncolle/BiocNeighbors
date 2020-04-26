@@ -4,6 +4,10 @@
 
 \alias{findKNN,missing,missing-method}
 
+\alias{findKNN,missing,ExhaustiveParam-method}
+\alias{findKNN,ExhaustiveIndex,missing-method}
+\alias{findKNN,ExhaustiveIndex,ExhaustiveParam-method}
+
 \alias{findKNN,missing,KmknnParam-method}
 \alias{findKNN,KmknnIndex,missing-method}
 \alias{findKNN,KmknnIndex,KmknnParam-method}
@@ -64,6 +68,7 @@ Aaron Lun
 }
 
 \seealso{
+\code{\link{findExhaustive}},
 \code{\link{findKmknn}},
 \code{\link{findVptree}},
 \code{\link{findAnnoy}}
@@ -74,6 +79,10 @@ and \code{\link{findHnsw}} for specific methods.
 Y <- matrix(rnorm(100000), ncol=20)
 str(k.out <- findKNN(Y, k=10))
 str(a.out <- findKNN(Y, k=10, BNPARAM=AnnoyParam()))
+
+e.dex <- buildExhaustive(Y)
+str(k.out2 <- findKNN(Y, k=10, BNINDEX=e.dex))
+str(k.out3 <- findKNN(Y, k=10, BNINDEX=e.dex, BNPARAM=ExhaustiveParam()))
 
 k.dex <- buildKmknn(Y)
 str(k.out2 <- findKNN(Y, k=10, BNINDEX=k.dex))
