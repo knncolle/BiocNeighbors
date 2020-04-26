@@ -15,10 +15,22 @@ setMethod("spill_args", "ExhaustiveParam", function(x) {
 #######################################
 ###### ExhaustiveIndex methods ########
 #######################################
-
+#' The ExhaustiveIndex class
+#'
+#' A class to hold the data for exact nearest neighbor identification. 
+#'
+#' @param data A numeric matrix with data points in columns and dimensions in rows.
+#' @param NAMES A character vector of sample names or \code{NULL}.
+#' @param distance A string specifying the distance metric to use.
+#'
+#' @details 
+#' Users should never need to call the constructor explicitly, but should generate 
+#' instances of ExhaustiveIndex classes with \code{\link{buildExhaustive}}.
+#'
+#' @return An ExhaustiveIndex object. 
 #' @export
 #' @importFrom methods new
-ExhaustiveIndex <- function(data, order, NAMES=NULL, distance="Euclidean") {
+ExhaustiveIndex <- function(data, NAMES=NULL, distance="Euclidean") {
     new("ExhaustiveIndex", data=data, NAMES=NAMES, distance=distance)
 }
 
