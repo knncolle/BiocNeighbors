@@ -96,6 +96,7 @@ See \code{?"\link{BiocNeighbors-algorithms}"} for an overview of the available a
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
 Z <- matrix(rnorm(20000), ncol=20)
+
 out <- rangeQueryKmknn(Y, query=Z, threshold=1)
 head(out$index)
 head(out$distance)

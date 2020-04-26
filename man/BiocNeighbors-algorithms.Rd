@@ -14,13 +14,24 @@ It is also trivially extended to find all neighbors within a threshold distance 
 }
 
 \section{Vantage point (VP) trees}{
-In a VP tree (Yianilos, 1993), each node contains a subset of points and has a defined threshold distance (usually the median distance to all points in the subset).
-The left child of this node contains the further subset of points within the radius, while the right child contains the remaining points in the subset that are outside.
+In a VP tree (Yianilos, 1993), each node contains a subset of points that is split into two further partitions.
+The split is determined by picking an arbitrary point inside that subset as the node center, 
+computing the distance to all other points from the center, and taking the median as the \dQuote{radius}.
+The left child of this node contains all points within the median distance from the radius, while the right child contains the remaining points.
+This is applied recursively until all points resolve to individual nodes.
 The nearest neighbor search traverses the tree and exploits the triangle inequality between query points, node centers and thresholds to narrow the search space.
 VP trees are often faster than more conventional KD-trees or ball trees as the former uses the points themselves as the nodes of the tree,
 avoiding the need to create many intermediate nodes and reducing the total number of distance calculations.
 Like KMKNN, it is also trivially extended to find all neighbors within a threshold distance from a query point.
 } 
+
+\section{Exhaustive search}{ 
+The exhaustive search computes all pairwise distances between data and query points to identify nearest neighbors of the latter.
+It has quadratic complexity and is theoretically the worst-performing method;
+however, it has effectively no overhead from constructing or querying indexing structures, 
+making it faster for in situations where indexing provides little benefit.
+This includes queries against datasets with few data points or very high dimensionality.
+}
 
 \section{Approximate nearest neighbors Oh Yeah (Annoy)}{ 
 The Annoy algorithm was developed by Erik Bernhardsson to identify approximate k-nearest neighbors in high-dimensional data.

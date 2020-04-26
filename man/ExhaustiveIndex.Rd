@@ -24,3 +24,7 @@ A class to hold the data for exact nearest neighbor identification.
 Users should never need to call the constructor explicitly, but should generate 
 instances of ExhaustiveIndex classes with \code{\link{buildExhaustive}}.
 }
+\examples{
+example(buildExhaustive)
+
+}

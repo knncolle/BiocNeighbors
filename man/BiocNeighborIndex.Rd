@@ -17,6 +17,7 @@
 \alias{bnorder,VptreeIndex-method}
 \alias{bnorder,AnnoyIndex-method}
 \alias{bnorder,HnswIndex-method}
+\alias{bnorder,ExhaustiveIndex-method}
 
 \title{The BiocNeighborIndex class}
 \description{A virtual class for indexing structures of different nearest-neighbor search algorithms.}

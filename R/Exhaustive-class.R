@@ -2,9 +2,29 @@
 ###### ExhaustiveParam methods ########
 #######################################
 
-#' @importFrom methods new
+#' The ExhaustiveParam class
+#'
+#' A class to hold parameters for the exhaustive algorithm for exact nearest neighbor identification.
+#' 
+#' @param distance A string specifying the distance metric to use.
+#' 
+#' @return
+#' The \code{ExhaustiveParam} constructor will return an instance of the ExhaustiveParam class.
+#' 
+#' @author
+#' Allison Vuong
+#' 
+#' @seealso
+#' \code{\link{buildExhaustive}} 
+#' 
+#' @examples
+#' (out <- KmknnParam(iter.max=100))
+#'
 #' @export
-ExhaustiveParam <- function(..., distance="Euclidean") {
+#' @aliases ExhaustiveParam-class
+#' 
+#' @importFrom methods new
+ExhaustiveParam <- function(distance="Euclidean") {
     new("ExhaustiveParam", distance=distance)
 }
 
@@ -30,9 +50,13 @@ setMethod("spill_args", "ExhaustiveParam", function(x) {
 #'
 #' @return An ExhaustiveIndex object. 
 #'
-#' @aliases ExhaustiveIndex-class
-#' @importFrom methods new
+#' @examples
+#' example(buildExhaustive)
+#' 
 #' @export
+#' @aliases ExhaustiveIndex-class
+#' 
+#' @importFrom methods new
 ExhaustiveIndex <- function(data, NAMES=NULL, distance="Euclidean") {
     new("ExhaustiveIndex", data=data, NAMES=NAMES, distance=distance)
 }
@@ -52,12 +76,5 @@ setValidity2("ExhaustiveIndex", function(object) {
     return(TRUE)
 })
 
-
-#' @exportMethod show
-setMethod("show", "ExhaustiveIndex", function(object) {
-    callNextMethod()
-})
-
 #' @exportMethod bnorder
 setMethod("bnorder", "ExhaustiveIndex", function(x) seq_len(ncol(bndata(x))))
-

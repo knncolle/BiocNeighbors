@@ -1,5 +1,5 @@
 # Tests buildExhaustive().
-# library(BiocNeighbors); library(testthat); source("test-build-kmknn.R")
+# library(BiocNeighbors); library(testthat); source("test-build-exhaustive.R")
 
 set.seed(20000)
 test_that("buildExhaustive() works as expected", {
@@ -99,5 +99,5 @@ test_that("buildExhaustive() behaves sensibly with silly inputs", {
     Y <- data.frame(X, check.names=FALSE, fix.empty.names=FALSE)
     colnames(Y) <- NULL
     out <- buildExhaustive(Y)
-    expect_equal(ref, out) # TODO: NULL attributes in dimnames.
+    expect_equivalent(ref, out) # TODO: NULL attributes in dimnames.
 })

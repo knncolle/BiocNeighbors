@@ -114,6 +114,7 @@ See \code{?"\link{BiocNeighbors-algorithms}"} for an overview of the available a
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
 Z <- matrix(rnorm(20000), ncol=20)
+
 out <- queryExhaustive(Y, query=Z, k=5)
 head(out$index)
 head(out$distance)

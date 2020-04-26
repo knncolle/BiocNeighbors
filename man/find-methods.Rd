@@ -110,6 +110,7 @@ See \code{?"\link{BiocNeighbors-algorithms}"} for an overview of the available a
 
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
+
 out <- findExhaustive(Y, k=8)
 head(out$index)
 head(out$distance)
