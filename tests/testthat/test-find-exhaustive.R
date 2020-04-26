@@ -16,63 +16,63 @@ test_that("findExhaustive() behaves correctly on simple inputs", {
 })
 
 set.seed(1002)
-test_that("findKmknn() works correctly with subsetting", {
+test_that("findExhaustive() works correctly with subsetting", {
     nobs <- 1000
     ndim <- 10
     k <- 5
 
     X <- matrix(runif(nobs * ndim), nrow=nobs)
-    ref <- findKmknn(X, k=k)
+    ref <- findExhaustive(X, k=k)
 
     i <- sample(nobs, 20)
-    sub <- findKmknn(X, k=k, subset=i)
+    sub <- findExhaustive(X, k=k, subset=i)
     expect_identical(sub$index, ref$index[i,,drop=FALSE])
     expect_identical(sub$distance, ref$distance[i,,drop=FALSE])
 
     i <- rbinom(nobs, 1, 0.5) == 0L
-    sub <- findKmknn(X, k=k, subset=i)
+    sub <- findExhaustive(X, k=k, subset=i)
     expect_identical(sub$index, ref$index[i,,drop=FALSE])
     expect_identical(sub$distance, ref$distance[i,,drop=FALSE])
 
     rownames(X) <- paste0("CELL", seq_len(nobs))
     i <- sample(rownames(X), 100)
-    sub <- findKmknn(X, k=k, subset=i)
+    sub <- findExhaustive(X, k=k, subset=i)
     m <- match(i, rownames(X))
     expect_identical(sub$index, ref$index[m,,drop=FALSE])
     expect_identical(sub$distance, ref$distance[m,,drop=FALSE])
 })
 
 set.seed(1003)
-test_that("findKmknn() behaves correctly with alternative options", {
+test_that("findExhaustive() behaves correctly with alternative options", {
     nobs <- 1000
     ndim <- 10
     k <- 5
 
     X <- matrix(runif(nobs * ndim), nrow=nobs)
-    out <- findKmknn(X, k=k)
+    out <- findExhaustive(X, k=k)
     
     # Checking what we extract.
-    out2 <- findKmknn(X, k=k, get.distance=FALSE)
+    out2 <- findExhaustive(X, k=k, get.distance=FALSE)
     expect_identical(out2$distance, NULL)
     expect_identical(out2$index, out$index)
 
-    out3 <- findKmknn(X, k=k, get.index=FALSE)
+    out3 <- findExhaustive(X, k=k, get.index=FALSE)
     expect_identical(out3$index, NULL)
     expect_identical(out3$distance, out$distance)
   
     # Checking precomputation (does not need X).
-    pre <- buildKmknn(X)
-    out4 <- findKmknn(k=k, precomputed=pre)
+    pre <- buildExhaustive(X)
+    out4 <- findExhaustive(k=k, precomputed=pre)
     expect_identical(out4, out)
 })
 
 set.seed(1003001)
-test_that("findKmknn() behaves correctly with Manhattan distances", {
+test_that("findExhaustive() behaves correctly with Manhattan distances", {
     nobs <- 500 # fewer observations, as refFindKNN is a slow brute-force method.
     for (ndim in c(1, 5, 10)) {
         for (k in c(1, 5, 20)) { 
             X <- matrix(runif(nobs * ndim), nrow=nobs)
-            out <- findKmknn(X, k=k, distance="Manhattan")
+            out <- findExhaustive(X, k=k, distance="Manhattan")
             ref <- refFindKNN(X, k=k, type="manhattan")
             expect_identical(out$index, ref$index)
             expect_equal(out$distance, ref$distance)
@@ -81,19 +81,19 @@ test_that("findKmknn() behaves correctly with Manhattan distances", {
 })
 
 set.seed(1003002)
-test_that("findKmknn() behaves correctly when only the last distance is requested", {
+test_that("findExhaustive() behaves correctly when only the last distance is requested", {
     nobs <- 500 # fewer observations, as refFindKNN is a slow brute-force method.
     for (ndim in c(1, 5, 10)) {
         for (k in c(1, 5, 20)) { 
             X <- matrix(runif(nobs * ndim), nrow=nobs)
 
-            ref <- findKmknn(X, k=k)
-            out <- findKmknn(X, k=k, last=1)
+            ref <- findExhaustive(X, k=k)
+            out <- findExhaustive(X, k=k, last=1)
             expect_identical(out$distance, ref$distance[,k,drop=FALSE])
             expect_identical(out$index, ref$index[,k,drop=FALSE])
 
-            ref <- findKmknn(X, k=k, distance="Manhattan")
-            out <- findKmknn(X, k=k, last=1, distance="Manhattan")
+            ref <- findExhaustive(X, k=k, distance="Manhattan")
+            out <- findExhaustive(X, k=k, last=1, distance="Manhattan")
             expect_identical(out$distance, ref$distance[,k,drop=FALSE])
             expect_identical(out$index, ref$index[,k,drop=FALSE])
         }
@@ -101,83 +101,83 @@ test_that("findKmknn() behaves correctly when only the last distance is requeste
 })
 
 set.seed(100301)
-test_that("findKmknn() behaves correctly with parallelization", {
+test_that("findExhaustive() behaves correctly with parallelization", {
     library(BiocParallel)
     nobs <- 1000
     ndim <- 10
     k <- 5
 
     X <- matrix(runif(nobs * ndim), nrow=nobs)
-    out <- findKmknn(X, k=k)
+    out <- findExhaustive(X, k=k)
   
     # Trying out different types of parallelization.
-    out1 <- findKmknn(X, k=k, BPPARAM=safeBPParam(2))
+    out1 <- findExhaustive(X, k=k, BPPARAM=safeBPParam(2))
     expect_identical(out$index, out1$index)
     expect_identical(out$distance, out1$distance)
 
-    out2 <- findKmknn(X, k=k, BPPARAM=SnowParam(3))
+    out2 <- findExhaustive(X, k=k, BPPARAM=SnowParam(3))
     expect_identical(out$index, out2$index)
     expect_identical(out$distance, out2$distance)
 })
 
 set.seed(10031)
-test_that("findKmknn() raw output behaves correctly", {
+test_that("findExhaustive() raw output behaves correctly", {
     nobs <- 1000
     ndim <- 10
     k <- 7
     X <- matrix(runif(nobs * ndim), nrow=nobs)
    
-    pre <- buildKmknn(X)
-    out <- findKmknn(k=k, precomputed=pre, raw.index=TRUE)
-    ref <- findKmknn(t(bndata(pre)), k=k)
+    pre <- buildExhaustive(X)
+    out <- findExhaustive(k=k, precomputed=pre, raw.index=TRUE)
+    ref <- findExhaustive(t(bndata(pre)), k=k)
     expect_identical(out, ref)
 
     # Behaves with subsetting.
     i <- sample(nobs, 20)
-    out <- findKmknn(k=k, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- findKmknn(t(bndata(pre)), k=k, subset=i)
+    out <- findExhaustive(k=k, precomputed=pre, raw.index=TRUE, subset=i)
+    ref <- findExhaustive(t(bndata(pre)), k=k, subset=i)
     expect_identical(out, ref)
 
     i <- rbinom(nobs, 1, 0.5) == 0L
-    out <- findKmknn(k=k, precomputed=pre, raw.index=TRUE, subset=i)
-    ref <- findKmknn(t(bndata(pre)), k=k, subset=i)
+    out <- findExhaustive(k=k, precomputed=pre, raw.index=TRUE, subset=i)
+    ref <- findExhaustive(t(bndata(pre)), k=k, subset=i)
     expect_identical(out, ref)
 
     # Adding row names.
     rownames(X) <- paste0("CELL", seq_len(nobs))
-    preN <- buildKmknn(X)
+    preN <- buildExhaustive(X)
     i <- sample(rownames(X), 30)
-    out <- findKmknn(k=k, precomputed=preN, raw.index=TRUE, subset=i)
-    ref <- findKmknn(t(bndata(preN)), k=k, subset=i)
+    out <- findExhaustive(k=k, precomputed=preN, raw.index=TRUE, subset=i)
+    ref <- findExhaustive(t(bndata(preN)), k=k, subset=i)
     expect_identical(out, ref)
 })
 
 set.seed(1004)
-test_that("findKmknn() behaves correctly with silly inputs", {
+test_that("findExhaustive() behaves correctly with silly inputs", {
     nobs <- 1000
     ndim <- 10
     X <- matrix(runif(nobs * ndim), nrow=nobs)
     
     # What happens when k is not positive.
-    expect_error(findKmknn(X, k=0), "positive")
-    expect_error(findKmknn(X, k=-1), "positive")
+    expect_error(findExhaustive(X, k=0), "positive")
+    expect_error(findExhaustive(X, k=-1), "positive")
 
     # What happens when 'k' > dataset size.
     restrict <- 10
-    expect_warning(out <- findKmknn(X[seq_len(restrict),], k=20), "capped")
-    expect_warning(ref <- findKmknn(X[seq_len(restrict),], k=restrict-1L), NA)
+    expect_warning(out <- findExhaustive(X[seq_len(restrict),], k=20), "capped")
+    expect_warning(ref <- findExhaustive(X[seq_len(restrict),], k=restrict-1L), NA)
     expect_equal(out, ref)
 
     # What happens when there are no dimensions.
-    out <- findKmknn(X[,0], k=20)
+    out <- findExhaustive(X[,0], k=20)
     expect_identical(nrow(out$index), as.integer(nobs))
     expect_identical(ncol(out$index), 20L)
     expect_identical(dim(out$index), dim(out$distance))
     expect_true(all(out$distance==0))
 
     # What happens when we request raw.index without precomputed.
-    expect_error(findKmknn(X, k=20, raw.index=TRUE), "not valid")
+    expect_error(findExhaustive(X, k=20, raw.index=TRUE), "not valid")
 
     # What happens with nothing.
-    expect_identical(findKmknn(X, k=10, get.distance=FALSE, get.index=FALSE), list())
+    expect_identical(findExhaustive(X, k=10, get.distance=FALSE, get.index=FALSE), list())
 })
