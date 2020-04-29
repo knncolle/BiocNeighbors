@@ -31,8 +31,10 @@ Given a query point, the distance to each cluster center is determined and the t
 - The vantage point (VP) tree algorithm [@yianilos1993data] involves constructing a tree where each node is located at a data point and is associated with a subset of neighboring points.
 Each node progressively partitions points into two subsets that are either closer or further to the node than a given threshold. 
 Given a query point, the triangle inequality is applied at each node in the tree to determine if the child nodes warrant searching.
+- The exhaustive search is a simple brute-force algorithm that computes distances to between all data and query points.
+This has the worst computational complexity but can actually be faster than the other exact algorithms in situations where indexing provides little benefit, e.g., data sets with few points and/or a very large number of dimensions.
 
-Both methods involve a component of randomness during index construction, though the k-nearest neighbors result is fully deterministic^[Except in the presence of ties, see `?findKNN` for details.].
+Both KMKNN and VP-trees involve a component of randomness during index construction, though the k-nearest neighbors result is fully deterministic^[Except in the presence of ties, see `?"BiocNeighbors-ties"` for details.].
 
 # Identifying k-nearest neighbors
 

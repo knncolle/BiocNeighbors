@@ -2,7 +2,7 @@
 % Please edit documentation in R/buildExhaustive.R
 \name{buildExhaustive}
 \alias{buildExhaustive}
-\title{Prepare data for an Exhaustive search.}
+\title{Prepare data for an exhaustive search}
 \usage{
 buildExhaustive(X, transposed = FALSE, distance = c("Euclidean", "Manhattan"))
 }
@@ -16,7 +16,7 @@ i.e., rows are variables and columns are data points.}
 \item{distance}{String specifying the type of distance to use.}
 }
 \value{
-A \linkS4class{KmknnIndex} object containing:
+An \linkS4class{ExhaustiveIndex} object containing:
 \itemize{
 \item \code{data}, a numeric matrix with points in the \emph{columns} and dimensions in the rows, 
 i.e., transposed relative to the input.
@@ -25,5 +25,11 @@ i.e., transposed relative to the input.
 }
 }
 \description{
-Transform data in prepartaion for an Exhaustive search.
+Transform data in preparation for an exhaustive (i.e., brute-force) search.
+}
+\examples{
+Y <- matrix(rnorm(100000), ncol=20)
+out <- buildExhaustive(Y)
+out
+
 }

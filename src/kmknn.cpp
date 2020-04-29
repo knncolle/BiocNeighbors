@@ -11,9 +11,12 @@
 
 template<class Distance>
 Kmknn<Distance>::Kmknn(Rcpp::NumericMatrix ex, Rcpp::NumericMatrix cen, Rcpp::List info, bool warn_ties) : 
-    exprs(ex), centers(cen), nearest(warn_ties)
+    exprs(ex), nearest(warn_ties), centers(cen)
 {
     const MatDim_t ncenters=centers.ncol();
+    clust_start.reserve(ncenters);
+    clust_dist.reserve(ncenters);
+    clust_nobs.reserve(ncenters);
 
     for (MatDim_t i=0; i<ncenters; ++i) {
         Rcpp::List current(info[i]);
