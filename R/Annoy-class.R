@@ -1,7 +1,30 @@
 ##################################
 ###### AnnoyParam methods ########
 ##################################
-
+#' The AnnoyParam class
+#'
+#' A class to hold parameters for the Annoy algorithm for approximate nearest neighbor identification.
+#'
+#' @param ntrees Integer scalar, number of trees to use for index generation. 
+#' @param directory String, the directory in which to save the index.
+#' @param search.mult Numeric scalar, multiplier for the number of points to search.
+#' @param distance String, the distance metric to use.
+#' Defaults to \code{"Euclidean"}.
+#'
+#' @return An AnnoyParam object.
+#'
+#' @details
+#' The AnnoyParam class holds any parameters associated with running the Annoy algorithm.
+#' This generally relates to building of the index - see \code{\link{buildAnnoy}} for details. 
+#'
+#' @examples
+#' out <- AnnoyParam()
+#' AnnoyParam_ntrees(out) 
+#' AnnoyParam_directory(out) 
+#'
+#' @seealso 
+#' \code{\link{buildAnnoy}}. 
+#' @author Aaron Lun
 #' @export
 #' @importFrom methods new
 AnnoyParam <- function(ntrees=50, directory=tempdir(), search.mult=ntrees, distance="Euclidean") {
@@ -61,6 +84,30 @@ setMethod("spill_args", "AnnoyParam", function(x) {
 ##################################
 ###### AnnoyIndex methods ########
 ##################################
+#' The AnnoyIndex class
+#'
+#' A class to hold indexing structures for the Annoy algorithm for approximate nearest neighbor identification.
+#'
+#' @param data A numeric matrix with data points in columns and dimensions in rows.
+#' @param path A string specifying the path to the index file.
+#' @param search.mult Numeric scalar, multiplier for the number of points to search.
+#' @param NAMES A character vector of sample names or \code{NULL}.
+#' @param distance A string specifying the distance metric to use.
+#'
+#' @return An AnnoyIndex object.
+#'
+#' @details
+#' The AnnoyIndex class holds the indexing structure required to run the Annoy algorithm.
+#' Users should never need to call the constructor explicitly, but should generate instances of AnnoyIndex classes with \code{\link{buildAnnoy}}.
+#'
+#' @examples
+#' out <- example(buildAnnoy)
+#' str(AnnoyIndex_path(out))
+#' str(AnnoyIndex_search_mult(out))
+#'
+#' @seealso 
+#' \code{\link{buildAnnoy}}. 
+#' @author Aaron Lun
 
 #' @export
 #' @importFrom methods new
