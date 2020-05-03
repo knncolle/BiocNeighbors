@@ -1,7 +1,22 @@
 ##################################
 ###### VptreeParam methods #######
 ##################################
-
+#' The VptreeParam class
+#'
+#' A class to hold parameters for the VP tree algorithm for exact nearest neighbor identification.
+#'
+#' @param distance A string specifying the distance metric to use.
+#' Defaults to \code{"Euclidean"}.
+#'
+#' @return A VptreeParam object.
+#'
+#' @examples
+#' out <- VptreeParam()
+#'
+#' @seealso 
+#' \code{\link{buildVptree}}. 
+#' @author Aaron Lun
+#'
 #' @export
 #' @importFrom methods new
 VptreeParam <- function(distance="Euclidean") {
@@ -15,6 +30,29 @@ setMethod("spill_args", "VptreeParam", function(x) {
 ##################################
 ###### VptreeIndex methods #######
 ##################################
+#' The VptreeIndex class
+#'
+#' A class to hold the vantage point tree for exact nearest neighbor identification.
+#'
+#' @param data A numeric matrix with data points in columns and dimensions in rows.
+#' @param nodes A list of vectors specifying the structure of the VP tree.
+#' @param order An integer vector of length equal to \code{ncol(data)}, specifying the order of observations.
+#' @param NAMES A character vector of sample names or \code{NULL}.
+#' @param distance A string specifying the distance metric to use.
+#'
+#' @return A VptreeIndex object.
+#'
+#' @details
+#' The VptreeIndex class holds the indexing structure required to run the Vptree algorithm.
+#' Users should never need to call the constructor explicitly, but should generate instances of VptreeIndex classes with \code{\link{buildVptree}}.
+#'
+#' @examples
+#' out <- example(buildVptree)
+#' str(VptreeIndex_nodes(out))
+#'
+#' @seealso 
+#' \code{\link{buildVptree}}. 
+#' @author Aaron Lun
 
 #' @export
 #' @importFrom methods new
