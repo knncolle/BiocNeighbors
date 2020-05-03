@@ -1,7 +1,32 @@
 #############################
 ##### HnswParam methods #####
 #############################
-
+#' The HnswParam class
+#'
+#' A class to hold parameters for the Hnsw algorithm for approximate nearest neighbor identification.
+#'
+#' @param nlinks Integer scalar, number of bi-directional links per element for index generation. 
+#' @param ef.construction Integer scalar, size of the dynamic list for index generation.
+#' @param directory String, the directory in which to save the index.
+#' @param ef.search Integer scalar, size of the dynamic list for neighbor searching.
+#' @param distance String, the distance metric to use.
+#' Defaults to \code{"Euclidean"}.
+#'
+#' @return An HnswParam object.
+#'
+#' @details
+#' The HnswParam class holds any parameters associated with running the HNSW algorithm.
+#' This generally relates to building of the index - see \code{\link{buildHnsw}} for details. 
+#'
+#' @examples
+#' out <- HnswParam()
+#' HnswParam_nlinks(out) 
+#' HnswParam_ef_construction(out) 
+#' HnswParam_directory(out) 
+#'
+#' @seealso 
+#' \code{\link{buildHnsw}}. 
+#' @author Aaron Lun
 #' @export
 #' @importFrom methods new
 HnswParam <- function(nlinks=16, ef.construction=200, directory=tempdir(), ef.search=10, distance="Euclidean") {
@@ -73,6 +98,31 @@ setMethod("spill_args", "HnswParam", function(x) {
 #############################
 ##### HnswIndex methods #####
 #############################
+#' The HnswIndex class
+#'
+#' A class to hold indexing structures for the HNSW algorithm for approximate nearest neighbor identification.
+#'
+#' @param data A numeric matrix with data points in columns and dimensions in rows.
+#' @param path A string specifying the path to the index file.
+#' @param ef.search Integer scalar specifying the size of the dynamic list at run time.
+#' @param NAMES A character vector of sample names or \code{NULL}.
+#' @param distance A string specifying the distance metric to use.
+#'
+#' @return An HnswIndex object.
+#'
+#' @details
+#' The HnswIndex class holds the indexing structure required to run the HNSW algorithm.
+#' Users should never need to call the constructor explicitly, but should generate instances of HnswIndex classes with \code{\link{buildHnsw}}.
+#'
+#' @examples
+#' out <- example(buildHnsw)
+#' str(HnswIndex_path(out))
+#' str(HnswIndex_ef_search(out))
+#'
+#' @seealso 
+#' \code{\link{buildHnsw}}. 
+#' @author Aaron Lun
+
 
 #' @export
 #' @importFrom methods new
