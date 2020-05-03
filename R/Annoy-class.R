@@ -108,7 +108,7 @@ setMethod("spill_args", "AnnoyParam", function(x) {
 #' @seealso 
 #' \code{\link{buildAnnoy}}. 
 #' @author Aaron Lun
-
+#'
 #' @export
 #' @importFrom methods new
 AnnoyIndex <- function(data, path, search.mult=50, NAMES=NULL, distance="Euclidean") {

@@ -13,6 +13,7 @@
 #' @details
 #' This function is automatically called by \code{\link{findAnnoy}} and related functions.
 #' However, it can be called directly by the user to save time if multiple queries are to be performed to the same \code{X}.
+#'
 #' It is advisable to change \code{directory} to a location that is amenable to parallel read operations on HPC file systems.
 #' Of course, if index files are manually constructed, the user is also responsible for their clean-up after all calculations are completed.
 #'
