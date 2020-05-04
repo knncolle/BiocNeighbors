@@ -2,6 +2,11 @@
 % Please edit documentation in R/Hnsw-class.R
 \name{HnswParam}
 \alias{HnswParam}
+\alias{HnswParam_nlinks}
+\alias{HnswParam_ef_construction}
+\alias{HnswParam_directory}
+\alias{HnswParam_ef_search}
+\alias{show,HnswParam-method}
 \title{The HnswParam class}
 \usage{
 HnswParam(
@@ -11,6 +16,16 @@ HnswParam(
   ef.search = 10,
   distance = "Euclidean"
 )
+
+HnswParam_nlinks(x)
+
+HnswParam_ef_construction(x)
+
+HnswParam_directory(x)
+
+HnswParam_ef_search(x)
+
+\S4method{show}{HnswParam}(object)
 }
 \arguments{
 \item{nlinks}{Integer scalar, number of bi-directional links per element for index generation.}

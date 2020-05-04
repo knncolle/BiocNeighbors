@@ -125,54 +125,86 @@ NULL
 # Default dispatch #
 ####################
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("missing", "missing"), .QUERYKNN_GENERATOR(queryKNN, .default_param))
 
 ####################
 # Specific methods #
 ####################
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("missing", "KmknnParam"), .QUERYKNN_GENERATOR(queryKmknn))
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("KmknnIndex", "missing"), .QUERYKNN_GENERATOR_NOX(queryKmknn))
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("KmknnIndex", "KmknnParam"), .QUERYKNN_GENERATOR_NOX(queryKmknn))
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("missing", "VptreeParam"), .QUERYKNN_GENERATOR(queryVptree))
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("VptreeIndex", "missing"), .QUERYKNN_GENERATOR_NOX(queryVptree))
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("VptreeIndex", "VptreeParam"), .QUERYKNN_GENERATOR_NOX(queryVptree))
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("missing", "AnnoyParam"), .QUERYKNN_GENERATOR(queryAnnoy))
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("AnnoyIndex", "missing"), .QUERYKNN_GENERATOR_NOX(queryAnnoy))
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("AnnoyIndex", "AnnoyParam"), .QUERYKNN_GENERATOR_NOX(queryAnnoy))
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("missing", "HnswParam"), .QUERYKNN_GENERATOR(queryHnsw))
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("HnswIndex", "missing"), .QUERYKNN_GENERATOR_NOX(queryHnsw))
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("HnswIndex", "HnswParam"), .QUERYKNN_GENERATOR_NOX(queryHnsw))
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("missing", "ExhaustiveParam"), .QUERYKNN_GENERATOR(queryExhaustive))
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("ExhaustiveIndex", "missing"), .QUERYKNN_GENERATOR_NOX(queryExhaustive))
 
-#' @export
+#' @exportMethod queryKNN
+#' @rdname queryKNN
+#' @aliases queryKNN,queryKNN-method
 setMethod("queryKNN", c("ExhaustiveIndex", "ExhaustiveParam"), .QUERYKNN_GENERATOR_NOX(queryExhaustive))

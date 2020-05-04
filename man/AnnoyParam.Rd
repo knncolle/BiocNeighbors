@@ -2,6 +2,10 @@
 % Please edit documentation in R/Annoy-class.R
 \name{AnnoyParam}
 \alias{AnnoyParam}
+\alias{AnnoyParam_ntrees}
+\alias{AnnoyParam_directory}
+\alias{AnnoyParam_search_mult}
+\alias{show,AnnoyParam-method}
 \title{The AnnoyParam class}
 \usage{
 AnnoyParam(
@@ -10,6 +14,14 @@ AnnoyParam(
   search.mult = ntrees,
   distance = "Euclidean"
 )
+
+AnnoyParam_ntrees(x)
+
+AnnoyParam_directory(x)
+
+AnnoyParam_search_mult(x)
+
+\S4method{show}{AnnoyParam}(object)
 }
 \arguments{
 \item{ntrees}{Integer scalar, number of trees to use for index generation.}

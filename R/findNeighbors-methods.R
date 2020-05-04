@@ -87,6 +87,15 @@ setMethod("findNeighbors", c("missing", "missing"), .FINDNEIGHBORS_GENERATOR(fin
 ####################
 
 #' @export
+setMethod("findNeighbors", c("missing", "ExhaustiveParam"), .FINDNEIGHBORS_GENERATOR(rangeFindExhaustive))
+
+#' @export
+setMethod("findNeighbors", c("ExhaustiveIndex", "missing"), .FINDNEIGHBORS_GENERATOR_NOX(rangeFindExhaustive))
+
+#' @export
+setMethod("findNeighbors", c("ExhaustiveIndex", "ExhaustiveParam"), .FINDNEIGHBORS_GENERATOR_NOX(rangeFindExhaustive))
+
+#' @export
 setMethod("findNeighbors", c("missing", "KmknnParam"), .FINDNEIGHBORS_GENERATOR(rangeFindKmknn))
 
 #' @export

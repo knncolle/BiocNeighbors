@@ -2,9 +2,22 @@
 % Please edit documentation in R/Hnsw-class.R
 \name{HnswIndex}
 \alias{HnswIndex}
+\alias{HnswIndex_path}
+\alias{HnswIndex_ef_search}
+\alias{bnorder,HnswIndex-method}
+\alias{HnswIndex-method}
+\alias{show,HnswIndex-method}
 \title{The HnswIndex class}
 \usage{
 HnswIndex(data, path, ef.search = 10, NAMES = NULL, distance = "Euclidean")
+
+HnswIndex_path(x)
+
+HnswIndex_ef_search(x)
+
+\S4method{bnorder}{HnswIndex}(x)
+
+\S4method{show}{HnswIndex}(object)
 }
 \arguments{
 \item{data}{A numeric matrix with data points in columns and dimensions in rows.}

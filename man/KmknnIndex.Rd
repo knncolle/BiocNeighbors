@@ -2,9 +2,22 @@
 % Please edit documentation in R/Kmknn-class.R
 \name{KmknnIndex}
 \alias{KmknnIndex}
+\alias{show,KmknnIndex-method}
+\alias{KmknnIndex_cluster_centers}
+\alias{KmknnIndex_cluster_info}
+\alias{bnorder,KmknnIndex-method}
+\alias{KmknnIndex-method}
 \title{The KmknnIndex class}
 \usage{
 KmknnIndex(data, centers, info, order, NAMES = NULL, distance = "Euclidean")
+
+\S4method{show}{KmknnIndex}(object)
+
+KmknnIndex_cluster_centers(x)
+
+KmknnIndex_cluster_info(x)
+
+\S4method{bnorder}{KmknnIndex}(x)
 }
 \arguments{
 \item{data}{A numeric matrix with data points in columns and dimensions in rows.}

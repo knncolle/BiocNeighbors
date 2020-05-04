@@ -54,21 +54,25 @@ setValidity2("AnnoyParam", function(object) {
 })
 
 #' @export
+#' @rdname AnnoyParam
 AnnoyParam_ntrees <- function(x) {
     x@ntrees
 }
 
 #' @export
+#' @rdname AnnoyParam
 AnnoyParam_directory <- function(x) {
     x@dir
 }
 
 #' @export
+#' @rdname AnnoyParam
 AnnoyParam_search_mult <- function(x) {
     x@search.mult
 }
 
-#' @export
+#' @exportMethod show
+#' @rdname AnnoyParam
 setMethod("show", "AnnoyParam", function(object) {
     callNextMethod()
     cat(sprintf("ntrees: %i\n", AnnoyParam_ntrees(object)))
@@ -133,7 +137,9 @@ setValidity2("AnnoyIndex", function(object) {
     return(TRUE)
 })
 
-#' @export
+#' @exportMethod show
+#' @rdname AnnoyIndex
+#' @aliases show,AnnoyIndex-method
 setMethod("show", "AnnoyIndex", function(object) {
     callNextMethod()
     cat(sprintf("path: %s\n", AnnoyIndex_path(object)))
@@ -141,14 +147,18 @@ setMethod("show", "AnnoyIndex", function(object) {
 })
 
 #' @export
+#' @rdname AnnoyIndex
 AnnoyIndex_path <- function(x) {
     x@path
 }
 
 #' @export
+#' @rdname AnnoyIndex
 AnnoyIndex_search_mult <- function(x) {
     x@search.mult
 }
 
-#' @export
+#' @exportMethod bnorder
+#' @rdname AnnoyIndex
+#' @aliases bnorder,AnnoyIndex-method
 setMethod("bnorder", "AnnoyIndex", function(x) seq_len(ncol(bndata(x))) )

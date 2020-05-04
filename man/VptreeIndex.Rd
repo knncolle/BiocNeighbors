@@ -2,9 +2,16 @@
 % Please edit documentation in R/Vptree-class.R
 \name{VptreeIndex}
 \alias{VptreeIndex}
+\alias{VptreeIndex_nodes}
+\alias{bnorder,VptreeIndex-method}
+\alias{VptreeIndex-method}
 \title{The VptreeIndex class}
 \usage{
 VptreeIndex(data, nodes, order, NAMES = NULL, distance = "Euclidean")
+
+VptreeIndex_nodes(x)
+
+\S4method{bnorder}{VptreeIndex}(x)
 }
 \arguments{
 \item{data}{A numeric matrix with data points in columns and dimensions in rows.}

@@ -7,7 +7,15 @@
 \alias{BiocNeighborParam-class,}
 \alias{bndistance,BiocNeighborParam-method,}
 \alias{show,BiocNeighborParam-method}
+\alias{show,BiocNeighborParam}
+\alias{bndistance,BiocNeighborParam-method}
+\alias{bndistance,BiocNeighborParam}
 \title{The BiocNeighborParam class}
+\usage{
+\S4method{show}{BiocNeighborParam}(object)
+
+\S4method{bndistance}{BiocNeighborParam}(x)
+}
 \description{
 A virtual class for specifying the type of nearest-neighbor search algorithm and associated parameters.
 }

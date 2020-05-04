@@ -78,4 +78,6 @@ setValidity2("ExhaustiveIndex", function(object) {
 })
 
 #' @exportMethod bnorder
+#' @rdname ExhaustiveIndex
+#' @aliases bnorder,ExhaustiveIndex-method
 setMethod("bnorder", "ExhaustiveIndex", function(x) seq_len(ncol(bndata(x))))

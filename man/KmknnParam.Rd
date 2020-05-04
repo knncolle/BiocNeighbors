@@ -2,9 +2,12 @@
 % Please edit documentation in R/Kmknn-class.R
 \name{KmknnParam}
 \alias{KmknnParam}
+\alias{show,KmknnParam-method}
 \title{The KmknnParam class}
 \usage{
 KmknnParam(..., distance = "Euclidean")
+
+\S4method{show}{KmknnParam}(object)
 }
 \arguments{
 \item{...}{Arguments to be passed to \code{\link{kmeans}}.}

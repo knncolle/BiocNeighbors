@@ -95,7 +95,7 @@
 #' head(out4$distance)
 #'
 #' @name findKNN methods
-#' @aliases findKNN-methods, findExhaustive, findKmknn, findVptree, findAnnoy, findHnsw
+#' @aliases findKNN-methods findExhaustive findKmknn findVptree findAnnoy findHnsw
 NULL
 
 ##############
@@ -120,54 +120,86 @@ NULL
 # Default dispatch #
 ####################
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("missing", "missing"), .FINDKNN_GENERATOR(findKNN, .default_param))
 
 ####################
 # Specific methods #
 ####################
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("missing", "ExhaustiveParam"), .FINDKNN_GENERATOR(findExhaustive))
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("ExhaustiveIndex", "ExhaustiveParam"), .FINDKNN_GENERATOR_NOX(findExhaustive))
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("ExhaustiveIndex", "missing"), .FINDKNN_GENERATOR_NOX(findExhaustive))
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("missing", "KmknnParam"), .FINDKNN_GENERATOR(findKmknn))
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("KmknnIndex", "KmknnParam"), .FINDKNN_GENERATOR_NOX(findKmknn))
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("KmknnIndex", "missing"), .FINDKNN_GENERATOR_NOX(findKmknn))
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("missing", "VptreeParam"), .FINDKNN_GENERATOR(findVptree))
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("VptreeIndex", "VptreeParam"), .FINDKNN_GENERATOR_NOX(findVptree))
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("VptreeIndex", "missing"), .FINDKNN_GENERATOR_NOX(findVptree))
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("missing", "AnnoyParam"), .FINDKNN_GENERATOR(findAnnoy))
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("AnnoyIndex", "AnnoyParam"), .FINDKNN_GENERATOR_NOX(findAnnoy))
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("AnnoyIndex", "missing"), .FINDKNN_GENERATOR_NOX(findAnnoy))
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("missing", "HnswParam"), .FINDKNN_GENERATOR(findHnsw))
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("HnswIndex", "HnswParam"), .FINDKNN_GENERATOR_NOX(findHnsw))
 
-#' @export
+#' @exportMethod findKNN
+#' @rdname findKNN
+#' @aliases findKNN,findKNN-method
 setMethod("findKNN", c("HnswIndex", "missing"), .FINDKNN_GENERATOR_NOX(findHnsw))

@@ -89,6 +89,15 @@ setMethod("queryNeighbors", c("missing", "missing"), .QUERYNEIGHBORS_GENERATOR(q
 ####################
 
 #' @export
+setMethod("queryNeighbors", c("missing", "ExhaustiveParam"), .QUERYNEIGHBORS_GENERATOR(rangeQueryExhaustive))
+
+#' @export
+setMethod("queryNeighbors", c("ExhaustiveIndex", "missing"), .QUERYNEIGHBORS_GENERATOR_NOX(rangeQueryExhaustive))
+
+#' @export
+setMethod("queryNeighbors", c("ExhaustiveIndex", "ExhaustiveParam"), .QUERYNEIGHBORS_GENERATOR_NOX(rangeQueryExhaustive))
+
+#' @export
 setMethod("queryNeighbors", c("missing", "KmknnParam"), .QUERYNEIGHBORS_GENERATOR(rangeQueryKmknn))
 
 #' @export

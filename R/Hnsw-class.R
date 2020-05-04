@@ -62,26 +62,32 @@ setValidity2("HnswParam", function(object) {
 })
 
 #' @export
+#' @rdname HnswParam
 HnswParam_nlinks <- function(x) {
     x@nlinks
 }
 
 #' @export
+#' @rdname HnswParam
 HnswParam_ef_construction <- function(x) {
     x@ef.construction
 }
 
 #' @export
+#' @rdname HnswParam
 HnswParam_directory <- function(x) {
     x@dir
 }
 
 #' @export
+#' @rdname HnswParam
 HnswParam_ef_search <- function(x) {
     x@ef.search
 }
 
-#' @export
+#' @exportMethod show
+#' @rdname HnswParam
+#' @aliases show,HnswParam-method
 setMethod("show", "HnswParam", function(object) {
     callNextMethod()
     cat(sprintf("nlinks: %i\n", HnswParam_nlinks(object)))
@@ -149,19 +155,25 @@ setValidity2("HnswIndex", function(object) {
 })
 
 #' @export
+#' @rdname HnswIndex
 HnswIndex_path <- function(x) {
     x@path
 }
 
 #' @export
+#' @rdname HnswIndex
 HnswIndex_ef_search <- function(x) {
     x@ef.search
 }
 
-#' @export
+#' @exportMethod bnorder
+#' @rdname HnswIndex
+#' @aliases HnswIndex-method
 setMethod("bnorder", "HnswIndex", function(x) seq_len(ncol(bndata(x))) )
 
-#' @export
+#' @exportMethod show
+#' @rdname HnswIndex
+#' @aliases show,HnswIndex-method
 setMethod("show", "HnswIndex", function(object) {
     callNextMethod()
     cat(sprintf("path: %s\n", HnswIndex_path(object)))

@@ -31,7 +31,9 @@
 NULL
 
 #' Display the class of a BiocNeighborParam \code{object}.
-#' @export
+#' @exportMethod show
+#' @rdname BiocNeighborParam
+#' @aliases show,BiocNeighborParam
 #' @importFrom methods show 
 setMethod("show", "BiocNeighborParam", function(object) {
     cat(sprintf("class: %s\n", class(object)))
@@ -39,7 +41,9 @@ setMethod("show", "BiocNeighborParam", function(object) {
 })
 
 #' Return a string specifying the distance metric to be used for searching, usually \code{"Euclidean"} or \code{"Manhattan"}.
-#' @export
+#' @exportMethod bndistance
+#' @rdname BiocNeighborParam
+#' @aliases bndistance,BiocNeighborParam
 setMethod("bndistance", "BiocNeighborParam", function(x) x@distance)
 
 #' @importFrom S4Vectors setValidity2

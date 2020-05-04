@@ -83,9 +83,12 @@ setValidity2("VptreeIndex", function(object) {
 })
 
 #' @export
+#' @rdname VptreeIndex
 VptreeIndex_nodes <- function(x) {
     x@nodes
 }
 
-#' @export
+#' @exportMethod bnorder
+#' @rdname VptreeIndex
+#' @aliases VptreeIndex-method
 setMethod("bnorder", "VptreeIndex", function(x) x@order)

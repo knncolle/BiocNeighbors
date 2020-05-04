@@ -33,7 +33,9 @@ KmknnParam_kmeans_args <- function(x) {
     x@kmeans.args
 }
 
-#' @export
+#' @exportMethod show
+#' @aliases show,KmknnParam-method
+#' @rdname KmknnParam
 setMethod("show", "KmknnParam", function(object) {
     callNextMethod()
 
@@ -107,21 +109,27 @@ setValidity2("KmknnIndex", function(object) {
     return(TRUE)
 })
 
-#' @export
+#' @exportMethod show
+#' @aliases show,KmknnIndex-method
+#' @rdname KmknnIndex
 setMethod("show", "KmknnIndex", function(object) {
     callNextMethod()
     cat(sprintf("clusters: %i\n", ncol(KmknnIndex_cluster_centers(object))))
 })
 
 #' @export        
+#' @rdname KmknnIndex
 KmknnIndex_cluster_centers <- function(x) {
     x@centers
 }
 
 #' @export
+#' @rdname KmknnIndex
 KmknnIndex_cluster_info <- function(x) {
     x@info
 }
 
-#' @export
+#' @exportMethod bnorder
+#' @aliases KmknnIndex-method
+#' @rdname KmknnIndex
 setMethod("bnorder", "KmknnIndex", function(x) x@order)

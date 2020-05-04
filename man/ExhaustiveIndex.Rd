@@ -3,9 +3,12 @@
 \name{ExhaustiveIndex}
 \alias{ExhaustiveIndex}
 \alias{ExhaustiveIndex-class}
+\alias{bnorder,ExhaustiveIndex-method}
 \title{The ExhaustiveIndex class}
 \usage{
 ExhaustiveIndex(data, NAMES = NULL, distance = "Euclidean")
+
+\S4method{bnorder}{ExhaustiveIndex}(x)
 }
 \arguments{
 \item{data}{A numeric matrix with data points in columns and dimensions in rows.}

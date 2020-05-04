@@ -57,26 +57,36 @@
 #'          dim,BiocNeighborIndex
 NULL
 
-#' @export
+#' @exportMethod show
 #' @importFrom methods show 
+#' @rdname BiocNeighborIndex
+#' @aliases show,BiocNeighborIndex-method
 setMethod("show", "BiocNeighborIndex", function(object) {
     cat(sprintf("class: %s\n", class(object)))
     cat(sprintf("dim: %i %i\n", nrow(object), ncol(object)))
     cat(sprintf("distance: %s\n", bndistance(object)))
 })
 
-#' @export
+#' @exportMethod bndistance
+#' @rdname BiocNeighborIndex
+#' @aliases bndistance,BiocNeighborIndex-method
 setMethod("bndistance", "BiocNeighborIndex", function(x) x@distance)
 
-#' @export
+#' @exportMethod dimnames
+#' @rdname BiocNeighborIndex
+#' @aliases dimnames,BiocNeighborIndex-method
 setMethod("dimnames", "BiocNeighborIndex", function(x) {
     list(x@NAMES, NULL)
 })
 
-#' @export
+#' @exportMethod bndata
+#' @rdname BiocNeighborIndex
+#' @aliases bndata,BiocNeighborIndex-method
 setMethod("bndata", "BiocNeighborIndex", function(x) x@data)
 
-#' @export
+#' @exportMethod dim
+#' @rdname BiocNeighborIndex
+#' @aliases dim,BiocNeighborIndex-method
 setMethod("dim", "BiocNeighborIndex", function(x) rev(dim(bndata(x))) ) # reversed, as matrix was transposed.
 
 #' @importFrom S4Vectors setValidity2

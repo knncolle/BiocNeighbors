@@ -2,9 +2,21 @@
 % Please edit documentation in R/Annoy-class.R
 \name{AnnoyIndex}
 \alias{AnnoyIndex}
+\alias{show,AnnoyIndex-method}
+\alias{AnnoyIndex_path}
+\alias{AnnoyIndex_search_mult}
+\alias{bnorder,AnnoyIndex-method}
 \title{The AnnoyIndex class}
 \usage{
 AnnoyIndex(data, path, search.mult = 50, NAMES = NULL, distance = "Euclidean")
+
+\S4method{show}{AnnoyIndex}(object)
+
+AnnoyIndex_path(x)
+
+AnnoyIndex_search_mult(x)
+
+\S4method{bnorder}{AnnoyIndex}(x)
 }
 \arguments{
 \item{data}{A numeric matrix with data points in columns and dimensions in rows.}

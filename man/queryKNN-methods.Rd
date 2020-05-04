@@ -3,37 +3,7 @@
 \name{queryKNN methods}
 \alias{queryKNN methods}
 \alias{queryKNN-methods}
-\alias{queryExhaustive}
-\alias{queryKmknn}
-\alias{queryVptree}
-\alias{queryAnnoy}
-\alias{queryHnsw}
-
 \title{Query nearest neighbors}
-\description{Query a dataset for nearest neighbors of points in another dataset, using a variety of algorithms.}
-
-\usage{
-queryExhaustive(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
-    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL,
-    raw.index=FALSE, warn.ties=TRUE, ...)
-
-queryKmknn(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
-    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, 
-    raw.index=FALSE, warn.ties=TRUE, ...)
-
-queryVptree(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
-    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, 
-    raw.index=FALSE, warn.ties=TRUE, ...)
-
-queryAnnoy(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
-    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL,
-    raw.index=NA, warn.ties=NA, ...)
-
-queryHnsw(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
-    BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL,
-    raw.index=NA, warn.ties=NA, ...)
-}
-
 \arguments{
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
 
@@ -113,35 +83,6 @@ Note that when \code{precomputed} is supplied, the value of \code{X} is ignored.
 For exact methods, see comments in \code{?"\link{BiocNeighbors-ties}"} regarding the warnings when tied distances are observed.
 For approximate methods, see comments in \code{\link{buildAnnoy}} and \code{\link{buildHnsw}} about the (lack of) randomness in the search results.
 }
-
-\value{
-A list is returned containing:
-\itemize{
-    \item \code{index}, if \code{get.index=TRUE}.
-    This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{query}.
-    The row for \eqn{i} contains the row indices of \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
-    \item \code{distance}, if \code{get.distance=TRUE}.
-    This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
-}
-Each matrix contains \code{last} columns.
-If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
-
-See \code{?"\link{BiocNeighbors-raw-index}"} for an explanation of the output when \code{raw.index=TRUE} for the functions that support it.
-}
-
-\author{
-Aaron Lun
-}
-
-\seealso{
-\code{\link{buildExhaustive}}, 
-\code{\link{buildKmknn}}, 
-\code{\link{buildVptree}},
-or \code{\link{buildAnnoy}} to build an index ahead of time.
-
-See \code{?"\link{BiocNeighbors-algorithms}"} for an overview of the available algorithms.
-}
-
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
 Z <- matrix(rnorm(20000), ncol=20)

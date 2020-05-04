@@ -56,17 +56,27 @@ setMethod("buildIndex", "missing", .BUILDINDEX_GENERATOR(buildIndex, .default_pa
 # Specific methods #
 ####################
 
-#' @export
+#' @exportMethod buildIndex
+#' @rdname buildIndex
+#' @aliases buildIndex,KmknnParam-method
 setMethod("buildIndex", "KmknnParam", .BUILDINDEX_GENERATOR(buildKmknn))
 
-#' @export
+#' @exportMethod buildIndex
+#' @rdname buildIndex
+#' @aliases buildIndex,VptreeParam-method
 setMethod("buildIndex", "VptreeParam", .BUILDINDEX_GENERATOR(buildVptree))
 
-#' @export
+#' @exportMethod buildIndex
+#' @rdname buildIndex
+#' @aliases buildIndex,AnnoyParam-method
 setMethod("buildIndex", "AnnoyParam", .BUILDINDEX_GENERATOR(buildAnnoy))
 
-#' @export
+#' @exportMethod buildIndex
+#' @rdname buildIndex
+#' @aliases buildIndex,HnswParam-method
 setMethod("buildIndex", "HnswParam", .BUILDINDEX_GENERATOR(buildHnsw))
 
-#' @export
+#' @exportMethod buildIndex
+#' @rdname buildIndex
+#' @aliases buildIndex,ExhaustiveParam-method
 setMethod("buildIndex", "ExhaustiveParam", .BUILDINDEX_GENERATOR(buildExhaustive))
