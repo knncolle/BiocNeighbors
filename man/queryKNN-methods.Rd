@@ -5,8 +5,7 @@
 \alias{queryKNN-methods}
 \title{Query nearest neighbors}
 \arguments{
-\item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
-This can be missing if \code{BNINDEX} is supplied.}
+\item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
 
 \item{query}{A numeric matrix of query points, containing different data points in the rows but the same number and ordering of dimensions in the columns.}
 

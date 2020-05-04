@@ -59,7 +59,7 @@
 #' str(a.out3 <- queryKNN(Y, Z, k=10, BNINDEX=a.dex, BNPARAM=AnnoyParam()))
 #'
 #' @name queryKNN
-#' @docType
+#' @docType methods
 NULL
 
 #########
