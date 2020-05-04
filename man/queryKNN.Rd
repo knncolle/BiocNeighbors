@@ -43,6 +43,19 @@ Similarly, any parameters in \code{BNPARAM} will be ignored.
 
 If both \code{BNINDEX} and \code{BNPARAM} are missing, the function will default to the KMKNN algorithm by setting \code{BNPARAM=KmknnParam()}.
 }
+
+\author{
+Aaron Lun
+}
+
+\seealso{
+\code{\link{queryExhaustive}}, 
+\code{\link{queryKmknn}}, 
+\code{\link{queryVptree}},
+\code{\link{queryAnnoy}} 
+and \code{\link{queryHnsw}} for specific methods.
+}
+
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
 Z <- matrix(rnorm(10000), ncol=20)
