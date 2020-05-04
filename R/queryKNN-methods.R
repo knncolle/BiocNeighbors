@@ -3,7 +3,6 @@
 #' Query a dataset for nearest neighbors of points in another dataset, using a variety of algorithms.
 #'
 #' @param X A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
-#' This can be missing if \code{BNINDEX} is supplied.
 #' @param query A numeric matrix of query points, containing different data points in the rows but the same number and ordering of dimensions in the columns.
 #' @param k A positive integer scalar specifying the number of nearest neighbors to retrieve.
 #' @param get.index A logical scalar indicating whether the indices of the nearest neighbors should be recorded.
