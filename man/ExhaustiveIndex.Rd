@@ -12,7 +12,8 @@ ExhaustiveIndex(data, NAMES = NULL, distance = "Euclidean")
 
 \item{NAMES}{A character vector of sample names or \code{NULL}.}
 
-\item{distance}{A string specifying the distance metric to use.}
+\item{distance}{A string specifying the distance metric to use.
+Defaults to \code{"Euclidean"}.}
 }
 \value{
 An ExhaustiveIndex object.

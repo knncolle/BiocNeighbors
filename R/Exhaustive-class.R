@@ -18,12 +18,12 @@
 #' \code{\link{buildExhaustive}} 
 #' 
 #' @examples
-#' (out <- KmknnParam(iter.max=100))
+#' out <- ExhaustiveParam()
 #'
 #' @export
-#' @aliases ExhaustiveParam-class
-#' 
 #' @importFrom methods new
+#' 
+#' @aliases ExhaustiveParam-class
 ExhaustiveParam <- function(distance="Euclidean") {
     new("ExhaustiveParam", distance=distance)
 }
@@ -43,6 +43,7 @@ setMethod("spill_args", "ExhaustiveParam", function(x) {
 #' @param data A numeric matrix with data points in columns and dimensions in rows.
 #' @param NAMES A character vector of sample names or \code{NULL}.
 #' @param distance A string specifying the distance metric to use.
+#' Defaults to \code{"Euclidean"}.
 #'
 #' @details 
 #' Users should never need to call the constructor explicitly, but should generate 
