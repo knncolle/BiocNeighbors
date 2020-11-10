@@ -1,0 +1,4 @@
+
+# Add this define with Rcpp 0.16.2 or later:  -D__RcppAnnoy_0_16_2__
+# Once that release is standard just remove the define here and its test (twice) in nn_parallel.h
+PKG_CXXFLAGS = -D__RcppAnnoy_0_16_2__
