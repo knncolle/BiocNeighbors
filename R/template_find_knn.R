@@ -2,7 +2,7 @@
 .template_find_knn <- function(X, k, get.index=TRUE, get.distance=TRUE, 
     last=k, BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, 
     exact=TRUE, warn.ties=TRUE, raw.index=FALSE, 
-    buildFUN, pathFUN, searchFUN, searchArgsFUN, ...) 
+    buildFUN, searchFUN, searchArgsFUN, ...) 
 # Provides an R template for different methods for exact neighbor searching,
 # assuming that all of them involve rearranging columns in the index.
 #
@@ -20,7 +20,7 @@
     } else {
         if (is.null(precomputed)) {
             precomputed <- buildFUN(X, ...)
-            on.exit(unlink(pathFUN(precomputed)))
+            on.exit(unlink(precomputed[['path']]))
         }
 
         if (is.null(subset)) {

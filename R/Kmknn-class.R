@@ -10,6 +10,7 @@ KmknnParam <- function(..., distance="Euclidean") {
 
 #' @export
 KmknnParam_kmeans_args <- function(x) {
+    .Deprecated(new="x[['kmeans.args']]")
     x@kmeans.args
 }
 
@@ -17,7 +18,7 @@ KmknnParam_kmeans_args <- function(x) {
 setMethod("show", "KmknnParam", function(object) {
     callNextMethod()
 
-    all.args <- names(KmknnParam_kmeans_args(object))
+    all.args <- names(object[['kmeans.args']])
     all.args[is.na(all.args)] <- ""
     N <- length(all.args)
     if (N >= 4L) all.args <- c(all.args[seq_len(3)], "...")
@@ -26,7 +27,7 @@ setMethod("show", "KmknnParam", function(object) {
 })
 
 setMethod("spill_args", "KmknnParam", function(x) {
-    c(list(distance=bndistance(x)), KmknnParam_kmeans_args(x))
+    c(list(distance=bndistance(x)), x[['kmeans.args']])
 })
 
 ##################################
@@ -44,12 +45,12 @@ setValidity2("KmknnIndex", function(object) {
     msg <- character(0)
 
     data <- bndata(object)
-    centers <- KmknnIndex_cluster_centers(object)
+    centers <- object[['centers']]
     if (nrow(data)!=nrow(centers)) {
         msg <- c(msg, "dimensionality is not consistent between 'data' and 'centers") 
     }
 
-    info <- KmknnIndex_cluster_info(object)
+    info <- object[['info']]
     if (length(info)!=ncol(centers)) {
         msg <- c(msg, "number of clusters is not consistent between 'centers' and 'info'")
     }
@@ -67,16 +68,18 @@ setValidity2("KmknnIndex", function(object) {
 #' @export
 setMethod("show", "KmknnIndex", function(object) {
     callNextMethod()
-    cat(sprintf("clusters: %i\n", ncol(KmknnIndex_cluster_centers(object))))
+    cat(sprintf("clusters: %i\n", ncol(object[['centers']])))
 })
 
 #' @export        
 KmknnIndex_cluster_centers <- function(x) {
+    .Deprecated(new="x[['centers']]")
     x@centers
 }
 
 #' @export
 KmknnIndex_cluster_info <- function(x) {
+    .Deprecated(new="x[['info']]")
     x@info
 }
 

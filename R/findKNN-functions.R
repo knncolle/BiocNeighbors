@@ -14,14 +14,14 @@ findAnnoy <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
     .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
         last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
         exact=FALSE, warn.ties=FALSE, raw.index=FALSE,
-        buildFUN=buildAnnoy, pathFUN=AnnoyIndex_path, searchFUN=find_annoy, searchArgsFUN=.find_annoy_args, ...)
+        buildFUN=buildAnnoy, searchFUN=find_annoy, searchArgsFUN=.find_annoy_args, ...)
 }
 
 .find_annoy_args <- function(precomputed) {
     list(
         ndims=ncol(precomputed),
-        fname=AnnoyIndex_path(precomputed),
-        search_mult=AnnoyIndex_search_mult(precomputed)
+        fname=precomputed[['path']],
+        search_mult=precomputed[['search.mult']]
     )
 }
 
@@ -41,14 +41,14 @@ findHnsw <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
     .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
         last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
         exact=FALSE, warn.ties=FALSE, raw.index=FALSE,
-        buildFUN=buildHnsw, pathFUN=HnswIndex_path, searchFUN=find_hnsw, searchArgsFUN=.find_hnsw_args, ...)
+        buildFUN=buildHnsw, searchFUN=find_hnsw, searchArgsFUN=.find_hnsw_args, ...)
 }
 
 .find_hnsw_args <- function(precomputed) {
     list(
         vals=bndata(precomputed),
-        fname=HnswIndex_path(precomputed),
-        ef_search=HnswIndex_ef_search(precomputed)
+        fname=precomputed[['path']],
+        ef_search=precomputed[['ef.search']]
     )
 }
 
@@ -73,8 +73,8 @@ findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
 
 .find_kmknn_args <- function(precomputed) {
     list(
-        clust_centers=KmknnIndex_cluster_centers(precomputed),
-        clust_info=KmknnIndex_cluster_info(precomputed)
+        clust_centers=precomputed[['centers']],
+        clust_info=precomputed[['info']]
     )
 }
 
@@ -99,7 +99,7 @@ findVptree <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
 
 .find_vptree_args <- function(precomputed) {
     list(
-        nodes=VptreeIndex_nodes(precomputed)
+        nodes=precomputed[['nodes']]
     )
 }
 
