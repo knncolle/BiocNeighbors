@@ -37,6 +37,10 @@ range_find_kmknn <- function(to_check, X, clust_centers, clust_info, dtype, dist
     .Call('_BiocNeighbors_range_find_kmknn', PACKAGE = 'BiocNeighbors', to_check, X, clust_centers, clust_info, dtype, dist_thresh, get_index, get_distance)
 }
 
+find_mutual_nns <- function(left, right) {
+    .Call('_BiocNeighbors_find_mutual_nns', PACKAGE = 'BiocNeighbors', left, right)
+}
+
 find_vptree <- function(to_check, X, nodes, dtype, nn, get_index, get_distance, last, warn_ties) {
     .Call('_BiocNeighbors_find_vptree', PACKAGE = 'BiocNeighbors', to_check, X, nodes, dtype, nn, get_index, get_distance, last, warn_ties)
 }

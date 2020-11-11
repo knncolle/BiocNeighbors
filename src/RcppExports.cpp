@@ -147,6 +147,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// find_mutual_nns
+Rcpp::List find_mutual_nns(Rcpp::IntegerMatrix left, Rcpp::IntegerMatrix right);
+RcppExport SEXP _BiocNeighbors_find_mutual_nns(SEXP leftSEXP, SEXP rightSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type left(leftSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type right(rightSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_mutual_nns(left, right));
+    return rcpp_result_gen;
+END_RCPP
+}
 // find_vptree
 Rcpp::RObject find_vptree(Rcpp::IntegerVector to_check, Rcpp::NumericMatrix X, Rcpp::List nodes, std::string dtype, int nn, bool get_index, bool get_distance, int last, bool warn_ties);
 RcppExport SEXP _BiocNeighbors_find_vptree(SEXP to_checkSEXP, SEXP XSEXP, SEXP nodesSEXP, SEXP dtypeSEXP, SEXP nnSEXP, SEXP get_indexSEXP, SEXP get_distanceSEXP, SEXP lastSEXP, SEXP warn_tiesSEXP) {
@@ -330,6 +341,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BiocNeighbors_find_hnsw", (DL_FUNC) &_BiocNeighbors_find_hnsw, 9},
     {"_BiocNeighbors_find_kmknn", (DL_FUNC) &_BiocNeighbors_find_kmknn, 10},
     {"_BiocNeighbors_range_find_kmknn", (DL_FUNC) &_BiocNeighbors_range_find_kmknn, 8},
+    {"_BiocNeighbors_find_mutual_nns", (DL_FUNC) &_BiocNeighbors_find_mutual_nns, 2},
     {"_BiocNeighbors_find_vptree", (DL_FUNC) &_BiocNeighbors_find_vptree, 9},
     {"_BiocNeighbors_range_find_vptree", (DL_FUNC) &_BiocNeighbors_range_find_vptree, 7},
     {"_BiocNeighbors_query_annoy", (DL_FUNC) &_BiocNeighbors_query_annoy, 9},

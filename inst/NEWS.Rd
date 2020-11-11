@@ -2,6 +2,10 @@
 \title{BiocNeighbors News}
 \encoding{UTF-8}
 
+\section{Version 1.10.0}{\itemize{
+\item Migrated \code{findMutualNN()} from \pkg{batchelor}.
+}}
+
 \section{Version 1.4.0}{\itemize{
 \item Allow memory-efficient retrieval of the distance to the furthest neighbors.
 
