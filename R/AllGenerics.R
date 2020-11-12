@@ -1,4 +1,5 @@
 #' @export
+#' @rdname buildIndex
 setGeneric("buildIndex", signature=c("BNPARAM"), 
     function(X, ..., BNPARAM) 
         standardGeneric("buildIndex")

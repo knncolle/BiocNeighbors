@@ -16,20 +16,27 @@ i.e., rows are variables and columns are data points.}
 \item{distance}{String specifying the type of distance to use.}
 }
 \value{
-An \linkS4class{ExhaustiveIndex} object containing:
-\itemize{
-\item \code{data}, a numeric matrix with points in the \emph{columns} and dimensions in the rows, 
-i.e., transposed relative to the input.
-\item \code{NAMES}, a character vector or \code{NULL} equal to \code{rownames(X)}.
-\item \code{distance}, a string specifying the distance metric used.
-}
+An \linkS4class{ExhaustiveIndex} object containing indexed data.
 }
 \description{
 Transform data in preparation for an exhaustive (i.e., brute-force) search.
+}
+\details{
+This algorithm is largely provided as a baseline for comparing against the other algorithms.
+On rare occasions, it may actually be useful in, e.g., very high-dimensional data 
+where the indexing step of other algorithms adds computational overhead for no benefit.
 }
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
 out <- buildExhaustive(Y)
 out
 
+}
+\seealso{
+\linkS4class{ExhaustiveIndex}, for details on the output class.
+
+\code{\link{findExhaustive}} and \code{\link{queryExhaustive}}, for dependent functions.
+}
+\author{
+Allison Vuong
 }

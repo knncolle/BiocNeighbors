@@ -20,10 +20,10 @@ KmknnIndex_cluster_info(x)
 }
 
 \arguments{
-    \item{data}{A numeric matrix with data points in columns and dimensions in rows.}
-    \item{centers}{A numeric matrix with clusters in columns and dimensions in rows.}
-    \item{info}{A list of statistics for each cluster.}
-    \item{order}{An integer vector of length equal to \code{ncol(data)}, specifying the order of observations.}
+    \item{data}{A numeric matrix where columns correspond to data points and rows correspond to dimensions.}
+    \item{centers}{A numeric matrix containing coordinates for cluster centroids, with clusters in columns and dimensions in rows.}
+    \item{info}{A list containing additional information for each cluster, see \code{\link{buildKmknn}} for details.}
+    \item{order}{An integer vector of length equal to \code{ncol(data)}, specifying the order of points in \code{x} relative to the original data matrix.}
     \item{NAMES}{A character vector of sample names or \code{NULL}.}
     \item{distance}{A string specifying the distance metric to use.}
     \item{x, object}{A KmknnIndex object.}

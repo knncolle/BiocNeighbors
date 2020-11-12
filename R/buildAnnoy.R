@@ -30,12 +30,12 @@
 #' This means that the results of the Annoy neighbor searches will be fully deterministic for the same inputs, even though the theory provides no such guarantees.
 #' 
 #' @return
-#' A \linkS4class{AnnoyIndex} object containing a path to the index file, plus additional parameters for the search.
+#' An \linkS4class{AnnoyIndex} object containing a path to the index file, plus additional parameters for the search.
 #' 
 #' @seealso
 #' \linkS4class{AnnoyIndex}, for details on the output class.
 #' 
-#' See \code{\link{findAnnoy}} and \code{\link{queryAnnoy}} for dependent functions.
+#' \code{\link{findAnnoy}} and \code{\link{queryAnnoy}}, for dependent functions.
 #' 
 #' @author
 #' Aaron Lun
@@ -49,10 +49,6 @@
 #' @importFrom Matrix t
 buildAnnoy <- function(X, transposed=FALSE, ntrees=50, directory=tempdir(), search.mult=ntrees, 
     fname=tempfile(tmpdir=directory, fileext=".idx"), distance=c("Euclidean", "Manhattan")) 
-# Builds an Annoy index at the specified path.
-# 
-# written by Aaron Lun
-# created 25 September 2018
 {
     if (transposed) {
         tX <- X
