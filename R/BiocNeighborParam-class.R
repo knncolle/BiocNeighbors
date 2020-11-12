@@ -19,3 +19,16 @@ setValidity2("BiocNeighborParam", function(object) {
     if (length(msg)) return(msg)
     return(TRUE)
 })
+
+#' @export
+setMethod("[[", "BiocNeighborParam", function(x, i, j, ...) {
+    # Provides a layer of protection that we can use to update
+    # the object or intercept slot queries if the class changes.
+    slot(x, i)
+})
+
+#' @export
+setReplaceMethod("[[", "BiocNeighborParam", function(x, i, j, ..., value) {
+    slot(x, i) <- value
+    x
+})

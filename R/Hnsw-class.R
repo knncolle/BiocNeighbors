@@ -12,22 +12,22 @@ HnswParam <- function(nlinks=16, ef.construction=200, directory=tempdir(), ef.se
 setValidity2("HnswParam", function(object) {
     msg <- character(0)
 
-    nlinks <- HnswParam_nlinks(object)
+    nlinks <- object[['nlinks']]
     if (length(nlinks) != 1L || nlinks <= 0L) {
         msg <- c(msg, "'nlinks' should be a positive integer scalar")
     }
 
-    ef.construction <- HnswParam_ef_construction(object)
+    ef.construction <- object[['ef.construction']]
     if (length(ef.construction) != 1L || ef.construction <= 0L) {
         msg <- c(msg, "'ef.construction' should be a positive integer scalar")
     }
 
-    dir <- HnswParam_directory(object)
+    dir <- object[['dir']]
     if (length(dir)!=1L) {
         msg <- c(msg, "'directory' should be a string")
     }
 
-    ef.search <- HnswParam_ef_search(object)
+    ef.search <- object[['ef.search']]
     if (length(ef.search) != 1L || ef.search <= 0L) {
         msg <- c(msg, "'ef.search' should be a positive integer scalar")
     }
@@ -43,31 +43,46 @@ HnswParam_nlinks <- function(x) {
 
 #' @export
 HnswParam_ef_construction <- function(x) {
+    .Deprecated(new="x[['ef.construction']]")
     x@ef.construction
 }
 
 #' @export
 HnswParam_directory <- function(x) {
+    .Deprecated(new="x[['directory']]")
     x@dir
 }
 
 #' @export
 HnswParam_ef_search <- function(x) {
+    .Deprecated(new="x[['ef.search']]")
     x@ef.search
 }
 
 #' @export
 setMethod("show", "HnswParam", function(object) {
     callNextMethod()
-    cat(sprintf("nlinks: %i\n", HnswParam_nlinks(object)))
-    cat(sprintf("EF construction: %i\n", HnswParam_ef_construction(object)))
-    cat(sprintf("directory: %s\n", HnswParam_directory(object)))
-    cat(sprintf("EF search: %i\n", HnswParam_ef_search(object)))
+    cat(sprintf("nlinks: %i\n", object[['nlinks']]))
+    cat(sprintf("EF construction: %i\n", object[['ef.construction']]))
+    cat(sprintf("directory: %s\n", object[['dir']]))
+    cat(sprintf("EF search: %i\n", object[['ef.search']]))
 })
 
 setMethod("spill_args", "HnswParam", function(x) {
-    list(nlinks=HnswParam_nlinks(x), ef.construction=HnswParam_ef_construction(x), 
-        directory=HnswParam_directory(x), ef.search=HnswParam_ef_search(x), distance=bndistance(x))
+    list(nlinks=x[['nlinks']], ef.construction=x[['ef.construction']], 
+        directory=x[['dir']], ef.search=x[['ef.search']], distance=bndistance(x))
+})
+
+#' @export
+setMethod("[[", "HnswParam", function(x, i, j, ...) {
+    if (i=="directory") i <- "dir"
+    callNextMethod()
+})
+
+#' @export
+setReplaceMethod("[[", "HnswParam", function(x, i, j, ..., value) {
+    if (i=="directory") i <- "dir"
+    callNextMethod()
 })
 
 #############################
@@ -84,12 +99,12 @@ HnswIndex <- function(data, path, ef.search=10, NAMES=NULL, distance="Euclidean"
 setValidity2("HnswIndex", function(object) {
     msg <- character(0)
 
-    path <- HnswIndex_path(object)
+    path <- object[['path']]
     if (length(path)!=1L) {
         msg <- c(msg, "'path' should be a string")
     }
 
-    ef.search <- HnswParam_ef_search(object)
+    ef.search <- object[['ef.search']]
     if (length(ef.search) != 1L || ef.search <= 0L) {
         msg <- c(msg, "'ef.search' should be a positive integer scalar")
     }
@@ -100,11 +115,13 @@ setValidity2("HnswIndex", function(object) {
 
 #' @export
 HnswIndex_path <- function(x) {
+    .Deprecated(new="x[['path']]")
     x@path
 }
 
 #' @export
 HnswIndex_ef_search <- function(x) {
+    .Deprecated(new="x[['ef.search']]")
     x@ef.search
 }
 
@@ -114,6 +131,6 @@ setMethod("bnorder", "HnswIndex", function(x) seq_len(ncol(bndata(x))) )
 #' @export
 setMethod("show", "HnswIndex", function(object) {
     callNextMethod()
-    cat(sprintf("path: %s\n", HnswIndex_path(object)))
-    cat(sprintf("EF search: %i\n", HnswIndex_ef_search(object)))
+    cat(sprintf("path: %s\n", object[['path']]))
+    cat(sprintf("EF search: %i\n", object[['ef.search']]))
 })
