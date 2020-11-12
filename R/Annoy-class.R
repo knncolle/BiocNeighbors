@@ -17,8 +17,8 @@ setValidity2("AnnoyParam", function(object) {
         msg <- c(msg, "'ntrees' should be a positive integer scalar")
     }
 
-    if (length(object[['directory']])!=1L) {
-        msg <- c(msg, "'directory' should be a string")
+    if (length(object[['dir']])!=1L) {
+        msg <- c(msg, "'dir' should be a string")
     }
 
     search.mult <- object[['search.mult']]
@@ -52,13 +52,25 @@ AnnoyParam_search_mult <- function(x) {
 setMethod("show", "AnnoyParam", function(object) {
     callNextMethod()
     cat(sprintf("ntrees: %i\n", object[['ntrees']]))
-    cat(sprintf("directory: %s\n", object[['directory']]))
+    cat(sprintf("directory: %s\n", object[['dir']]))
     cat(sprintf("search multiplier: %i\n", object[['search.mult']]))
 })
 
 setMethod("spill_args", "AnnoyParam", function(x) {
-    list(ntrees=x[['ntrees']], directory=x[['directory']], 
+    list(ntrees=x[['ntrees']], directory=x[['dir']], 
         search.mult=x[['search.mult']], distance=bndistance(x))
+})
+
+#' @export
+setMethod("[[", "AnnoyParam", function(x, i, j, ...) {
+    if (i=="directory") i <- "dir"
+    callNextMethod()
+})
+
+#' @export
+setReplaceMethod("[[", "AnnoyParam", function(x, i, j, ..., value) {
+    if (i=="directory") i <- "dir"
+    callNextMethod()
 })
 
 ##################################
