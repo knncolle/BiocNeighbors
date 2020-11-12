@@ -37,6 +37,9 @@
 #' show,AnnoyParam-method
 #' AnnoyParam_ntrees
 #' AnnoyParam_directory
+#' [[,AnnoyParam-method
+#' [[<-,AnnoyParam-method
+#'
 #' @docType class
 #' 
 #' @export
@@ -75,7 +78,7 @@ AnnoyParam_ntrees <- function(x) {
 
 #' @export
 AnnoyParam_directory <- function(x) {
-    .Deprecated(new="x[['dir']]")
+    .Deprecated(new="x[['directory']]")
     x@dir
 }
 
@@ -98,4 +101,15 @@ setMethod("spill_args", "AnnoyParam", function(x) {
         search.mult=x[['search.mult']], distance=bndistance(x))
 })
 
+#' @export
+setMethod("[[", "AnnoyParam", function(x, i, j, ...) {
+    if (i=="directory") i <- "dir"
+    callNextMethod()
+})
+
+#' @export
+setReplaceMethod("[[", "AnnoyParam", function(x, i, j, ..., value) {
+    if (i=="directory") i <- "dir"
+    callNextMethod()
+})
 

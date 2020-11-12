@@ -49,7 +49,7 @@ HnswParam_ef_construction <- function(x) {
 
 #' @export
 HnswParam_directory <- function(x) {
-    .Deprecated(new="x[['dir']]")
+    .Deprecated(new="x[['directory']]")
     x@dir
 }
 
@@ -71,6 +71,18 @@ setMethod("show", "HnswParam", function(object) {
 setMethod("spill_args", "HnswParam", function(x) {
     list(nlinks=x[['nlinks']], ef.construction=x[['ef.construction']], 
         directory=x[['dir']], ef.search=x[['ef.search']], distance=bndistance(x))
+})
+
+#' @export
+setMethod("[[", "HnswParam", function(x, i, j, ...) {
+    if (i=="directory") i <- "dir"
+    callNextMethod()
+})
+
+#' @export
+setReplaceMethod("[[", "HnswParam", function(x, i, j, ..., value) {
+    if (i=="directory") i <- "dir"
+    callNextMethod()
 })
 
 #############################
