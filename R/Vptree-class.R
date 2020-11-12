@@ -32,7 +32,7 @@ setValidity2("VptreeIndex", function(object) {
         msg <- c(msg, "number of observations is not consistent between 'data' and 'order'")
     }
 
-    node.len <- lengths(VptreeIndex_nodes(object))
+    node.len <- lengths(object[['nodes']])
     if (length(node.len)!=4) {
         msg <- c(msg, "node information should contain 4 vectors")
     }
@@ -46,6 +46,7 @@ setValidity2("VptreeIndex", function(object) {
 
 #' @export
 VptreeIndex_nodes <- function(x) {
+    .Deprecated(new="x[['nodes']]")
     x@nodes
 }
 

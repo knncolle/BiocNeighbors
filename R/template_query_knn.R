@@ -2,7 +2,7 @@
 .template_query_knn <- function(X, query, k, get.index=TRUE, get.distance=TRUE, 
     last=k, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, 
     exact=TRUE, raw.index=FALSE, warn.ties=TRUE,
-    buildFUN, pathFUN, searchFUN, searchArgsFUN, ...)
+    buildFUN, searchFUN, searchArgsFUN, ...)
 # Identifies nearest neighbours in 'X' from a query set.
 #
 # written by Aaron Lun
@@ -14,7 +14,7 @@
     } else {
         if (is.null(precomputed)) {
             precomputed <- buildFUN(X, ...)
-            on.exit(unlink(pathFUN(precomputed)))
+            on.exit(unlink(precomputed[['path']]))
         }
         common.args <- list()
     }

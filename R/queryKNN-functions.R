@@ -14,7 +14,7 @@ queryAnnoy <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
     .template_query_knn(X, query, k, get.index=get.index, get.distance=get.distance, 
         last=last, BPPARAM=BPPARAM, precomputed=precomputed, transposed=transposed, subset=subset, 
         exact=FALSE, warn.ties=FALSE, raw.index=FALSE,
-        buildFUN=buildAnnoy, pathFUN=AnnoyIndex_path, searchFUN=query_annoy, searchArgsFUN=.find_annoy_args, ...)
+        buildFUN=buildAnnoy, searchFUN=query_annoy, searchArgsFUN=.find_annoy_args, ...)
 }
 
 ########
@@ -33,7 +33,7 @@ queryHnsw <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
     .template_query_knn(X, query, k, get.index=get.index, get.distance=get.distance, 
         last=last, BPPARAM=BPPARAM, precomputed=precomputed, transposed=transposed, subset=subset, 
         exact=FALSE, warn.ties=FALSE, raw.index=FALSE,
-        buildFUN=buildHnsw, pathFUN=HnswIndex_path, searchFUN=query_hnsw, searchArgsFUN=.find_hnsw_args, ...)
+        buildFUN=buildHnsw, searchFUN=query_hnsw, searchArgsFUN=.find_hnsw_args, ...)
 }
 
 #########
