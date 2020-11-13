@@ -52,3 +52,9 @@ VptreeIndex_nodes <- function(x) {
 
 #' @export
 setMethod("bnorder", "VptreeIndex", function(x) x@order)
+
+.find_vptree_args <- function(precomputed) {
+    list(
+        nodes=precomputed[['nodes']]
+    )
+}

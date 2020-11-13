@@ -11,7 +11,9 @@
 #' @details
 #' The AnnoyIndex class holds the indexing structure required to run the Annoy algorithm.
 #' Users should never need to call the constructor explicitly, but should generate instances of AnnoyIndex classes with \code{\link{buildAnnoy}}.
-#' Individual parameters can be extracted with the usual \code{[[} syntax.
+#'
+#' Users can get values from an AnnoyIndex object with the usual \code{[[} syntax.
+#' All parameters listed in the constructor can be extracted in this manner.
 #' 
 #' @return 
 #' An instance of the AnnoyIndex class.
@@ -85,3 +87,11 @@ AnnoyIndex_search_mult <- function(x) {
 
 #' @export
 setMethod("bnorder", "AnnoyIndex", function(x) seq_len(ncol(bndata(x))) )
+
+.find_annoy_args <- function(precomputed) {
+    list(
+        ndims=ncol(precomputed),
+        fname=precomputed[['path']],
+        search_mult=precomputed[['search.mult']]
+    )
+}

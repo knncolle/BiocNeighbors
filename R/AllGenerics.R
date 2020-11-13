@@ -6,6 +6,7 @@ setGeneric("buildIndex", signature=c("BNPARAM"),
 )
 
 #' @export
+#' @rdname findKNN-methods
 #' @importFrom BiocParallel SerialParam
 setGeneric("findKNN", signature=c("BNINDEX", "BNPARAM"), 
     function(X, k, ..., BNINDEX, BNPARAM) 
