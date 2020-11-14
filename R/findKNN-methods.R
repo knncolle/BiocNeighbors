@@ -8,7 +8,7 @@
 #' @param ... Further arguments to pass to individual methods.
 #' This is guaranteed to include \code{subset}, \code{get.index}, \code{get.distance}, \code{last},
 #' \code{warn.ties}, \code{raw.index} and \code{BPPARAM}.
-#' See \code{?"\link{findKNN-methods}"} for more details.
+#' See \code{?"\link{findKNN-functions}"} for more details.
 #' @param BNINDEX A \linkS4class{BiocNeighborIndex} object containing precomputed index information.
 #' This can be missing if \code{BNPARAM} is supplied, see Details.
 #' @param BNPARAM A \linkS4class{BiocNeighborParam} object specifying the algorithm to use.
@@ -17,7 +17,7 @@
 #' @return 
 #' A list is returned containing \code{index}, an integer matrix of neighbor identities;
 #' and \code{distance}, a numeric matrix of distances to those neighbors.
-#' See \code{?"\link{findKNN-methods}"} for more details.
+#' See \code{?"\link{findKNN-functions}"} for more details.
 #'
 #' @details
 #' The class of \code{BNINDEX} and \code{BNPARAM} will determine dispatch to specific methods.

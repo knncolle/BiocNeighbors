@@ -39,6 +39,8 @@
 #' BiocNeighborParam-class
 #' show,BiocNeighborParam-method
 #' bndistance,BiocNeighborParam-method
+#' [[,BiocNeighborParam-method
+#' [[<-,BiocNeighborParam-method
 #'
 #' @name BiocNeighborParam
 NULL

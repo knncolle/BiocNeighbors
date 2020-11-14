@@ -7,7 +7,7 @@
 #' @param threshold A numeric scalar or vector specifying the maximum distance for considering neighbors.
 #' @param ... Further arguments to pass to specific methods.
 #' This is guaranteed to include \code{subset}, \code{get.index}, \code{get.distance} \code{BPPARAM} and \code{raw.index}.
-#' See \code{?"\link{rangeQuery-methods}"} for more details.
+#' See \code{?"\link{queryNeighbors-functions}"} for more details.
 #' @param BNINDEX A \linkS4class{BiocNeighborIndex} object containing precomputed index information.
 #' This can be missing if \code{BNPARAM} is supplied, see Details.
 #' @param BNPARAM A \linkS4class{BiocNeighborParam} object specifying the algorithm to use.
@@ -16,7 +16,7 @@
 #' @return
 #' A list is returned containing \code{index}, a list of integer vectors specifying the identities of the neighbors of each point;
 #' and \code{distance}, a list of numeric vectors containing the distances to those neighbors.
-#' See \code{?"\link{rangeQuery-methods}"} for more details.
+#' See \code{?"\link{queryNeighbors-functions}"} for more details.
 #' 
 #' @details
 #' The class of \code{BNINDEX} and \code{BNPARAM} will determine dispatch to specific methods.

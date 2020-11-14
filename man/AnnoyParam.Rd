@@ -7,6 +7,9 @@
 \alias{show,AnnoyParam-method}
 \alias{AnnoyParam_ntrees}
 \alias{AnnoyParam_directory}
+\alias{AnnoyParam_search_mult}
+\alias{[[,AnnoyParam-method}
+\alias{[[<-,AnnoyParam-method}
 \title{The AnnoyParam class}
 \usage{
 AnnoyParam(
@@ -34,7 +37,9 @@ A class to hold parameters for the Annoy algorithm for approximate nearest neigh
 \details{
 The AnnoyParam class holds all parameters associated with running the Annoy algorithm.
 Most of these parameters are used to build the index - see \code{\link{buildAnnoy}} for details.
+
 Users can get or set values with the usual \code{[[} syntax.
+All parameters listed in the constructor can be manipulated in this manner.
 }
 \examples{
 (out <- AnnoyParam())
@@ -47,7 +52,7 @@ out
 \seealso{
 \code{\link{buildAnnoy}}, for the index construction.
 
-\code{\link{findAnnoy}} and related functions, for the 
+\code{\link{findAnnoy}} and related functions, for the actual search. 
 
 \linkS4class{BiocNeighborParam}, for the parent class and its available methods.
 }

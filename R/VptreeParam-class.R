@@ -7,10 +7,6 @@
 #' @return  
 #' An instance of the VptreeParam class.
 #' 
-#' @details
-#' Users can get or set values with the usual \code{[[} syntax.
-#' All parameters listed in the constructor can be manipulated in this manner.
-#' 
 #' @author
 #' Aaron Lun
 #' 

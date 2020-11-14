@@ -7,7 +7,6 @@
 #' @param order An integer vector of length equal to \code{ncol(data)}, specifying the order of observations.
 #' @param NAMES A character vector of sample names or \code{NULL}.
 #' @param distance A string specifying the distance metric to use.
-#' @param x A VptreeIndex object.
 #' 
 #' @details
 #' The VptreeIndex class holds the indexing structure required to run the VP tree algorithm.
@@ -29,7 +28,7 @@
 #' 
 #' @examples
 #' example(buildVptree)
-#' str(VptreeIndex_nodes(out))
+#' str(out[["nodes"]])
 #'
 #' @docType class
 #' @aliases

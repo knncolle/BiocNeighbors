@@ -69,11 +69,6 @@
 #' bndistance,BiocNeighborIndex-method
 #'
 #' bnorder
-#' bnorder,KmknnIndex-method
-#' bnorder,VptreeIndex-method
-#' bnorder,HnswIndex-method
-#' bnorder,ExhaustiveIndex-method
-#'
 #' [[,BiocNeighborIndex-method
 #'
 #' @docType class

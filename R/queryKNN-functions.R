@@ -104,6 +104,7 @@
 NULL
 
 #' @export
+#' @rdname queryKNN-functions
 #' @importFrom BiocParallel SerialParam 
 queryAnnoy <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k, 
     BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=NA, warn.ties=NA, ...)
@@ -115,6 +116,7 @@ queryAnnoy <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
 }
 
 #' @export
+#' @rdname queryKNN-functions
 #' @importFrom BiocParallel SerialParam 
 queryHnsw <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k, 
     BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=NA, warn.ties=NA, ...)
@@ -126,6 +128,7 @@ queryHnsw <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
 }
 
 #' @export
+#' @rdname queryKNN-functions
 #' @importFrom BiocParallel SerialParam bpmapply
 queryKmknn <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
     BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, 
@@ -138,6 +141,7 @@ queryKmknn <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
 }
 
 #' @export
+#' @rdname queryKNN-functions
 #' @importFrom BiocParallel SerialParam bpmapply
 queryVptree <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k, 
     BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, 
@@ -150,6 +154,7 @@ queryVptree <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k,
 }
 
 #' @export
+#' @rdname queryKNN-functions
 #' @importFrom BiocParallel SerialParam bpmapply
 queryExhaustive <- function(X, query, k, get.index=TRUE, get.distance=TRUE, last=k, 
     BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, 

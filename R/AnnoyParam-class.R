@@ -39,6 +39,7 @@
 #' show,AnnoyParam-method
 #' AnnoyParam_ntrees
 #' AnnoyParam_directory
+#' AnnoyParam_search_mult
 #' [[,AnnoyParam-method
 #' [[<-,AnnoyParam-method
 #'

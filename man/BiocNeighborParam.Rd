@@ -5,6 +5,8 @@
 \alias{BiocNeighborParam-class}
 \alias{show,BiocNeighborParam-method}
 \alias{bndistance,BiocNeighborParam-method}
+\alias{[[,BiocNeighborParam-method}
+\alias{[[<-,BiocNeighborParam-method}
 \title{The BiocNeighborParam class}
 \description{
 A virtual class for specifying the type of nearest-neighbor search algorithm and associated parameters.

@@ -12,10 +12,6 @@
 \alias{bndistance}
 \alias{bndistance,BiocNeighborIndex-method}
 \alias{bnorder}
-\alias{bnorder,KmknnIndex-method}
-\alias{bnorder,VptreeIndex-method}
-\alias{bnorder,HnswIndex-method}
-\alias{bnorder,ExhaustiveIndex-method}
 \alias{[[,BiocNeighborIndex-method}
 \title{The BiocNeighborIndex class}
 \description{

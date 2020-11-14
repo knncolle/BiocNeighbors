@@ -7,7 +7,6 @@
 #' @param directory String specifying the directory in which to save the index.
 #' @param ef.search Integer scalar, size of the dynamic list for neighbor searching.
 #' @param distance A string specifying the distance metric to use.
-#' @param x, object A HnswParam object.
 #' 
 #' @details
 #' The HnswParam class holds any parameters associated with running the HNSW algorithm.
@@ -43,6 +42,8 @@
 #' HnswParam_ef_construction
 #' HnswParam_directory
 #' HnswParam_ef_search
+#' [[,HnswParam-method
+#' [[<-,HnswParam-method
 #' @docType class
 #'
 #' @export
