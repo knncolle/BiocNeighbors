@@ -1,7 +1,50 @@
-##################################
-###### AnnoyParam methods ########
-##################################
-
+#' The AnnoyParam class
+#'
+#' A class to hold parameters for the Annoy algorithm for approximate nearest neighbor identification.
+#' 
+#' @param ntrees Integer scalar, number of trees to use for index generation.
+#' @param directory String containing the path to the directory in which to save the index.
+#' @param search.mult Numeric scalar, multiplier for the number of points to search.
+#' @param distance String, the distance metric to use.
+#' 
+#' @details
+#' The AnnoyParam class holds all parameters associated with running the Annoy algorithm.
+#' Most of these parameters are used to build the index - see \code{\link{buildAnnoy}} for details.
+#'
+#' Users can get or set values with the usual \code{[[} syntax.
+#' All parameters listed in the constructor can be manipulated in this manner.
+#' 
+#' @return
+#' An instance of the AnnoyParam class.
+#' 
+#' @author
+#' Aaron Lun
+#' 
+#' @seealso
+#' \code{\link{buildAnnoy}}, for the index construction.
+#'
+#' \code{\link{findAnnoy}} and related functions, for the actual search. 
+#'
+#' \linkS4class{BiocNeighborParam}, for the parent class and its available methods.
+#' 
+#' @examples
+#' (out <- AnnoyParam())
+#' out[['ntrees']]
+#'
+#' out[['ntrees']] <- 20L
+#' out
+#'
+#' @aliases
+#' AnnoyParam-class
+#' show,AnnoyParam-method
+#' AnnoyParam_ntrees
+#' AnnoyParam_directory
+#' AnnoyParam_search_mult
+#' [[,AnnoyParam-method
+#' [[<-,AnnoyParam-method
+#'
+#' @docType class
+#' 
 #' @export
 #' @importFrom methods new
 AnnoyParam <- function(ntrees=50, directory=tempdir(), search.mult=ntrees, distance="Euclidean") {
@@ -73,52 +116,3 @@ setReplaceMethod("[[", "AnnoyParam", function(x, i, j, ..., value) {
     callNextMethod()
 })
 
-##################################
-###### AnnoyIndex methods ########
-##################################
-
-#' @export
-#' @importFrom methods new
-AnnoyIndex <- function(data, path, search.mult=50, NAMES=NULL, distance="Euclidean") {
-    new("AnnoyIndex", data=data, path=path, NAMES=NAMES, distance=distance, search.mult=search.mult)
-}
-
-#' @importFrom S4Vectors setValidity2
-setValidity2("AnnoyIndex", function(object) {
-    msg <- character(0)
-
-    path <- object[['path']]
-    if (length(path)!=1L) {
-        msg <- c(msg, "'path' should be a string")
-    }
-
-    search.mult <- object[['search.mult']]
-    if (length(search.mult)!=1L || is.na(search.mult) || search.mult <= 1) {
-        msg <- c(msg, "'search.mult' should be a numeric scalar greater than 1")
-    }
-
-    if (length(msg)) return(msg)
-    return(TRUE)
-})
-
-#' @export
-setMethod("show", "AnnoyIndex", function(object) {
-    callNextMethod()
-    cat(sprintf("path: %s\n", object[['path']]))
-    cat(sprintf("search multiplier: %i\n", object[['search.mult']]))
-})
-
-#' @export
-AnnoyIndex_path <- function(x) {
-    .Deprecated(new="x[['path']]")
-    x@path
-}
-
-#' @export
-AnnoyIndex_search_mult <- function(x) {
-    .Deprecated(new="x[['search.mult']]")
-    x@search.mult
-}
-
-#' @export
-setMethod("bnorder", "AnnoyIndex", function(x) seq_len(ncol(bndata(x))) )

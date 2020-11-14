@@ -1,41 +1,3 @@
-#######################################
-###### ExhaustiveParam methods ########
-#######################################
-
-#' The ExhaustiveParam class
-#'
-#' A class to hold parameters for the exhaustive algorithm for exact nearest neighbor identification.
-#' 
-#' @param distance A string specifying the distance metric to use.
-#' 
-#' @return
-#' The \code{ExhaustiveParam} constructor will return an instance of the ExhaustiveParam class.
-#' 
-#' @author
-#' Allison Vuong
-#' 
-#' @seealso
-#' \code{\link{buildExhaustive}} 
-#' 
-#' @examples
-#' (out <- KmknnParam(iter.max=100))
-#'
-#' @export
-#' @aliases ExhaustiveParam-class
-#' 
-#' @importFrom methods new
-ExhaustiveParam <- function(distance="Euclidean") {
-    new("ExhaustiveParam", distance=distance)
-}
-
-setMethod("spill_args", "ExhaustiveParam", function(x) {
-    c(list(distance=bndistance(x)))
-})
-
-#######################################
-###### ExhaustiveIndex methods ########
-#######################################
-
 #' The ExhaustiveIndex class
 #'
 #' A class to hold the data for exact nearest neighbor identification. 
@@ -48,14 +10,26 @@ setMethod("spill_args", "ExhaustiveParam", function(x) {
 #' Users should never need to call the constructor explicitly, but should generate 
 #' instances of ExhaustiveIndex classes with \code{\link{buildExhaustive}}.
 #'
+#' Users can get values from an ExhaustiveIndex object with the usual \code{[[} syntax.
+#' All parameters listed in the constructor can be extracted in this manner.
+#'
 #' @return An ExhaustiveIndex object. 
 #'
 #' @examples
 #' example(buildExhaustive)
+#' out[['distance']]
+#' bndistance(out)
+#' 
+#' @seealso
+#' \code{\link{buildExhaustive}}, for the index construction.
+#'
+#' \linkS4class{BiocNeighborIndex}, for the parent class and its available methods.
+#' 
+#' @aliases ExhaustiveIndex-class
+#' bnorder,ExhaustiveIndex-method 
+#' @docType class
 #' 
 #' @export
-#' @aliases ExhaustiveIndex-class
-#' 
 #' @importFrom methods new
 ExhaustiveIndex <- function(data, NAMES=NULL, distance="Euclidean") {
     new("ExhaustiveIndex", data=data, NAMES=NAMES, distance=distance)
@@ -78,3 +52,7 @@ setValidity2("ExhaustiveIndex", function(object) {
 
 #' @exportMethod bnorder
 setMethod("bnorder", "ExhaustiveIndex", function(x) seq_len(ncol(bndata(x))))
+
+.find_exhaustive_args <- function(precomputed) {
+    list()
+}
