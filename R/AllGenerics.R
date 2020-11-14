@@ -14,6 +14,7 @@ setGeneric("findKNN", signature=c("BNINDEX", "BNPARAM"),
 )
 
 #' @export
+#' @rdname queryKNN-methods
 #' @importFrom BiocParallel SerialParam
 setGeneric("queryKNN", signature=c("BNINDEX", "BNPARAM"), 
     function(X, query, k, ..., BNINDEX, BNPARAM) 
@@ -21,6 +22,7 @@ setGeneric("queryKNN", signature=c("BNINDEX", "BNPARAM"),
 )
 
 #' @export
+#' @rdname findNeighbors-methods
 #' @importFrom BiocParallel SerialParam
 setGeneric("findNeighbors", signature=c("BNINDEX", "BNPARAM"), 
     function(X, threshold, ..., BNINDEX, BNPARAM)

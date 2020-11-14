@@ -33,7 +33,7 @@
 #' str(bndata(out))
 #'
 #' @aliases
-#' AnnoyIndex
+#' AnnoyIndex-class
 #' show,AnnoyIndex-method
 #' bnorder,AnnoyIndex-method
 #'

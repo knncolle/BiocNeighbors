@@ -4,7 +4,7 @@
 #' 
 #' @param distance A string specifying the distance metric to use.
 #' 
-##' @return
+#' @return
 #' An instance of the ExhaustiveParam class.
 #' 
 #' @author

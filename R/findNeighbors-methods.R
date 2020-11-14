@@ -60,7 +60,7 @@
 #' findNeighbors,VptreeIndex,VptreeParam-method
 #'
 #' @docType methods
-#' @name findNeighbors
+#' @name findNeighbors-methods
 NULL
 
 ##############
