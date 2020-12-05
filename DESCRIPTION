@@ -29,7 +29,7 @@ Description: Implements exact and approximate methods for nearest neighbor
     Parallelization is achieved for all methods by using BiocParallel. Functions 
     are also provided to search for all neighbors within a given distance. 
 License: GPL-3
-LinkingTo: Rcpp, RcppAnnoy, RcppHNSW
+LinkingTo: Rcpp, RcppAnnoy (>= 0.0.17), RcppHNSW
 VignetteBuilder: knitr
 SystemRequirements: C++11
 RoxygenNote: 7.1.1
