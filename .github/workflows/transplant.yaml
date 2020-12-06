@@ -1,0 +1,28 @@
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 8 * * *'
+
+name: transplanter
+
+jobs:
+  R-CMD-check:
+    runs-on: ubuntu-latest
+    container: bioconductor/bioconductor_docker:devel
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+
+      - name: Transplant 
+        run: Rdevel -f inst/transplant.R --args current .
+
+      - name: Committing to master
+        run: | 
+          git config --local user.email "infinite.monkeys.with.keyboards@gmail.com"
+          git config --local user.name "LTLA"
+          git add -A
+          git commit -m "Updated the Annoy library headers." || true
+          git push

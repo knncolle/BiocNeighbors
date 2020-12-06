@@ -7,6 +7,10 @@
 
 #include "RcppAnnoy.h"
 
+#if RCPPANNOY_VERSION < RcppAnnoyVersion(0,1,17,3)
+  typedef AnnoyIndexSingleThreadedBuildPolicy RcppAnnoyIndexThreadPolicy;
+#endif
+
 template<class Distance>
 class Annoy {
 public:
