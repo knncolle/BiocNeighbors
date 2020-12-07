@@ -17,14 +17,6 @@
 #include "annoylib.h"
 #include "kissrandom.h"
 
-#if defined __RcppAnnoy_0_16_2__
-#ifdef ANNOYLIB_MULTITHREADED_BUILD
-  typedef AnnoyIndexMultiThreadedBuildPolicy AnnoyIndexThreadedBuildPolicy;
-#else
-  typedef AnnoyIndexSingleThreadedBuildPolicy AnnoyIndexThreadedBuildPolicy;
-#endif
-#endif
-
 template<class Distance>
 class Annoy {
 public:
@@ -38,11 +30,7 @@ public:
 
     typedef int32_t Index_t;
     typedef float Data_t;
-#if defined __RcppAnnoy_0_16_2__
-    typedef AnnoyIndex<Index_t, Data_t, Distance, Kiss64Random, AnnoyIndexThreadedBuildPolicy> _index;
-#else
     typedef AnnoyIndex<Index_t, Data_t, Distance, Kiss64Random> _index;
-#endif
     const std::vector<Index_t>& get_neighbors () const;
     const std::vector<Data_t>& get_distances () const;
 private:
