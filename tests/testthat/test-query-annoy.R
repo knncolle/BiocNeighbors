@@ -1,7 +1,7 @@
 # Tests queryAnnoy().
 # library(BiocNeighbors); library(testthat); source("setup.R"); source("test-query-annoy.R")
 
-if (.Platform$r_arch=="i386") skip("giving up!")
+skip("not attempting to compare to latest RcppAnnoy")
 
 set.seed(1001)
 test_that("queryAnnoy() behaves correctly with queries", {
