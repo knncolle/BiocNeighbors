@@ -8,7 +8,7 @@ on:
 name: transplanter
 
 jobs:
-  R-CMD-check:
+  transplant-RcppAnnoy:
     runs-on: ubuntu-latest
     container: bioconductor/bioconductor_docker:devel
 
