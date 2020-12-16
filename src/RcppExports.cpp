@@ -5,6 +5,15 @@
 
 using namespace Rcpp;
 
+// annoy_version
+Rcpp::IntegerVector annoy_version();
+RcppExport SEXP _BiocNeighbors_annoy_version() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    rcpp_result_gen = Rcpp::wrap(annoy_version());
+    return rcpp_result_gen;
+END_RCPP
+}
 // build_annoy
 Rcpp::RObject build_annoy(Rcpp::NumericMatrix mat, int ntrees, std::string fname, std::string dtype);
 RcppExport SEXP _BiocNeighbors_build_annoy(SEXP matSEXP, SEXP ntreesSEXP, SEXP fnameSEXP, SEXP dtypeSEXP) {
@@ -332,6 +341,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_BiocNeighbors_annoy_version", (DL_FUNC) &_BiocNeighbors_annoy_version, 0},
     {"_BiocNeighbors_build_annoy", (DL_FUNC) &_BiocNeighbors_build_annoy, 4},
     {"_BiocNeighbors_build_hnsw", (DL_FUNC) &_BiocNeighbors_build_hnsw, 5},
     {"_BiocNeighbors_build_vptree", (DL_FUNC) &_BiocNeighbors_build_vptree, 2},

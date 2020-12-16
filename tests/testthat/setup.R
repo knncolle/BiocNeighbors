@@ -105,3 +105,10 @@ safeBPParam <- function(nworkers) {
         BiocParallel::MulticoreParam(nworkers)
     }
 }
+
+#################################################
+# Checking whether it's safe to compare Annoy results.
+
+ref.version <- RcppAnnoy::getAnnoyVersion(FALSE)
+my.version <- BiocNeighbors:::annoy_version()
+compare.annoy <- identical(ref.version, my.version)

@@ -92,3 +92,10 @@ void Annoy<Distance>::find_nearest_neighbors(const double* query, NumNeighbors_t
 
 template class Annoy<Manhattan>;
 template class Annoy<Euclidean>;
+
+// [[Rcpp::export(rng=false)]]
+Rcpp::IntegerVector annoy_version() {
+    return Rcpp::IntegerVector::create(Rcpp::Named("major")=RCPPANNOY_VERSION_MAJOR,
+                                       Rcpp::Named("minor")=RCPPANNOY_VERSION_MINOR,
+                                       Rcpp::Named("patch")=RCPPANNOY_VERSION_PATCH);
+}
