@@ -2,23 +2,13 @@
 #' 
 #' Find all neighboring data points within a certain distance of a query point.
 #' 
-#' @param X A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
+#' @inheritParams findNeighbors-functions
 #' @param query A numeric matrix of query points, containing different data points in the rows but the same number and ordering of dimensions in the columns.
 #' @param threshold A positive numeric scalar specifying the maximum distance at which a point is considered a neighbor.
 #' Alternatively, a vector containing a different distance threshold for each query point.
-#' @param get.index A logical scalar indicating whether the indices of the neighbors should be recorded.
-#' @param get.distance A logical scalar indicating whether distances to the neighbors should be recorded.
-#' @param BPPARAM A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.
-#' @param precomputed A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
-#' For \code{queryExhaustive}, this should be a \linkS4class{ExhaustiveIndex} from \code{\link{buildExhaustive}};
-#' For \code{rangeFindKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{rangeFindKmknn}}.
-#' For \code{rangeFindVptree}, this should be a \linkS4class{VptreeIndex} from \code{\link{rangeFindVptree}}.
 #' @param transposed A logical scalar indicating whether the \code{query} is transposed, 
 #' in which case \code{query} is assumed to contain dimensions in the rows and data points in the columns.
 #' @param subset A vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the neighbors should be identified.
-#' @param raw.index A logial scalar indicating whether raw column indices should be returned, see \code{?"\link{BiocNeighbors-raw-index}"}.
-#' @param ... Further arguments to pass to the respective \code{build*} function for each algorithm.
-#' This includes \code{distance}, a string specifying whether \code{"Euclidean"} or \code{"Manhattan"} distances are to be used.
 #' 
 #' @details
 #' This function identifies points in \code{X} that are neighbors (i.e., within a distance \code{threshold}) of each point in \code{query}.

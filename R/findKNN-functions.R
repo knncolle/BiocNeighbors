@@ -21,7 +21,7 @@
 #' @param warn.ties Logical scalar indicating whether a warning should be raised if any of the \code{k+1} neighbors have tied distances.
 #' This argument is ignored for \code{findAnnoy} and \code{findHnsw}.
 #' @param ... Further arguments to pass to the respective \code{build*} function for each algorithm.
-#' This includes \code{distance}, a string specifying whether \code{"Euclidean"} or \code{"Manhattan"} distances are to be used.
+#' This includes \code{distance}, a string specifying whether \code{"Euclidean"}, \code{"Manhattan"} or \code{"Cosine"} distances are to be used.
 #' 
 #' @details
 #' All of these functions identify points in \code{X} that are the \code{k} nearest neighbors of each other point.

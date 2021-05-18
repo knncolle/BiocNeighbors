@@ -8,22 +8,21 @@ Interpreting the warnings when distances are tied in an exact nearest neighbor (
 }
 \section{The problem of ties}{
 
-A warning will be raised if ties are detected among the \code{k+1} NNs for any of the exact NN search methods. 
-Specifically, ties are detected when a larger distance is less than \code{(1 + 1e-8)}-fold of the smaller distance.
-This criterion tends to be somewhat conservative in the sense that it will warn users even if there is no problem (i.e., the distances are truly different).
-However, more accurate detection is difficult to achieve due to the vagaries of numerical precision across different machines.
-
 The most obvious problem with ties is that it may affect the identity of the reported neighbors.
 The various NN search functions will return a constant number of neighbors for each data point.
 If the \code{k}th neighbor is tied with the \code{k+1}th neighbor, this requires an arbitrary decision about which data point to retain in the NN set.
 A milder issue is that the order of the neighbors within the set is arbitrary, which may be important for certain algorithms.
+
+As such, a warning will be raised if tied distances are detected among the \code{k+1} NNs for any of the exact NN search methods.
+We only consider exact ties at double precision - previous versions of this package would account for numerical imprecision, but this is no longer the case.
+No warning is given for the approximate methods as their use already implies that a certain degree of inaccuracy is acceptable.
 }
 
 \section{Interaction with random seeds}{
 
 In general, the exact NN search algorithms in this package are fully deterministic despite the use of stochastic steps during index construction.
 The only exception occurs when there are tied distances to neighbors, at which point the order and/or identity of the k-nearest neighboring points is not well-defined.
-This is because, In the presence of ties, the output will depend on the ordering of points in the constructed index from \code{\link{buildKmknn}} or \code{\link{buildVptree}}.
+This is because, in the presence of ties, the output will depend on the ordering of points in the constructed index from \code{\link{buildKmknn}} or \code{\link{buildVptree}}.
 
 Users should set the seed to guarantee consistent (albeit arbitrary) results across different runs of the function.
 However, note that the exact selection of tied points depends on the numerical precision of the system.

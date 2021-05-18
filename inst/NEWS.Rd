@@ -6,6 +6,8 @@
 \item Migrated \code{findMutualNN()} from \pkg{batchelor}.
 
 \item Vendored the \pkg{RcppAnnoy} headers for greater reproducibility.
+
+\item Added a \code{distance="Cosine"} option for all algorithms.
 }}
 
 \section{Version 1.4.0}{\itemize{

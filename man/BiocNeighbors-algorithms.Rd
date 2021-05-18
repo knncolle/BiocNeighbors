@@ -60,7 +60,8 @@ which avoids wasting time on small steps in the early stages of the search where
 
 \section{Distance metrics}{
  
-All algorithms support neighbor searching by both Euclidean and Manhattan distances.
+All algorithms support neighbor searching by Euclidean, Manhattan and cosine distances.
+Cosine distances are implemented as the Euclidean distance between L2-normalized vectors.
 Note that KMKNN operates much more naturally with Euclidean distances, so your mileage may vary when using it with Manhattan distances.
 }
 

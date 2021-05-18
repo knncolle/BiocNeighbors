@@ -16,7 +16,8 @@
 queryNeighbors(X, query, threshold, ..., BNINDEX, BNPARAM)
 }
 \arguments{
-\item{X}{A numeric data matrix where rows are points and columns are dimensions.}
+\item{X}{A numeric data matrix where rows are points and columns are dimensions.
+This can be missing if \code{BNINDEX} is supplied.}
 
 \item{query}{A numeric query matrix where rows are points and columns are dimensions.}
 
@@ -27,7 +28,7 @@ This is guaranteed to include \code{subset}, \code{get.index}, \code{get.distanc
 See \code{?"\link{queryNeighbors-functions}"} for more details.}
 
 \item{BNINDEX}{A \linkS4class{BiocNeighborIndex} object containing precomputed index information.
-This can be missing if \code{BNPARAM} is supplied, see Details.}
+This can be missing if \code{X} and \code{BNPARAM} is supplied, see Details.}
 
 \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the algorithm to use.
 This can be missing if \code{BNINDEX} is supplied, see Details.}

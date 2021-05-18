@@ -38,7 +38,8 @@
 #'     \item{\code{bnorder(object)}:}{Return an integer vector specifying the new ordering of columns in \code{bndata(object)}.
 #'         This generally only needs to be considered if \code{raw.index=TRUE}, see \code{?"\link{BiocNeighbors-raw-index}"}.
 #'     }
-#'     \item{\code{bndistance(object)}:}{Return a string specifying the distance metric to be used for searching, usually \code{"Euclidean"} or \code{"Manhattan"}.
+#'     \item{\code{bndistance(object)}:}{Return a string specifying the distance metric to be used for searching.
+#'         This should be one of \code{"Euclidean"}, \code{"Manhattan"} or \code{"Cosine"}.
 #'         Obviously, this should be the same as the distance metric used for constructing the index.
 #'     }
 #' }

@@ -2,29 +2,12 @@
 #'
 #' Query a dataset for nearest neighbors of points in another dataset, using a variety of algorithms.
 #' 
-#' @param X A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
+#' @inheritParams findKNN-functions
 #' @param query A numeric matrix of query points, containing different data points in the rows but the same number and ordering of dimensions in the columns.
-#' @param k A positive integer scalar specifying the number of nearest neighbors to retrieve.
-#' @param get.index A logical scalar indicating whether the indices of the nearest neighbors should be recorded.
-#' @param get.distance A logical scalar indicating whether distances to the nearest neighbors should be recorded.
 #' @param last An integer scalar specifying the number of furthest neighbors for which statistics should be returned.
-#' @param BPPARAM A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.
-#' @param precomputed A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
-#' For \code{queryExhaustive}, this should be a \linkS4class{ExhaustiveIndex} from \code{\link{buildExhaustive}};
-#' For \code{queryKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{buildKmknn}};
-#' for \code{queryVptree}, this should be a \linkS4class{VptreeIndex} from \code{\link{buildVptree}};
-#' for \code{queryAnnoy}, this should be a \linkS4class{AnnoyIndex} from \code{\link{buildAnnoy}};
-#' and for \code{queryHnsw}, this should be a \linkS4class{HnswIndex} from \code{\link{buildHnsw}}.
 #' @param transposed A logical scalar indicating whether the \code{query} is transposed, 
 #' in which case \code{query} is assumed to contain dimensions in the rows and data points in the columns.
 #' @param subset A vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the nearest neighbors should be identified.
-#' @param raw.index A logial scalar indicating whether raw column indices should be returned, 
-#' see \code{?"\link{BiocNeighbors-raw-index}"}.
-#' This argument is ignored for \code{queryAnnoy} and \code{queryHnsw}.
-#' @param warn.ties Logical scalar indicating whether a warning should be raised if any of the \code{k+1} neighbors have tied distances.
-#' This argument is ignored for \code{queryAnnoy} and \code{queryHnsw}.
-#' @param ... Further arguments to pass to the respective \code{build*} function for each algorithm.
-#' This includes \code{distance}, a string specifying whether \code{"Euclidean"} or \code{"Manhattan"} distances are to be used.
 #' 
 #' @details
 #' All of these functions identify points in \code{X} that are the \code{k} nearest neighbors of each point in \code{query}.

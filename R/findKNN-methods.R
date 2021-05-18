@@ -4,13 +4,13 @@
 #' 
 #' @param X A numeric data matrix where rows are points and columns are dimensions.
 #' This can be missing if \code{BNINDEX} is supplied.
-#' @param k An integer scalar for the number of nearest neighbors.
+#' @param k An integer scalar specifying the number of nearest neighbors to search for.
 #' @param ... Further arguments to pass to individual methods.
 #' This is guaranteed to include \code{subset}, \code{get.index}, \code{get.distance}, \code{last},
 #' \code{warn.ties}, \code{raw.index} and \code{BPPARAM}.
 #' See \code{?"\link{findKNN-functions}"} for more details.
 #' @param BNINDEX A \linkS4class{BiocNeighborIndex} object containing precomputed index information.
-#' This can be missing if \code{BNPARAM} is supplied, see Details.
+#' This can be missing if \code{X} and \code{BNPARAM} are supplied, see Details.
 #' @param BNPARAM A \linkS4class{BiocNeighborParam} object specifying the algorithm to use.
 #' This can be missing if \code{BNINDEX} is supplied, see Details.
 #'

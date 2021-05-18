@@ -60,12 +60,12 @@ For \code{rangeFindExhaustive}, this should be a \linkS4class{ExhaustiveIndex} f
 For \code{rangeFindKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{rangeFindKmknn}}.
 For \code{rangeFindVptree}, this should be a \linkS4class{VptreeIndex} from \code{\link{rangeFindVptree}}.}
 
-\item{subset}{A vector indicating the rows of \code{X} for which the neighbors should be identified.}
+\item{subset}{A vector indicating the rows of \code{X} for which the nearest neighbors should be identified.}
 
 \item{raw.index}{A logial scalar indicating whether raw column indices should be returned, see \code{?"\link{BiocNeighbors-raw-index}"}.}
 
 \item{...}{Further arguments to pass to the respective \code{build*} function for each algorithm.
-This includes \code{distance}, a string specifying whether \code{"Euclidean"} or \code{"Manhattan"} distances are to be used.}
+This includes \code{distance}, a string specifying whether \code{"Euclidean"}, \code{"Manhattan"} or \code{"Cosine"} distances are to be used.}
 }
 \value{
 A list is returned containing:

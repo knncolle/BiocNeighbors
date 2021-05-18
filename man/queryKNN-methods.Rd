@@ -25,11 +25,12 @@
 queryKNN(X, query, k, ..., BNINDEX, BNPARAM)
 }
 \arguments{
-\item{X}{A numeric data matrix where rows are points and columns are dimensions.}
+\item{X}{A numeric data matrix where rows are points and columns are dimensions.
+This can be missing if \code{BNINDEX} is supplied.}
 
 \item{query}{A numeric query matrix where rows are points and columns are dimensions.}
 
-\item{k}{An integer scalar for the number of nearest neighbors.}
+\item{k}{An integer scalar specifying the number of nearest neighbors to search for.}
 
 \item{...}{Further arguments to pass to specific methods.
 This is guaranteed to include \code{subset}, \code{get.index}, \code{get.distance}, \code{last}, \code{transposed},
@@ -37,7 +38,7 @@ This is guaranteed to include \code{subset}, \code{get.index}, \code{get.distanc
 See \code{?"\link{queryKNN-functions}"} for more details.}
 
 \item{BNINDEX}{A \linkS4class{BiocNeighborIndex} object containing precomputed index information.
-This can be missing if \code{BNPARAM} is supplied, see Details.}
+This can be missing if \code{X} and \code{BNPARAM} is supplied, see Details.}
 
 \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the algorithm to use.
 This can be missing if \code{BNINDEX} is supplied, see Details.}

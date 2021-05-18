@@ -29,7 +29,8 @@ See the associated documentation pages for more details.
 In the following code snippets, \code{x} and \code{object} are BiocNeighborParam objects.
 \describe{
 \item{\code{show(object)}:}{Display the class and arguments of \code{object}.}
-\item{\code{bndistance(object)}:}{Return a string specifying the distance metric to be used for searching, usually \code{"Euclidean"} or \code{"Manhattan"}.}
+\item{\code{bndistance(object)}:}{Return a string specifying the distance metric to be used for searching.
+This should be one of \code{"Euclidean"}, \code{"Manhattan"} or \code{"Cosine"}.}
 \item{\code{x[[i]]}:}{Return the value of slot \code{i}, as used in the constructor for \code{x}.}
 \item{\code{x[[i]] <- value}:}{Set slot \code{i} to the specified \code{value}.}
 }

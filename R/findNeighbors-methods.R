@@ -2,15 +2,11 @@
 #'
 #' Find all neighbors within a given distance for each point in a data set.
 #' 
-#' @param X A numeric data matrix where rows are points and columns are dimensions.
+#' @inheritParams findKNN-methods
 #' @param threshold A numeric scalar or vector specifying the maximum distance for considering neighbors.
 #' @param ... Further arguments to pass to specific methods.
 #'     This is guaranteed to include \code{subset}, \code{get.index}, \code{get.distance} \code{BPPARAM} and \code{raw.index}.
 #'     See \code{?"\link{findNeighbors-functions}"} for more details.
-#' @param BNINDEX A \linkS4class{BiocNeighborIndex} object containing precomputed index information.
-#'     This can be missing if \code{BNPARAM} is supplied, see Details.
-#' @param BNPARAM A \linkS4class{BiocNeighborParam} object specifying the algorithm to use.
-#'     This can be missing if \code{BNINDEX} is supplied, see Details.
 #' 
 #' @return
 #' A list is returned containing \code{index}, a list of integer vectors specifying the identities of the neighbors of each point;

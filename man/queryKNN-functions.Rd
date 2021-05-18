@@ -105,11 +105,11 @@ queryExhaustive(
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
 
 \item{precomputed}{A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
-For \code{queryExhaustive}, this should be a \linkS4class{ExhaustiveIndex} from \code{\link{buildExhaustive}};
-For \code{queryKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{buildKmknn}};
-for \code{queryVptree}, this should be a \linkS4class{VptreeIndex} from \code{\link{buildVptree}};
-for \code{queryAnnoy}, this should be a \linkS4class{AnnoyIndex} from \code{\link{buildAnnoy}};
-and for \code{queryHnsw}, this should be a \linkS4class{HnswIndex} from \code{\link{buildHnsw}}.}
+For \code{findExhaustive}, this should be a \linkS4class{ExhaustiveIndex} from \code{\link{buildExhaustive}};
+For \code{findKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{buildKmknn}};
+for \code{findVptree}, this should be a \linkS4class{VptreeIndex} from \code{\link{buildVptree}};
+for \code{findAnnoy}, this should be a \linkS4class{AnnoyIndex} from \code{\link{buildAnnoy}};
+and for \code{findHnsw}, this should be a \linkS4class{HnswIndex} from \code{\link{buildHnsw}}.}
 
 \item{transposed}{A logical scalar indicating whether the \code{query} is transposed, 
 in which case \code{query} is assumed to contain dimensions in the rows and data points in the columns.}
@@ -118,13 +118,13 @@ in which case \code{query} is assumed to contain dimensions in the rows and data
 
 \item{raw.index}{A logial scalar indicating whether raw column indices should be returned, 
 see \code{?"\link{BiocNeighbors-raw-index}"}.
-This argument is ignored for \code{queryAnnoy} and \code{queryHnsw}.}
+This argument is ignored for \code{findAnnoy} and \code{findHnsw}.}
 
 \item{warn.ties}{Logical scalar indicating whether a warning should be raised if any of the \code{k+1} neighbors have tied distances.
-This argument is ignored for \code{queryAnnoy} and \code{queryHnsw}.}
+This argument is ignored for \code{findAnnoy} and \code{findHnsw}.}
 
 \item{...}{Further arguments to pass to the respective \code{build*} function for each algorithm.
-This includes \code{distance}, a string specifying whether \code{"Euclidean"} or \code{"Manhattan"} distances are to be used.}
+This includes \code{distance}, a string specifying whether \code{"Euclidean"}, \code{"Manhattan"} or \code{"Cosine"} distances are to be used.}
 }
 \value{
 A list is returned containing:

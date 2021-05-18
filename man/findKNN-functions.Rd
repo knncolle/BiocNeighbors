@@ -109,7 +109,7 @@ This argument is ignored for \code{findAnnoy} and \code{findHnsw}.}
 This argument is ignored for \code{findAnnoy} and \code{findHnsw}.}
 
 \item{...}{Further arguments to pass to the respective \code{build*} function for each algorithm.
-This includes \code{distance}, a string specifying whether \code{"Euclidean"} or \code{"Manhattan"} distances are to be used.}
+This includes \code{distance}, a string specifying whether \code{"Euclidean"}, \code{"Manhattan"} or \code{"Cosine"} distances are to be used.}
 }
 \value{
 A list is returned containing:

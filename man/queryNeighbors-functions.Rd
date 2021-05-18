@@ -64,7 +64,7 @@ Alternatively, a vector containing a different distance threshold for each query
 \item{BPPARAM}{A \linkS4class{BiocParallelParam} object indicating how the search should be parallelized.}
 
 \item{precomputed}{A \linkS4class{BiocNeighborIndex} object of the appropriate class, generated from \code{X}.
-For \code{queryExhaustive}, this should be a \linkS4class{ExhaustiveIndex} from \code{\link{buildExhaustive}};
+For \code{rangeFindExhaustive}, this should be a \linkS4class{ExhaustiveIndex} from \code{\link{rangeFindExhaustive}}.
 For \code{rangeFindKmknn}, this should be a \linkS4class{KmknnIndex} from \code{\link{rangeFindKmknn}}.
 For \code{rangeFindVptree}, this should be a \linkS4class{VptreeIndex} from \code{\link{rangeFindVptree}}.}
 
@@ -76,7 +76,7 @@ in which case \code{query} is assumed to contain dimensions in the rows and data
 \item{raw.index}{A logial scalar indicating whether raw column indices should be returned, see \code{?"\link{BiocNeighbors-raw-index}"}.}
 
 \item{...}{Further arguments to pass to the respective \code{build*} function for each algorithm.
-This includes \code{distance}, a string specifying whether \code{"Euclidean"} or \code{"Manhattan"} distances are to be used.}
+This includes \code{distance}, a string specifying whether \code{"Euclidean"}, \code{"Manhattan"} or \code{"Cosine"} distances are to be used.}
 }
 \value{
 A list is returned containing:

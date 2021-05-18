@@ -2,17 +2,12 @@
 #'
 #' Find the k-nearest neighbors in one data set for each point in another query data set, using exact or approximate algorithms.
 #' 
-#' @param X A numeric data matrix where rows are points and columns are dimensions.
+#' @inheritParams findKNN-methods
 #' @param query A numeric query matrix where rows are points and columns are dimensions.
-#' @param k An integer scalar for the number of nearest neighbors.
 #' @param ... Further arguments to pass to specific methods.
 #' This is guaranteed to include \code{subset}, \code{get.index}, \code{get.distance}, \code{last}, \code{transposed},
 #' \code{warn.ties}, \code{raw.index} and \code{BPPARAM}.
 #' See \code{?"\link{queryKNN-functions}"} for more details.
-#' @param BNINDEX A \linkS4class{BiocNeighborIndex} object containing precomputed index information.
-#' This can be missing if \code{BNPARAM} is supplied, see Details.
-#' @param BNPARAM A \linkS4class{BiocNeighborParam} object specifying the algorithm to use.
-#' This can be missing if \code{BNINDEX} is supplied, see Details.
 #' 
 #' @return
 #' A list is returned containing \code{index}, an integer matrix of neighbor identities;
