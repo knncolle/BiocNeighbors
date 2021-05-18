@@ -84,7 +84,7 @@ test_that("rangeFindKmknn() works with Cosine distances", {
 
     X <- matrix(runif(nobs * ndim), nrow=nobs)
     out <- rangeFindKmknn(X, threshold=d, distance="Cosine")
-    ref <- rangeFindKmknn(X/rowSums(X^2), threshold=d)
+    ref <- rangeFindKmknn(X/sqrt(rowSums(X^2)), threshold=d)
     expect_identical_re(out, ref)
 })
 

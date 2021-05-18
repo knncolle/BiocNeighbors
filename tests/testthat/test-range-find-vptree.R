@@ -84,7 +84,7 @@ test_that("rangeFindVptree() works with Cosine distances", {
 
     X <- matrix(runif(nobs * ndim), nrow=nobs)
     out <- rangeFindVptree(X, threshold=d, distance="Cosine")
-    ref <- rangeFindVptree(X/rowSums(X^2), threshold=d)
+    ref <- rangeFindVptree(X/sqrt(rowSums(X^2)), threshold=d)
     expect_identical_re(out, ref)
 })
 

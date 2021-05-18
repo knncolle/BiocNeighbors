@@ -102,7 +102,7 @@ test_that("rangeQueryVptree() works with Cosine distances", {
     Y <- matrix(runif(nquery * ndim), nrow=nquery)
 
     out <- rangeQueryVptree(X, threshold=d, query=Y, distance="Cosine")
-    ref <- rangeQueryVptree(X/rowSums(X^2), threshold=d, query=Y/rowSums(Y^2))
+    ref <- rangeQueryVptree(X/sqrt(rowSums(X^2)), threshold=d, query=Y/sqrt(rowSums(Y^2)))
     expect_identical_re(ref, out)
 })
 

@@ -87,7 +87,7 @@ test_that("findExhaustive() behaves correctly with Cosine distances", {
     ndim <- 10
     X <- matrix(runif(nobs * ndim), nrow=nobs)
     out <- findExhaustive(X, k=5, distance="Cosine")
-    ref <- findExhaustive(X / rowSums(X^2), k=5)
+    ref <- findExhaustive(X / sqrt(rowSums(X^2)), k=5)
     expect_identical(out, ref)
 })
 

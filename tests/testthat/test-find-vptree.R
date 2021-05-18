@@ -107,7 +107,7 @@ test_that("findVptree() behaves correctly with Cosine distances", {
     ndim <- 10
     X <- matrix(runif(nobs * ndim), nrow=nobs)
     out <- findVptree(X, k=5, distance="Cosine")
-    ref <- findVptree(X / rowSums(X^2), k=5)
+    ref <- findVptree(X / sqrt(rowSums(X^2)), k=5)
     expect_identical(out, ref)
 })
 

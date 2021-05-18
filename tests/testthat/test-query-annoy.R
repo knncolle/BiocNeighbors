@@ -147,7 +147,7 @@ test_that("queryAnnoy() works correctly with Cosine distances", {
     Y <- matrix(runif(nquery * ndim), nrow=nquery)
 
     ref <- queryAnnoy(X, k=k, query=Y, distance="Cosine")
-    out <- queryAnnoy(X/rowSums(X^2), k=k, query=Y/rowSums(Y^2))
+    out <- queryAnnoy(X/sqrt(rowSums(X^2)), k=k, query=Y/sqrt(rowSums(Y^2)))
     expect_identical(ref, out)
 })
 

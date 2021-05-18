@@ -61,3 +61,19 @@ test_that("subset index conversion works correctly", {
     expect_error(BiocNeighbors:::.subset_to_index(k, A, byrow=TRUE), "out of range")
     expect_identical(integer(0), BiocNeighbors:::.subset_to_index(character(0), A, byrow=FALSE))
 })
+
+test_that("l2norm computes itself correctly", {
+    A <- matrix(rnorm(1000), ncol=10)
+    X <- BiocNeighbors:::l2norm(A, transposed=FALSE)    
+    expect_true(all(abs(rowSums(X^2) - 1) < 1e-8))
+
+    Y <- BiocNeighbors:::l2norm(t(A))
+    expect_identical(X, t(Y))
+
+    # Checking the theory of the calculations by comparing to Pearson's correlation.
+    B <- A - rowMeans(A)
+    Z <- BiocNeighbors:::l2norm(B, transposed=FALSE)    
+    out <- sqrt(sum((Z[1,] - Z[2,])^2))
+    ref <- sqrt(0.5 * (1 - cor(A[1,], A[2,])))
+    expect_equal(out/2, ref)
+})

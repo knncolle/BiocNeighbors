@@ -87,7 +87,7 @@ test_that("findKmknn() behaves correctly with Cosine distances", {
     ndim <- 10
     X <- matrix(runif(nobs * ndim), nrow=nobs)
     out <- findKmknn(X, k=5, distance="Cosine")
-    ref <- findKmknn(X / rowSums(X^2), k=5)
+    ref <- findKmknn(X / sqrt(rowSums(X^2)), k=5)
     expect_identical(out, ref)
 })
 

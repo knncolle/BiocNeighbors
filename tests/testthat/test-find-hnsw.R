@@ -95,7 +95,7 @@ test_that("findHnsw() behaves correctly with Cosine distances", {
     ndim <- 10
     X <- matrix(runif(nobs * ndim), nrow=nobs)
     out <- findHnsw(X, k=5, distance="Cosine")
-    ref <- findHnsw(X / rowSums(X^2), k=5)
+    ref <- findHnsw(X / sqrt(rowSums(X^2)), k=5)
     expect_identical(out, ref)
 })
 

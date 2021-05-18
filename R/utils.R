@@ -104,13 +104,13 @@
 
 l2norm <- function(X, transposed=TRUE) {
     if (transposed) {
-        l2norm <- colSums(X^2)
+        l2norm <- sqrt(colSums(X^2))
         if (any(l2norm==0)) {
             stop("L2 norms of zero detected for distance='Cosine'")
         }
         sweep(X, 2, l2norm, "/", check.margin=FALSE)
     } else {
-        l2norm <- rowSums(X^2)
+        l2norm <- sqrt(rowSums(X^2))
         if (any(l2norm==0)) {
             stop("L2 norms of zero detected for distance='Cosine'")
         }

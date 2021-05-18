@@ -107,7 +107,7 @@ test_that("queryKmknn() works correctly with Cosine distances", {
     Y <- matrix(runif(nquery * ndim), nrow=nquery)
 
     ref <- queryKmknn(X, k=k, query=Y, distance="Cosine")
-    out <- queryKmknn(X/rowSums(X^2), k=k, query=Y/rowSums(Y^2))
+    out <- queryKmknn(X/sqrt(rowSums(X^2)), k=k, query=Y/sqrt(rowSums(Y^2)))
     expect_identical(ref, out)
 })
 

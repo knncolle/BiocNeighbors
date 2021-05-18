@@ -102,7 +102,7 @@ test_that("rangeQueryExhaustive() works with Cosine distances", {
     Y <- matrix(runif(nquery * ndim), nrow=nquery)
 
     out <- rangeQueryExhaustive(X, threshold=d, query=Y, distance="Cosine")
-    ref <- rangeQueryExhaustive(X/rowSums(X^2), threshold=d, query=Y/rowSums(Y^2))
+    ref <- rangeQueryExhaustive(X/sqrt(rowSums(X^2)), threshold=d, query=Y/sqrt(rowSums(Y^2)))
     expect_identical_re(ref, out)
 })
 
