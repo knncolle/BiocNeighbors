@@ -41,18 +41,14 @@
 #' 
 #' @export
 #' @importFrom Matrix t
-buildVptree <- function(X, transposed=FALSE, distance=c("Euclidean", "Manhattan")) {
-    if (transposed) {
-        tX <- X
-    } else {
-        tX <- t(X)
-    }
-    if (!is.matrix(tX)) {
-        tX <- as.matrix(tX)
-    }
+buildVptree <- function(X, transposed=FALSE, distance=c("Euclidean", "Manhattan", "Cosine")) {
+    X <- .coerce_matrix_build(X, transposed)
     distance <- match.arg(distance)
+    if (distance=="Cosine") {
+        X <- l2norm(X)
+    }
 
-    out <- build_vptree(tX, distance)
+    out <- build_vptree(X, distance)
     ordering <- out[[1]]
-    VptreeIndex(data=tX[,ordering,drop=FALSE], order=ordering, nodes=out[-1], NAMES=colnames(tX), distance=distance)
+    VptreeIndex(data=X[,ordering,drop=FALSE], order=ordering, nodes=out[-1], NAMES=colnames(X), distance=distance)
 }

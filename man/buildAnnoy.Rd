@@ -11,7 +11,7 @@ buildAnnoy(
   directory = tempdir(),
   search.mult = ntrees,
   fname = tempfile(tmpdir = directory, fileext = ".idx"),
-  distance = c("Euclidean", "Manhattan")
+  distance = c("Euclidean", "Manhattan", "Cosine")
 )
 }
 \arguments{

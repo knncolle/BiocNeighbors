@@ -2,18 +2,18 @@
 .template_query_knn <- function(X, query, k, get.index=TRUE, get.distance=TRUE, 
     last=k, BPPARAM=SerialParam(), precomputed=NULL, transposed=FALSE, subset=NULL, 
     exact=TRUE, raw.index=FALSE, warn.ties=TRUE,
-    buildFUN, searchFUN, searchArgsFUN, ...)
+    buildFUN, searchFUN, searchArgsFUN, distance="Euclidean", ...)
 # Identifies nearest neighbours in 'X' from a query set.
 #
 # written by Aaron Lun
 # created 19 June 2018
 {
     if (exact) {
-        precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildFUN, ...)
+        precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildFUN, distance=distance, ...)
         common.args <- list(X=bndata(precomputed), warn_ties=warn.ties)
     } else {
         if (is.null(precomputed)) {
-            precomputed <- buildFUN(X, ...)
+            precomputed <- buildFUN(X, distance=distance, ...)
             on.exit(unlink(precomputed[['path']]))
         }
         common.args <- list()
@@ -22,7 +22,7 @@
     k <- .refine_k(k, precomputed, query=TRUE)
     last <- min(last, k)
 
-    q.out <- .setup_query(query, transposed, subset)
+    q.out <- .setup_query(query, transposed, subset, distance=distance)
     query <- q.out$query        
     job.id <- q.out$index
     reorder <- q.out$reorder
@@ -53,14 +53,12 @@
     output
 }
 
-.setup_query <- function(query, transposed, subset) 
+.setup_query <- function(query, transposed, subset, distance="Euclidean") 
 # Convenience wrapper to set up the query.
 {
-    if (!transposed) {
-        query <- t(query)
-    }
-    if (!is.matrix(query)) {
-        query <- as.matrix(query)
+    query <- .coerce_matrix_build(query, transposed)
+    if (distance=="Cosine") {
+        query <- l2norm(query)
     }
 
     # Choosing indices.

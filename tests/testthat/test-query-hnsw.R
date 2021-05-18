@@ -99,7 +99,7 @@ test_that("queryHnsw() behaves correctly with alternative options", {
 })
 
 set.seed(1003001)
-test_that("queryKmknn() behaves correctly with Manhattan distances", {
+test_that("queryHnsw() behaves correctly with Manhattan distances", {
     ndata <- 500 
     nquery <- 100
     ndim <- 5
@@ -109,11 +109,26 @@ test_that("queryKmknn() behaves correctly with Manhattan distances", {
     # Can't compare directly as L1Space doesn't exist in RcppHNSW.
     # We just check that the distance calculation is about-right.
     k <- 10
-    out <- queryKmknn(X, k=k, query=Y, distance="Manhattan")
+    out <- queryHnsw(X, k=k, query=Y, distance="Manhattan")
     for (i in seq_len(k)) {
         val <- rowSums(abs(Y - X[out$index[,i],,drop=FALSE]))
         expect_equal(out$distance[,i], val, tol=1e-6)
     }
+})
+
+set.seed(10030011)
+test_that("queryHnsw() works correctly with Cosine distances", {
+    ndata <- 1000
+    nquery <- 100
+    ndim <- 5
+    k <- 3
+
+    X <- matrix(runif(ndata * ndim), nrow=ndata)
+    Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+    ref <- queryHnsw(X, k=k, query=Y, distance="Cosine")
+    out <- queryHnsw(X/rowSums(X^2), k=k, query=Y/rowSums(Y^2))
+    expect_identical(ref, out)
 })
 
 set.seed(1003001)

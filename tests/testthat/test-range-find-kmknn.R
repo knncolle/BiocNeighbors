@@ -76,6 +76,18 @@ test_that("rangeFindKmknn() works with Manhattan distances", {
     }
 })
 
+set.seed(10030011)
+test_that("rangeFindKmknn() works with Cosine distances", {
+    nobs <- 1000
+    ndim <- 5
+    d <- 0.1
+
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    out <- rangeFindKmknn(X, threshold=d, distance="Cosine")
+    ref <- rangeFindKmknn(X/rowSums(X^2), threshold=d)
+    expect_identical_re(out, ref)
+})
+
 set.seed(1003002)
 test_that("rangeFindKmknn() works with counting only", {
     nobs <- 1000

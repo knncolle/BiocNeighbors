@@ -88,6 +88,17 @@ test_that("findHnsw() works with Manhattan distances", {
     }
 })
 
+set.seed(7003101)
+test_that("findHnsw() behaves correctly with Cosine distances", {
+    # No need for fancy stuff here.
+    nobs <- 1000
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    out <- findHnsw(X, k=5, distance="Cosine")
+    ref <- findHnsw(X / rowSums(X^2), k=5)
+    expect_identical(out, ref)
+})
+
 set.seed(700311)
 test_that("findHnsw() behaves correctly when only the last distance is requested", {
     nobs <- 500 

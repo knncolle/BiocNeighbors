@@ -100,6 +100,17 @@ test_that("findVptree() behaves correctly when only the last distance is request
     }
 })
 
+set.seed(1003003)
+test_that("findVptree() behaves correctly with Cosine distances", {
+    # No need for fancy stuff here.
+    nobs <- 1000
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    out <- findVptree(X, k=5, distance="Cosine")
+    ref <- findVptree(X / rowSums(X^2), k=5)
+    expect_identical(out, ref)
+})
+
 set.seed(100301)
 test_that("findVptree() behaves correctly with parallelization", {
     library(BiocParallel)

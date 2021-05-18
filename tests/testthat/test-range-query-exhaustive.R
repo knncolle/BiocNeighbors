@@ -91,6 +91,21 @@ test_that("rangeQueryExhaustive() works with Manhattan distances", {
     }
 })
 
+set.seed(10030011)
+test_that("rangeQueryExhaustive() works with Cosine distances", {
+    ndata <- 1000
+    nquery <- 100
+    ndim <- 10
+    d <- 0.2
+
+    X <- matrix(runif(ndata * ndim), nrow=ndata)
+    Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+    out <- rangeQueryExhaustive(X, threshold=d, query=Y, distance="Cosine")
+    ref <- rangeQueryExhaustive(X/rowSums(X^2), threshold=d, query=Y/rowSums(Y^2))
+    expect_identical_re(ref, out)
+})
+
 set.seed(1003002)
 test_that("rangeQueryExhaustive() works with counting only", {
     ndata <- 1000

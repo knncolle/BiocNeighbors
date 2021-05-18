@@ -4,7 +4,11 @@
 \alias{buildExhaustive}
 \title{Prepare data for an exhaustive search}
 \usage{
-buildExhaustive(X, transposed = FALSE, distance = c("Euclidean", "Manhattan"))
+buildExhaustive(
+  X,
+  transposed = FALSE,
+  distance = c("Euclidean", "Manhattan", "Cosine")
+)
 }
 \arguments{
 \item{X}{A numeric matrix where rows correspond to data points 

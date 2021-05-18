@@ -4,7 +4,12 @@
 \alias{buildKmknn}
 \title{Pre-cluster points with k-means}
 \usage{
-buildKmknn(X, transposed = FALSE, distance = c("Euclidean", "Manhattan"), ...)
+buildKmknn(
+  X,
+  transposed = FALSE,
+  distance = c("Euclidean", "Manhattan", "Cosine"),
+  ...
+)
 }
 \arguments{
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}

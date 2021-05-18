@@ -4,7 +4,11 @@
 \alias{buildVptree}
 \title{Build a VP tree}
 \usage{
-buildVptree(X, transposed = FALSE, distance = c("Euclidean", "Manhattan"))
+buildVptree(
+  X,
+  transposed = FALSE,
+  distance = c("Euclidean", "Manhattan", "Cosine")
+)
 }
 \arguments{
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}

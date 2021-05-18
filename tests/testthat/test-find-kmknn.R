@@ -80,6 +80,17 @@ test_that("findKmknn() behaves correctly with Manhattan distances", {
     }
 })
 
+set.seed(10030001)
+test_that("findKmknn() behaves correctly with Cosine distances", {
+    # No need for fancy stuff here.
+    nobs <- 1000
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    out <- findKmknn(X, k=5, distance="Cosine")
+    ref <- findKmknn(X / rowSums(X^2), k=5)
+    expect_identical(out, ref)
+})
+
 set.seed(1003002)
 test_that("findKmknn() behaves correctly when only the last distance is requested", {
     nobs <- 500 # fewer observations, as refFindKNN is a slow brute-force method.

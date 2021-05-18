@@ -116,6 +116,21 @@ test_that("buildHnsw() works with the Manhattan distance", {
     expect_identical(res, val)
 })
 
+set.seed(2500022)
+test_that("buildHnsw() works with the Cosine distance", {
+    nobs <- 1011
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    set.seed(102)
+    ref <- buildHnsw(X, distance="Cosine")
+    expect_identical(bndistance(ref), "Cosine")
+
+    res <- findHnsw(precomputed=ref, k=5)
+    val <- findHnsw(X, k=5, distance="Cosine")
+    expect_identical(res, val)
+})
+
 set.seed(250003)
 test_that("buildHnsw() behaves sensibly with silly inputs", {
     nobs <- 100L

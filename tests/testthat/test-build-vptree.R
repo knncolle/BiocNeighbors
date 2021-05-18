@@ -78,6 +78,21 @@ test_that("buildVptree() works with the Manhattan distance", {
     expect_identical(res, val)
 })
 
+set.seed(200004)
+test_that("buildVptree() works with the Cosine distance", {
+    nobs <- 1011
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    set.seed(102)
+    ref <- buildVptree(X, distance="Cosine")
+    expect_identical(bndistance(ref), "Cosine")
+
+    res <- findVptree(precomputed=ref, k=5)
+    val <- findVptree(X, k=5, distance="Cosine")
+    expect_identical(res, val)
+})
+
 set.seed(20001)
 test_that("buildVptree() behaves sensibly with silly inputs", {
     nobs <- 100L

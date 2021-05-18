@@ -12,7 +12,7 @@ buildHnsw(
   directory = tempdir(),
   ef.search = 10,
   fname = tempfile(tmpdir = directory, fileext = ".idx"),
-  distance = c("Euclidean", "Manhattan")
+  distance = c("Euclidean", "Manhattan", "Cosine")
 )
 }
 \arguments{

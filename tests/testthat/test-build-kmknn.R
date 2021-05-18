@@ -94,6 +94,21 @@ test_that("buildKmknn() works with the Manhattan distance", {
     expect_identical(res, val)
 })
  
+set.seed(200004)
+test_that("buildKmknn() works with the Cosine distance", {
+    nobs <- 1011
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    set.seed(102)
+    ref <- buildKmknn(X, distance="Cosine")
+    expect_identical(bndistance(ref), "Cosine")
+
+    res <- findKmknn(precomputed=ref, k=5)
+    val <- findKmknn(X, k=5, distance="Cosine")
+    expect_identical(res, val)
+})
+
 set.seed(20001)
 test_that("buildKmknn() behaves sensibly with silly inputs", {
     nobs <- 100L

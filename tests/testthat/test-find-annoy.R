@@ -131,6 +131,17 @@ test_that("findAnnoy() behaves correctly with Manhattan distances", {
     }
 })
 
+set.seed(70032)
+test_that("findAnnoy() behaves correctly with Cosine distances", {
+    # No need for fancy stuff here.
+    nobs <- 1000
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    out <- findAnnoy(X, k=5, distance="Cosine")
+    ref <- findAnnoy(X / rowSums(X^2), k=5)
+    expect_identical(out, ref)
+})
+
 set.seed(700311)
 test_that("findAnnoy() behaves correctly when only the last distance is requested", {
     nobs <- 500 

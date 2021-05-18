@@ -29,16 +29,11 @@
 #'
 #' @export
 #' @importFrom Matrix t
-buildExhaustive <- function(X, transposed=FALSE, distance=c("Euclidean", "Manhattan")) {
-    if (transposed) {
-        tX <- X
-    } else {
-        tX <- t(X)
-    }
-    if (!is.matrix(tX)) {
-        tX <- as.matrix(tX)
-    }
+buildExhaustive <- function(X, transposed=FALSE, distance=c("Euclidean", "Manhattan", "Cosine")) {
+    X <- .coerce_matrix_build(X, transposed)
     distance <- match.arg(distance)
-
-    ExhaustiveIndex(data=tX, NAMES=colnames(tX), distance=distance)
+    if (distance=="Cosine") {
+        X <- l2norm(X)
+    }
+    ExhaustiveIndex(data=X, NAMES=colnames(X), distance=distance)
 }

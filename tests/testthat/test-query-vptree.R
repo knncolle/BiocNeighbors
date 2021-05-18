@@ -96,6 +96,21 @@ test_that("queryVptree() works with Manhattan distances", {
     }
 })
 
+set.seed(1003002)
+test_that("queryVptree() works correctly with Cosine distances", {
+    ndata <- 1000
+    nquery <- 100
+    ndim <- 5
+    k <- 3
+
+    X <- matrix(runif(ndata * ndim), nrow=ndata)
+    Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+    ref <- queryVptree(X, k=k, query=Y, distance="Cosine")
+    out <- queryVptree(X/rowSums(X^2), k=k, query=Y/rowSums(Y^2))
+    expect_identical(ref, out)
+})
+
 set.seed(1003001)
 test_that("queryVptree() works to only obtain the last distance", {
     ndata <- 500 # fewer points as refQueryKNN is a slow brute-force method.

@@ -48,18 +48,14 @@
 #' @export
 #' @importFrom Matrix t
 buildAnnoy <- function(X, transposed=FALSE, ntrees=50, directory=tempdir(), search.mult=ntrees, 
-    fname=tempfile(tmpdir=directory, fileext=".idx"), distance=c("Euclidean", "Manhattan")) 
+    fname=tempfile(tmpdir=directory, fileext=".idx"), distance=c("Euclidean", "Manhattan", "Cosine")) 
 {
-    if (transposed) {
-        tX <- X
-    } else {
-        tX <- t(X)
-    }
-    if (!is.matrix(tX)) {
-        tX <- as.matrix(tX)
-    }
+    X <- .coerce_matrix_build(X, transposed)
     distance <- match.arg(distance)
+    if (distance=="Cosine") {
+        X <- l2norm(X)
+    }
 
-    build_annoy(tX, ntrees, fname, distance)
-    AnnoyIndex(data=tX, path=fname, search.mult=search.mult, NAMES=colnames(tX), distance=distance)
+    build_annoy(X, ntrees, fname, distance)
+    AnnoyIndex(data=X, path=fname, search.mult=search.mult, NAMES=colnames(X), distance=distance)
 }

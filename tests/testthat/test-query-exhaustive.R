@@ -96,6 +96,21 @@ test_that("queryExhaustive() works with Manhattan distances", {
     }
 })
 
+set.seed(10030011)
+test_that("queryExhaustive() works correctly with Cosine distances", {
+    ndata <- 1000
+    nquery <- 100
+    ndim <- 5
+    k <- 3
+
+    X <- matrix(runif(ndata * ndim), nrow=ndata)
+    Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+    ref <- queryExhaustive(X, k=k, query=Y, distance="Cosine")
+    out <- queryExhaustive(X/rowSums(X^2), k=k, query=Y/rowSums(Y^2))
+    expect_identical(ref, out)
+})
+
 set.seed(1003001)
 test_that("queryExhaustive() works to only obtain the last distance", {
     ndata <- 500 # fewer points as refQueryKNN is a slow brute-force method.

@@ -80,6 +80,17 @@ test_that("findExhaustive() behaves correctly with Manhattan distances", {
     }
 })
 
+set.seed(1003001)
+test_that("findExhaustive() behaves correctly with Cosine distances", {
+    # No need for fancy stuff here.
+    nobs <- 1000
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    out <- findExhaustive(X, k=5, distance="Cosine")
+    ref <- findExhaustive(X / rowSums(X^2), k=5)
+    expect_identical(out, ref)
+})
+
 set.seed(1003002)
 test_that("findExhaustive() behaves correctly when only the last distance is requested", {
     nobs <- 500 # fewer observations, as refFindKNN is a slow brute-force method.

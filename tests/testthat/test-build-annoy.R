@@ -116,6 +116,21 @@ test_that("buildAnnoy() works with the Manhattan distance", {
     expect_identical(res, val)
 })
 
+set.seed(2500021)
+test_that("buildAnnoy() works with the Cosine distance", {
+    nobs <- 1011
+    ndim <- 10
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+
+    set.seed(102)
+    ref <- buildAnnoy(X, distance="Cosine")
+    expect_identical(bndistance(ref), "Cosine")
+
+    res <- findAnnoy(precomputed=ref, k=5)
+    val <- findAnnoy(X, k=5, distance="Cosine")
+    expect_identical(res, val)
+})
+
 set.seed(250003)
 test_that("buildAnnoy() behaves sensibly with silly inputs", {
     nobs <- 100L

@@ -48,18 +48,14 @@
 #' @export
 #' @importFrom Matrix t
 buildHnsw <- function(X, transposed=FALSE, nlinks=16, ef.construction=200, directory=tempdir(), ef.search=10,
-    fname=tempfile(tmpdir=directory, fileext=".idx"), distance=c("Euclidean", "Manhattan"))
+    fname=tempfile(tmpdir=directory, fileext=".idx"), distance=c("Euclidean", "Manhattan", "Cosine"))
 {
-    if (transposed) {
-        tX <- X
-    } else {
-        tX <- t(X)
-    }
-    if (!is.matrix(tX)) {
-        tX <- as.matrix(tX)
-    }
+    X <- .coerce_matrix_build(X, transposed)
     distance <- match.arg(distance)
+    if (distance=="Cosine") {
+        X <- l2norm(X)
+    }
 
-    build_hnsw(tX, nlinks, ef.construction, fname, distance)
-    HnswIndex(data=tX, path=fname, ef.search=ef.search, NAMES=colnames(tX), distance=distance)
+    build_hnsw(X, nlinks, ef.construction, fname, distance)
+    HnswIndex(data=X, path=fname, ef.search=ef.search, NAMES=colnames(X), distance=distance)
 }

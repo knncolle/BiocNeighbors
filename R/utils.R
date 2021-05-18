@@ -85,3 +85,35 @@
 
 # To use in missing,missing-method definitions.
 .default_param <- function(x) list(BNPARAM=KmknnParam())
+
+.coerce_matrix_build <- function(X, transposed) {
+    if (!transposed) {
+        X <- t(X)
+    }
+
+    if (!is.matrix(X)) {
+        X <- as.matrix(X)
+    }    
+
+    if (!is.double(X)) {
+        storage.mode(X) <- "double"
+    }
+
+    X
+}
+
+l2norm <- function(X, transposed=TRUE) {
+    if (transposed) {
+        l2norm <- colSums(X^2)
+        if (any(l2norm==0)) {
+            stop("L2 norms of zero detected for distance='Cosine'")
+        }
+        sweep(X, 2, l2norm, "/", check.margin=FALSE)
+    } else {
+        l2norm <- rowSums(X^2)
+        if (any(l2norm==0)) {
+            stop("L2 norms of zero detected for distance='Cosine'")
+        }
+        X/l2norm
+    }
+}

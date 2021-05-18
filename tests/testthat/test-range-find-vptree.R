@@ -76,6 +76,18 @@ test_that("rangeFindVptree() works with Manhattan distances", {
     }
 })
 
+set.seed(10030011)
+test_that("rangeFindVptree() works with Cosine distances", {
+    nobs <- 1000
+    ndim <- 5
+    d <- 0.1
+
+    X <- matrix(runif(nobs * ndim), nrow=nobs)
+    out <- rangeFindVptree(X, threshold=d, distance="Cosine")
+    ref <- rangeFindVptree(X/rowSums(X^2), threshold=d)
+    expect_identical_re(out, ref)
+})
+
 set.seed(1003002)
 test_that("rangeFindVptree() works with counting only", {
     nobs <- 1000

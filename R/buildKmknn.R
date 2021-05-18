@@ -42,14 +42,12 @@
 #' @importFrom stats kmeans
 #' @importFrom methods is
 #' @importFrom Matrix t
-buildKmknn <- function(X, transposed=FALSE, distance=c("Euclidean", "Manhattan"), ...) {
-    if (transposed) {
-        X <- t(X)
-    }
-    if (!is.matrix(X)) {
-        X <- as.matrix(X)
-    }
+buildKmknn <- function(X, transposed=FALSE, distance=c("Euclidean", "Manhattan", "Cosine"), ...) {
+    X <- .coerce_matrix_build(X, transposed=!transposed) # we want to keep observations in rows for the time being.
     distance <- match.arg(distance)
+    if (distance=="Cosine") {
+        X <- l2norm(X, transposed=FALSE)
+    }
 
     N <- ceiling(sqrt(nrow(X)))
     if (N==nrow(X)) {
@@ -81,6 +79,7 @@ buildKmknn <- function(X, transposed=FALSE, distance=c("Euclidean", "Manhattan")
 
         diff <- out$centers[clust,] - current.vals
         cur.dist <- switch(distance,
+            Cosine=sqrt(colSums(diff^2)),
             Euclidean=sqrt(colSums(diff^2)),
             Manhattan=colSums(abs(diff))
         )

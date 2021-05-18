@@ -91,6 +91,21 @@ test_that("rangeQueryKmknn() works with Manhattan distances", {
     }
 })
 
+set.seed(10030011)
+test_that("rangeQueryKmknn() works with Cosine distances", {
+    ndata <- 1000
+    nquery <- 100
+    ndim <- 10
+    d <- 0.2
+
+    X <- matrix(runif(ndata * ndim), nrow=ndata)
+    Y <- matrix(runif(nquery * ndim), nrow=nquery)
+
+    out <- rangeQueryKmknn(X, threshold=d, query=Y, distance="Cosine")
+    ref <- rangeQueryKmknn(X/rowSums(X^2), threshold=d, query=Y/rowSums(Y^2))
+    expect_identical_re(ref, out)
+})
+
 set.seed(1003002)
 test_that("rangeQueryKmknn() works with counting only", {
     ndata <- 1000

@@ -1,15 +1,15 @@
 #' @importFrom BiocParallel SerialParam bpmapply
 .template_range_query_exact <- function(X, query, threshold, get.index=TRUE, get.distance=TRUE, BPPARAM=SerialParam(), 
     precomputed=NULL, transposed=FALSE, subset=NULL, raw.index=FALSE, exact=TRUE,
-    buildFUN, searchFUN, searchArgsFUN, ...)
+    buildFUN, searchFUN, searchArgsFUN, distance="Euclidean", ...)
 # Identifies nearest neighbours in 'X' from a query set.
 #
 # written by Aaron Lun
 # created 22 June 2018
 {
-    precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildFUN, ...)
+    precomputed <- .setup_precluster(X, precomputed, raw.index, buildFUN=buildFUN, distance=distance, ...)
 
-    q.out <- .setup_query(query, transposed, subset)
+    q.out <- .setup_query(query, transposed, subset, distance=distance)
     query <- q.out$query        
     job.id <- q.out$index
     reorder <- q.out$reorder
