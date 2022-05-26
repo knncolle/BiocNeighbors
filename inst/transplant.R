@@ -26,6 +26,12 @@ exdir <- tempfile()
 untar(tmp, exdir=exdir)
 
 target <- args[2]
-unlink(file.path(target, "inst/include"), recursive=TRUE)
-dir.create(file.path(target, "inst/include"))
-file.copy(file.path(exdir, "RcppAnnoy/inst/include"), file.path(target, "inst"), recursive=TRUE)
+dest <- file.path(target, "src/annoy")
+unlink(dest, recursive=TRUE)
+dir.create(dest)
+
+src <- file.path(exdir, "RcppAnnoy/inst/include")
+contents <- list.files(src)
+for (x in contents) {
+    file.copy(file.path(src, x), file.path(dest, x), recursive=TRUE)
+}

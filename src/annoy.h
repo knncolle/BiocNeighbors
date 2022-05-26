@@ -5,7 +5,7 @@
 // turn off AVX always, to avoid small inconsistencies in distance calculations.
 #define NO_MANUAL_VECTORIZATION 1
 
-#include "RcppAnnoy.h"
+#include "annoy/RcppAnnoy.h"
 
 #if RCPPANNOY_VERSION < RcppAnnoyVersion(0,1,17,3)
   typedef AnnoyIndexSingleThreadedBuildPolicy RcppAnnoyIndexThreadPolicy;
