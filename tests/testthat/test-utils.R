@@ -1,6 +1,7 @@
 # Tests the utilities.
 # library(BiocNeighbors); library(testthat); source("test-utils.R")
 
+library(BiocParallel)
 set.seed(80000)
 test_that("worker job assignment works correctly", {
     jobs <- sample(1000)
@@ -8,8 +9,9 @@ test_that("worker job assignment works correctly", {
     expect_identical(list(jobs), by.core)
 
     for (x in 2:10) { 
-        by.core <- BiocNeighbors:::.assign_jobs(jobs, SnowParam(x))
-        expect_identical(length(by.core), x)
+        P <- SnowParam(x)
+        by.core <- BiocNeighbors:::.assign_jobs(jobs, P)
+        expect_identical(length(by.core), bpnworkers(P))
         expect_identical(jobs, unlist(by.core))
     }
 
