@@ -1,5 +1,5 @@
 Package: BiocNeighbors
-Version: 1.20.0
+Version: 1.21.0
 Date: 2022-11-08
 Title: Nearest Neighbor Detection for Bioconductor Packages
 Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
