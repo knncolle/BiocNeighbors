@@ -10,6 +10,9 @@
 // Avoid discrepancies with AVX.
 #define NO_MANUAL_VECTORIZATION
 
+// Avoid CRAN problems with std::cerr.
+#define HNSWLIB_ERR_OVERRIDE Rcpp::Rcerr
+
 // Avoid compilation problems on Windows.
 #define STRICT_R_HEADERS
 
