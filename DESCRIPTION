@@ -15,10 +15,7 @@ Suggests:
     testthat, 
     BiocStyle, 
     knitr, 
-    rmarkdown, 
-    FNN, 
-    RcppAnnoy, 
-    RcppHNSW
+    rmarkdown
 biocViews: Clustering, Classification
 Description: Implements exact and approximate methods for nearest neighbor 
     detection, in a framework that allows them to be easily switched within 
@@ -29,7 +26,9 @@ Description: Implements exact and approximate methods for nearest neighbor
     Parallelization is achieved for all methods by using BiocParallel. Functions 
     are also provided to search for all neighbors within a given distance. 
 License: GPL-3
-LinkingTo: Rcpp, RcppHNSW
+LinkingTo:
+    Rcpp, 
+    assorthead
 VignetteBuilder: knitr
 SystemRequirements: C++11
 RoxygenNote: 7.1.1
