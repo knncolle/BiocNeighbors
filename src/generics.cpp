@@ -4,18 +4,26 @@
 
 #include <algorithm>
 #include <vector>
-#ifndef _OPENMP
-#include <thread>
+
+#ifdef _OPENMP
+#include "omp.h"
 #endif
 
 SEXP generic_build(const BiocNeighborsBuilder& builder, Rcpp::NumericMatrix data) {
     return BiocNeighborsPrebuiltPointer(builder.build_raw(WrappedMatrix(data.rows(), data.cols(), data.begin())), true);
 } 
 
+/*********************************
+ ********* KNN functions *********
+ *********************************/
+
 static int sanitize_k(int k, int nobs) {
     if (k < nobs) {
         return k;
-    } else if (nobs >= 1) {
+    }
+
+    Rcpp::warning("'k' capped at the number of observations minus 1");
+    if (nobs >= 1) {
         return nobs - 1;
     } else {
         return 0;
@@ -42,33 +50,9 @@ std::vector<Value_>* prepare_buffer(std::vector<Value_>& buffer, bool report, in
     }
 }
 
-template<typename Function_>
-void generic_parallelize(int njobs, int nthreads, Function_ fun) {
-    if (nthreads <= 1) {
-        fun(0, njobs);
-        return;
-    }
-
-    int jobs_per_thread = (njobs / nthreads) + (njobs % nthreads > 0);
-    std::vector<std::thread> jobs;
-    jobs.reserve(nthreads);
-
-    for (int j = 0; j < nthreads; ++j) {
-        int start = jobs_per_thread * j;
-        if (start >= njobs) {
-            break;
-        }
-        int length = std::min(njobs - start, jobs_per_thread);
-        jobs.emplace_back(fun, start, length);
-    }
-
-    for (auto& j : jobs) {
-        j.join();
-    }
-}
-
-SEXP generic_find_knn(const BiocNeighborsPrebuiltPointer& prebuilt_ptr, int k, int num_threads, bool report_index, bool report_distance) {
-    const BiocNeighborsPrebuilt& prebuilt = *prebuilt_ptr;
+//[[Rcpp::export(rng=false)]]
+SEXP generic_find_knn(SEXP prebuilt_ptr, int k, int num_threads, bool report_index, bool report_distance) {
+    const BiocNeighborsPrebuilt& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
     int nobs = prebuilt.num_observations();
 
     k = sanitize_k(k, nobs);
@@ -122,8 +106,9 @@ SEXP generic_find_knn(const BiocNeighborsPrebuiltPointer& prebuilt_ptr, int k, i
     );
 } 
 
-SEXP generic_find_knn_subset(const BiocNeighborsPrebuiltPointer& prebuilt_ptr, Rcpp::IntegerVector chosen, int k, int num_threads, bool report_index, bool report_distance) {
-    const BiocNeighborsPrebuilt& prebuilt = *prebuilt_ptr;
+//[[Rcpp::export(rng=false)]]
+SEXP generic_find_knn_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, int k, int num_threads, bool report_index, bool report_distance) {
+    const BiocNeighborsPrebuilt& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
     int nobs = prebuilt.num_observations();
 
     k = sanitize_k(k, nobs);
@@ -180,12 +165,13 @@ SEXP generic_find_knn_subset(const BiocNeighborsPrebuiltPointer& prebuilt_ptr, R
     );
 } 
 
-SEXP generic_query_knn(Rcpp::NumericMatrix query, const BiocNeighborsPrebuiltPointer& prebuilt_ptr, int k, int num_threads, bool report_index, bool report_distance) {
-    const BiocNeighborsPrebuilt& prebuilt = *prebuilt_ptr;
+//[[Rcpp::export(rng=false)]]
+SEXP generic_query_knn(Rcpp::NumericMatrix query, SEXP prebuilt_ptr, int k, int num_threads, bool report_index, bool report_distance) {
+    const BiocNeighborsPrebuilt& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
     int nobs = prebuilt.num_observations();
     size_t ndim = prebuilt.num_dimensions();
 
-    k = sanitize_k(k, nobs);
+    k = std::min(k, nobs);
 
     int nquery = query.nrow();
     const double* query_ptr = query.begin();
@@ -241,4 +227,204 @@ SEXP generic_query_knn(Rcpp::NumericMatrix query, const BiocNeighborsPrebuiltPoi
     );
 } 
 
+/***********************************
+ ********* Range functions *********
+ ***********************************/
 
+template<typename Vector_, typename Value_>
+Rcpp::List format_range_output(const std::vector<std::vector<Value_> >& results) {
+    Rcpp::List output(results.size());
+    for (size_t r = 0, end = results.size(); r < end; ++r) {
+        output[r] = Vector_(results[r].begin(), results[r].end());
+    }
+    return output;
+}
+
+//[[Rcpp::export(rng=false)]]
+SEXP generic_find_all(SEXP prebuilt_ptr, double threshold, int num_threads, bool report_index, bool report_distance) {
+    const BiocNeighborsPrebuilt& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
+    int nobs = prebuilt.num_observations();
+    std::vector<std::vector<double> > out_d(report_distance ? nobs : 0);
+    std::vector<std::vector<int> > out_i(report_index ? nobs : 0);
+
+    bool no_support = false;
+
+#ifdef _OPENMP
+    #pragma omp parallel num_threads(num_threads)
+    {
+#else
+    generic_parallelize(nobs, num_threads, [&](int start, int length) {
+#endif
+
+        auto searcher = prebuilt.initialize();
+        if (!searcher->can_search_all()) {
+            // Make sure only the first thread edits the failure variable.
+#ifdef _OPENMP
+            if (omp_get_thread_num() == 0) {
+#else
+            if (start == 0) {
+#endif
+                no_support = true;
+            }
+
+        } else {
+#ifdef _OPENMP
+            #pragma omp for
+            for (int o = 0; o < nobs; ++o) {
+#else
+            for (int o = start, end = start + length; o < end; ++o) {
+#endif
+
+                searcher->search_all(
+                    o,
+                    threshold,
+                    (report_index ? &out_i[o] : NULL),
+                    (report_distance ? &out_d[o] : NULL)
+               ); 
+            }
+        }
+
+#ifdef _OPENMP
+    }
+#else
+    });
+#endif
+
+    if (no_support) {
+        throw std::runtime_error("algorithm does not support search by distance");
+    }
+
+    return Rcpp::List::create(
+        Rcpp::Named("index") = format_range_output<Rcpp::IntegerVector>(out_i),
+        Rcpp::Named("distance") = format_range_output<Rcpp::NumericVector>(out_d)
+    );
+} 
+
+//[[Rcpp::export(rng=false)]]
+SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, double threshold, int num_threads, bool report_index, bool report_distance) {
+    const BiocNeighborsPrebuilt& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
+
+    const int* chosen_ptr = chosen.begin();
+    int nchosen = chosen.size();
+
+    std::vector<std::vector<double> > out_d(report_distance ? nchosen : 0);
+    std::vector<std::vector<int> > out_i(report_index ? nchosen : 0);
+
+    bool no_support = false;
+
+#ifdef _OPENMP
+    #pragma omp parallel num_threads(num_threads)
+    {
+#else
+    generic_parallelize(nchosen, num_threads, [&](int start, int length) {
+#endif
+
+        auto searcher = prebuilt.initialize();
+        if (!searcher->can_search_all()) {
+            // Make sure only the first thread edits the failure variable.
+#ifdef _OPENMP
+            if (omp_get_thread_num() == 0) {
+#else
+            if (start == 0) {
+#endif
+                no_support = true;
+            }
+
+        } else {
+#ifdef _OPENMP
+            #pragma omp for
+            for (int o = 0; o < nchosen; ++o) {
+#else
+            for (int o = start, end = start + length; o < end; ++o) {
+#endif
+
+                searcher->search_all(
+                    chosen_ptr[o],
+                    threshold,
+                    (report_index ? &out_i[o] : NULL),
+                    (report_distance ? &out_d[o] : NULL)
+                );
+            }
+        }
+
+#ifdef _OPENMP
+    }
+#else
+    });
+#endif
+
+    if (no_support) {
+        throw std::runtime_error("algorithm does not support search by distance");
+    }
+
+    return Rcpp::List::create(
+        Rcpp::Named("index") = format_range_output<Rcpp::IntegerVector>(out_i),
+        Rcpp::Named("distance") = format_range_output<Rcpp::NumericVector>(out_d)
+    );
+} 
+
+//[[Rcpp::export(rng=false)]]
+SEXP generic_query_all(Rcpp::NumericMatrix query, SEXP prebuilt_ptr, double threshold, int num_threads, bool report_index, bool report_distance) {
+    const BiocNeighborsPrebuilt& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
+    size_t ndim = prebuilt.num_dimensions();
+
+    int nquery = query.nrow();
+    const double* query_ptr = query.begin();
+
+    std::vector<std::vector<double> > out_d(report_distance ? nquery : 0);
+    std::vector<std::vector<int> > out_i(report_index ? nquery : 0);
+
+    bool no_support = false;
+
+#ifdef _OPENMP
+    #pragma omp parallel num_threads(num_threads)
+    {
+#else
+    generic_parallelize(nquery, num_threads, [&](int start, int length) {
+#endif
+
+        auto searcher = prebuilt.initialize();
+        if (!searcher->can_search_all()) {
+            // Make sure only the first thread edits the failure variable.
+#ifdef _OPENMP
+            if (omp_get_thread_num() == 0) {
+#else
+            if (start == 0) {
+#endif
+                no_support = true;
+            }
+
+        } else {
+#ifdef _OPENMP
+            #pragma omp for
+            for (int o = 0; o < nquery; ++o) {
+                size_t query_offset = static_cast<size_t>(o) * ndim; // using size_t to avoid overflow.
+#else
+            size_t query_offset = static_cast<size_t>(start) * ndim; // using size_t to avoid overflow.
+            for (int o = start, end = start + length; o < end; ++o, query_offset += ndim) {
+#endif
+
+                searcher->search_all(
+                    query_ptr + query_offset,
+                    threshold,
+                    (report_index ? &out_i[o] : NULL),
+                    (report_distance ? &out_d[o] : NULL)
+                );
+            }
+        }
+
+#ifdef _OPENMP
+    }
+#else
+    });
+#endif
+
+    if (no_support) {
+        throw std::runtime_error("algorithm does not support search by distance");
+    }
+
+    return Rcpp::List::create(
+        Rcpp::Named("index") = format_range_output<Rcpp::IntegerVector>(out_i),
+        Rcpp::Named("distance") = format_range_output<Rcpp::NumericVector>(out_d)
+    );
+} 

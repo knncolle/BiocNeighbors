@@ -6,14 +6,7 @@
 \alias{BiocNeighbors-package}
 \title{BiocNeighbors: Nearest Neighbor Detection for Bioconductor Packages}
 \description{
-Implements exact and approximate methods for nearest neighbor 
-    detection, in a framework that allows them to be easily switched within 
-    Bioconductor packages or workflows. Exact searches can be performed using
-    the k-means for k-nearest neighbors algorithm or with vantage point trees.
-    Approximate searches can be performed using the Annoy or HNSW libraries.
-    Searching on either Euclidean or Manhattan distances is supported. 
-    Parallelization is achieved for all methods by using BiocParallel. Functions 
-    are also provided to search for all neighbors within a given distance.
+Implements exact and approximate methods for nearest neighbor detection, in a framework that allows them to be easily switched within Bioconductor packages or workflows. Exact searches can be performed using the k-means for k-nearest neighbors algorithm or with vantage point trees. Approximate searches can be performed using the Annoy or HNSW libraries. Searching on either Euclidean or Manhattan distances is supported. Parallelization is achieved for all methods by using BiocParallel. Functions are also provided to search for all neighbors within a given distance.
 }
 \author{
 \strong{Maintainer}: Aaron Lun \email{infinite.monkeys.with.keyboards@gmail.com} [copyright holder]

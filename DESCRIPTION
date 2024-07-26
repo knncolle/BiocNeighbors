@@ -31,4 +31,4 @@ LinkingTo:
     assorthead
 VignetteBuilder: knitr
 SystemRequirements: C++17
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.2
