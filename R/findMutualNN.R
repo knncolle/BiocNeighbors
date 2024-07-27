@@ -6,11 +6,11 @@
 #' @param data2 A numeric matrix like \code{data1} for another dataset with the same variables/dimensions.
 #' @param k1 Integer scalar specifying the number of neighbors to search for in \code{data1}.
 #' @param k2 Integer scalar specifying the number of neighbors to search for in \code{data2}.
-#' @param BNINDEX1 A \linkS4class{BiocNeighborIndex} object containing a pre-built index for \code{data1}.
-#' @param BNINDEX2 A \linkS4class{BiocNeighborIndex} object containing a pre-built index for \code{data2}.
-#' @param BNPARAM A \linkS4class{BiocNeighborParam} object specifying the neighbour search algorithm to use.
-#' This should be consistent with the class of \code{BNINDEX1} and \code{BNINDEX2}, if either are specified.
-#' @param BPPARAM A \linkS4class{BiocParallelParam} object specifying how parallelization should be performed.
+#' @param BNINDEX1 A pre-built index for \code{data1}.
+#' If \code{NULL}, this is constructed from \code{data1} within the internal \code{\link{queryKNN}} call.
+#' @param BNINDEX2 A pre-built index for \code{data2}.
+#' If \code{NULL}, this is constructed from \code{data2} within the internal \code{\link{queryKNN}} call.
+#' @param ... Other arguments to be passed to the underlying \code{\link{queryKNN}} calls, e.g., \code{BNPARAM}, .
 #'
 #' @return
 #' A list containing the integer vectors \code{first} and \code{second}, containing row indices from \code{data1} and \code{data2} respectively.
@@ -43,16 +43,15 @@
 #' head(out$second)
 #'
 #' @export
-#' @importFrom BiocParallel SerialParam
-findMutualNN <- function(data1, data2, k1, k2=k1, BNINDEX1=NULL, BNINDEX2=NULL, BNPARAM=KmknnParam(), BPPARAM=SerialParam()) {
+findMutualNN <- function(data1, data2, k1, k2=k1, BNINDEX1=NULL, BNINDEX2=NULL, ...) {
     data1 <- as.matrix(data1)
     data2 <- as.matrix(data2)
 
-    common.args <- list(BNPARAM=BNPARAM, BPPARAM=BPPARAM, get.distance=FALSE)
+    common.args <- list(..., get.distance=FALSE)
 
     args <- c(common.args, list(query=data1, k=k2))
     if (!is.null(BNINDEX2)) {
-        args$BNINDEX <- BNINDEX2
+        args$X <- BNINDEX2
     } else {
         args$X <- data2
     }
@@ -60,7 +59,7 @@ findMutualNN <- function(data1, data2, k1, k2=k1, BNINDEX1=NULL, BNINDEX2=NULL, 
 
     args <- c(common.args, list(query=data2, k=k1))
     if (!is.null(BNINDEX1)) {
-        args$BNINDEX <- BNINDEX1
+        args$X <- BNINDEX1
     } else {
         args$X <- data1
     }

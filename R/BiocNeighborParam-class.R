@@ -24,6 +24,10 @@
 #' \item{\code{x[[i]]}:}{Return the value of slot \code{i}, as used in the constructor for \code{x}.}
 #' \item{\code{x[[i]] <- value}:}{Set slot \code{i} to the specified \code{value}.}
 #' }
+#'
+#' @section Distance metrics: 
+#' All algorithms support neighbor searching by Euclidean, Manhattan and cosine distances.
+#' Cosine distances are implemented as the Euclidean distance between L2-normalized vectors.
 #' 
 #' @seealso
 #' \code{\link{KmknnParam}},
@@ -54,7 +58,7 @@ setMethod("show", "BiocNeighborParam", function(object) {
 })
 
 #' @export
-setMethod("bndistance", "BiocNeighborParam", function(x) x@distance)
+bndistance <- function(x) x@distance
 
 #' @importFrom S4Vectors setValidity2
 setValidity2("BiocNeighborParam", function(object) {

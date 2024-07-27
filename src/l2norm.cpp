@@ -23,7 +23,7 @@ void l2norm(double* vec, size_t n) {
     }
 }
 
-Rcpp::NumericMatrix l2norm(const Rcpp::NumericMatrix& x, int num_threads) {
+Rcpp::NumericMatrix l2norm(const Rcpp::NumericMatrix& x) {
     Rcpp::NumericMatrix output = Rcpp::clone(x);
     size_t NR = output.rows();
     size_t NC = output.cols();

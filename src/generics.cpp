@@ -168,7 +168,7 @@ SEXP generic_find_knn_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, int 
 } 
 
 //[[Rcpp::export(rng=false)]]
-SEXP generic_query_knn(Rcpp::NumericMatrix query, SEXP prebuilt_ptr, int k, int num_threads, bool report_index, bool report_distance) {
+SEXP generic_query_knn(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, int k, int num_threads, bool report_index, bool report_distance) {
     const BiocNeighborsPrebuilt& bnp = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
     const auto& prebuilt = *(bnp.index);
     int nobs = prebuilt.num_observations();
@@ -177,8 +177,11 @@ SEXP generic_query_knn(Rcpp::NumericMatrix query, SEXP prebuilt_ptr, int k, int 
 
     k = std::min(k, nobs);
 
-    int nquery = query.nrow();
+    int nquery = query.ncol();
     const double* query_ptr = query.begin();
+    if (static_cast<size_t>(query.nrow()) != ndim) {
+        throw std::runtime_error("mismatch in dimensionality between index and 'query'");
+    }
 
     Rcpp::IntegerMatrix out_i;
     int* out_i_ptr = prepare_output<int>(out_i, report_index, k, nquery);
@@ -253,12 +256,23 @@ Rcpp::List format_range_output(const std::vector<std::vector<Value_> >& results)
 }
 
 //[[Rcpp::export(rng=false)]]
-SEXP generic_find_all(SEXP prebuilt_ptr, double threshold, int num_threads, bool report_index, bool report_distance) {
+SEXP generic_find_all(SEXP prebuilt_ptr, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance) {
     const auto& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr)->index);
     int nobs = prebuilt.num_observations();
 
     std::vector<std::vector<double> > out_d(report_distance ? nobs : 0);
     std::vector<std::vector<int> > out_i(report_index ? nobs : 0);
+
+    bool store_count = !report_distance && !report_index;
+    Rcpp::IntegerVector counts(store_count ? nobs : 0);
+    int* counts_ptr = counts.begin();
+
+    int nthresholds = thresholds.size();
+    bool multiple_thresholds = (nthresholds != 1);
+    if (multiple_thresholds && nthresholds != nobs) {
+        throw std::runtime_error("'threshold' should have length equal to the number of observations");
+    }
+    const double* threshold_ptr = thresholds.begin();
 
     bool no_support = false;
 
@@ -288,12 +302,15 @@ SEXP generic_find_all(SEXP prebuilt_ptr, double threshold, int num_threads, bool
             for (int o = start, end = start + length; o < end; ++o) {
 #endif
 
-                searcher->search_all(
+                auto count = searcher->search_all(
                     o,
-                    threshold,
+                    threshold_ptr[multiple_thresholds ? o : 0],
                     (report_index ? &out_i[o] : NULL),
                     (report_distance ? &out_d[o] : NULL)
-               ); 
+                ); 
+                if (store_count) {
+                    counts_ptr[o] = count;
+                }
             }
         }
 
@@ -307,14 +324,18 @@ SEXP generic_find_all(SEXP prebuilt_ptr, double threshold, int num_threads, bool
         throw std::runtime_error("algorithm does not support search by distance");
     }
 
-    return Rcpp::List::create(
-        Rcpp::Named("index") = format_range_output<Rcpp::IntegerVector>(out_i),
-        Rcpp::Named("distance") = format_range_output<Rcpp::NumericVector>(out_d)
-    );
+    if (store_count) {
+        return counts;
+    } else {
+        return Rcpp::List::create(
+            Rcpp::Named("index") = format_range_output<Rcpp::IntegerVector>(out_i),
+            Rcpp::Named("distance") = format_range_output<Rcpp::NumericVector>(out_d)
+        );
+    }
 } 
 
 //[[Rcpp::export(rng=false)]]
-SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, double threshold, int num_threads, bool report_index, bool report_distance) {
+SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance) {
     const auto& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr)->index);
 
     const int* chosen_ptr = chosen.begin();
@@ -322,6 +343,17 @@ SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, doub
 
     std::vector<std::vector<double> > out_d(report_distance ? nchosen : 0);
     std::vector<std::vector<int> > out_i(report_index ? nchosen : 0);
+
+    bool store_count = !report_distance && !report_index;
+    Rcpp::IntegerVector counts(store_count ? nchosen : 0);
+    int* counts_ptr = counts.begin();
+
+    int nthresholds = thresholds.size();
+    bool multiple_thresholds = (nthresholds != 1);
+    if (multiple_thresholds && nthresholds != nchosen) {
+        throw std::runtime_error("'threshold' should have length equal to 'subset'");
+    }
+    const double* threshold_ptr = thresholds.begin();
 
     bool no_support = false;
 
@@ -351,12 +383,15 @@ SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, doub
             for (int o = start, end = start + length; o < end; ++o) {
 #endif
 
-                searcher->search_all(
+                auto count = searcher->search_all(
                     chosen_ptr[o] - 1,
-                    threshold,
+                    threshold_ptr[multiple_thresholds ? o : 0],
                     (report_index ? &out_i[o] : NULL),
                     (report_distance ? &out_d[o] : NULL)
-                );
+                ); 
+                if (store_count) {
+                    counts_ptr[o] = count;
+                }
             }
         }
 
@@ -370,25 +405,43 @@ SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, doub
         throw std::runtime_error("algorithm does not support search by distance");
     }
 
-    return Rcpp::List::create(
-        Rcpp::Named("index") = format_range_output<Rcpp::IntegerVector>(out_i),
-        Rcpp::Named("distance") = format_range_output<Rcpp::NumericVector>(out_d)
-    );
+    if (store_count) {
+        return counts;
+    } else {
+        return Rcpp::List::create(
+            Rcpp::Named("index") = format_range_output<Rcpp::IntegerVector>(out_i),
+            Rcpp::Named("distance") = format_range_output<Rcpp::NumericVector>(out_d)
+        );
+    }
 } 
 
 //[[Rcpp::export(rng=false)]]
-SEXP generic_query_all(Rcpp::NumericMatrix query, SEXP prebuilt_ptr, double threshold, int num_threads, bool report_index, bool report_distance) {
+SEXP generic_query_all(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance) {
     const BiocNeighborsPrebuilt& bnp = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
     const auto& prebuilt = *(bnp.index);
     int nobs = prebuilt.num_observations();
     size_t ndim = prebuilt.num_dimensions();
     bool do_cosine = bnp.cosine;
 
-    int nquery = query.nrow();
+    int nquery = query.ncol();
     const double* query_ptr = query.begin();
+    if (static_cast<size_t>(query.nrow()) != ndim) {
+        throw std::runtime_error("mismatch in dimensionality between index and 'query'");
+    }
 
     std::vector<std::vector<double> > out_d(report_distance ? nquery : 0);
     std::vector<std::vector<int> > out_i(report_index ? nquery : 0);
+
+    bool store_count = !report_distance && !report_index;
+    Rcpp::IntegerVector counts(store_count ? nquery : 0);
+    int* counts_ptr = counts.begin();
+
+    int nthresholds = thresholds.size();
+    bool multiple_thresholds = (nthresholds != 1);
+    if (multiple_thresholds && nthresholds != nquery) {
+        throw std::runtime_error("'threshold' should have length equal to 'subset'");
+    }
+    const double* threshold_ptr = thresholds.begin();
 
     bool no_support = false;
 
@@ -429,12 +482,15 @@ SEXP generic_query_all(Rcpp::NumericMatrix query, SEXP prebuilt_ptr, double thre
                     current_ptr = norm_ptr;
                 }
 
-                searcher->search_all(
+                auto count = searcher->search_all(
                     current_ptr,
-                    threshold,
+                    threshold_ptr[multiple_thresholds ? o : 0],
                     (report_index ? &out_i[o] : NULL),
                     (report_distance ? &out_d[o] : NULL)
-                );
+                ); 
+                if (store_count) {
+                    counts_ptr[o] = count;
+                }
             }
         }
 
@@ -448,8 +504,12 @@ SEXP generic_query_all(Rcpp::NumericMatrix query, SEXP prebuilt_ptr, double thre
         throw std::runtime_error("algorithm does not support search by distance");
     }
 
-    return Rcpp::List::create(
-        Rcpp::Named("index") = format_range_output<Rcpp::IntegerVector>(out_i),
-        Rcpp::Named("distance") = format_range_output<Rcpp::NumericVector>(out_d)
-    );
+    if (store_count) {
+        return counts;
+    } else {
+        return Rcpp::List::create(
+            Rcpp::Named("index") = format_range_output<Rcpp::IntegerVector>(out_i),
+            Rcpp::Named("distance") = format_range_output<Rcpp::NumericVector>(out_d)
+        );
+    }
 } 

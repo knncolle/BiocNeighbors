@@ -4,16 +4,7 @@
 \alias{findMutualNN}
 \title{Find mutual nearest neighbors}
 \usage{
-findMutualNN(
-  data1,
-  data2,
-  k1,
-  k2 = k1,
-  BNINDEX1 = NULL,
-  BNINDEX2 = NULL,
-  BNPARAM = KmknnParam(),
-  BPPARAM = SerialParam()
-)
+findMutualNN(data1, data2, k1, k2 = k1, BNINDEX1 = NULL, BNINDEX2 = NULL, ...)
 }
 \arguments{
 \item{data1}{A numeric matrix containing points in the rows and variables/dimensions in the columns.}
@@ -24,14 +15,13 @@ findMutualNN(
 
 \item{k2}{Integer scalar specifying the number of neighbors to search for in \code{data2}.}
 
-\item{BNINDEX1}{A \linkS4class{BiocNeighborIndex} object containing a pre-built index for \code{data1}.}
+\item{BNINDEX1}{A pre-built index for \code{data1}.
+If \code{NULL}, this is constructed from \code{data1} within the internal \code{\link{queryKNN}} call.}
 
-\item{BNINDEX2}{A \linkS4class{BiocNeighborIndex} object containing a pre-built index for \code{data2}.}
+\item{BNINDEX2}{A pre-built index for \code{data2}.
+If \code{NULL}, this is constructed from \code{data2} within the internal \code{\link{queryKNN}} call.}
 
-\item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the neighbour search algorithm to use.
-This should be consistent with the class of \code{BNINDEX1} and \code{BNINDEX2}, if either are specified.}
-
-\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying how parallelization should be performed.}
+\item{...}{Other arguments to be passed to the underlying \code{\link{queryKNN}} calls, e.g., \code{BNPARAM}, .}
 }
 \value{
 A list containing the integer vectors \code{first} and \code{second}, containing row indices from \code{data1} and \code{data2} respectively.

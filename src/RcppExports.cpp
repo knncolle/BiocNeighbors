@@ -64,61 +64,61 @@ BEGIN_RCPP
 END_RCPP
 }
 // generic_query_knn
-SEXP generic_query_knn(Rcpp::NumericMatrix query, SEXP prebuilt_ptr, int k, int num_threads, bool report_index, bool report_distance);
-RcppExport SEXP _BiocNeighbors_generic_query_knn(SEXP querySEXP, SEXP prebuilt_ptrSEXP, SEXP kSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
+SEXP generic_query_knn(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, int k, int num_threads, bool report_index, bool report_distance);
+RcppExport SEXP _BiocNeighbors_generic_query_knn(SEXP prebuilt_ptrSEXP, SEXP querySEXP, SEXP kSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type query(querySEXP);
     Rcpp::traits::input_parameter< SEXP >::type prebuilt_ptr(prebuilt_ptrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type query(querySEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
     Rcpp::traits::input_parameter< int >::type num_threads(num_threadsSEXP);
     Rcpp::traits::input_parameter< bool >::type report_index(report_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type report_distance(report_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(generic_query_knn(query, prebuilt_ptr, k, num_threads, report_index, report_distance));
+    rcpp_result_gen = Rcpp::wrap(generic_query_knn(prebuilt_ptr, query, k, num_threads, report_index, report_distance));
     return rcpp_result_gen;
 END_RCPP
 }
 // generic_find_all
-SEXP generic_find_all(SEXP prebuilt_ptr, double threshold, int num_threads, bool report_index, bool report_distance);
-RcppExport SEXP _BiocNeighbors_generic_find_all(SEXP prebuilt_ptrSEXP, SEXP thresholdSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
+SEXP generic_find_all(SEXP prebuilt_ptr, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance);
+RcppExport SEXP _BiocNeighbors_generic_find_all(SEXP prebuilt_ptrSEXP, SEXP thresholdsSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type prebuilt_ptr(prebuilt_ptrSEXP);
-    Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type thresholds(thresholdsSEXP);
     Rcpp::traits::input_parameter< int >::type num_threads(num_threadsSEXP);
     Rcpp::traits::input_parameter< bool >::type report_index(report_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type report_distance(report_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(generic_find_all(prebuilt_ptr, threshold, num_threads, report_index, report_distance));
+    rcpp_result_gen = Rcpp::wrap(generic_find_all(prebuilt_ptr, thresholds, num_threads, report_index, report_distance));
     return rcpp_result_gen;
 END_RCPP
 }
 // generic_find_all_subset
-SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, double threshold, int num_threads, bool report_index, bool report_distance);
-RcppExport SEXP _BiocNeighbors_generic_find_all_subset(SEXP prebuilt_ptrSEXP, SEXP chosenSEXP, SEXP thresholdSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
+SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance);
+RcppExport SEXP _BiocNeighbors_generic_find_all_subset(SEXP prebuilt_ptrSEXP, SEXP chosenSEXP, SEXP thresholdsSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type prebuilt_ptr(prebuilt_ptrSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type chosen(chosenSEXP);
-    Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type thresholds(thresholdsSEXP);
     Rcpp::traits::input_parameter< int >::type num_threads(num_threadsSEXP);
     Rcpp::traits::input_parameter< bool >::type report_index(report_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type report_distance(report_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(generic_find_all_subset(prebuilt_ptr, chosen, threshold, num_threads, report_index, report_distance));
+    rcpp_result_gen = Rcpp::wrap(generic_find_all_subset(prebuilt_ptr, chosen, thresholds, num_threads, report_index, report_distance));
     return rcpp_result_gen;
 END_RCPP
 }
 // generic_query_all
-SEXP generic_query_all(Rcpp::NumericMatrix query, SEXP prebuilt_ptr, double threshold, int num_threads, bool report_index, bool report_distance);
-RcppExport SEXP _BiocNeighbors_generic_query_all(SEXP querySEXP, SEXP prebuilt_ptrSEXP, SEXP thresholdSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
+SEXP generic_query_all(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance);
+RcppExport SEXP _BiocNeighbors_generic_query_all(SEXP prebuilt_ptrSEXP, SEXP querySEXP, SEXP thresholdsSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type query(querySEXP);
     Rcpp::traits::input_parameter< SEXP >::type prebuilt_ptr(prebuilt_ptrSEXP);
-    Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type query(querySEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type thresholds(thresholdsSEXP);
     Rcpp::traits::input_parameter< int >::type num_threads(num_threadsSEXP);
     Rcpp::traits::input_parameter< bool >::type report_index(report_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type report_distance(report_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(generic_query_all(query, prebuilt_ptr, threshold, num_threads, report_index, report_distance));
+    rcpp_result_gen = Rcpp::wrap(generic_query_all(prebuilt_ptr, query, thresholds, num_threads, report_index, report_distance));
     return rcpp_result_gen;
 END_RCPP
 }

@@ -32,3 +32,4 @@ LinkingTo:
 VignetteBuilder: knitr
 SystemRequirements: C++17
 RoxygenNote: 7.3.2
+Encoding: UTF-8
