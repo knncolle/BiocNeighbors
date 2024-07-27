@@ -25,10 +25,6 @@
 #' \item{\code{x[[i]] <- value}:}{Set slot \code{i} to the specified \code{value}.}
 #' }
 #'
-#' @section Distance metrics: 
-#' All algorithms support neighbor searching by Euclidean, Manhattan and cosine distances.
-#' Cosine distances are implemented as the Euclidean distance between L2-normalized vectors.
-#' 
 #' @seealso
 #' \code{\link{KmknnParam}},
 #' \code{\link{VptreeParam}},

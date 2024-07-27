@@ -2,7 +2,8 @@
 #'
 #' A class to hold parameters for the exhaustive algorithm for exact nearest neighbor identification.
 #' 
-#' @param distance A string specifying the distance metric to use.
+#' @param distance String specifying the distance metric to use.
+#' Cosine distances are implemented as Euclidean distances on L2-normalized coordinates.
 #' @param X A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
 #' @param transposed Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.
 #' @param ... Further arguments, ignored.
@@ -36,8 +37,8 @@
 #' 
 #' @export
 #' @importFrom methods new
-ExhaustiveParam <- function(distance="Euclidean") {
-    new("ExhaustiveParam", distance=distance)
+ExhaustiveParam <- function(distance=c("Euclidean", "Manhattan", "Cosine")) {
+    new("ExhaustiveParam", distance=match.arg(distance))
 }
 
 #' @export

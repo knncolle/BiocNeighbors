@@ -43,8 +43,8 @@
 #'
 #' @export
 #' @importFrom methods new
-VptreeParam <- function(distance="Euclidean") {
-    new("VptreeParam", distance=distance)
+VptreeParam <- function(distance=c("Euclidean", "Manhattan", "Cosine")) {
+    new("VptreeParam", distance=match.arg(distance))
 }
 
 #' @export

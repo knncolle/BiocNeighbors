@@ -12,7 +12,7 @@ HnswParam(
   nlinks = 16,
   ef.construction = 200,
   ef.search = 10,
-  distance = "Euclidean"
+  distance = c("Euclidean", "Manhattan", "Cosine")
 )
 
 \S4method{buildIndex}{HnswParam}(X, transposed = FALSE, ..., BNPARAM)

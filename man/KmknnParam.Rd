@@ -7,14 +7,15 @@
 \alias{buildIndex,KmknnParam-method}
 \title{The KmknnParam class}
 \usage{
-KmknnParam(..., distance = "Euclidean")
+KmknnParam(..., distance = c("Euclidean", "Manhattan", "Cosine"))
 
 \S4method{buildIndex}{KmknnParam}(X, transposed = FALSE, ..., BNPARAM)
 }
 \arguments{
 \item{...}{Further arguments, ignored.}
 
-\item{distance}{A string specifying the distance metric to use.}
+\item{distance}{String specifying the distance metric to use.
+Cosine distances are implemented as Euclidean distances on L2-normalized coordinates.}
 
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
 

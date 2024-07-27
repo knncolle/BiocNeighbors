@@ -55,8 +55,8 @@
 #' 
 #' @export
 #' @importFrom methods new
-AnnoyParam <- function(ntrees=50, search.mult=ntrees, distance="Euclidean") {
-    new("AnnoyParam", ntrees=as.integer(ntrees), distance=distance, search.mult=search.mult)
+AnnoyParam <- function(ntrees=50, search.mult=ntrees, distance=c("Euclidean", "Manhattan", "Cosine")) {
+    new("AnnoyParam", ntrees=as.integer(ntrees), distance=match.arg(distance), search.mult=search.mult)
 }
 
 #' @importFrom S4Vectors setValidity2

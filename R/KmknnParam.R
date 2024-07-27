@@ -2,7 +2,6 @@
 #'
 #' A class to hold parameters for the k-means k-nearest-neighbors (KMKNN) algorithm for exact nearest neighbor identification.
 #'
-#' @param distance A string specifying the distance metric to use.
 #' @param search.mult Numeric scalar, multiplier for the number of points to search.
 #' @inheritParams ExhaustiveParam
 #' @param BNPARAM A KmknnParam instance.
@@ -44,8 +43,8 @@
 #'
 #' @export
 #' @importFrom methods new
-KmknnParam <- function(..., distance="Euclidean") {
-    new("KmknnParam", distance=distance)
+KmknnParam <- function(..., distance=c("Euclidean", "Manhattan", "Cosine")) {
+    new("KmknnParam", distance=match.arg(distance))
 }
 
 #' @export

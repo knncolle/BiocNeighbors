@@ -8,7 +8,11 @@
 \alias{buildIndex,AnnoyParam-method}
 \title{The AnnoyParam class}
 \usage{
-AnnoyParam(ntrees = 50, search.mult = ntrees, distance = "Euclidean")
+AnnoyParam(
+  ntrees = 50,
+  search.mult = ntrees,
+  distance = c("Euclidean", "Manhattan", "Cosine")
+)
 
 \S4method{buildIndex}{AnnoyParam}(X, transposed = FALSE, ..., BNPARAM)
 }
@@ -17,7 +21,8 @@ AnnoyParam(ntrees = 50, search.mult = ntrees, distance = "Euclidean")
 
 \item{search.mult}{Numeric scalar, multiplier for the number of points to search.}
 
-\item{distance}{A string specifying the distance metric to use.}
+\item{distance}{String specifying the distance metric to use.
+Cosine distances are implemented as Euclidean distances on L2-normalized coordinates.}
 
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
 
