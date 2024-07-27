@@ -21,10 +21,6 @@
 #' Aaron Lun
 #' 
 #' @seealso
-#' \code{\link{buildAnnoy}}, for the index construction.
-#'
-#' \code{\link{findAnnoy}} and related functions, for the actual search. 
-#'
 #' \linkS4class{BiocNeighborParam}, for the parent class and its available methods.
 #' 
 #' @examples
@@ -37,18 +33,14 @@
 #' @aliases
 #' AnnoyParam-class
 #' show,AnnoyParam-method
-#' AnnoyParam_ntrees
-#' AnnoyParam_directory
-#' AnnoyParam_search_mult
-#' [[,AnnoyParam-method
-#' [[<-,AnnoyParam-method
+#' buildIndex,AnnoyParam-method
 #'
 #' @docType class
 #' 
 #' @export
 #' @importFrom methods new
-AnnoyParam <- function(ntrees=50, directory=tempdir(), search.mult=ntrees, distance="Euclidean") {
-    new("AnnoyParam", ntrees=as.integer(ntrees), dir=directory, distance=distance, search.mult=search.mult)
+AnnoyParam <- function(ntrees=50, search.mult=ntrees, distance="Euclidean") {
+    new("AnnoyParam", ntrees=as.integer(ntrees), distance=distance, search.mult=search.mult)
 }
 
 #' @importFrom S4Vectors setValidity2
@@ -58,10 +50,6 @@ setValidity2("AnnoyParam", function(object) {
     ntrees <- object[['ntrees']]
     if (length(ntrees) != 1L || ntrees <= 0L) {
         msg <- c(msg, "'ntrees' should be a positive integer scalar")
-    }
-
-    if (length(object[['dir']])!=1L) {
-        msg <- c(msg, "'dir' should be a string")
     }
 
     search.mult <- object[['search.mult']]
@@ -74,45 +62,13 @@ setValidity2("AnnoyParam", function(object) {
 })
 
 #' @export
-AnnoyParam_ntrees <- function(x) {
-    .Deprecated(new="x[['ntrees']]")
-    x@ntrees
-}
-
-#' @export
-AnnoyParam_directory <- function(x) {
-    .Deprecated(new="x[['directory']]")
-    x@dir
-}
-
-#' @export
-AnnoyParam_search_mult <- function(x) {
-    .Deprecated(new="x[['search.mult']]")
-    x@search.mult
-}
-
-#' @export
 setMethod("show", "AnnoyParam", function(object) {
     callNextMethod()
     cat(sprintf("ntrees: %i\n", object[['ntrees']]))
-    cat(sprintf("directory: %s\n", object[['dir']]))
-    cat(sprintf("search multiplier: %i\n", object[['search.mult']]))
-})
-
-setMethod("spill_args", "AnnoyParam", function(x) {
-    list(ntrees=x[['ntrees']], directory=x[['dir']], 
-        search.mult=x[['search.mult']], distance=bndistance(x))
+    cat(sprintf("search.mult: %i\n", object[['search.mult']]))
 })
 
 #' @export
-setMethod("[[", "AnnoyParam", function(x, i, j, ...) {
-    if (i=="directory") i <- "dir"
-    callNextMethod()
+setMethod("buildIndex", "AnnoyParam", function(X, ..., BNPARAM) {
+    build_annoy(X, num_trees=BNPARAM@ntrees, distance=BNPARAM@distance)
 })
-
-#' @export
-setReplaceMethod("[[", "AnnoyParam", function(x, i, j, ..., value) {
-    if (i=="directory") i <- "dir"
-    callNextMethod()
-})
-

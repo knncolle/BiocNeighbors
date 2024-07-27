@@ -1,4 +1,5 @@
 #include "generics.h"
+#include "l2norm.h"
 
 // define R's REprintf as the 'local' error print method. 
 #define __ERROR_PRINTER_OVERRIDE__  REprintf
@@ -28,9 +29,17 @@ SEXP build_hnsw(Rcpp::NumericMatrix data, int nlinks, int ef_construct, int ef_s
         };
         knncolle_hnsw::HnswBuilder<WrappedMatrix, double> builder(opt);
         return generic_build(builder, data);
+
     } else if (distance == "Euclidean") {
         knncolle_hnsw::HnswBuilder<WrappedMatrix, double> builder(opt);
         return generic_build(builder, data);
+
+    } else if (distance == "Euclidean") {
+        knncolle_hnsw::HnswBuilder<WrappedMatrix, double> builder(opt);
+        auto out = generic_build(builder, l2norm(data));
+        out->cosine = true;
+        return out;
+
     } else {
         throw std::runtime_error("unknown distance type '" + distance + "'");
         return R_NilValue;

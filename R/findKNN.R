@@ -96,66 +96,31 @@
 #' head(out4$index)
 #' head(out4$distance)
 #'
-#' @name findKNN-functions
+#' @name findKNN
 NULL
 
 #' @export
-#' @rdname findKNN-functions
-#' @importFrom BiocParallel SerialParam 
-findAnnoy <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
-    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=NA, warn.ties=NA, ...)
-{
-    .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
-        last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
-        exact=FALSE, warn.ties=FALSE, raw.index=FALSE,
-        buildFUN=buildAnnoy, searchFUN=find_annoy, searchArgsFUN=.find_annoy_args, ...)
-}
+#' @rdname findKNN
+setMethod("findKNN", c("externalptr", "missing"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BNPARAM) {
+    if (is.null(subset)) {
+        output <- generic_find_knn(X, k=k, num_threads=num.threads, report_index=get.index, report_distance=get.distance)
+    } else {
+        output <- generic_find_knn_subset(X, k=k, chosen=subset, num_threads=num.threads, report_index=get.index, report_distance=get.distance)
+    }
+    if (!report.index) {
+        output$index <- NULL
+    }
+    if (!report.distance) {
+        output$distance <- NULL
+    }
+})
 
 #' @export
-#' @rdname findKNN-functions
-#' @importFrom BiocParallel SerialParam
-findHnsw <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k, 
-    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=NA, warn.ties=NA, ...)
-{
-    .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
-        last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
-        exact=FALSE, warn.ties=FALSE, raw.index=FALSE,
-        buildFUN=buildHnsw, searchFUN=find_hnsw, searchArgsFUN=.find_hnsw_args, ...)
-}
-
-#' @export
-#' @rdname findKNN-functions
-#' @importFrom BiocParallel SerialParam 
-findKmknn <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k,
-    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, warn.ties=TRUE, ...)
-{
-    .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
-        last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
-        exact=TRUE, warn.ties=warn.ties, raw.index=raw.index, 
-        buildFUN=buildKmknn, searchFUN=find_kmknn, searchArgsFUN=.find_kmknn_args, ...) 
-}
-
-#' @export
-#' @rdname findKNN-functions
-#' @importFrom BiocParallel SerialParam 
-findVptree <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k, 
-    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, warn.ties=TRUE, ...)
-{
-    .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
-        last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
-        exact=TRUE, warn.ties=warn.ties, raw.index=raw.index, 
-        buildFUN=buildVptree, searchFUN=find_vptree, searchArgsFUN=.find_vptree_args, ...)
-}
-
-#' @export
-#' @rdname findKNN-functions
-#' @importFrom BiocParallel SerialParam 
-findExhaustive <- function(X, k, get.index=TRUE, get.distance=TRUE, last=k, 
-    BPPARAM=SerialParam(), precomputed=NULL, subset=NULL, raw.index=FALSE, warn.ties=TRUE, ...)
-{
-    .template_find_knn(X, k, get.index=get.index, get.distance=get.distance, 
-        last=last, BPPARAM=BPPARAM, precomputed=precomputed, subset=subset, 
-        exact=TRUE, warn.ties=warn.ties, raw.index=raw.index, 
-        buildFUN=buildExhaustive, searchFUN=find_exhaustive, searchArgsFUN=.find_exhaustive_args, ...)
-}
-
+#' @rdname findKNN
+setMethod("findKNN", c("ANY", "BiocNeighborIndex"), function(X, k, num.threads=1, BPPARAM=NULL, ..., BNPARAM) {
+    ptr <- buildIndex(X, BNPARAM)
+    if (!is.null(BPPARAM)) {
+        num.threads <- BiocParallel::bpnworkers(BPPARAM)
+    }
+    findKNN(ptr, k=k, ...)
+})

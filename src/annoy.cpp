@@ -1,4 +1,5 @@
 #include "generics.h"
+#include "l2norm.h"
 
 // Turn off manual vectorization always, to avoid small inconsistencies in
 // distance calculations across otherwise-compliant machines. 
@@ -19,12 +20,22 @@ SEXP build_annoy(Rcpp::NumericMatrix data, int num_trees, double search_mult, st
     opt.num_trees = num_trees;
     opt.search_mult = search_mult;
 
+    BiocNeighborsPrebuiltPointer output(new BiocNeighborsPrebuilt);
+
     if (distance == "Manhattan") {
         knncolle_annoy::AnnoyBuilder<Annoy::Manhattan, WrappedMatrix, double> builder(opt);
         return generic_build(builder, data);
+
     } else if (distance == "Euclidean") {
         knncolle_annoy::AnnoyBuilder<Annoy::Euclidean, WrappedMatrix, double> builder(opt);
         return generic_build(builder, data);
+
+    } else if (distance == "Cosine") {
+        knncolle_annoy::AnnoyBuilder<Annoy::Euclidean, WrappedMatrix, double> builder(opt);
+        auto out = generic_build(builder, l2norm(data));
+        out->cosine = true;
+        return out;
+
     } else {
         throw std::runtime_error("unknown distance type '" + distance + "'");
         return R_NilValue;

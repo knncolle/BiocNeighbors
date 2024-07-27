@@ -9,9 +9,11 @@
 #include "omp.h"
 #endif
 
-SEXP generic_build(const BiocNeighborsBuilder& builder, Rcpp::NumericMatrix data) {
-    return BiocNeighborsPrebuiltPointer(builder.build_raw(WrappedMatrix(data.rows(), data.cols(), data.begin())), true);
-} 
+BiocNeighborsPrebuiltPointer generic_build(const BiocNeighborsBuilder& builder, Rcpp::NumericMatrix data) {
+    auto out = BiocNeighborsPrebuiltPointer(new BiocNeighborsPrebuilt, true);
+    out->index.reset(builder.build_raw(WrappedMatrix(data.rows(), data.cols(), data.begin())));
+    return out;
+}
 
 /*********************************
  ********* KNN functions *********
@@ -52,7 +54,7 @@ std::vector<Value_>* prepare_buffer(std::vector<Value_>& buffer, bool report, in
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_find_knn(SEXP prebuilt_ptr, int k, int num_threads, bool report_index, bool report_distance) {
-    const BiocNeighborsPrebuilt& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
+    const auto& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr)->index);
     int nobs = prebuilt.num_observations();
 
     k = sanitize_k(k, nobs);
@@ -108,7 +110,7 @@ SEXP generic_find_knn(SEXP prebuilt_ptr, int k, int num_threads, bool report_ind
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_find_knn_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, int k, int num_threads, bool report_index, bool report_distance) {
-    const BiocNeighborsPrebuilt& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
+    const auto& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr)->index);
     int nobs = prebuilt.num_observations();
 
     k = sanitize_k(k, nobs);
@@ -143,7 +145,7 @@ SEXP generic_find_knn_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, int 
         for (int o = start, end = start + length; o < end; ++o, out_offset += k) {
 #endif
 
-            searcher->search(chosen_ptr[o], k, tmp_i_ptr, tmp_d_ptr);
+            searcher->search(chosen_ptr[o] - 1, k, tmp_i_ptr, tmp_d_ptr);
             if (report_index) {
                 std::copy_n(tmp_i.begin(), k, out_i_ptr + out_offset); 
             }
@@ -167,9 +169,11 @@ SEXP generic_find_knn_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, int 
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_query_knn(Rcpp::NumericMatrix query, SEXP prebuilt_ptr, int k, int num_threads, bool report_index, bool report_distance) {
-    const BiocNeighborsPrebuilt& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
+    const BiocNeighborsPrebuilt& bnp = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
+    const auto& prebuilt = *(bnp.index);
     int nobs = prebuilt.num_observations();
     size_t ndim = prebuilt.num_dimensions();
+    bool do_cosine = bnp.cosine;
 
     k = std::min(k, nobs);
 
@@ -193,6 +197,7 @@ SEXP generic_query_knn(Rcpp::NumericMatrix query, SEXP prebuilt_ptr, int k, int 
         auto tmp_i_ptr = prepare_buffer(tmp_i, report_index, k);
         std::vector<double> tmp_d;
         auto tmp_d_ptr = prepare_buffer(tmp_d, report_distance, k);
+        std::vector<double> cosine_normalized(do_cosine ? ndim : 0);
 
 #ifdef _OPENMP
         #pragma omp for
@@ -205,7 +210,14 @@ SEXP generic_query_knn(Rcpp::NumericMatrix query, SEXP prebuilt_ptr, int k, int 
         for (int o = start, end = start + length; o < end; ++o, query_offset += ndim, out_offset += k) {
 #endif
 
-            searcher->search(query_ptr + query_offset, k, tmp_i_ptr, tmp_d_ptr);
+            auto current_ptr = query_ptr + query_offset;
+            if (do_cosine) {
+                auto norm_ptr = cosine_normalized.data();
+                std::copy_n(current_ptr, ndim, norm_ptr);
+                current_ptr = norm_ptr;
+            }
+
+            searcher->search(current_ptr, k, tmp_i_ptr, tmp_d_ptr);
             if (report_index) {
                 std::copy_n(tmp_i.begin(), k, out_i_ptr + out_offset); 
             }
@@ -242,8 +254,9 @@ Rcpp::List format_range_output(const std::vector<std::vector<Value_> >& results)
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_find_all(SEXP prebuilt_ptr, double threshold, int num_threads, bool report_index, bool report_distance) {
-    const BiocNeighborsPrebuilt& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
+    const auto& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr)->index);
     int nobs = prebuilt.num_observations();
+
     std::vector<std::vector<double> > out_d(report_distance ? nobs : 0);
     std::vector<std::vector<int> > out_i(report_index ? nobs : 0);
 
@@ -302,7 +315,7 @@ SEXP generic_find_all(SEXP prebuilt_ptr, double threshold, int num_threads, bool
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, double threshold, int num_threads, bool report_index, bool report_distance) {
-    const BiocNeighborsPrebuilt& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
+    const auto& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr)->index);
 
     const int* chosen_ptr = chosen.begin();
     int nchosen = chosen.size();
@@ -339,7 +352,7 @@ SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, doub
 #endif
 
                 searcher->search_all(
-                    chosen_ptr[o],
+                    chosen_ptr[o] - 1,
                     threshold,
                     (report_index ? &out_i[o] : NULL),
                     (report_distance ? &out_d[o] : NULL)
@@ -365,8 +378,11 @@ SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, doub
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_query_all(Rcpp::NumericMatrix query, SEXP prebuilt_ptr, double threshold, int num_threads, bool report_index, bool report_distance) {
-    const BiocNeighborsPrebuilt& prebuilt = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
+    const BiocNeighborsPrebuilt& bnp = *(BiocNeighborsPrebuiltPointer(prebuilt_ptr));
+    const auto& prebuilt = *(bnp.index);
+    int nobs = prebuilt.num_observations();
     size_t ndim = prebuilt.num_dimensions();
+    bool do_cosine = bnp.cosine;
 
     int nquery = query.nrow();
     const double* query_ptr = query.begin();
@@ -395,6 +411,8 @@ SEXP generic_query_all(Rcpp::NumericMatrix query, SEXP prebuilt_ptr, double thre
             }
 
         } else {
+            std::vector<double> cosine_normalized(do_cosine ? ndim : 0);
+
 #ifdef _OPENMP
             #pragma omp for
             for (int o = 0; o < nquery; ++o) {
@@ -404,8 +422,15 @@ SEXP generic_query_all(Rcpp::NumericMatrix query, SEXP prebuilt_ptr, double thre
             for (int o = start, end = start + length; o < end; ++o, query_offset += ndim) {
 #endif
 
+                auto current_ptr = query_ptr + query_offset;
+                if (do_cosine) {
+                    auto norm_ptr = cosine_normalized.data();
+                    std::copy_n(current_ptr, ndim, norm_ptr);
+                    current_ptr = norm_ptr;
+                }
+
                 searcher->search_all(
-                    query_ptr + query_offset,
+                    current_ptr,
                     threshold,
                     (report_index ? &out_i[o] : NULL),
                     (report_distance ? &out_d[o] : NULL)
