@@ -34,7 +34,7 @@ SEXP build_hnsw(Rcpp::NumericMatrix data, int nlinks, int ef_construct, int ef_s
         knncolle_hnsw::HnswBuilder<WrappedMatrix, double> builder(opt);
         return generic_build(builder, data);
 
-    } else if (distance == "Euclidean") {
+    } else if (distance == "Cosine") {
         knncolle_hnsw::HnswBuilder<WrappedMatrix, double> builder(opt);
         auto out = generic_build(builder, l2norm(data));
         out->cosine = true;

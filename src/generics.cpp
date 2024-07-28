@@ -2,6 +2,8 @@
 #include "Rcpp.h"
 #include "knncolle/knncolle.hpp"
 
+#include "l2norm.h"
+
 #include <algorithm>
 #include <vector>
 
@@ -227,6 +229,7 @@ SEXP generic_query_knn(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, int k, int 
             if (do_cosine) {
                 auto norm_ptr = cosine_normalized.data();
                 std::copy_n(current_ptr, ndim, norm_ptr);
+                l2norm(norm_ptr, ndim);
                 current_ptr = norm_ptr;
             }
 
@@ -499,6 +502,7 @@ SEXP generic_query_all(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::Numer
                 if (do_cosine) {
                     auto norm_ptr = cosine_normalized.data();
                     std::copy_n(current_ptr, ndim, norm_ptr);
+                    l2norm(norm_ptr, ndim);
                     current_ptr = norm_ptr;
                 }
 

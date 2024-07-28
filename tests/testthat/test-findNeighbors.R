@@ -14,6 +14,12 @@ test_that("findNeighbors works with basic options", {
 #    out <- findNeighbors(Y, threshold=d, BNPARAM=KmknnParam(distance="Manhattan"))
 #    ref <- refFindNeighbors(Y, threshold=d, type="manhattan")
 #    expect_equal(out, ref)
+
+    d <- median(findKNN(Y, k=8, get.index=FALSE, BNPARAM=KmknnParam(distance="Cosine"))$distance[,8])
+    out <- findNeighbors(Y, threshold=d, BNPARAM=KmknnParam(distance="Cosine"))
+    Y1 <- Y/sqrt(rowSums(Y^2))
+    ref <- findNeighbors(Y1, threshold=d) 
+    expect_equal(out, ref)
 })
 
 test_that("findNeighbors works in parallel", {
@@ -70,4 +76,7 @@ test_that("findNeighbors works with variable outputs", {
     dout <- findNeighbors(Y, threshold=d, get.index=FALSE)
     expect_null(dout$index)
     expect_identical(dout$distance, out$distance)
+
+    count <- findNeighbors(Y, threshold=d, get.index=FALSE, get.distance=FALSE)
+    expect_identical(count, lengths(out$index))
 })

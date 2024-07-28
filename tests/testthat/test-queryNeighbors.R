@@ -85,4 +85,7 @@ test_that("queryNeighbors works with variable outputs", {
     dout <- queryNeighbors(Y, Z, threshold=d, get.index=FALSE)
     expect_null(dout$index)
     expect_identical(dout$distance, out$distance)
+
+    count <- queryNeighbors(Y, Z, threshold=d, get.index=FALSE, get.distance=FALSE)
+    expect_identical(count, lengths(out$index))
 })

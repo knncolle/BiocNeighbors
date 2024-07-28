@@ -12,7 +12,7 @@ SEXP build_kmknn(Rcpp::NumericMatrix data, std::string distance) {
         knncolle::KmknnBuilder<knncolle::EuclideanDistance, WrappedMatrix, double> builder;
         return generic_build(builder, data);
 
-    } else if (distance == "Euclidean") {
+    } else if (distance == "Cosine") {
         knncolle::KmknnBuilder<knncolle::EuclideanDistance, WrappedMatrix, double> builder;
         auto out = generic_build(builder, l2norm(data));
         out->cosine = true;

@@ -12,6 +12,11 @@ test_that("findKNN works with basic options", {
     out <- findKNN(Y, k=8, BNPARAM=KmknnParam(distance="Manhattan"))
     ref <- refFindKNN(Y, k=8, type="manhattan")
     expect_equal(out, ref)
+
+    out <- findKNN(Y, k=8, BNPARAM=KmknnParam(distance="Cosine"))
+    Y1 <- Y/sqrt(rowSums(Y^2))
+    ref <- findKNN(Y1, k=8)
+    expect_equal(out, ref)
 })
 
 test_that("findKNN works in parallel", {

@@ -21,7 +21,7 @@ Rcpp::List find_mutual_nns (Rcpp::IntegerMatrix left, Rcpp::IntegerMatrix right)
     }
 
     std::vector<int> mutualL, mutualR;
-    size_t left_obs = left.nrow();
+    size_t left_obs = left.ncol();
     std::vector<size_t> unsearched_offset(right_obs);
 
     // Running through the elements on the left, and doing a binary search for
@@ -37,9 +37,9 @@ Rcpp::List find_mutual_nns (Rcpp::IntegerMatrix left, Rcpp::IntegerMatrix right)
                 continue;
             }
 
-            auto startIt = sortedR.begin() + right_k * static_cast<size_t>(curval) + already_searched; // cast to size_t to avoid overflow.
+            auto startIt = sortedR.begin() + right_k * static_cast<size_t>(curval); // cast to size_t to avoid overflow.
             auto endIt = startIt + right_k;
-            auto closest = std::lower_bound(startIt, endIt, l);
+            auto closest = std::lower_bound(startIt + already_searched, endIt, l); // '+ already_searched' allows us to skip the neighbors processed by earlier 'l'.
 
             if (closest != endIt && *closest == l) { 
                 mutualL.push_back(l + 1); // restoring to 1-indexing for output.

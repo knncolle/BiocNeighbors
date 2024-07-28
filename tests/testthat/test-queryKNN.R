@@ -13,6 +13,12 @@ test_that("queryKNN works with basic options", {
     out <- queryKNN(Y, Z, k=8, BNPARAM=KmknnParam(distance="Manhattan"))
     ref <- refQueryKNN(Y, Z, k=8, type="manhattan")
     expect_equal(out, ref)
+
+    out <- queryKNN(Y, Z, k=8, BNPARAM=KmknnParam(distance="Cosine"))
+    Y1 <- Y/sqrt(rowSums(Y^2))
+    Z1 <- Z/sqrt(rowSums(Z^2))
+    ref <- queryKNN(Y1, Z1, k=8)
+    expect_equal(out, ref)
 })
 
 test_that("queryKNN works in parallel", {
