@@ -182,7 +182,10 @@ SEXP generic_query_knn(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, int k, int 
     size_t ndim = prebuilt.num_dimensions();
     bool do_cosine = bnp.cosine;
 
-    k = std::min(k, nobs);
+    if (k > nobs) {
+        Rcpp::warning("'k' capped at the number of observations");
+        k = nobs;
+    }
 
     int nquery = query.ncol();
     const double* query_ptr = query.begin();

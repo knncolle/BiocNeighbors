@@ -6,7 +6,7 @@
 #' @param query A numeric matrix of query points, containing the same number of columns as \code{X}.
 #' @param transposed A logical scalar indicating whether \code{X} and \code{query} are transposed, 
 #' in which case both matrices are assumed to contain dimensions in the rows and data points in the columns.
-#' @param subset A vector indicating the rows of \code{query} for which the nearest neighbors should be identified.
+#' @param subset An integer, logical or character vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the nearest neighbors should be identified.
 #' 
 #' @details
 #' If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} with \code{\link{buildIndex}}.

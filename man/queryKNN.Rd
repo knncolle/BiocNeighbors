@@ -40,7 +40,7 @@ The former is the same as \code{TRUE}, while the latter returns the distance mat
 
 \item{num.threads}{Integer scalar specifying the number of threads to use for the search.}
 
-\item{subset}{A vector indicating the rows of \code{query} for which the nearest neighbors should be identified.}
+\item{subset}{An integer, logical or character vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the nearest neighbors should be identified.}
 
 \item{transposed}{A logical scalar indicating whether \code{X} and \code{query} are transposed, 
 in which case both matrices are assumed to contain dimensions in the rows and data points in the columns.}

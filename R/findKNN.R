@@ -16,7 +16,7 @@
 #' Alternatively, this may be a string containing \code{"normal"} or \code{"transposed"}.
 #' The former is the same as \code{TRUE}, while the latter returns the distance matrix in transposed format.
 #' @param num.threads Integer scalar specifying the number of threads to use for the search.
-#' @param subset A vector indicating the rows of \code{X} for which the nearest neighbors should be identified.
+#' @param subset An integer, logical or character vector specifying the rows of \code{X} for which the nearest neighbors should be identified.
 #' This yields the same result as (but is more efficient than) subsetting the output matrices after running \code{findKmknn} with \code{subset=NULL}.
 #' @param ... Further arguments to pass to \code{\link{buildIndex}} when \code{X} is not an external pointer.
 #' @param BNPARAM A \linkS4class{BiocNeighborsParam} object specifying how the index should be constructed.

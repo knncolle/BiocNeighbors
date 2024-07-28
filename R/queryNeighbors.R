@@ -8,7 +8,7 @@
 #' Alternatively, a vector containing a different distance threshold for each query point.
 #' @param transposed A logical scalar indicating whether \code{X} and \code{query} are transposed, 
 #' in which case both matrices are assumed to contain dimensions in the rows and data points in the columns.
-#' @param subset A vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the neighbors should be identified.
+#' @param subset An integer, logical or character vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the neighbors should be identified.
 #' 
 #' @details
 #' This function identifies all points in \code{X} that within \code{threshold} of each point in \code{query}.
@@ -60,7 +60,7 @@ NULL
 #' @export
 setMethod("queryNeighbors", c("ANY", "ANY"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
     if (!is(X, "externalptr")) {
-        X <- buildIndex(X, ..., BNPARAM=BNPARAM)
+        X <- buildIndex(X, transposed=transposed, ..., BNPARAM=BNPARAM)
     }
 
     if (!is.null(BPPARAM)) {
