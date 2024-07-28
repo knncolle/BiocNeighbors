@@ -89,7 +89,7 @@ setMethod("show", "HnswParam", function(object) {
 
 #' @export
 #' @rdname HnswParam
-setMethod("buildIndex", "HnswParam", function(X, transposed = FALSE, ..., BNPARAM) {
+setMethod("buildIndex", c("ANY", "HnswParam"), function(X, transposed = FALSE, ..., BNPARAM) {
     X <- .coerce_matrix_build(X, transposed)
     build_hnsw(X, nlinks=BNPARAM@nlinks, ef_construct=BNPARAM@ef.construction, ef_search=BNPARAM@ef.search, distance=BNPARAM@distance)
 })

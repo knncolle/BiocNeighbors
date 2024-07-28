@@ -85,7 +85,7 @@ setMethod("show", "AnnoyParam", function(object) {
 
 #' @export
 #' @rdname AnnoyParam
-setMethod("buildIndex", "AnnoyParam", function(X, transposed = FALSE, ..., BNPARAM) {
+setMethod("buildIndex", c("ANY", "AnnoyParam"), function(X, transposed = FALSE, ..., BNPARAM) {
     X <- .coerce_matrix_build(X, transposed)
-    build_annoy(X, num_trees=BNPARAM@ntrees, distance=BNPARAM@distance)
+    build_annoy(X, num_trees=BNPARAM@ntrees, search_mult=BNPARAM@search.mult, distance=BNPARAM@distance)
 })

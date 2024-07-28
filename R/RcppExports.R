@@ -9,6 +9,10 @@ build_exhaustive <- function(data, distance) {
     .Call('_BiocNeighbors_build_exhaustive', PACKAGE = 'BiocNeighbors', data, distance)
 }
 
+find_mutual_nns <- function(left, right) {
+    .Call('_BiocNeighbors_find_mutual_nns', PACKAGE = 'BiocNeighbors', left, right)
+}
+
 generic_find_knn <- function(prebuilt_ptr, k, num_threads, report_index, report_distance) {
     .Call('_BiocNeighbors_generic_find_knn', PACKAGE = 'BiocNeighbors', prebuilt_ptr, k, num_threads, report_index, report_distance)
 }

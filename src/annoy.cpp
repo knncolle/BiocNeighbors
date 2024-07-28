@@ -20,8 +20,6 @@ SEXP build_annoy(Rcpp::NumericMatrix data, int num_trees, double search_mult, st
     opt.num_trees = num_trees;
     opt.search_mult = search_mult;
 
-    BiocNeighborsPrebuiltPointer output(new BiocNeighborsPrebuilt);
-
     if (distance == "Manhattan") {
         knncolle_annoy::AnnoyBuilder<Annoy::Manhattan, WrappedMatrix, double> builder(opt);
         return generic_build(builder, data);

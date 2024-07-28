@@ -47,7 +47,7 @@ findMutualNN <- function(data1, data2, k1, k2=k1, BNINDEX1=NULL, BNINDEX2=NULL, 
     data1 <- as.matrix(data1)
     data2 <- as.matrix(data2)
 
-    common.args <- list(..., get.distance=FALSE)
+    common.args <- list(..., get.distance=FALSE, get.index="transposed")
 
     args <- c(common.args, list(query=data1, k=k2))
     if (!is.null(BNINDEX2)) {

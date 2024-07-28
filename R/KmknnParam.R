@@ -35,7 +35,6 @@
 #'
 #' @examples
 #' (out <- KmknnParam(iter.max=100))
-#' out[['kmeans.args']]
 #'
 #' @docType class
 #' @aliases
@@ -49,12 +48,7 @@ KmknnParam <- function(..., distance=c("Euclidean", "Manhattan", "Cosine")) {
 
 #' @export
 #' @rdname KmknnParam
-setMethod("buildIndex", "KmknnParam", function(X, transposed = FALSE, ..., BNPARAM) {
+setMethod("buildIndex", c("ANY", "KmknnParam"), function(X, transposed = FALSE, ..., BNPARAM) {
     X <- .coerce_matrix_build(X, transposed)
     build_kmknn(X, distance=BNPARAM@distance)
-})
-
-#' @export
-setMethod("buildIndex", "missing", function(X, transposed = FALSE, ..., BNPARAM) {
-    buildIndex(X, transposed=transposed, ..., BNPARAM=KmknnParam())
 })

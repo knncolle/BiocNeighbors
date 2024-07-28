@@ -3,19 +3,13 @@
 
 #include "Rcpp.h"
 #include "knncolle/knncolle.hpp"
+#include "BiocNeighbors.h"
 
 typedef knncolle::SimpleMatrix<int, int, double> WrappedMatrix;
 
 typedef knncolle::Builder<WrappedMatrix, double> BiocNeighborsBuilder;
 
-struct BiocNeighborsPrebuilt {
-    std::unique_ptr<knncolle::Prebuilt<int, int, double> > index;
-    bool cosine = false;
-};
-
-typedef Rcpp::XPtr<BiocNeighborsPrebuilt> BiocNeighborsPrebuiltPointer;
-
-BiocNeighborsPrebuiltPointer generic_build(const BiocNeighborsBuilder&, Rcpp::NumericMatrix);
+BiocNeighbors::PrebuiltPointer generic_build(const BiocNeighborsBuilder&, Rcpp::NumericMatrix);
 
 #ifndef _OPENMP
 #include <thread>

@@ -51,10 +51,16 @@
 #' out <- queryNeighbors(Y, query=Z, threshold=3)
 #' summary(lengths(out$index))
 #' 
+#' @aliases
+#' queryNeighbors,ANY,ANY-method
+#'
+#' @name queryNeighbors
+NULL
+
 #' @export
-queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL) {
+setMethod("queryNeighbors", c("ANY", "ANY"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
     if (!is(X, "externalptr")) {
-        X <- buildIndex(X, ...)
+        X <- buildIndex(X, ..., BNPARAM=BNPARAM)
     }
 
     if (!is.null(BPPARAM)) {
@@ -79,5 +85,4 @@ queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRU
         }
         return(output)
     }
-}
-
+})

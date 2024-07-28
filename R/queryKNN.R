@@ -34,6 +34,9 @@
 #' @seealso
 #' \code{\link{buildIndex}}, to build an index ahead of time.
 #' 
+#' @aliases
+#' queryKNN,ANY,ANY-method
+#'
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)
 #' Z <- matrix(rnorm(20000), ncol=20)
@@ -41,10 +44,13 @@
 #' head(out$index)
 #' head(out$distance)
 #' 
+#' @name queryKNN
+NULL
+
 #' @export
-queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL) {
+setMethod("queryKNN", c("ANY", "ANY"), function(X, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
     if (!is(X, "externalptr")) {
-        X <- buildIndex(X, transposed=transposed, ...)
+        X <- buildIndex(X, transposed=transposed, ..., BNPARAM=BNPARAM)
     }
 
     if (!is.null(BPPARAM)) {
@@ -56,10 +62,10 @@ queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, num.threads
         query <- query[,subset,drop=FALSE]
     }
 
-    output <- generic_query_knn(X, query=query, k=k, num_threads=num.threads, report_index=get.index, report_distance=get.distance)
+    output <- generic_query_knn(X, query=query, k=k, num_threads=num.threads, report_index=!isFALSE(get.index), report_distance=!isFALSE(get.distance))
 
     output <- .format_output(output, "index", get.index)
     output <- .format_output(output, "distance", get.distance)
 
     output
-}
+})

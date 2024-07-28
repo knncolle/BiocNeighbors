@@ -3,7 +3,7 @@
 #' Find the nearest neighbors of each point in a dataset, using a variety of algorithms.
 #' 
 #' @param X A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
-#' Alternatively, a pointer to a prebuilt index from \code{\link{buildIndex}}.
+#' Alternatively, a prebuilt index from \code{\link{buildIndex}}.
 #' @param k A positive integer scalar specifying the number of nearest neighbors to retrieve.
 #' @param get.index A logical scalar indicating whether the indices of the nearest neighbors should be recorded.
 #' Setting this to \code{FALSE} improves efficiency if the indices are not of interest.
@@ -16,11 +16,12 @@
 #' Alternatively, this may be a string containing \code{"normal"} or \code{"transposed"}.
 #' The former is the same as \code{TRUE}, while the latter returns the distance matrix in transposed format.
 #' @param num.threads Integer scalar specifying the number of threads to use for the search.
-#' @param BPPARAM Deprecated, use \code{num.threads} instead.
 #' @param subset A vector indicating the rows of \code{X} for which the nearest neighbors should be identified.
 #' This yields the same result as (but is more efficient than) subsetting the output matrices after running \code{findKmknn} with \code{subset=NULL}.
 #' @param ... Further arguments to pass to \code{\link{buildIndex}} when \code{X} is not an external pointer.
-#' This includes \code{BNPARAM} to specify how the index should be constructed.
+#' @param BNPARAM A \linkS4class{BiocNeighborsParam} object specifying how the index should be constructed.
+#' If \code{NULL}, this defaults to a \linkS4class{KmknnParam}.
+#' Ignored if \code{x} contains a prebuilt index.
 #' 
 #' @details
 #' If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} with \code{\link{buildIndex}}.
@@ -47,6 +48,9 @@
 #' 
 #' @seealso
 #' \code{\link{buildIndex}}, to build an index ahead of time.
+#'
+#' @aliases
+#' findKNN,ANY,ANY-method
 #' 
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)
@@ -54,10 +58,13 @@
 #' head(out$index)
 #' head(out$distance)
 #' 
+#' @name findKNN
+NULL
+
 #' @export
-findKNN <- function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL) {
+setMethod("findKNN", c("ANY", "ANY"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
     if (!is(X, "externalptr")) {
-        X <- buildIndex(X, ...)
+        X <- buildIndex(X, ..., BNPARAM=BNPARAM)
     }
 
     if (!is.null(BPPARAM)) {
@@ -65,13 +72,13 @@ findKNN <- function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subs
     }
 
     if (is.null(subset)) {
-        output <- generic_find_knn(X, k=k, num_threads=num.threads, report_index=get.index, report_distance=get.distance)
+        output <- generic_find_knn(X, k=k, num_threads=num.threads, report_index=!isFALSE(get.index), report_distance=!isFALSE(get.distance))
     } else {
-        output <- generic_find_knn_subset(X, k=k, chosen=subset, num_threads=num.threads, report_index=get.index, report_distance=get.distance)
+        output <- generic_find_knn_subset(X, k=k, chosen=subset, num_threads=num.threads, report_index=!isFALSE(get.index), report_distance=!isFALSE(get.distance))
     }
 
     output <- .format_output(output, "index", get.index)
     output <- .format_output(output, "distance", get.distance)
 
     output
-}
+})

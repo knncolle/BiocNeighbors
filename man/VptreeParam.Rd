@@ -3,12 +3,12 @@
 \name{VptreeParam}
 \alias{VptreeParam}
 \alias{VptreeParam-class}
-\alias{buildIndex,VptreeParam-method}
+\alias{buildIndex,ANY,VptreeParam-method}
 \title{The VptreeParam class}
 \usage{
 VptreeParam(distance = c("Euclidean", "Manhattan", "Cosine"))
 
-\S4method{buildIndex}{VptreeParam}(X, transposed = FALSE, ..., BNPARAM)
+\S4method{buildIndex}{ANY,VptreeParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
 }
 \arguments{
 \item{distance}{String specifying the distance metric to use.

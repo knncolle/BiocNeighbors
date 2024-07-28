@@ -5,7 +5,7 @@
 \alias{HnswParam}
 \alias{HnswParam-class}
 \alias{show,HnswParam-method}
-\alias{buildIndex,HnswParam-method}
+\alias{buildIndex,ANY,HnswParam-method}
 \title{The HnswParam class}
 \usage{
 HnswParam(
@@ -15,7 +15,7 @@ HnswParam(
   distance = c("Euclidean", "Manhattan", "Cosine")
 )
 
-\S4method{buildIndex}{HnswParam}(X, transposed = FALSE, ..., BNPARAM)
+\S4method{buildIndex}{ANY,HnswParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
 }
 \arguments{
 \item{nlinks}{Integer scalar, number of bi-directional links per element for index generation.}

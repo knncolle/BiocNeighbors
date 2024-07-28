@@ -4,12 +4,12 @@
 \name{KmknnParam}
 \alias{KmknnParam}
 \alias{KmknnParam-class}
-\alias{buildIndex,KmknnParam-method}
+\alias{buildIndex,ANY,KmknnParam-method}
 \title{The KmknnParam class}
 \usage{
 KmknnParam(..., distance = c("Euclidean", "Manhattan", "Cosine"))
 
-\S4method{buildIndex}{KmknnParam}(X, transposed = FALSE, ..., BNPARAM)
+\S4method{buildIndex}{ANY,KmknnParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
 }
 \arguments{
 \item{...}{Further arguments, ignored.}
@@ -46,7 +46,6 @@ Computational efficiency may not be optimal when using it with other choices of 
 }
 \examples{
 (out <- KmknnParam(iter.max=100))
-out[['kmeans.args']]
 
 }
 \references{

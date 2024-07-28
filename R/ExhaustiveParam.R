@@ -43,7 +43,7 @@ ExhaustiveParam <- function(distance=c("Euclidean", "Manhattan", "Cosine")) {
 
 #' @export
 #' @rdname ExhaustiveParam
-setMethod("buildIndex", "ExhaustiveParam", function(X, transposed = FALSE, ..., BNPARAM) {
+setMethod("buildIndex", c("ANY", "ExhaustiveParam"), function(X, transposed = FALSE, ..., BNPARAM) {
     X <- .coerce_matrix_build(X, transposed)
     build_exhaustive(X, distance=BNPARAM@distance)
 })

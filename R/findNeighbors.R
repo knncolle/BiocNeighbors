@@ -48,10 +48,16 @@
 #' out <- findNeighbors(Y, threshold=1)
 #' summary(lengths(out$index))
 #'
+#' @aliases
+#' findNeighbors,ANY,ANY-method
+#'
+#' @name findNeighbors
+NULL
+
 #' @export
-findNeighbors <- function(X, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL) {
+setMethod("findNeighbors", c("ANY", "ANY"), function(X, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
     if (!is(X, "externalptr")) {
-        X <- buildIndex(X, ...)
+        X <- buildIndex(X, ..., BNPARAM=BNPARAM)
     }
 
     if (!is.null(BPPARAM)) {
@@ -75,4 +81,4 @@ findNeighbors <- function(X, threshold, get.index=TRUE, get.distance=TRUE, num.t
         }
         return(output)
     }
-}
+})
