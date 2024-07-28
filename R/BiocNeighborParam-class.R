@@ -56,8 +56,7 @@ setMethod("show", "BiocNeighborParam", function(object) {
 #' @export
 bndistance <- function(x) x@distance
 
-#' @importFrom S4Vectors setValidity2
-setValidity2("BiocNeighborParam", function(object) {
+setValidity("BiocNeighborParam", function(object) {
     msg <- character(0) 
 
     if (length(bndistance(object))!=1L) {

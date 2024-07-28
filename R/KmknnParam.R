@@ -56,5 +56,5 @@ setMethod("buildIndex", "KmknnParam", function(X, transposed = FALSE, ..., BNPAR
 
 #' @export
 setMethod("buildIndex", "missing", function(X, transposed = FALSE, ..., BNPARAM) {
-    buildIndex(X, transposed=transposed, ..., KmknnParam())
+    buildIndex(X, transposed=transposed, ..., BNPARAM=KmknnParam())
 })

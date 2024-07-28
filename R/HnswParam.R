@@ -57,8 +57,7 @@ HnswParam <- function(nlinks=16, ef.construction=200, ef.search=10, distance=c("
     new("HnswParam", nlinks=as.integer(nlinks), ef.construction=as.integer(ef.construction), ef.search=as.integer(ef.search), distance=match.arg(distance))
 }
 
-#' @importFrom S4Vectors setValidity2
-setValidity2("HnswParam", function(object) {
+setValidity("HnswParam", function(object) {
     msg <- character(0)
 
     nlinks <- object[['nlinks']]

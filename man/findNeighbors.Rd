@@ -39,13 +39,13 @@ This includes \code{BNPARAM} to specify how the index should be constructed.}
 \value{
 A list is returned containing:
 \itemize{
-    \item \code{index}, if \code{get.index=TRUE}.
-        This is a list of integer vectors where each entry corresponds to a point (denoted here as \eqn{i}) in \code{X}.
-        The vector for \eqn{i} contains the set of row indices of all points in \code{X} that lie within \code{threshold} of point \eqn{i}.
-        Points in each vector are not ordered, and \eqn{i} will always be included in its own set.
-    \item \code{distance}, if \code{get.distance=TRUE}.
-        This is a list of numeric vectors where each entry corresponds to a point (as above) and contains the distances of the neighbors from \eqn{i}.
-        Elements of each vector in \code{distance} match to elements of the corresponding vector in \code{index}.
+\item \code{index}, if \code{get.index=TRUE}.
+This is a list of integer vectors where each entry corresponds to a point (denoted here as \eqn{i}) in \code{X}.
+The vector for \eqn{i} contains the set of row indices of all points in \code{X} that lie within \code{threshold} of point \eqn{i}.
+Points in each vector are not ordered, and \eqn{i} will always be included in its own set.
+\item \code{distance}, if \code{get.distance=TRUE}.
+This is a list of numeric vectors where each entry corresponds to a point (as above) and contains the distances of the neighbors from \eqn{i}.
+Elements of each vector in \code{distance} match to elements of the corresponding vector in \code{index}.
 }
 
 If both \code{get.index=FALSE} and \code{get.distance=FALSE}, an integer vector is returned of length equal to the number of observations.
@@ -70,7 +70,8 @@ The resulting pointer object can be supplied as \code{X} to multiple \code{findN
 }
 \examples{
 Y <- matrix(runif(100000), ncol=20)
-out <- findNeighbors(Y, threshold=3)
+out <- findNeighbors(Y, threshold=1)
+summary(lengths(out$index))
 
 }
 \seealso{

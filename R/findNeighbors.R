@@ -23,13 +23,13 @@
 #' @return 
 #' A list is returned containing:
 #' \itemize{
-#'     \item \code{index}, if \code{get.index=TRUE}.
-#'         This is a list of integer vectors where each entry corresponds to a point (denoted here as \eqn{i}) in \code{X}.
-#'         The vector for \eqn{i} contains the set of row indices of all points in \code{X} that lie within \code{threshold} of point \eqn{i}.
-#'         Points in each vector are not ordered, and \eqn{i} will always be included in its own set.
-#'     \item \code{distance}, if \code{get.distance=TRUE}.
-#'         This is a list of numeric vectors where each entry corresponds to a point (as above) and contains the distances of the neighbors from \eqn{i}.
-#'         Elements of each vector in \code{distance} match to elements of the corresponding vector in \code{index}.
+#' \item \code{index}, if \code{get.index=TRUE}.
+#' This is a list of integer vectors where each entry corresponds to a point (denoted here as \eqn{i}) in \code{X}.
+#' The vector for \eqn{i} contains the set of row indices of all points in \code{X} that lie within \code{threshold} of point \eqn{i}.
+#' Points in each vector are not ordered, and \eqn{i} will always be included in its own set.
+#' \item \code{distance}, if \code{get.distance=TRUE}.
+#' This is a list of numeric vectors where each entry corresponds to a point (as above) and contains the distances of the neighbors from \eqn{i}.
+#' Elements of each vector in \code{distance} match to elements of the corresponding vector in \code{index}.
 #' }
 #'
 #' If both \code{get.index=FALSE} and \code{get.distance=FALSE}, an integer vector is returned of length equal to the number of observations.
@@ -45,12 +45,13 @@
 #' 
 #' @examples
 #' Y <- matrix(runif(100000), ncol=20)
-#' out <- findNeighbors(Y, threshold=3)
+#' out <- findNeighbors(Y, threshold=1)
+#' summary(lengths(out$index))
 #'
 #' @export
 findNeighbors <- function(X, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL) {
     if (!is(X, "externalptr")) {
-        X <- buildIndex(X, ..., BNPARAM)
+        X <- buildIndex(X, ...)
     }
 
     if (!is.null(BPPARAM)) {
@@ -63,13 +64,13 @@ findNeighbors <- function(X, threshold, get.index=TRUE, get.distance=TRUE, num.t
         output <- generic_find_all_subset(X, thresholds=threshold, chosen=subset, num_threads=num.threads, report_index=get.index, report_distance=get.distance)
     }
 
-    if (!report.index && !report.distance) {
+    if (!get.index && !get.distance) {
         return(output)
     } else {
-        if (!report.index) {
+        if (!get.index) {
             output$index <- NULL
         }
-        if (!report.distance) {
+        if (!get.distance) {
             output$distance <- NULL
         }
         return(output)

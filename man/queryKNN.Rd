@@ -26,10 +26,16 @@ Alternatively, a pointer to a prebuilt index from \code{\link{buildIndex}}.}
 \item{k}{A positive integer scalar specifying the number of nearest neighbors to retrieve.}
 
 \item{get.index}{A logical scalar indicating whether the indices of the nearest neighbors should be recorded.
-Setting this to \code{FALSE} improves efficiency if the indices are not of interest.}
+Setting this to \code{FALSE} improves efficiency if the indices are not of interest.
+
+Alternatively, this may be a string containing \code{"normal"} or \code{"transposed"}.
+The former is the same as \code{TRUE}, while the latter returns the index matrix in transposed format.}
 
 \item{get.distance}{A logical scalar indicating whether distances to the nearest neighbors should be recorded.
-Setting this to \code{FALSE} improves efficiency if the distances are not of interest.}
+Setting this to \code{FALSE} improves efficiency if the distances are not of interest.
+
+Alternatively, this may be a string containing \code{"normal"} or \code{"transposed"}.
+The former is the same as \code{TRUE}, while the latter returns the distance matrix in transposed format.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use for the search.}
 
@@ -46,15 +52,18 @@ This includes \code{BNPARAM} to specify how the index should be constructed.}
 \value{
 A list is returned containing:
 \itemize{
-    \item \code{index}, if \code{get.index=TRUE}.
-    This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{query}.
-    The row for \eqn{i} contains the row indices of \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
-    \item \code{distance}, if \code{get.distance=TRUE}.
-    This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
+\item \code{index}, if \code{get.index=TRUE}.
+This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{query}.
+The row for \eqn{i} contains the row indices of \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
+\item \code{distance}, if \code{get.distance=TRUE}.
+This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
 }
 
 The number of columns in both matrices is set to \code{min(k, ncol(X))}.
 If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
+
+If \code{get.index="transposed"}, the \code{index} matrix is transposed, i.e., the rows are the neighbors while the columns are the points.
+Similarly, if \code{get.distance="transposed"}, the \code{distance} matrix is transposed.
 }
 \description{
 Query a dataset for nearest neighbors of points in another dataset, using a variety of algorithms.

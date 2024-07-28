@@ -59,8 +59,7 @@ AnnoyParam <- function(ntrees=50, search.mult=ntrees, distance=c("Euclidean", "M
     new("AnnoyParam", ntrees=as.integer(ntrees), distance=match.arg(distance), search.mult=search.mult)
 }
 
-#' @importFrom S4Vectors setValidity2
-setValidity2("AnnoyParam", function(object) {
+setValidity("AnnoyParam", function(object) {
     msg <- character(0)
 
     ntrees <- object[['ntrees']]

@@ -36,3 +36,16 @@
 
     X
 }
+
+.format_output <- function(output, name, to.get) {
+    if (isFALSE(to.get)) {
+        output[[name]] <- NULL
+    } else if (identical(to.get, "transposed")) {
+        ; # no-op
+    } else if (isTRUE(to.get) || identical(to.get, "normal")) {
+        output[[name]] <- t(output[[name]])
+    } else {
+        stop("unsupported option '", to.get, "'")
+    }
+    output
+}

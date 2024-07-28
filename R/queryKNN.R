@@ -15,16 +15,19 @@
 #' @return
 #' A list is returned containing:
 #' \itemize{
-#'     \item \code{index}, if \code{get.index=TRUE}.
-#'     This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{query}.
-#'     The row for \eqn{i} contains the row indices of \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
-#'     \item \code{distance}, if \code{get.distance=TRUE}.
-#'     This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
+#' \item \code{index}, if \code{get.index=TRUE}.
+#' This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{query}.
+#' The row for \eqn{i} contains the row indices of \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
+#' \item \code{distance}, if \code{get.distance=TRUE}.
+#' This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
 #' }
 #'
 #' The number of columns in both matrices is set to \code{min(k, ncol(X))}.
 #' If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
 #' 
+#' If \code{get.index="transposed"}, the \code{index} matrix is transposed, i.e., the rows are the neighbors while the columns are the points.
+#' Similarly, if \code{get.distance="transposed"}, the \code{distance} matrix is transposed.
+#'
 #' @author
 #' Aaron Lun
 #' 
@@ -41,7 +44,7 @@
 #' @export
 queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL) {
     if (!is(X, "externalptr")) {
-        X <- buildIndex(X, transposed=transposed, ..., BNPARAM)
+        X <- buildIndex(X, transposed=transposed, ...)
     }
 
     if (!is.null(BPPARAM)) {
@@ -55,12 +58,8 @@ queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, num.threads
 
     output <- generic_query_knn(X, query=query, k=k, num_threads=num.threads, report_index=get.index, report_distance=get.distance)
 
-    if (!report.index) {
-        output$index <- NULL
-    }
-    if (!report.distance) {
-        output$distance <- NULL
-    }
+    output <- .format_output(output, "index", get.index)
+    output <- .format_output(output, "distance", get.distance)
 
     output
 }

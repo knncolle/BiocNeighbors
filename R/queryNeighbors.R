@@ -25,13 +25,13 @@
 #' @return
 #' A list is returned containing:
 #' \itemize{
-#'     \item \code{index}, if \code{get.index=TRUE}.
-#'         This is a list of integer vectors where each entry corresponds to a point (denoted here as \eqn{i}) in \code{query}.
-#'         The vector for \eqn{i} contains the set of row indices of all points in \code{X} that lie within \code{threshold} of point \eqn{i}.
-#'         Points in each vector are not ordered, and \eqn{i} will always be included in its own set.
-#'     \item \code{distance}, if \code{get.distance=TRUE}.
-#'         This is a list of numeric vectors where each entry corresponds to a point (as above) and contains the distances of the neighbors from \eqn{i}.
-#'         Elements of each vector in \code{distance} match to elements of the corresponding vector in \code{index}.
+#' \item \code{index}, if \code{get.index=TRUE}.
+#' This is a list of integer vectors where each entry corresponds to a point (denoted here as \eqn{i}) in \code{query}.
+#' The vector for \eqn{i} contains the set of row indices of all points in \code{X} that lie within \code{threshold} of point \eqn{i}.
+#' Points in each vector are not ordered, and \eqn{i} will always be included in its own set.
+#' \item \code{distance}, if \code{get.distance=TRUE}.
+#' This is a list of numeric vectors where each entry corresponds to a point (as above) and contains the distances of the neighbors from \eqn{i}.
+#' Elements of each vector in \code{distance} match to elements of the corresponding vector in \code{index}.
 #' }
 #'
 #' If both \code{get.index=FALSE} and \code{get.distance=FALSE}, an integer vector is returned of length equal to the number of observations.
@@ -48,15 +48,13 @@
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)
 #' Z <- matrix(rnorm(20000), ncol=20)
-#' 
-#' out <- queryNeighbors(Y, query=Z, threshold=1)
-#' head(out$index)
-#' head(out$distance)
+#' out <- queryNeighbors(Y, query=Z, threshold=3)
+#' summary(lengths(out$index))
 #' 
 #' @export
-queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL) {
+queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL) {
     if (!is(X, "externalptr")) {
-        X <- buildIndex(X, ..., BNPARAM)
+        X <- buildIndex(X, ...)
     }
 
     if (!is.null(BPPARAM)) {
@@ -68,15 +66,15 @@ queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRU
         query <- query[,subset,drop=FALSE]
     }
 
-    output <- generic_query_all_subset(X, query=query, thresholds=threshold, num_threads=num.threads, report_index=get.index, report_distance=get.distance)
+    output <- generic_query_all(X, query=query, thresholds=threshold, num_threads=num.threads, report_index=get.index, report_distance=get.distance)
 
-    if (!report.index && !report.distance) {
+    if (!get.index && !get.distance) {
         return(output)
     } else {
-        if (!report.index) {
+        if (!get.index) {
             output$index <- NULL
         }
-        if (!report.distance) {
+        if (!get.distance) {
             output$distance <- NULL
         }
         return(output)

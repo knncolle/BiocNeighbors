@@ -6,12 +6,10 @@ Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
     email="infinite.monkeys.with.keyboards@gmail.com"))
 Imports: 
     Rcpp, 
-    S4Vectors, 
-    BiocParallel, 
-    stats, 
-    methods, 
-    Matrix
+    methods
 Suggests: 
+    Matrix,
+    BiocParallel, 
     testthat, 
     BiocStyle, 
     knitr, 

@@ -12,6 +12,7 @@ queryNeighbors(
   get.distance = TRUE,
   num.threads = 1,
   subset = NULL,
+  transposed = FALSE,
   ...,
   BPPARAM = NULL
 )
@@ -26,33 +27,39 @@ Alternatively, a pointer to a prebuilt index from \code{\link{buildIndex}}.}
 Alternatively, a vector containing a different distance threshold for each query point.}
 
 \item{get.index}{A logical scalar indicating whether the indices of the nearest neighbors should be recorded.
-Setting this to \code{FALSE} improves efficiency if the indices are not of interest.}
+Setting this to \code{FALSE} improves efficiency if the indices are not of interest.
+
+Alternatively, this may be a string containing \code{"normal"} or \code{"transposed"}.
+The former is the same as \code{TRUE}, while the latter returns the index matrix in transposed format.}
 
 \item{get.distance}{A logical scalar indicating whether distances to the nearest neighbors should be recorded.
-Setting this to \code{FALSE} improves efficiency if the distances are not of interest.}
+Setting this to \code{FALSE} improves efficiency if the distances are not of interest.
+
+Alternatively, this may be a string containing \code{"normal"} or \code{"transposed"}.
+The former is the same as \code{TRUE}, while the latter returns the distance matrix in transposed format.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use for the search.}
 
 \item{subset}{A vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the neighbors should be identified.}
 
+\item{transposed}{A logical scalar indicating whether \code{X} and \code{query} are transposed, 
+in which case both matrices are assumed to contain dimensions in the rows and data points in the columns.}
+
 \item{...}{Further arguments to pass to \code{\link{buildIndex}} when \code{X} is not an external pointer.
 This includes \code{BNPARAM} to specify how the index should be constructed.}
 
 \item{BPPARAM}{Deprecated, use \code{num.threads} instead.}
-
-\item{transposed}{A logical scalar indicating whether \code{X} and \code{query} are transposed, 
-in which case both matrices are assumed to contain dimensions in the rows and data points in the columns.}
 }
 \value{
 A list is returned containing:
 \itemize{
-    \item \code{index}, if \code{get.index=TRUE}.
-        This is a list of integer vectors where each entry corresponds to a point (denoted here as \eqn{i}) in \code{query}.
-        The vector for \eqn{i} contains the set of row indices of all points in \code{X} that lie within \code{threshold} of point \eqn{i}.
-        Points in each vector are not ordered, and \eqn{i} will always be included in its own set.
-    \item \code{distance}, if \code{get.distance=TRUE}.
-        This is a list of numeric vectors where each entry corresponds to a point (as above) and contains the distances of the neighbors from \eqn{i}.
-        Elements of each vector in \code{distance} match to elements of the corresponding vector in \code{index}.
+\item \code{index}, if \code{get.index=TRUE}.
+This is a list of integer vectors where each entry corresponds to a point (denoted here as \eqn{i}) in \code{query}.
+The vector for \eqn{i} contains the set of row indices of all points in \code{X} that lie within \code{threshold} of point \eqn{i}.
+Points in each vector are not ordered, and \eqn{i} will always be included in its own set.
+\item \code{distance}, if \code{get.distance=TRUE}.
+This is a list of numeric vectors where each entry corresponds to a point (as above) and contains the distances of the neighbors from \eqn{i}.
+Elements of each vector in \code{distance} match to elements of the corresponding vector in \code{index}.
 }
 
 If both \code{get.index=FALSE} and \code{get.distance=FALSE}, an integer vector is returned of length equal to the number of observations.
@@ -78,10 +85,8 @@ The resulting pointer object can be supplied as \code{X} to multiple \code{query
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
 Z <- matrix(rnorm(20000), ncol=20)
-
 out <- queryNeighbors(Y, query=Z, threshold=1)
-head(out$index)
-head(out$distance)
+summary(lengths(out$index))
 
 }
 \seealso{
