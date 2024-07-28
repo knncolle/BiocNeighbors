@@ -18,17 +18,13 @@
 }
 
 .coerce_matrix_build <- function(X, transposed) {
-    if (!transposed) {
-        if (!is.matrix(X)) {
-            X <- Matrix::t(X)
-        } else {
-            X <- t(X)
-        }
-    }
-
     if (!is.matrix(X)) {
         X <- as.matrix(X)
     }    
+
+    if (!transposed) {
+        X <- t(X)
+    }
 
     if (!is.double(X)) {
         storage.mode(X) <- "double"

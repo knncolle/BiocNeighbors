@@ -52,17 +52,20 @@
 #' summary(lengths(out$index))
 #' 
 #' @aliases
-#' queryNeighbors,ANY,ANY-method
+#' queryNeighbors,matrix,ANY-method
+#' queryNeighbors,externalptr,ANY-method
 #'
 #' @name queryNeighbors
 NULL
 
 #' @export
 setMethod("queryNeighbors", c("ANY", "ANY"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
-    if (!is(X, "externalptr")) {
-        X <- buildIndex(X, transposed=transposed, ..., BNPARAM=BNPARAM)
-    }
+    ptr <- buildIndex(X, transposed=transposed, ..., BNPARAM=BNPARAM)
+    callGeneric(ptr, query=query, threshold=threshold, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, transposed=transposed, ..., BPPARAM=BPPARAM)
+})
 
+#' @export
+setMethod("queryNeighbors", c("externalptr", "ANY"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
     if (!is.null(BPPARAM)) {
         num.threads <- BiocParallel::bpnworkers(BPPARAM)
     }

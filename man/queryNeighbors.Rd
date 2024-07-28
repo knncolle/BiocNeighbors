@@ -2,7 +2,8 @@
 % Please edit documentation in R/AllGenerics.R, R/queryNeighbors.R
 \name{queryNeighbors}
 \alias{queryNeighbors}
-\alias{queryNeighbors,ANY,ANY-method}
+\alias{queryNeighbors,matrix,ANY-method}
+\alias{queryNeighbors,externalptr,ANY-method}
 \title{Query neighbors in range}
 \usage{
 queryNeighbors(

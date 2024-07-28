@@ -28,14 +28,14 @@
 #' (a.out <- buildIndex(Y, BNPARAM=AnnoyParam()))
 #'
 #' @aliases
-#' buildIndex,ANY,NULL-method
-#' buildIndex,ANY,missing-method
+#' buildIndex,matrix,NULL-method
+#' buildIndex,matrix,missing-method
 #'
 #' @name buildIndex
 NULL
 
 #' @export
-setMethod("buildIndex", c("ANY", "NULL"), function(X, transposed=FALSE, ..., BNPARAM) buildIndex(X, transposed=transposed, ..., BNPARAM=KmknnParam()))
+setMethod("buildIndex", c("matrix", "NULL"), function(X, transposed=FALSE, ..., BNPARAM) buildIndex(X, transposed=transposed, ..., BNPARAM=KmknnParam()))
 
 #' @export
-setMethod("buildIndex", c("ANY", "missing"), function(X, transposed=FALSE, ..., BNPARAM) buildIndex(X, transposed=transposed, ..., BNPARAM=KmknnParam()))
+setMethod("buildIndex", c("matrix", "missing"), function(X, transposed=FALSE, ..., BNPARAM) buildIndex(X, transposed=transposed, ..., BNPARAM=KmknnParam()))

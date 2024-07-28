@@ -2,7 +2,8 @@
 % Please edit documentation in R/AllGenerics.R, R/queryKNN.R
 \name{queryKNN}
 \alias{queryKNN}
-\alias{queryKNN,ANY,ANY-method}
+\alias{queryKNN,matrix,ANY-method}
+\alias{queryKNN,externalptr,ANY-method}
 \title{Query nearest neighbors}
 \usage{
 queryKNN(

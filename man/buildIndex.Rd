@@ -2,8 +2,8 @@
 % Please edit documentation in R/AllGenerics.R, R/buildIndex.R
 \name{buildIndex}
 \alias{buildIndex}
-\alias{buildIndex,ANY,NULL-method}
-\alias{buildIndex,ANY,missing-method}
+\alias{buildIndex,matrix,NULL-method}
+\alias{buildIndex,matrix,missing-method}
 \title{Build a nearest-neighbor index}
 \usage{
 buildIndex(X, transposed = FALSE, ..., BNPARAM = NULL)

@@ -50,7 +50,8 @@
 #' \code{\link{buildIndex}}, to build an index ahead of time.
 #'
 #' @aliases
-#' findKNN,ANY,ANY-method
+#' findKNN,matrix,ANY-method
+#' findKNN,externalptr,ANY-method
 #' 
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)
@@ -62,11 +63,13 @@
 NULL
 
 #' @export
-setMethod("findKNN", c("ANY", "ANY"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
-    if (!is(X, "externalptr")) {
-        X <- buildIndex(X, ..., BNPARAM=BNPARAM)
-    }
+setMethod("findKNN", c("matrix", "ANY"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
+    ptr <- buildIndex(X, ..., BNPARAM=BNPARAM)
+    callGeneric(ptr, k=k, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, ..., BPPARAM=BPPARAM) 
+})
 
+#' @export
+setMethod("findKNN", c("externalptr", "ANY"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
     if (!is.null(BPPARAM)) {
         num.threads <- BiocParallel::bpnworkers(BPPARAM)
     }

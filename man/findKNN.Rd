@@ -2,7 +2,8 @@
 % Please edit documentation in R/AllGenerics.R, R/findKNN.R
 \name{findKNN}
 \alias{findKNN}
-\alias{findKNN,ANY,ANY-method}
+\alias{findKNN,matrix,ANY-method}
+\alias{findKNN,externalptr,ANY-method}
 \title{Find nearest neighbors}
 \usage{
 findKNN(

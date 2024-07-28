@@ -2,7 +2,8 @@
 % Please edit documentation in R/AllGenerics.R, R/findNeighbors.R
 \name{findNeighbors}
 \alias{findNeighbors}
-\alias{findNeighbors,ANY,ANY-method}
+\alias{findNeighbors,matrix,ANY-method}
+\alias{findNeighbors,externalptr,ANY-method}
 \title{Find all neighbors in range}
 \usage{
 findNeighbors(
