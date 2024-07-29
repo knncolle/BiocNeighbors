@@ -2,6 +2,21 @@
 \title{BiocNeighbors News}
 \encoding{UTF-8}
 
+\section{Version 1.99.0}{\itemize{
+\item Switched to the new \pkg{knncolle} C++ libaries for all implementations.
+This greatly streamlines the internals and allows downstream packages to re-use the search indices in their own C++ code.
+
+\item Parallelization is now performed using OpenMP (where available) and the standard \code{<thread>} library (otherwise).
+This avoids the overhead of forking or starting new processes via \pkg{BiocParallel}.
+
+\item All \code{*Index} classes have been removed. 
+The output of \code{buildIndex()} is no longer guaranteed to be serializable, e.g., external pointers to C++-owned objects.
+The removal of this guarantee makes it easier to extend \pkg{BiocNeighbors} to new methods where the index structure does not have an obvious R representation.
+
+\item All functions (\code{findKNN()}, \code{queryNeighbors()}, etc.) will no longer coerce `X` to a matrix, to avoid the headache of S4 dispatch ambiguity.
+Users should coerce their data into matrix format before supplying it to these functions.
+}}
+
 \section{Version 1.10.0}{\itemize{
 \item Migrated \code{findMutualNN()} from \pkg{batchelor}.
 
