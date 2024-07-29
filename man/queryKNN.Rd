@@ -4,6 +4,8 @@
 \alias{queryKNN}
 \alias{queryKNN,matrix,ANY-method}
 \alias{queryKNN,externalptr,ANY-method}
+\alias{queryKNN,matrix-method}
+\alias{queryKNN,externalptr-method}
 \title{Query nearest neighbors}
 \usage{
 queryKNN(
@@ -48,7 +50,7 @@ in which case both matrices are assumed to contain dimensions in the rows and da
 
 \item{...}{Further arguments to pass to \code{\link{buildIndex}} when \code{X} is not an external pointer.}
 
-\item{BNPARAM}{A \linkS4class{BiocNeighborsParam} object specifying how the index should be constructed.
+\item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying how the index should be constructed.
 If \code{NULL}, this defaults to a \linkS4class{KmknnParam}.
 Ignored if \code{x} contains a prebuilt index.}
 }

@@ -4,12 +4,12 @@
 \name{ExhaustiveParam}
 \alias{ExhaustiveParam}
 \alias{ExhaustiveParam-class}
-\alias{buildIndex,ANY,ExhaustiveParam-method}
+\alias{buildIndex,matrix,ExhaustiveParam-method}
 \title{The ExhaustiveParam class}
 \usage{
 ExhaustiveParam(distance = c("Euclidean", "Manhattan", "Cosine"))
 
-\S4method{buildIndex}{ANY,ExhaustiveParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
+\S4method{buildIndex}{matrix,ExhaustiveParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
 }
 \arguments{
 \item{distance}{String specifying the distance metric to use.

@@ -5,7 +5,7 @@
 \alias{HnswParam}
 \alias{HnswParam-class}
 \alias{show,HnswParam-method}
-\alias{buildIndex,ANY,HnswParam-method}
+\alias{buildIndex,matrix,HnswParam-method}
 \title{The HnswParam class}
 \usage{
 HnswParam(
@@ -15,7 +15,7 @@ HnswParam(
   distance = c("Euclidean", "Manhattan", "Cosine")
 )
 
-\S4method{buildIndex}{ANY,HnswParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
+\S4method{buildIndex}{matrix,HnswParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
 }
 \arguments{
 \item{nlinks}{Integer scalar, number of bi-directional links per element for index generation.}
@@ -33,8 +33,6 @@ HnswParam(
 \item{...}{Further arguments, ignored.}
 
 \item{BNPARAM}{A HsnwParam instance.}
-
-\item{directory}{String specifying the directory in which to save the index.}
 }
 \value{
 The \code{HnswParam} constructor returns an instance of the HnswParam class.

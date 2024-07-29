@@ -25,10 +25,10 @@
 #' Aaron Lun
 #' 
 #' @seealso
-#' \code{\link{buildIndex,KmknnParam-method}},
-#' \code{\link{buildIndex,VptreeParam-method}},
-#' \code{\link{buildIndex,AnnoyParam-method}} 
-#' and \code{\link{buildIndex,HnswParam-method}} for specific methods. 
+#' \code{\link{buildIndex,matrix,KmknnParam-method}},
+#' \code{\link{buildIndex,matrix,VptreeParam-method}},
+#' \code{\link{buildIndex,matrix,AnnoyParam-method}} 
+#' and \code{\link{buildIndex,matrix,HnswParam-method}} for specific methods. 
 #' 
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)

@@ -51,6 +51,8 @@
 #' @aliases
 #' findNeighbors,matrix,ANY-method
 #' findNeighbors,externalptr,ANY-method
+#' findNeighbors,matrix-method
+#' findNeighbors,externalptr-method
 #'
 #' @name findNeighbors
 NULL

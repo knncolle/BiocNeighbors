@@ -4,12 +4,12 @@
 \name{KmknnParam}
 \alias{KmknnParam}
 \alias{KmknnParam-class}
-\alias{buildIndex,ANY,KmknnParam-method}
+\alias{buildIndex,matrix,KmknnParam-method}
 \title{The KmknnParam class}
 \usage{
 KmknnParam(..., distance = c("Euclidean", "Manhattan", "Cosine"))
 
-\S4method{buildIndex}{ANY,KmknnParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
+\S4method{buildIndex}{matrix,KmknnParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
 }
 \arguments{
 \item{...}{Further arguments, ignored.}
@@ -22,8 +22,6 @@ Cosine distances are implemented as Euclidean distances on L2-normalized coordin
 \item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
 
 \item{BNPARAM}{A KmknnParam instance.}
-
-\item{search.mult}{Numeric scalar, multiplier for the number of points to search.}
 }
 \value{
 The \code{KmknnParam} constructor returns an instance of the KmknnParam class.

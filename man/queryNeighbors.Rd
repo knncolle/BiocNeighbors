@@ -4,6 +4,8 @@
 \alias{queryNeighbors}
 \alias{queryNeighbors,matrix,ANY-method}
 \alias{queryNeighbors,externalptr,ANY-method}
+\alias{queryNeighbors,matrix-method}
+\alias{queryNeighbors,externalptr-method}
 \title{Query neighbors in range}
 \usage{
 queryNeighbors(
@@ -49,7 +51,7 @@ in which case both matrices are assumed to contain dimensions in the rows and da
 
 \item{...}{Further arguments to pass to \code{\link{buildIndex}} when \code{X} is not an external pointer.}
 
-\item{BNPARAM}{A \linkS4class{BiocNeighborsParam} object specifying how the index should be constructed.
+\item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying how the index should be constructed.
 If \code{NULL}, this defaults to a \linkS4class{KmknnParam}.
 Ignored if \code{x} contains a prebuilt index.}
 }

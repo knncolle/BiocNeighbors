@@ -49,7 +49,7 @@ VptreeParam <- function(distance=c("Euclidean", "Manhattan", "Cosine")) {
 
 #' @export
 #' @rdname VptreeParam
-setMethod("buildIndex", c("ANY", "VptreeParam"), function(X, transposed=FALSE, ..., BNPARAM) {
+setMethod("buildIndex", c("matrix", "VptreeParam"), function(X, transposed=FALSE, ..., BNPARAM) {
     X <- .coerce_matrix_build(X, transposed)
     build_vptree(X, BNPARAM@distance)
 })

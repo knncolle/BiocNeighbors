@@ -37,6 +37,8 @@
 #' @aliases
 #' queryKNN,matrix,ANY-method
 #' queryKNN,externalptr,ANY-method
+#' queryKNN,matrix-method
+#' queryKNN,externalptr-method
 #'
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)

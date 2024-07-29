@@ -3,7 +3,6 @@
 set.seed(10000)
 test_that("Mutual NN detection is correct", {
     # Reference NNs.
-    library(Matrix)
     REF <- function(d1, d2, k1, k2) {
         n1 <- nrow(d1)
         n2 <- nrow(d2)

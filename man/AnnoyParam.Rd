@@ -5,7 +5,7 @@
 \alias{AnnoyParam}
 \alias{AnnoyParam-class}
 \alias{show,AnnoyParam-method}
-\alias{buildIndex,ANY,AnnoyParam-method}
+\alias{buildIndex,matrix,AnnoyParam-method}
 \title{The AnnoyParam class}
 \usage{
 AnnoyParam(
@@ -14,7 +14,7 @@ AnnoyParam(
   distance = c("Euclidean", "Manhattan", "Cosine")
 )
 
-\S4method{buildIndex}{ANY,AnnoyParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
+\S4method{buildIndex}{matrix,AnnoyParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
 }
 \arguments{
 \item{ntrees}{Integer scalar, number of trees to use for index generation.}

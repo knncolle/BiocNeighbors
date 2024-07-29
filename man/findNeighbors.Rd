@@ -4,6 +4,8 @@
 \alias{findNeighbors}
 \alias{findNeighbors,matrix,ANY-method}
 \alias{findNeighbors,externalptr,ANY-method}
+\alias{findNeighbors,matrix-method}
+\alias{findNeighbors,externalptr-method}
 \title{Find all neighbors in range}
 \usage{
 findNeighbors(
@@ -35,7 +37,7 @@ This yields the same result as (but is more efficient than) subsetting the outpu
 
 \item{...}{Further arguments to pass to \code{\link{buildIndex}} when \code{X} is not an external pointer.}
 
-\item{BNPARAM}{A \linkS4class{BiocNeighborsParam} object specifying how the index should be constructed.
+\item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying how the index should be constructed.
 If \code{NULL}, this defaults to a \linkS4class{KmknnParam}.
 Ignored if \code{x} contains a prebuilt index.}
 }

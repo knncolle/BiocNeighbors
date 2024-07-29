@@ -5,9 +5,10 @@ setGeneric("buildIndex", signature=c("X", "BNPARAM"), function(X, transposed=FAL
 # This is explicitly a S4 generic so that developers can extend it at the R
 # level, not at the C++ level. We need to support dispatch on both X and
 # BNPARAM as X could be an arbitrary index structure (i.e., not an external
-# pointer). If we only dispatched on BNPARAM, the developer wouldn't be able to
-# select the correct method based on the type of a prebuilt non-pointer index
-# without also being supplied the BNPARAM, which is not ergonomic for the user.
+# pointer). If we only dispatched on BNPARAM, a user could call the method with
+# a prebuilt X that doesn't match the BNPARAM. This means that the developer of
+# the BNPARAM method would be responsible for figuring out what to do with a X
+# that they don't know anything about, which is pretty weird.
 
 #' @export
 #' @rdname findKNN

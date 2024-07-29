@@ -19,7 +19,7 @@
 #' @param subset An integer, logical or character vector specifying the rows of \code{X} for which the nearest neighbors should be identified.
 #' This yields the same result as (but is more efficient than) subsetting the output matrices after running \code{findKmknn} with \code{subset=NULL}.
 #' @param ... Further arguments to pass to \code{\link{buildIndex}} when \code{X} is not an external pointer.
-#' @param BNPARAM A \linkS4class{BiocNeighborsParam} object specifying how the index should be constructed.
+#' @param BNPARAM A \linkS4class{BiocNeighborParam} object specifying how the index should be constructed.
 #' If \code{NULL}, this defaults to a \linkS4class{KmknnParam}.
 #' Ignored if \code{x} contains a prebuilt index.
 #' 
@@ -52,6 +52,8 @@
 #' @aliases
 #' findKNN,matrix,ANY-method
 #' findKNN,externalptr,ANY-method
+#' findKNN,matrix-method
+#' findKNN,externalptr-method
 #' 
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)

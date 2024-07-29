@@ -2,7 +2,6 @@
 #'
 #' A class to hold parameters for the k-means k-nearest-neighbors (KMKNN) algorithm for exact nearest neighbor identification.
 #'
-#' @param search.mult Numeric scalar, multiplier for the number of points to search.
 #' @inheritParams ExhaustiveParam
 #' @param BNPARAM A KmknnParam instance.
 #'
@@ -48,7 +47,7 @@ KmknnParam <- function(..., distance=c("Euclidean", "Manhattan", "Cosine")) {
 
 #' @export
 #' @rdname KmknnParam
-setMethod("buildIndex", c("ANY", "KmknnParam"), function(X, transposed = FALSE, ..., BNPARAM) {
+setMethod("buildIndex", c("matrix", "KmknnParam"), function(X, transposed = FALSE, ..., BNPARAM) {
     X <- .coerce_matrix_build(X, transposed)
     build_kmknn(X, distance=BNPARAM@distance)
 })

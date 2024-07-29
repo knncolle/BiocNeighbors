@@ -54,12 +54,14 @@
 #' @aliases
 #' queryNeighbors,matrix,ANY-method
 #' queryNeighbors,externalptr,ANY-method
+#' queryNeighbors,matrix-method
+#' queryNeighbors,externalptr-method
 #'
 #' @name queryNeighbors
 NULL
 
 #' @export
-setMethod("queryNeighbors", c("ANY", "ANY"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
+setMethod("queryNeighbors", c("matrix", "ANY"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
     ptr <- buildIndex(X, transposed=transposed, ..., BNPARAM=BNPARAM)
     callGeneric(ptr, query=query, threshold=threshold, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, transposed=transposed, ..., BPPARAM=BPPARAM)
 })

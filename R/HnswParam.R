@@ -4,7 +4,6 @@
 #' 
 #' @param nlinks Integer scalar, number of bi-directional links per element for index generation.
 #' @param ef.construction Integer scalar, size of the dynamic list for index generation.
-#' @param directory String specifying the directory in which to save the index.
 #' @param ef.search Integer scalar, size of the dynamic list for neighbor searching.
 #' @param distance A string specifying the distance metric to use.
 #' @inheritParams ExhaustiveParam
@@ -89,7 +88,7 @@ setMethod("show", "HnswParam", function(object) {
 
 #' @export
 #' @rdname HnswParam
-setMethod("buildIndex", c("ANY", "HnswParam"), function(X, transposed = FALSE, ..., BNPARAM) {
+setMethod("buildIndex", c("matrix", "HnswParam"), function(X, transposed = FALSE, ..., BNPARAM) {
     X <- .coerce_matrix_build(X, transposed)
     build_hnsw(X, nlinks=BNPARAM@nlinks, ef_construct=BNPARAM@ef.construction, ef_search=BNPARAM@ef.search, distance=BNPARAM@distance)
 })
