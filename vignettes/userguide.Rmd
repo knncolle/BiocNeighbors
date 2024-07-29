@@ -1,0 +1,236 @@
+---
+title: Finding neighbors in high-dimensional space
+author: 
+- name: Aaron Lun
+  email: infinite.monkeys.with.keyboards@gmail.com
+date: "Revised: July 28, 2024"
+output:
+  BiocStyle::html_document:
+    toc_float: true
+package: BiocNeighbors 
+vignette: >
+  %\VignetteIndexEntry{Finding neighbors in high-dimensional space}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}    
+---
+
+```{r, echo=FALSE, results="hide", message=FALSE}
+require(knitr)
+opts_chunk$set(error=FALSE, message=FALSE, warning=FALSE)
+library(BiocStyle)
+self <- Biocpkg("BiocNeighbors")
+set.seed(99999)
+```
+
+# Overview
+
+The `r self` package implements a variety of nearest-neighbor (NN) search algorithms with a consistent interface.
+This includes exact search methods like 
+[vantage point trees](https://dl.acm.org/doi/10.5555/313559.313789),
+[k-means k-nearest neighbors](https://doi.org/10.1109/IJCNN.2011.6033373),
+and an exhaustive brute-force search,
+as well as approximate methods like 
+[Approximate Nearest Neighbors Oh Yeah (Annoy)](https://github.com/spotify/annoy)
+and [hierarchical navigable small worlds (HNSW)](https://github.com/nmslib/hnswlib).
+We provides methods to search nearest neighbors within a dataset, query across datasets,
+and (for some algorithms) find all neighbors within a certain distance.
+
+# Finding nearest neighbors
+
+The `findKNN()` function will find the `k`-nearest neighbors within a dataset,
+returning one matrix of neighbor identities and another matrix of (sorted) distances to each neighbor.
+
+```{r}
+# Mocking up a matrix with 'nobs' points in the rows
+# and 'ndim' dimensions in the columns.
+nobs <- 1000
+ndim <- 20
+data <- matrix(runif(nobs*ndim), ncol=ndim)
+
+library(BiocNeighbors)
+fout <- findKNN(data, k=10)
+str(fout)
+```
+
+Each row of the `index` matrix corresponds to a row in `data` and contains the row indices in `data` that are its nearest neighbors.
+For example, the 3rd point in `data` has the following nearest neighbors with their (sorted) distances:
+
+```{r}
+fout$index[3,]
+fout$distance[3,]
+```
+
+Users can easily change the algorithm by setting the `BNPARAM=` argument.
+For example, the code below switches to the Annoy algorithm for a faster, less accurate search.
+
+```{r}
+aout <- findKNN(data, k=10, BNPARAM=AnnoyParam())
+str(aout)
+```
+
+The same mechanism can be used to change the distance metric from the Euclidean default.
+
+```{r}
+vout <- findKNN(data, k=10, BNPARAM=VptreeParam(distance="Manhattan"))
+str(vout)
+```
+
+`queryKNN()` is a related function that will find the `k`-nearest neighbors in one dataset based on query points in another dataset.
+Here, the rows of the output matrices correspond to rows of our `query` matrix.
+
+```{r}
+nquery <- 100
+ndim <- 20
+query <- matrix(runif(nquery*ndim), ncol=ndim)
+
+qout <- queryKNN(data, query, k=5)
+str(qout)
+```
+
+When performing multiple calls to `findKNN()` or `queryKNN()` on the same data,
+advanced users may prefer to build the index first with `buildIndex()`.
+This can be efficiently reused without repeating the index construction in each call.
+
+```{r}
+prebuilt <- buildIndex(data)
+out1 <- findKNN(prebuilt, k=5)
+out2 <- queryKNN(prebuilt, query, k=5)
+```
+
+# Finding all neighbors within range
+
+In some applications, we need to find all neighboring points within a certain distance threshold.
+This is achieved using the `findNeighbors()` function:
+
+```{r}
+nobs <- 8000
+ndim <- 20
+data <- matrix(runif(nobs*ndim), ncol=ndim)
+
+fout <- findNeighbors(data, threshold=1)
+head(fout$index)
+head(fout$distance)
+```
+
+Each entry of the `index` list corresponds to a point in `data` and contains the row indices in `data` that are within `threshold`.
+For example, the 3rd point in `data` has the following neighbors with the associated distances:
+
+```{r}
+fout$index[[3]]
+fout$distance[[3]]
+```
+
+Again, we can switch algorithms by specifying `BNPARAM=`.
+However, keep in mind that not all algorithms (particularly the approximate methods) support this range-based search.
+
+```{r}
+vparam <- VptreeParam(distance="Manhattan")
+vout <- findNeighbors(data, threshold=1, BNPARAM=vparam)
+```
+
+`queryNeighbors()` is a related function that will identify all points within a certain distance of a query point.
+Each entry of the returned `index` and `distance` corresponds to a row of `query` and describes its neighbors in `data`.
+
+```{r}
+nquery <- 100
+ndim <- 20
+query <- matrix(runif(nquery*ndim), ncol=ndim)
+qout <- queryNeighbors(data, query, threshold=1)
+head(qout$index)
+```
+
+As described above, advanced users can built the index first before repeated calls to `findNeighbors()` and `queryNeighbors()`.
+
+```{r}
+prebuilt <- buildIndex(data)
+out1 <- findNeighbors(prebuilt, threshold=1)
+out2 <- queryNeighbors(prebuilt, query,threshold=1)
+```
+
+If only the number of neighbors is of interest, we can set `get.index=FALSE` and `get.distance=FALSE` in the `findNeighbors()`/`queryNeighbors()` call.
+This will count the number of neighbors without storing their identities/distances for greater memory efficiency.
+
+```{r}
+num <- findNeighbors(data, threshold=1, get.index=FALSE, get.distance=FALSE)
+head(num)
+```
+
+# Usage in downstream C++ libraries 
+
+R/Bioconductor package developers can use `r self` to perform nearest-neighbor searches in their own C++ code.
+This uses the interfaces in the [**knncolle**](https://github.com/knncolle/knncolle) library to abstract away the underlying search methods.
+First, we add some linking instructions in the `DESCRIPTION` to make the header files available:
+
+```
+LinkingTo: Rcpp, assorthead, BiocNeighbors
+```
+
+This includes the `BiocNeighbors.h` file that implements the `BiocNeigbors::Prebuilt` class:
+
+```{r, results="hide"}
+system.file("include", "BiocNeighbors.h", package="BiocNeighbors")
+```
+
+When a `buildIndex()` method returns an external pointer, that pointer is expected to refer to an instance of a `BiocNeighbors::Prebuilt`.
+Thus, downstream code just needs to accept a pointer, cast it to a `BiocNeighbors::Prebuilt`, and then use the `index` therein for nearest-neighbor searches.
+
+```cpp
+SEXP do_something(SEXP raw_ptr, int k) {
+    BiocNeighbors::PrebuiltPointer ptr(raw_ptr);
+    const auto& prebuilt = ptr->index;
+    auto searcher = prebuilt->initialize();
+
+    std::vector<int> indices;
+    std::vector<double> distances;
+    searcher->search(0, k, &indices, &distances);
+
+    return Rcpp::List::create(
+        Rcpp::IntegerVector(indices.begin(), indices.end()),
+        Rcpp::IntegerVector(distances.begin(), distances.end())
+    );
+}
+```
+
+Some extra work is required for cosine-normalized indices, which is indicated by `ptr->cosine == true`.
+Any query data should also be L2-normalized before use in `Searcher::search()` or `Searcher::search_all()`.
+(This is not required for overloads that accept an index for searching _within_ a dataset, only for queries between datasets.)
+
+# Extending to new methods
+
+## Introduction 
+
+Developers can extend the `r self` framework to more algorithms through the creation of new `BiocNeighborParam` classes.
+Users can then switch between algorithms by simply changing the `BNPARAM=` argument in their calls to `findKNN()`, etc.
+In general, we recommend putting these extensions in a new R/Bioconductor package that adds more methods to the `r self` generics.
+Developers can choose to write pure R extensions or they can write them partially in C++.
+
+## In R
+
+Each extension package should:
+
+- Implement a `SomeNewParam` S4 class that inherits from `BiocNeighborParam`.
+- Implement a `SomeNewIndex` S4 class that describes the index structure.
+- Implement a `buildIndex()` S4 method, dispatching on a `matrix` type for `X=` and a `SomeNewParam` type for `BNPARAM=`.
+  This should return an instance of `SomeNewIndex`.
+- Implement two methods for each of `findKNN()` and `queryKNN()` (and optionally `findNeighbors()` `queryNeighbors()`).
+  One method should dispatch on a `matrix` type for `X=` and a `SomeNewParam` type for `BNPARAM=`. 
+  The other method should dispatch on a prebuilt `SomeNewIndex` type for `X=` and an `ANY` type for `BNPARAM=` (as the `BNPARAM=` is ignored for prebuilt indices).
+
+## In C++
+
+Alternatively, each extension package should:
+
+- Implement C++ classes that inherit from the `Builder`, `Prebuilt` and `Searcher` interfaces in the [**knncolle**](https://github.com/knncolle/knncolle) library.
+  This requires `LinkingTo: assorthead, BiocNeighbors` in the `DESCRIPTION`.
+- Implement a `SomeNewParam` S4 class that inherits from `BiocNeighborParam`.
+- Implement a `buildIndex()` method, dispatching on a `matrix` type for `X=` and a `SomeNewParam` type for `BNPARAM=`.
+  This should call into C++ and return an external pointer to an instance of a `BiocNeighbors::Prebuilt`.
+
+No new methods are required for `findKNN()`, `queryNeighbors()`, etc. as the existing methods can be directly used with a pointer to a `BiocNeighbors::Prebuilt` instance.
+This approach also allows the new method to be used in C++ code of downstream packages that accept a `BiocNeighbors::Prebuilt` instance.
+
+# Session information {-}
+
+```{r}
+sessionInfo()
+```

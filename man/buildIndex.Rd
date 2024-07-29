@@ -20,11 +20,19 @@ If \code{NULL}, this defaults to a \linkS4class{KmknnParam} object.}
 }
 \value{
 A prebuilt index that can be used in \code{\link{findKNN}} and related functions as the \code{X=} argument.
-The type and structure of this index is arbitrary and left to the discretion of the method developer;
-however, users should assume that the index is not serializable (i.e., cannot be saved or transferred between processes).
+The exact type of the index is not defined, but users should assume that the index is not serializable, i.e., cannot be saved or transferred between processes.
 }
 \description{
 Build indices for nearest-neighbor searching with different algorithms.
+}
+\details{
+The type and structure of the index object returned by \code{buildIndex} methods is arbitrary and left to the discretion of the developer.
+However, there are a few constraints:
+\itemize{
+\item It should not be a matrix, as this interferes with dispatch for methods like \code{\link{findKNN}} when \code{X} is just the data matrix.
+\item If it is an external pointer, it should refer to a BiocNeighborsPrebuilt object (see \code{system.file("include", "BiocNeighbors.h", package="BiocNeighbors")}.
+This allows it to be directly used in methods like \code{\link{findKNN}}.
+}
 }
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)
