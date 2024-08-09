@@ -58,8 +58,8 @@ test_that("findKNN works with prebuilt indices", {
 
     # Throws an error for deserialized prebuilt indices.
     tmp <- tempfile(fileext=".rds")
-    saveRDS(preout, tmp)
-    expect_error(findKNN(readRDS(tmp)), "null pointer")
+    saveRDS(built, tmp)
+    expect_error(findKNN(readRDS(tmp), k=1), "null pointer")
 })
 
 test_that("findKNN works with variable outputs", {

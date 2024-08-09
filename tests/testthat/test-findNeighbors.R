@@ -61,6 +61,11 @@ test_that("findNeighbors works with prebuilt indices", {
     # Unaffected by BNPARAM settings at this point.
     preout <- findNeighbors(built, threshold=d, BNPARAM=AnnoyParam())
     expect_identical(out, preout)
+
+    # Throws an error for deserialized prebuilt indices.
+    tmp <- tempfile(fileext=".rds")
+    saveRDS(built, tmp)
+    expect_error(findNeighbors(readRDS(tmp), threshold=d), "null pointer")
 })
 
 test_that("findNeighbors works with variable outputs", {

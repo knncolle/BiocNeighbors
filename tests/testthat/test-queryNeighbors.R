@@ -59,6 +59,11 @@ test_that("queryNeighbors works with prebuilt indices", {
     # Unaffected by BNPARAM settings at this point.
     preout <- queryNeighbors(built, Z, threshold=d, BNPARAM=AnnoyParam())
     expect_identical(out, preout)
+
+    # Throws an error for deserialized prebuilt indices.
+    tmp <- tempfile(fileext=".rds")
+    saveRDS(built, tmp)
+    expect_error(queryNeighbors(readRDS(tmp), Z, threshold=d), "null pointer")
 })
 
 test_that("queryNeighbors works when inputs are transposed", {
