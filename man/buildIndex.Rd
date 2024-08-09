@@ -4,6 +4,8 @@
 \alias{buildIndex}
 \alias{buildIndex,matrix,NULL-method}
 \alias{buildIndex,matrix,missing-method}
+\alias{buildIndex,matrix,BiocNeighborParam-method}
+\alias{buildIndex,matrix,externalptr-method}
 \title{Build a nearest-neighbor index}
 \usage{
 buildIndex(X, transposed = FALSE, ..., BNPARAM = NULL)
@@ -16,7 +18,9 @@ buildIndex(X, transposed = FALSE, ..., BNPARAM = NULL)
 \item{...}{Further arguments to be passed to individual methods.}
 
 \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.
-If \code{NULL}, this defaults to a \linkS4class{KmknnParam} object.}
+If \code{NULL}, this defaults to a \linkS4class{KmknnParam} object. 
+
+Alternatively, this may be an external pointer constructed by \code{\link{defineBuilder}}.}
 }
 \value{
 A prebuilt index that can be used in \code{\link{findKNN}} and related functions as the \code{X=} argument.
@@ -39,12 +43,6 @@ Y <- matrix(rnorm(100000), ncol=20)
 (k.out <- buildIndex(Y))
 (a.out <- buildIndex(Y, BNPARAM=AnnoyParam()))
 
-}
-\seealso{
-\code{\link{buildIndex,matrix,KmknnParam-method}},
-\code{\link{buildIndex,matrix,VptreeParam-method}},
-\code{\link{buildIndex,matrix,AnnoyParam-method}} 
-and \code{\link{buildIndex,matrix,HnswParam-method}} for specific methods.
 }
 \author{
 Aaron Lun

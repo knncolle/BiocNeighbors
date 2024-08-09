@@ -4,12 +4,12 @@
 \name{KmknnParam}
 \alias{KmknnParam}
 \alias{KmknnParam-class}
-\alias{buildIndex,matrix,KmknnParam-method}
+\alias{defineBuilder,KmknnParam-method}
 \title{The KmknnParam class}
 \usage{
 KmknnParam(..., distance = c("Euclidean", "Manhattan", "Cosine"))
 
-\S4method{buildIndex}{matrix,KmknnParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
+\S4method{defineBuilder}{KmknnParam}(BNPARAM)
 }
 \arguments{
 \item{...}{Further arguments, ignored.}
@@ -17,16 +17,12 @@ KmknnParam(..., distance = c("Euclidean", "Manhattan", "Cosine"))
 \item{distance}{String specifying the distance metric to use.
 Cosine distances are implemented as Euclidean distances on L2-normalized coordinates.}
 
-\item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
-
-\item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
-
 \item{BNPARAM}{A KmknnParam instance.}
 }
 \value{
 The \code{KmknnParam} constructor returns an instance of the KmknnParam class.
 
-The \code{\link{buildIndex}} method returns an external pointer to a KMKNN index.
+The \code{\link{defineBuilder}} method returns an external pointer that can be used in \code{\link{buildIndex}} to construct a KMKNN index.
 }
 \description{
 A class to hold parameters for the k-means k-nearest-neighbors (KMKNN) algorithm for exact nearest neighbor identification.

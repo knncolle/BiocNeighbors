@@ -1,5 +1,5 @@
-#include "generics.h"
-#include "l2norm.h"
+#include "Rcpp.h"
+#include "BiocNeighbors.h"
 
 // define R's REprintf as the 'local' error print method. 
 #define __ERROR_PRINTER_OVERRIDE__  REprintf
@@ -17,7 +17,7 @@
 #include "knncolle_hnsw/knncolle_hnsw.hpp"
 
 //[[Rcpp::export(rng=false)]]
-SEXP build_hnsw(Rcpp::NumericMatrix data, int nlinks, int ef_construct, int ef_search, std::string distance) {
+SEXP hnsw_builder(int nlinks, int ef_construct, int ef_search, std::string distance) {
     knncolle_hnsw::HnswOptions<int, float> opt;
     opt.num_links = nlinks;
     opt.ef_construction = ef_construct;
@@ -27,18 +27,21 @@ SEXP build_hnsw(Rcpp::NumericMatrix data, int nlinks, int ef_construct, int ef_s
         opt.distance_options.create = [&](int dim) -> hnswlib::SpaceInterface<float>* {
             return new knncolle_hnsw::ManhattanDistance<float>(dim);
         };
-        knncolle_hnsw::HnswBuilder<WrappedMatrix, double> builder(opt);
-        return generic_build(builder, data);
+        return BiocNeighbors::BuilderPointer(new knncolle_hnsw::HnswBuilder<BiocNeighbors::SimpleMatrix, double>(opt));
 
     } else if (distance == "Euclidean") {
-        knncolle_hnsw::HnswBuilder<WrappedMatrix, double> builder(opt);
-        return generic_build(builder, data);
+        return BiocNeighbors::BuilderPointer(new knncolle_hnsw::HnswBuilder<BiocNeighbors::SimpleMatrix, double>(opt));
 
     } else if (distance == "Cosine") {
-        knncolle_hnsw::HnswBuilder<WrappedMatrix, double> builder(opt);
-        auto out = generic_build(builder, l2norm(data));
-        out->cosine = true;
-        return out;
+        return BiocNeighbors::BuilderPointer(
+            new knncolle::L2NormalizedBuilder<BiocNeighbors::SimpleMatrix, double>(
+                new knncolle_hnsw::HnswBuilder<
+                    knncolle::L2NormalizedMatrix<BiocNeighbors::SimpleMatrix>,
+                    double
+                >(opt)
+            ),
+            true
+        );
 
     } else {
         throw std::runtime_error("unknown distance type '" + distance + "'");

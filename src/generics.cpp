@@ -1,8 +1,8 @@
-#include "generics.h"
 #include "Rcpp.h"
+#include "BiocNeighbors.h"
 #include "knncolle/knncolle.hpp"
 
-#include "l2norm.h"
+#include "parallel.h"
 
 #include <algorithm>
 #include <vector>
@@ -11,10 +11,10 @@
 #include "omp.h"
 #endif
 
-BiocNeighbors::PrebuiltPointer generic_build(const BiocNeighborsBuilder& builder, Rcpp::NumericMatrix data) {
-    auto out = BiocNeighbors::PrebuiltPointer(new BiocNeighbors::Prebuilt, true);
-    out->index.reset(builder.build_raw(WrappedMatrix(data.rows(), data.cols(), data.begin())));
-    return out;
+//[[Rcpp::export(rng=false)]]
+SEXP generic_build(SEXP builder, Rcpp::NumericMatrix data) {
+    auto out = BiocNeighbors::BuilderPointer(builder);
+    return BiocNeighbors::PrebuiltPointer(out->build_raw(BiocNeighbors::SimpleMatrix(data.rows(), data.cols(), data.begin())));
 }
 
 /*********************************
@@ -56,7 +56,7 @@ std::vector<Value_>* prepare_buffer(std::vector<Value_>& buffer, bool report, in
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_find_knn(SEXP prebuilt_ptr, int k, int num_threads, bool report_index, bool report_distance) {
-    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr)->index);
+    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr));
     int nobs = prebuilt.num_observations();
 
     k = sanitize_k(k, nobs);
@@ -115,7 +115,7 @@ SEXP generic_find_knn(SEXP prebuilt_ptr, int k, int num_threads, bool report_ind
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_find_knn_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, int k, int num_threads, bool report_index, bool report_distance) {
-    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr)->index);
+    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr));
     int nobs = prebuilt.num_observations();
 
     k = sanitize_k(k, nobs);
@@ -178,11 +178,9 @@ SEXP generic_find_knn_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, int 
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_query_knn(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, int k, int num_threads, bool report_index, bool report_distance) {
-    const BiocNeighbors::Prebuilt& bnp = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr));
-    const auto& prebuilt = *(bnp.index);
+    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr));
     int nobs = prebuilt.num_observations();
     size_t ndim = prebuilt.num_dimensions();
-    bool do_cosine = bnp.cosine;
 
     if (k > nobs) {
         Rcpp::warning("'k' capped at the number of observations");
@@ -212,7 +210,6 @@ SEXP generic_query_knn(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, int k, int 
         auto tmp_i_ptr = prepare_buffer(tmp_i, report_index, k);
         std::vector<double> tmp_d;
         auto tmp_d_ptr = prepare_buffer(tmp_d, report_distance, k);
-        std::vector<double> cosine_normalized(do_cosine ? ndim : 0);
 
 #ifdef _OPENMP
         #pragma omp for
@@ -226,13 +223,6 @@ SEXP generic_query_knn(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, int k, int 
 #endif
 
             auto current_ptr = query_ptr + query_offset;
-            if (do_cosine) {
-                auto norm_ptr = cosine_normalized.data();
-                std::copy_n(current_ptr, ndim, norm_ptr);
-                l2norm(norm_ptr, ndim);
-                current_ptr = norm_ptr;
-            }
-
             searcher->search(current_ptr, k, tmp_i_ptr, tmp_d_ptr);
             if (report_index) {
                 for (auto& i : tmp_i) { // getting back to 1-based indices on outpu.
@@ -273,7 +263,7 @@ Rcpp::List format_range_output(const std::vector<std::vector<Value_> >& results)
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_find_all(SEXP prebuilt_ptr, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance) {
-    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr)->index);
+    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr));
     int nobs = prebuilt.num_observations();
 
     std::vector<std::vector<double> > out_d(report_distance ? nobs : 0);
@@ -356,7 +346,7 @@ SEXP generic_find_all(SEXP prebuilt_ptr, Rcpp::NumericVector thresholds, int num
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance) {
-    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr)->index);
+    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr));
 
     const int* chosen_ptr = chosen.begin();
     int nchosen = chosen.size();
@@ -441,10 +431,8 @@ SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, Rcpp
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_query_all(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance) {
-    const BiocNeighbors::Prebuilt& bnp = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr));
-    const auto& prebuilt = *(bnp.index);
+    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr));
     size_t ndim = prebuilt.num_dimensions();
-    bool do_cosine = bnp.cosine;
 
     int nquery = query.ncol();
     const double* query_ptr = query.begin();
@@ -487,8 +475,6 @@ SEXP generic_query_all(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::Numer
             }
 
         } else {
-            std::vector<double> cosine_normalized(do_cosine ? ndim : 0);
-
 #ifdef _OPENMP
             #pragma omp for
             for (int o = 0; o < nquery; ++o) {
@@ -499,13 +485,6 @@ SEXP generic_query_all(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::Numer
 #endif
 
                 auto current_ptr = query_ptr + query_offset;
-                if (do_cosine) {
-                    auto norm_ptr = cosine_normalized.data();
-                    std::copy_n(current_ptr, ndim, norm_ptr);
-                    l2norm(norm_ptr, ndim);
-                    current_ptr = norm_ptr;
-                }
-
                 auto count = searcher->search_all(
                     current_ptr,
                     threshold_ptr[multiple_thresholds ? o : 0],

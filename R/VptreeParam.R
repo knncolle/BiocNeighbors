@@ -20,7 +20,7 @@
 #' @return  
 #' The \code{VptreeParam} constructor returns an instance of the VptreeParam class.
 #'
-#' The \code{\link{buildIndex}} method returns an external pointer to an VP tree index.
+#' The \code{\link{defineBuilder}} method returns an external pointer that can be used in \code{\link{buildIndex}} to construct a VP tree index.
 #' 
 #' @author
 #' Aaron Lun
@@ -49,7 +49,4 @@ VptreeParam <- function(distance=c("Euclidean", "Manhattan", "Cosine")) {
 
 #' @export
 #' @rdname VptreeParam
-setMethod("buildIndex", c("matrix", "VptreeParam"), function(X, transposed=FALSE, ..., BNPARAM) {
-    X <- .coerce_matrix_build(X, transposed)
-    build_vptree(X, BNPARAM@distance)
-})
+setMethod("defineBuilder", "VptreeParam", function(BNPARAM) vptree_builder(BNPARAM@distance))

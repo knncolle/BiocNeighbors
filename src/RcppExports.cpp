@@ -11,27 +11,25 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// build_annoy
-SEXP build_annoy(Rcpp::NumericMatrix data, int num_trees, double search_mult, std::string distance);
-RcppExport SEXP _BiocNeighbors_build_annoy(SEXP dataSEXP, SEXP num_treesSEXP, SEXP search_multSEXP, SEXP distanceSEXP) {
+// annoy_builder
+SEXP annoy_builder(int num_trees, double search_mult, std::string distance);
+RcppExport SEXP _BiocNeighbors_annoy_builder(SEXP num_treesSEXP, SEXP search_multSEXP, SEXP distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type data(dataSEXP);
     Rcpp::traits::input_parameter< int >::type num_trees(num_treesSEXP);
     Rcpp::traits::input_parameter< double >::type search_mult(search_multSEXP);
     Rcpp::traits::input_parameter< std::string >::type distance(distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(build_annoy(data, num_trees, search_mult, distance));
+    rcpp_result_gen = Rcpp::wrap(annoy_builder(num_trees, search_mult, distance));
     return rcpp_result_gen;
 END_RCPP
 }
-// build_exhaustive
-SEXP build_exhaustive(Rcpp::NumericMatrix data, std::string distance);
-RcppExport SEXP _BiocNeighbors_build_exhaustive(SEXP dataSEXP, SEXP distanceSEXP) {
+// exhaustive_builder
+SEXP exhaustive_builder(std::string distance);
+RcppExport SEXP _BiocNeighbors_exhaustive_builder(SEXP distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type data(dataSEXP);
     Rcpp::traits::input_parameter< std::string >::type distance(distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(build_exhaustive(data, distance));
+    rcpp_result_gen = Rcpp::wrap(exhaustive_builder(distance));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -43,6 +41,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type left(leftSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type right(rightSEXP);
     rcpp_result_gen = Rcpp::wrap(find_mutual_nns(left, right));
+    return rcpp_result_gen;
+END_RCPP
+}
+// generic_build
+SEXP generic_build(SEXP builder, Rcpp::NumericMatrix data);
+RcppExport SEXP _BiocNeighbors_generic_build(SEXP builderSEXP, SEXP dataSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type builder(builderSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type data(dataSEXP);
+    rcpp_result_gen = Rcpp::wrap(generic_build(builder, data));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -134,56 +143,54 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// build_hnsw
-SEXP build_hnsw(Rcpp::NumericMatrix data, int nlinks, int ef_construct, int ef_search, std::string distance);
-RcppExport SEXP _BiocNeighbors_build_hnsw(SEXP dataSEXP, SEXP nlinksSEXP, SEXP ef_constructSEXP, SEXP ef_searchSEXP, SEXP distanceSEXP) {
+// hnsw_builder
+SEXP hnsw_builder(int nlinks, int ef_construct, int ef_search, std::string distance);
+RcppExport SEXP _BiocNeighbors_hnsw_builder(SEXP nlinksSEXP, SEXP ef_constructSEXP, SEXP ef_searchSEXP, SEXP distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type data(dataSEXP);
     Rcpp::traits::input_parameter< int >::type nlinks(nlinksSEXP);
     Rcpp::traits::input_parameter< int >::type ef_construct(ef_constructSEXP);
     Rcpp::traits::input_parameter< int >::type ef_search(ef_searchSEXP);
     Rcpp::traits::input_parameter< std::string >::type distance(distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(build_hnsw(data, nlinks, ef_construct, ef_search, distance));
+    rcpp_result_gen = Rcpp::wrap(hnsw_builder(nlinks, ef_construct, ef_search, distance));
     return rcpp_result_gen;
 END_RCPP
 }
-// build_kmknn
-SEXP build_kmknn(Rcpp::NumericMatrix data, std::string distance);
-RcppExport SEXP _BiocNeighbors_build_kmknn(SEXP dataSEXP, SEXP distanceSEXP) {
+// kmknn_builder
+SEXP kmknn_builder(std::string distance);
+RcppExport SEXP _BiocNeighbors_kmknn_builder(SEXP distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type data(dataSEXP);
     Rcpp::traits::input_parameter< std::string >::type distance(distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(build_kmknn(data, distance));
+    rcpp_result_gen = Rcpp::wrap(kmknn_builder(distance));
     return rcpp_result_gen;
 END_RCPP
 }
-// build_vptree
-SEXP build_vptree(Rcpp::NumericMatrix data, std::string distance);
-RcppExport SEXP _BiocNeighbors_build_vptree(SEXP dataSEXP, SEXP distanceSEXP) {
+// vptree_builder
+SEXP vptree_builder(std::string distance);
+RcppExport SEXP _BiocNeighbors_vptree_builder(SEXP distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type data(dataSEXP);
     Rcpp::traits::input_parameter< std::string >::type distance(distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(build_vptree(data, distance));
+    rcpp_result_gen = Rcpp::wrap(vptree_builder(distance));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_BiocNeighbors_build_annoy", (DL_FUNC) &_BiocNeighbors_build_annoy, 4},
-    {"_BiocNeighbors_build_exhaustive", (DL_FUNC) &_BiocNeighbors_build_exhaustive, 2},
+    {"_BiocNeighbors_annoy_builder", (DL_FUNC) &_BiocNeighbors_annoy_builder, 3},
+    {"_BiocNeighbors_exhaustive_builder", (DL_FUNC) &_BiocNeighbors_exhaustive_builder, 1},
     {"_BiocNeighbors_find_mutual_nns", (DL_FUNC) &_BiocNeighbors_find_mutual_nns, 2},
+    {"_BiocNeighbors_generic_build", (DL_FUNC) &_BiocNeighbors_generic_build, 2},
     {"_BiocNeighbors_generic_find_knn", (DL_FUNC) &_BiocNeighbors_generic_find_knn, 5},
     {"_BiocNeighbors_generic_find_knn_subset", (DL_FUNC) &_BiocNeighbors_generic_find_knn_subset, 6},
     {"_BiocNeighbors_generic_query_knn", (DL_FUNC) &_BiocNeighbors_generic_query_knn, 6},
     {"_BiocNeighbors_generic_find_all", (DL_FUNC) &_BiocNeighbors_generic_find_all, 5},
     {"_BiocNeighbors_generic_find_all_subset", (DL_FUNC) &_BiocNeighbors_generic_find_all_subset, 6},
     {"_BiocNeighbors_generic_query_all", (DL_FUNC) &_BiocNeighbors_generic_query_all, 6},
-    {"_BiocNeighbors_build_hnsw", (DL_FUNC) &_BiocNeighbors_build_hnsw, 5},
-    {"_BiocNeighbors_build_kmknn", (DL_FUNC) &_BiocNeighbors_build_kmknn, 2},
-    {"_BiocNeighbors_build_vptree", (DL_FUNC) &_BiocNeighbors_build_vptree, 2},
+    {"_BiocNeighbors_hnsw_builder", (DL_FUNC) &_BiocNeighbors_hnsw_builder, 4},
+    {"_BiocNeighbors_kmknn_builder", (DL_FUNC) &_BiocNeighbors_kmknn_builder, 1},
+    {"_BiocNeighbors_vptree_builder", (DL_FUNC) &_BiocNeighbors_vptree_builder, 1},
     {NULL, NULL, 0}
 };
 

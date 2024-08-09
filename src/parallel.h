@@ -1,18 +1,10 @@
-#ifndef GENERICS_H
-#define GENERICS_H
-
-#include "Rcpp.h"
-#include "knncolle/knncolle.hpp"
-#include "BiocNeighbors.h"
-
-typedef knncolle::SimpleMatrix<int, int, double> WrappedMatrix;
-
-typedef knncolle::Builder<WrappedMatrix, double> BiocNeighborsBuilder;
-
-BiocNeighbors::PrebuiltPointer generic_build(const BiocNeighborsBuilder&, Rcpp::NumericMatrix);
+#ifndef PARALLEL_H
+#define PARALLEL_H
 
 #ifndef _OPENMP
 #include <thread>
+#include <vector>
+#include <algorithm>
 
 template<typename Index_, typename Function_>
 void generic_parallelize(Index_ njobs, int nthreads, Function_ fun) {

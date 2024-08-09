@@ -4,6 +4,7 @@
 #'
 #' @inheritParams ExhaustiveParam
 #' @param BNPARAM A KmknnParam instance.
+#' @param ... Further arguments, ignored.
 #'
 #' @details
 #' In the KMKNN algorithm (Wang, 2012), k-means clustering is first applied to the data points using the square root of the number of points as the number of cluster centers.
@@ -19,7 +20,7 @@
 #' @return
 #' The \code{KmknnParam} constructor returns an instance of the KmknnParam class.
 #'
-#' The \code{\link{buildIndex}} method returns an external pointer to a KMKNN index.
+#' The \code{\link{defineBuilder}} method returns an external pointer that can be used in \code{\link{buildIndex}} to construct a KMKNN index.
 #' 
 #' @author
 #' Aaron Lun, using code from the \pkg{cydar} package. 
@@ -47,7 +48,4 @@ KmknnParam <- function(..., distance=c("Euclidean", "Manhattan", "Cosine")) {
 
 #' @export
 #' @rdname KmknnParam
-setMethod("buildIndex", c("matrix", "KmknnParam"), function(X, transposed = FALSE, ..., BNPARAM) {
-    X <- .coerce_matrix_build(X, transposed)
-    build_kmknn(X, distance=BNPARAM@distance)
-})
+setMethod("defineBuilder", "KmknnParam", function(BNPARAM) kmknn_builder(distance=BNPARAM@distance))

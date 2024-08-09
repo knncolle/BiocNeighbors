@@ -5,7 +5,6 @@
 #' @param nlinks Integer scalar, number of bi-directional links per element for index generation.
 #' @param ef.construction Integer scalar, size of the dynamic list for index generation.
 #' @param ef.search Integer scalar, size of the dynamic list for neighbor searching.
-#' @param distance A string specifying the distance metric to use.
 #' @inheritParams ExhaustiveParam
 #' @param BNPARAM A HsnwParam instance.
 #' 
@@ -28,7 +27,7 @@
 #' @return
 #' The \code{HnswParam} constructor returns an instance of the HnswParam class.
 #'
-#' The \code{\link{buildIndex}} method returns an external pointer to a HNSW index.
+#' The \code{\link{defineBuilder}} method returns an external pointer that can be used in \code{\link{buildIndex}} to construct a HNSW index.
 #' 
 #' @author
 #' Aaron Lun
@@ -88,7 +87,6 @@ setMethod("show", "HnswParam", function(object) {
 
 #' @export
 #' @rdname HnswParam
-setMethod("buildIndex", c("matrix", "HnswParam"), function(X, transposed = FALSE, ..., BNPARAM) {
-    X <- .coerce_matrix_build(X, transposed)
-    build_hnsw(X, nlinks=BNPARAM@nlinks, ef_construct=BNPARAM@ef.construction, ef_search=BNPARAM@ef.search, distance=BNPARAM@distance)
+setMethod("defineBuilder", "HnswParam", function(BNPARAM) {
+    hnsw_builder(nlinks=BNPARAM@nlinks, ef_construct=BNPARAM@ef.construction, ef_search=BNPARAM@ef.search, distance=BNPARAM@distance)
 })

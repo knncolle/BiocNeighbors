@@ -3,29 +3,23 @@
 \name{VptreeParam}
 \alias{VptreeParam}
 \alias{VptreeParam-class}
-\alias{buildIndex,matrix,VptreeParam-method}
+\alias{defineBuilder,VptreeParam-method}
 \title{The VptreeParam class}
 \usage{
 VptreeParam(distance = c("Euclidean", "Manhattan", "Cosine"))
 
-\S4method{buildIndex}{matrix,VptreeParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
+\S4method{defineBuilder}{VptreeParam}(BNPARAM)
 }
 \arguments{
 \item{distance}{String specifying the distance metric to use.
 Cosine distances are implemented as Euclidean distances on L2-normalized coordinates.}
-
-\item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
-
-\item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
-
-\item{...}{Further arguments, ignored.}
 
 \item{BNPARAM}{A VptreeParam instance.}
 }
 \value{
 The \code{VptreeParam} constructor returns an instance of the VptreeParam class.
 
-The \code{\link{buildIndex}} method returns an external pointer to an VP tree index.
+The \code{\link{defineBuilder}} method returns an external pointer that can be used in \code{\link{buildIndex}} to construct a VP tree index.
 }
 \description{
 A class to hold parameters for the vantage point (VP) tree algorithm for exact nearest neighbor identification.

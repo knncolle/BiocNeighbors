@@ -2,6 +2,10 @@
 #' @rdname buildIndex
 setGeneric("buildIndex", signature=c("X", "BNPARAM"), function(X, transposed=FALSE, ..., BNPARAM=NULL) standardGeneric("buildIndex"))
 
+#' @export
+#' @rdname defineBuilder 
+setGeneric("defineBuilder", signature="BNPARAM", function(BNPARAM) standardGeneric("defineBuilder"))
+
 # This is explicitly a S4 generic so that developers can extend it at the R
 # level, not at the C++ level. We need to support dispatch on both X and
 # BNPARAM as X could be an arbitrary index structure (i.e., not an external

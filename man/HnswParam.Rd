@@ -5,7 +5,7 @@
 \alias{HnswParam}
 \alias{HnswParam-class}
 \alias{show,HnswParam-method}
-\alias{buildIndex,matrix,HnswParam-method}
+\alias{defineBuilder,HnswParam-method}
 \title{The HnswParam class}
 \usage{
 HnswParam(
@@ -15,7 +15,7 @@ HnswParam(
   distance = c("Euclidean", "Manhattan", "Cosine")
 )
 
-\S4method{buildIndex}{matrix,HnswParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
+\S4method{defineBuilder}{HnswParam}(BNPARAM)
 }
 \arguments{
 \item{nlinks}{Integer scalar, number of bi-directional links per element for index generation.}
@@ -24,20 +24,15 @@ HnswParam(
 
 \item{ef.search}{Integer scalar, size of the dynamic list for neighbor searching.}
 
-\item{distance}{A string specifying the distance metric to use.}
-
-\item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
-
-\item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
-
-\item{...}{Further arguments, ignored.}
+\item{distance}{String specifying the distance metric to use.
+Cosine distances are implemented as Euclidean distances on L2-normalized coordinates.}
 
 \item{BNPARAM}{A HsnwParam instance.}
 }
 \value{
 The \code{HnswParam} constructor returns an instance of the HnswParam class.
 
-The \code{\link{buildIndex}} method returns an external pointer to a HNSW index.
+The \code{\link{defineBuilder}} method returns an external pointer that can be used in \code{\link{buildIndex}} to construct a HNSW index.
 }
 \description{
 A class to hold parameters for the HNSW algorithm for approximate nearest neighbor identification.

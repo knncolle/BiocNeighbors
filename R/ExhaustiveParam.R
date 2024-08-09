@@ -4,9 +4,6 @@
 #' 
 #' @param distance String specifying the distance metric to use.
 #' Cosine distances are implemented as Euclidean distances on L2-normalized coordinates.
-#' @param X A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
-#' @param transposed Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.
-#' @param ... Further arguments, ignored.
 #' @param BNPARAM An ExhaustiveParam instance.
 #' 
 #' @details
@@ -21,7 +18,7 @@
 #' @return
 #' The \code{ExhaustiveParam} constructor returns an instance of the ExhaustiveParam class.
 #'
-#' The \code{\link{buildIndex}} method returns an external pointer to an exhaustive index.
+#' The \code{\link{defineBuilder}} method returns an external pointer that can be used in \code{\link{buildIndex}} to construct an exhaustive index.
 #' 
 #' @author
 #' Allison Vuong
@@ -43,7 +40,4 @@ ExhaustiveParam <- function(distance=c("Euclidean", "Manhattan", "Cosine")) {
 
 #' @export
 #' @rdname ExhaustiveParam
-setMethod("buildIndex", c("matrix", "ExhaustiveParam"), function(X, transposed = FALSE, ..., BNPARAM) {
-    X <- .coerce_matrix_build(X, transposed)
-    build_exhaustive(X, distance=BNPARAM@distance)
-})
+setMethod("defineBuilder", "ExhaustiveParam", function(BNPARAM) exhaustive_builder(distance=BNPARAM@distance))

@@ -1,22 +1,26 @@
-#include "generics.h"
-#include "l2norm.h"
+#include "Rcpp.h"
+#include "BiocNeighbors.h"
 #include "knncolle/knncolle.hpp"
 
 //[[Rcpp::export(rng=false)]]
-SEXP build_exhaustive(Rcpp::NumericMatrix data, std::string distance) {
+SEXP exhaustive_builder(std::string distance) {
     if (distance == "Manhattan") {
-        knncolle::BruteforceBuilder<knncolle::ManhattanDistance, WrappedMatrix, double> builder;
-        return generic_build(builder, data);
+        return BiocNeighbors::BuilderPointer(new knncolle::BruteforceBuilder<knncolle::ManhattanDistance, BiocNeighbors::SimpleMatrix, double>);
 
     } else if (distance == "Euclidean") {
-        knncolle::BruteforceBuilder<knncolle::EuclideanDistance, WrappedMatrix, double> builder;
-        return generic_build(builder, data);
+        return BiocNeighbors::BuilderPointer(new knncolle::BruteforceBuilder<knncolle::EuclideanDistance, BiocNeighbors::SimpleMatrix, double>);
 
     } else if (distance == "Cosine") {
-        knncolle::BruteforceBuilder<knncolle::EuclideanDistance, WrappedMatrix, double> builder;
-        auto out = generic_build(builder, l2norm(data));
-        out->cosine = true;
-        return out;
+        return BiocNeighbors::BuilderPointer(
+            new knncolle::L2NormalizedBuilder(
+                new knncolle::BruteforceBuilder<
+                    knncolle::EuclideanDistance,
+                    knncolle::L2NormalizedMatrix<BiocNeighbors::SimpleMatrix>,
+                    double
+                >
+            ),
+            true
+        );
 
     } else {
         throw std::runtime_error("unknown distance type '" + distance + "'");

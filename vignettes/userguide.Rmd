@@ -172,7 +172,8 @@ system.file("include", "BiocNeighbors.h", package="BiocNeighbors")
 ```
 
 When a `buildIndex()` method returns an external pointer, that pointer is expected to refer to an instance of a `BiocNeighbors::Prebuilt`.
-Thus, downstream code just needs to accept a pointer, cast it to a `BiocNeighbors::Prebuilt`, and then use the `index` therein for nearest-neighbor searches.
+Thus, downstream code just needs to accept a pointer and cast it to a `BiocNeighbors::Prebuilt` for use in nearest-neighbor searches.
+(The same approach can be applied to obtain a `BiocNeighbors::Builder` for construction of new indices.)
 
 ```cpp
 SEXP do_something(SEXP raw_ptr, int k) {
@@ -223,8 +224,8 @@ Alternatively, each extension package should:
 - Implement C++ classes that inherit from the `Builder`, `Prebuilt` and `Searcher` interfaces in the [**knncolle**](https://github.com/knncolle/knncolle) library.
   This requires `LinkingTo: assorthead, BiocNeighbors` in the `DESCRIPTION`.
 - Implement a `SomeNewParam` S4 class that inherits from `BiocNeighborParam`.
-- Implement a `buildIndex()` method, dispatching on a `matrix` type for `X=` and a `SomeNewParam` type for `BNPARAM=`.
-  This should call into C++ and return an external pointer to an instance of a `BiocNeighbors::Prebuilt`.
+- Implement a `defineBuilder()` method, dispatching on a `matrix` type for `X=` and a `SomeNewParam` type for `BNPARAM=`.
+  This should call into C++ and return an external pointer to an instance of a `BiocNeighbors::Builder` (see definition in `BiocNeighbors.h`).
 
 No new methods are required for `findKNN()`, `queryNeighbors()`, etc. as the existing methods can be directly used with a pointer to a `BiocNeighbors::Prebuilt` instance.
 This approach also allows the new method to be used in C++ code of downstream packages that accept a `BiocNeighbors::Prebuilt` instance.

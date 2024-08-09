@@ -5,7 +5,7 @@
 \alias{AnnoyParam}
 \alias{AnnoyParam-class}
 \alias{show,AnnoyParam-method}
-\alias{buildIndex,matrix,AnnoyParam-method}
+\alias{defineBuilder,AnnoyParam-method}
 \title{The AnnoyParam class}
 \usage{
 AnnoyParam(
@@ -14,7 +14,7 @@ AnnoyParam(
   distance = c("Euclidean", "Manhattan", "Cosine")
 )
 
-\S4method{buildIndex}{matrix,AnnoyParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
+\S4method{defineBuilder}{AnnoyParam}(BNPARAM)
 }
 \arguments{
 \item{ntrees}{Integer scalar, number of trees to use for index generation.}
@@ -24,18 +24,12 @@ AnnoyParam(
 \item{distance}{String specifying the distance metric to use.
 Cosine distances are implemented as Euclidean distances on L2-normalized coordinates.}
 
-\item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
-
-\item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
-
-\item{...}{Further arguments, ignored.}
-
 \item{BNPARAM}{An AnnoyParam instance.}
 }
 \value{
 The \code{AnnoyParam} constructor returns an instance of the AnnoyParam class.
 
-The \code{\link{buildIndex}} method returns an external pointer to an Annoy index.
+The \code{\link{defineBuilder}} method returns an external pointer that can be used in \code{\link{buildIndex}} to construct an Annoy index.
 }
 \description{
 A class to hold parameters for the Annoy algorithm for approximate nearest neighbor identification.

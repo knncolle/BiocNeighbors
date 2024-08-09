@@ -30,7 +30,7 @@
 #' @return
 #' The \code{AnnoyParam} constructor returns an instance of the AnnoyParam class.
 #'
-#' The \code{\link{buildIndex}} method returns an external pointer to an Annoy index.
+#' The \code{\link{defineBuilder}} method returns an external pointer that can be used in \code{\link{buildIndex}} to construct an Annoy index.
 #' 
 #' @author
 #' Aaron Lun
@@ -85,7 +85,6 @@ setMethod("show", "AnnoyParam", function(object) {
 
 #' @export
 #' @rdname AnnoyParam
-setMethod("buildIndex", c("matrix", "AnnoyParam"), function(X, transposed = FALSE, ..., BNPARAM) {
-    X <- .coerce_matrix_build(X, transposed)
-    build_annoy(X, num_trees=BNPARAM@ntrees, search_mult=BNPARAM@search.mult, distance=BNPARAM@distance)
+setMethod("defineBuilder", "AnnoyParam", function(BNPARAM) {
+    annoy_builder(num_trees=BNPARAM@ntrees, search_mult=BNPARAM@search.mult, distance=BNPARAM@distance)
 })

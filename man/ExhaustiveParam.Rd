@@ -4,29 +4,23 @@
 \name{ExhaustiveParam}
 \alias{ExhaustiveParam}
 \alias{ExhaustiveParam-class}
-\alias{buildIndex,matrix,ExhaustiveParam-method}
+\alias{defineBuilder,ExhaustiveParam-method}
 \title{The ExhaustiveParam class}
 \usage{
 ExhaustiveParam(distance = c("Euclidean", "Manhattan", "Cosine"))
 
-\S4method{buildIndex}{matrix,ExhaustiveParam}(X, transposed = FALSE, ..., BNPARAM = NULL)
+\S4method{defineBuilder}{ExhaustiveParam}(BNPARAM)
 }
 \arguments{
 \item{distance}{String specifying the distance metric to use.
 Cosine distances are implemented as Euclidean distances on L2-normalized coordinates.}
-
-\item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
-
-\item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
-
-\item{...}{Further arguments, ignored.}
 
 \item{BNPARAM}{An ExhaustiveParam instance.}
 }
 \value{
 The \code{ExhaustiveParam} constructor returns an instance of the ExhaustiveParam class.
 
-The \code{\link{buildIndex}} method returns an external pointer to an exhaustive index.
+The \code{\link{defineBuilder}} method returns an external pointer that can be used in \code{\link{buildIndex}} to construct an exhaustive index.
 }
 \description{
 A class to hold parameters for the exhaustive algorithm for exact nearest neighbor identification.

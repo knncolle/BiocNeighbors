@@ -8,6 +8,8 @@
 #' @param BNPARAM A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.
 #' If \code{NULL}, this defaults to a \linkS4class{KmknnParam} object. 
 #' 
+#' Alternatively, this may be an external pointer constructed by \code{\link{defineBuilder}}.
+#' 
 #' @return
 #' A prebuilt index that can be used in \code{\link{findKNN}} and related functions as the \code{X=} argument.
 #' The exact type of the index is not defined, but users should assume that the index is not serializable, i.e., cannot be saved or transferred between processes.
@@ -24,12 +26,6 @@
 #' @author
 #' Aaron Lun
 #' 
-#' @seealso
-#' \code{\link{buildIndex,matrix,KmknnParam-method}},
-#' \code{\link{buildIndex,matrix,VptreeParam-method}},
-#' \code{\link{buildIndex,matrix,AnnoyParam-method}} 
-#' and \code{\link{buildIndex,matrix,HnswParam-method}} for specific methods. 
-#' 
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)
 #' (k.out <- buildIndex(Y))
@@ -38,12 +34,23 @@
 #' @aliases
 #' buildIndex,matrix,NULL-method
 #' buildIndex,matrix,missing-method
+#' buildIndex,matrix,BiocNeighborParam-method
+#' buildIndex,matrix,externalptr-method
 #'
 #' @name buildIndex
 NULL
 
 #' @export
-setMethod("buildIndex", c("matrix", "NULL"), function(X, transposed=FALSE, ..., BNPARAM) buildIndex(X, transposed=transposed, ..., BNPARAM=KmknnParam()))
+setMethod("buildIndex", c("matrix", "missing"), function(X, transposed=FALSE, ..., BNPARAM) callGeneric(X, transposed=transposed, ..., BNPARAM=NULL))
 
 #' @export
-setMethod("buildIndex", c("matrix", "missing"), function(X, transposed=FALSE, ..., BNPARAM) buildIndex(X, transposed=transposed, ..., BNPARAM=KmknnParam()))
+setMethod("buildIndex", c("matrix", "NULL"), function(X, transposed=FALSE, ..., BNPARAM) callGeneric(X, transposed=transposed, ..., BNPARAM=KmknnParam()))
+
+#' @export
+setMethod("buildIndex", c("matrix", "BiocNeighborParam"), function(X, transposed=FALSE, ..., BNPARAM) callGeneric(X, transposed=transposed, ..., BNPARAM=defineBuilder(BNPARAM)))
+
+#' @export
+setMethod("buildIndex", c("matrix", "externalptr"), function(X, transposed=FALSE, ..., BNPARAM) {
+    X <- .coerce_matrix_build(X, transposed)
+    generic_build(BNPARAM, X)
+})
