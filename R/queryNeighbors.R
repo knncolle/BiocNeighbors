@@ -76,7 +76,7 @@ setMethod("queryNeighbors", c("externalptr", "ANY"), function(X, query, threshol
 
     query <- .coerce_matrix_build(query, transposed)
     if (!is.null(subset)) {
-        query <- query[,subset,drop=FALSE]
+        query <- query[,subset,drop=FALSE] # could move into C++ to avoid a copy but can't be bothered right now.
     }
 
     output <- generic_query_all(X, query=query, thresholds=threshold, num_threads=num.threads, report_index=get.index, report_distance=get.distance)

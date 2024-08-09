@@ -71,11 +71,14 @@ setMethod("findNeighbors", c("externalptr", "ANY"), function(X, threshold, get.i
         num.threads <- BiocParallel::bpnworkers(BPPARAM)
     }
 
-    if (is.null(subset)) {
-        output <- generic_find_all(X, thresholds=threshold, num_threads=num.threads, report_index=get.index, report_distance=get.distance)
-    } else {
-        output <- generic_find_all_subset(X, thresholds=threshold, chosen=subset, num_threads=num.threads, report_index=get.index, report_distance=get.distance)
-    }
+    output <- generic_find_all(
+       X,
+       thresholds=threshold, 
+       chosen=subset,
+       num_threads=num.threads,
+       report_index=get.index,
+       report_distance=get.distance
+    )
 
     if (!get.index && !get.distance) {
         return(output)
