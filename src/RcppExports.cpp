@@ -56,75 +56,49 @@ BEGIN_RCPP
 END_RCPP
 }
 // generic_find_knn
-SEXP generic_find_knn(SEXP prebuilt_ptr, int k, int num_threads, bool report_index, bool report_distance);
-RcppExport SEXP _BiocNeighbors_generic_find_knn(SEXP prebuilt_ptrSEXP, SEXP kSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
+SEXP generic_find_knn(SEXP prebuilt_ptr, Rcpp::IntegerVector num_neighbors, Rcpp::Nullable<Rcpp::IntegerVector> chosen, int num_threads, bool last_distance_only, bool report_index, bool report_distance);
+RcppExport SEXP _BiocNeighbors_generic_find_knn(SEXP prebuilt_ptrSEXP, SEXP num_neighborsSEXP, SEXP chosenSEXP, SEXP num_threadsSEXP, SEXP last_distance_onlySEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type prebuilt_ptr(prebuilt_ptrSEXP);
-    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type num_neighbors(num_neighborsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type chosen(chosenSEXP);
     Rcpp::traits::input_parameter< int >::type num_threads(num_threadsSEXP);
+    Rcpp::traits::input_parameter< bool >::type last_distance_only(last_distance_onlySEXP);
     Rcpp::traits::input_parameter< bool >::type report_index(report_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type report_distance(report_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(generic_find_knn(prebuilt_ptr, k, num_threads, report_index, report_distance));
-    return rcpp_result_gen;
-END_RCPP
-}
-// generic_find_knn_subset
-SEXP generic_find_knn_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, int k, int num_threads, bool report_index, bool report_distance);
-RcppExport SEXP _BiocNeighbors_generic_find_knn_subset(SEXP prebuilt_ptrSEXP, SEXP chosenSEXP, SEXP kSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< SEXP >::type prebuilt_ptr(prebuilt_ptrSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type chosen(chosenSEXP);
-    Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    Rcpp::traits::input_parameter< int >::type num_threads(num_threadsSEXP);
-    Rcpp::traits::input_parameter< bool >::type report_index(report_indexSEXP);
-    Rcpp::traits::input_parameter< bool >::type report_distance(report_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(generic_find_knn_subset(prebuilt_ptr, chosen, k, num_threads, report_index, report_distance));
+    rcpp_result_gen = Rcpp::wrap(generic_find_knn(prebuilt_ptr, num_neighbors, chosen, num_threads, last_distance_only, report_index, report_distance));
     return rcpp_result_gen;
 END_RCPP
 }
 // generic_query_knn
-SEXP generic_query_knn(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, int k, int num_threads, bool report_index, bool report_distance);
-RcppExport SEXP _BiocNeighbors_generic_query_knn(SEXP prebuilt_ptrSEXP, SEXP querySEXP, SEXP kSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
+SEXP generic_query_knn(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::IntegerVector num_neighbors, int num_threads, bool last_distance_only, bool report_index, bool report_distance);
+RcppExport SEXP _BiocNeighbors_generic_query_knn(SEXP prebuilt_ptrSEXP, SEXP querySEXP, SEXP num_neighborsSEXP, SEXP num_threadsSEXP, SEXP last_distance_onlySEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type prebuilt_ptr(prebuilt_ptrSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type query(querySEXP);
-    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type num_neighbors(num_neighborsSEXP);
     Rcpp::traits::input_parameter< int >::type num_threads(num_threadsSEXP);
+    Rcpp::traits::input_parameter< bool >::type last_distance_only(last_distance_onlySEXP);
     Rcpp::traits::input_parameter< bool >::type report_index(report_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type report_distance(report_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(generic_query_knn(prebuilt_ptr, query, k, num_threads, report_index, report_distance));
+    rcpp_result_gen = Rcpp::wrap(generic_query_knn(prebuilt_ptr, query, num_neighbors, num_threads, last_distance_only, report_index, report_distance));
     return rcpp_result_gen;
 END_RCPP
 }
 // generic_find_all
-SEXP generic_find_all(SEXP prebuilt_ptr, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance);
-RcppExport SEXP _BiocNeighbors_generic_find_all(SEXP prebuilt_ptrSEXP, SEXP thresholdsSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
+SEXP generic_find_all(SEXP prebuilt_ptr, Rcpp::Nullable<Rcpp::IntegerVector> chosen, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance);
+RcppExport SEXP _BiocNeighbors_generic_find_all(SEXP prebuilt_ptrSEXP, SEXP chosenSEXP, SEXP thresholdsSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type prebuilt_ptr(prebuilt_ptrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type chosen(chosenSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type thresholds(thresholdsSEXP);
     Rcpp::traits::input_parameter< int >::type num_threads(num_threadsSEXP);
     Rcpp::traits::input_parameter< bool >::type report_index(report_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type report_distance(report_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(generic_find_all(prebuilt_ptr, thresholds, num_threads, report_index, report_distance));
-    return rcpp_result_gen;
-END_RCPP
-}
-// generic_find_all_subset
-SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance);
-RcppExport SEXP _BiocNeighbors_generic_find_all_subset(SEXP prebuilt_ptrSEXP, SEXP chosenSEXP, SEXP thresholdsSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< SEXP >::type prebuilt_ptr(prebuilt_ptrSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type chosen(chosenSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type thresholds(thresholdsSEXP);
-    Rcpp::traits::input_parameter< int >::type num_threads(num_threadsSEXP);
-    Rcpp::traits::input_parameter< bool >::type report_index(report_indexSEXP);
-    Rcpp::traits::input_parameter< bool >::type report_distance(report_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(generic_find_all_subset(prebuilt_ptr, chosen, thresholds, num_threads, report_index, report_distance));
+    rcpp_result_gen = Rcpp::wrap(generic_find_all(prebuilt_ptr, chosen, thresholds, num_threads, report_index, report_distance));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -182,11 +156,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BiocNeighbors_exhaustive_builder", (DL_FUNC) &_BiocNeighbors_exhaustive_builder, 1},
     {"_BiocNeighbors_find_mutual_nns", (DL_FUNC) &_BiocNeighbors_find_mutual_nns, 2},
     {"_BiocNeighbors_generic_build", (DL_FUNC) &_BiocNeighbors_generic_build, 2},
-    {"_BiocNeighbors_generic_find_knn", (DL_FUNC) &_BiocNeighbors_generic_find_knn, 5},
-    {"_BiocNeighbors_generic_find_knn_subset", (DL_FUNC) &_BiocNeighbors_generic_find_knn_subset, 6},
-    {"_BiocNeighbors_generic_query_knn", (DL_FUNC) &_BiocNeighbors_generic_query_knn, 6},
-    {"_BiocNeighbors_generic_find_all", (DL_FUNC) &_BiocNeighbors_generic_find_all, 5},
-    {"_BiocNeighbors_generic_find_all_subset", (DL_FUNC) &_BiocNeighbors_generic_find_all_subset, 6},
+    {"_BiocNeighbors_generic_find_knn", (DL_FUNC) &_BiocNeighbors_generic_find_knn, 7},
+    {"_BiocNeighbors_generic_query_knn", (DL_FUNC) &_BiocNeighbors_generic_query_knn, 7},
+    {"_BiocNeighbors_generic_find_all", (DL_FUNC) &_BiocNeighbors_generic_find_all, 6},
     {"_BiocNeighbors_generic_query_all", (DL_FUNC) &_BiocNeighbors_generic_query_all, 6},
     {"_BiocNeighbors_hnsw_builder", (DL_FUNC) &_BiocNeighbors_hnsw_builder, 4},
     {"_BiocNeighbors_kmknn_builder", (DL_FUNC) &_BiocNeighbors_kmknn_builder, 1},

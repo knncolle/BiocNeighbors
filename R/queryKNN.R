@@ -3,6 +3,12 @@
 #' Query a dataset for nearest neighbors of points in another dataset, using a variety of algorithms.
 #' 
 #' @inheritParams findKNN
+#' @param k A positive integer scalar specifying the number of nearest neighbors to retrieve.
+#'
+#' Alternatively, an integer vector of length equal to the number of points in \code{query}, specifying the number of neighbors to identify for each point.
+#' If \code{subset} is provided, this should have length equal to the length of \code{subset}.
+#'
+#' All \code{k} should be less than or equal to the number of points in \code{X}, otherwise the former will be capped at the latter with a warning.
 #' @param query A numeric matrix of query points, containing the same number of columns as \code{X}.
 #' @param transposed A logical scalar indicating whether \code{X} and \code{query} are transposed, 
 #' in which case both matrices are assumed to contain dimensions in the rows and data points in the columns.
@@ -13,20 +19,34 @@
 #' The resulting pointer object can be supplied as \code{X} to multiple \code{queryKNN} calls, avoiding the need to repeat index construction in each call.
 #' 
 #' @return
-#' A list is returned containing:
+#' List containing \code{index} (if \code{get.index} is not \code{FALSE}) and \code{distance} (if \code{get.distance} is not \code{FALSE}).
 #' \itemize{
-#' \item \code{index}, if \code{get.index=TRUE}.
-#' This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{query}.
-#' The row for \eqn{i} contains the row indices of \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
-#' \item \code{distance}, if \code{get.distance=TRUE}.
-#' This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
-#' }
-#'
-#' The number of columns in both matrices is set to \code{min(k, ncol(X))}.
-#' If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
+#' \item 
+#' If \code{get.index=TRUE} or \code{"normal"} and \code{k} is an integer scalar,
+#' \code{index} is an integer matrix with \code{k} columns where each row corresponds to a point (denoted here as \eqn{i}) in \code{query}.
+#' The \eqn{i}-th row contains the indices of points in \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
 #' 
-#' If \code{get.index="transposed"}, the \code{index} matrix is transposed, i.e., the rows are the neighbors while the columns are the points.
-#' Similarly, if \code{get.distance="transposed"}, the \code{distance} matrix is transposed.
+#' If \code{get.index=FALSE} or \code{"transposed"} and \code{k} is an integer scalar,
+#' \code{index} is as described above but transposed, i.e., the \code{i}-th column contains the indices of neighboring points in \code{X}. 
+#'
+#' \item 
+#' If \code{get.distance=TRUE} or \code{"normal"} and \code{k} is an integer scalar,
+#' \code{distance} is a numeric matrix of the same dimensions as \code{index}.
+#' The \eqn{i}-th row contains the distances of neighboring points in \code{X} to the point \eqn{i}, sorted in increasing order.
+#'
+#' If \code{get.distance=FALSE} or \code{"transposed"} and \code{k} is an integer scalar,
+#' \code{distance} is as described above but transposed, i.e., the \code{i}-th column contains the distances to neighboring points in \code{X}. 
+#'
+#' \item 
+#' If \code{get.index} is not \code{FALSE} and \code{k} is an integer vector,
+#' \code{index} is a list of integer vectors where each vector corresponds to a point (denoted here as \eqn{i}) in \code{X}.
+#' The \eqn{i}-th vector has length \code{k[i]} and contains the indices of points in \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
+#'
+#' \item 
+#' If \code{get.distance} is not \code{FALSE} and \code{k} is an integer vector,
+#' \code{distance} is a list of numeric vectors of the same lengths as those in \code{index}.
+#' The \eqn{i}-th vector contains the distances of neighboring points in \code{X} to the point \eqn{i}, sorted in increasing order.
+#' }
 #'
 #' @author
 #' Aaron Lun
@@ -66,13 +86,23 @@ setMethod("queryKNN", c("externalptr", "ANY"), function(X, query, k, get.index=T
 
     query <- .coerce_matrix_build(query, transposed)
     if (!is.null(subset)) {
-        query <- query[,subset,drop=FALSE]
+        query <- query[,subset,drop=FALSE] # could move into C++ for efficiency but can't be bothered for now.
     }
 
-    output <- generic_query_knn(X, query=query, k=k, num_threads=num.threads, report_index=!isFALSE(get.index), report_distance=!isFALSE(get.distance))
+    output <- generic_query_knn(
+        X,
+        query=query,
+        num_neighbors=k,
+        num_threads=num.threads,
+        last_distance_only=FALSE,
+        report_index=!isFALSE(get.index),
+        report_distance=!isFALSE(get.distance)
+    )
 
-    output <- .format_output(output, "index", get.index)
-    output <- .format_output(output, "distance", get.distance)
+    if (length(k) == 1L) {
+        output <- .format_output(output, "index", get.index)
+        output <- .format_output(output, "distance", get.distance)
+    }
 
     output
 })

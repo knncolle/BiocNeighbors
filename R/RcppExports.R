@@ -17,24 +17,16 @@ generic_build <- function(builder, data) {
     .Call('_BiocNeighbors_generic_build', PACKAGE = 'BiocNeighbors', builder, data)
 }
 
-generic_find_knn <- function(prebuilt_ptr, k, num_threads, report_index, report_distance) {
-    .Call('_BiocNeighbors_generic_find_knn', PACKAGE = 'BiocNeighbors', prebuilt_ptr, k, num_threads, report_index, report_distance)
+generic_find_knn <- function(prebuilt_ptr, num_neighbors, chosen, num_threads, last_distance_only, report_index, report_distance) {
+    .Call('_BiocNeighbors_generic_find_knn', PACKAGE = 'BiocNeighbors', prebuilt_ptr, num_neighbors, chosen, num_threads, last_distance_only, report_index, report_distance)
 }
 
-generic_find_knn_subset <- function(prebuilt_ptr, chosen, k, num_threads, report_index, report_distance) {
-    .Call('_BiocNeighbors_generic_find_knn_subset', PACKAGE = 'BiocNeighbors', prebuilt_ptr, chosen, k, num_threads, report_index, report_distance)
+generic_query_knn <- function(prebuilt_ptr, query, num_neighbors, num_threads, last_distance_only, report_index, report_distance) {
+    .Call('_BiocNeighbors_generic_query_knn', PACKAGE = 'BiocNeighbors', prebuilt_ptr, query, num_neighbors, num_threads, last_distance_only, report_index, report_distance)
 }
 
-generic_query_knn <- function(prebuilt_ptr, query, k, num_threads, report_index, report_distance) {
-    .Call('_BiocNeighbors_generic_query_knn', PACKAGE = 'BiocNeighbors', prebuilt_ptr, query, k, num_threads, report_index, report_distance)
-}
-
-generic_find_all <- function(prebuilt_ptr, thresholds, num_threads, report_index, report_distance) {
-    .Call('_BiocNeighbors_generic_find_all', PACKAGE = 'BiocNeighbors', prebuilt_ptr, thresholds, num_threads, report_index, report_distance)
-}
-
-generic_find_all_subset <- function(prebuilt_ptr, chosen, thresholds, num_threads, report_index, report_distance) {
-    .Call('_BiocNeighbors_generic_find_all_subset', PACKAGE = 'BiocNeighbors', prebuilt_ptr, chosen, thresholds, num_threads, report_index, report_distance)
+generic_find_all <- function(prebuilt_ptr, chosen, thresholds, num_threads, report_index, report_distance) {
+    .Call('_BiocNeighbors_generic_find_all', PACKAGE = 'BiocNeighbors', prebuilt_ptr, chosen, thresholds, num_threads, report_index, report_distance)
 }
 
 generic_query_all <- function(prebuilt_ptr, query, thresholds, num_threads, report_index, report_distance) {

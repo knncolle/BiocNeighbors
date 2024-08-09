@@ -48,6 +48,24 @@ test_that("queryKNN works with subsets", {
     expect_identical(ncol(out$distance), 0L)
 })
 
+test_that("queryKNN works with variable k", {
+    Y <- matrix(rnorm(10000), ncol=20)
+    Z <- matrix(rnorm(2000), ncol=20)
+
+    k <- rep(c(4, 10), length.out=nrow(Z))
+    out <- queryKNN(Y, Z, k=k)
+
+    keep <- k == 4
+    ref <- queryKNN(Y, Z, k=4)
+    expect_identical(do.call(rbind, out$index[keep]), ref$index[keep,])
+    expect_identical(do.call(rbind, out$distance[keep]), ref$distance[keep,])
+
+    keep <- k == 10
+    ref <- queryKNN(Y, Z, k=10)
+    expect_identical(do.call(rbind, out$index[keep]), ref$index[keep,])
+    expect_identical(do.call(rbind, out$distance[keep]), ref$distance[keep,])
+})
+
 test_that("queryKNN works with prebuilt indices", {
     Y <- matrix(rnorm(10000), ncol=20)
     Z <- matrix(rnorm(2000), ncol=20)

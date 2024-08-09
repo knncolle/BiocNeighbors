@@ -39,7 +39,9 @@
     } else if (identical(to.get, "transposed")) {
         ; # no-op
     } else if (isTRUE(to.get) || identical(to.get, "normal")) {
-        output[[name]] <- t(output[[name]])
+        if (is.matrix(output[[name]])) {
+            output[[name]] <- t(output[[name]])
+        }
     } else {
         stop("unsupported option '", to.get, "'")
     }

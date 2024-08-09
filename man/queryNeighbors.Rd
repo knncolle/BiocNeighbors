@@ -35,13 +35,13 @@ Alternatively, a vector containing a different distance threshold for each query
 \item{get.index}{A logical scalar indicating whether the indices of the nearest neighbors should be recorded.
 Setting this to \code{FALSE} improves efficiency if the indices are not of interest.
 
-Alternatively, this may be a string containing \code{"normal"} or \code{"transposed"}.
+Alternatively, if \code{k} is an integer scalar, this may be a string containing \code{"normal"} or \code{"transposed"}.
 The former is the same as \code{TRUE}, while the latter returns the index matrix in transposed format.}
 
 \item{get.distance}{A logical scalar indicating whether distances to the nearest neighbors should be recorded.
 Setting this to \code{FALSE} improves efficiency if the distances are not of interest.
 
-Alternatively, this may be a string containing \code{"normal"} or \code{"transposed"}.
+Alternatively, if \code{k} is an integer scalar, this may be a string containing \code{"normal"} or \code{"transposed"}.
 The former is the same as \code{TRUE}, while the latter returns the distance matrix in transposed format.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use for the search.}

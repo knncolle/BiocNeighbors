@@ -25,24 +25,29 @@ findKNN(
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
 Alternatively, a prebuilt index from \code{\link{buildIndex}}.}
 
-\item{k}{A positive integer scalar specifying the number of nearest neighbors to retrieve.}
+\item{k}{A positive integer scalar specifying the number of nearest neighbors to retrieve.
+
+Alternatively, an integer vector of length equal to the number of points in \code{X}, specifying the number of neighbors to identify for each point.
+If \code{subset} is provided, this should have length equal to the length of \code{subset}.
+
+All \code{k} should be less than or equal to the number of points in \code{X} minus 1, otherwise the former will be capped at the latter with a warning.}
 
 \item{get.index}{A logical scalar indicating whether the indices of the nearest neighbors should be recorded.
 Setting this to \code{FALSE} improves efficiency if the indices are not of interest.
 
-Alternatively, this may be a string containing \code{"normal"} or \code{"transposed"}.
+Alternatively, if \code{k} is an integer scalar, this may be a string containing \code{"normal"} or \code{"transposed"}.
 The former is the same as \code{TRUE}, while the latter returns the index matrix in transposed format.}
 
 \item{get.distance}{A logical scalar indicating whether distances to the nearest neighbors should be recorded.
 Setting this to \code{FALSE} improves efficiency if the distances are not of interest.
 
-Alternatively, this may be a string containing \code{"normal"} or \code{"transposed"}.
+Alternatively, if \code{k} is an integer scalar, this may be a string containing \code{"normal"} or \code{"transposed"}.
 The former is the same as \code{TRUE}, while the latter returns the distance matrix in transposed format.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use for the search.}
 
-\item{subset}{An integer, logical or character vector specifying the rows of \code{X} for which the nearest neighbors should be identified.
-This yields the same result as (but is more efficient than) subsetting the output matrices after running \code{findKmknn} with \code{subset=NULL}.}
+\item{subset}{An integer, logical or character vector specifying the indices of points in \code{X} for which the nearest neighbors should be identified.
+This yields the same result as (but is more efficient than) subsetting the output matrices after computing neighbors for all points.}
 
 \item{...}{Further arguments to pass to \code{\link{buildIndex}} when \code{X} is not an external pointer.}
 
@@ -51,20 +56,34 @@ If \code{NULL}, this defaults to a \linkS4class{KmknnParam}.
 Ignored if \code{x} contains a prebuilt index.}
 }
 \value{
-A list is returned containing:
+List containing \code{index} (if \code{get.index} is not \code{FALSE}) and \code{distance} (if \code{get.distance} is not \code{FALSE}).
 \itemize{
-\item \code{index}, if \code{get.index=TRUE}.
-This is an integer matrix where each row corresponds to a point (denoted here as \eqn{i}) in \code{X}.
-The row for \eqn{i} contains the row indices of \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
-\item \code{distance}, if \code{get.distance=TRUE}.
-This is a numeric matrix where each row corresponds to a point (as above) and contains the sorted distances of the neighbors from \eqn{i}.
+\item 
+If \code{get.index=TRUE} or \code{"normal"} and \code{k} is an integer scalar,
+\code{index} is an integer matrix with \code{k} columns where each row corresponds to a point (denoted here as \eqn{i}) in \code{X}.
+The \eqn{i}-th row contains the indices of points in \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
+
+If \code{get.index=FALSE} or \code{"transposed"} and \code{k} is an integer scalar,
+\code{index} is as described above but transposed, i.e., the \code{i}-th column contains the indices of neighboring points in \code{X}. 
+
+\item 
+If \code{get.distance=TRUE} or \code{"normal"} and \code{k} is an integer scalar,
+\code{distance} is a numeric matrix of the same dimensions as \code{index}.
+The \eqn{i}-th row contains the distances of neighboring points in \code{X} to the point \eqn{i}, sorted in increasing order.
+
+If \code{get.distance=FALSE} or \code{"transposed"} and \code{k} is an integer scalar,
+\code{distance} is as described above but transposed, i.e., the \code{i}-th column contains the distances to neighboring points in \code{X}. 
+
+\item 
+If \code{get.index} is not \code{FALSE} and \code{k} is an integer vector,
+\code{index} is a list of integer vectors where each vector corresponds to a point (denoted here as \eqn{i}) in \code{X}.
+The \eqn{i}-th vector has length \code{k[i]} and contains the indices of points in \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
+
+\item 
+If \code{get.distance} is not \code{FALSE} and \code{k} is an integer vector,
+\code{distance} is a list of numeric vectors of the same lengths as those in \code{index}.
+The \eqn{i}-th vector contains the distances of neighboring points in \code{X} to the point \eqn{i}, sorted in increasing order.
 }
-
-The number of columns in both matrices is set to \code{min(k, ncol(X) - 1)}.
-If \code{subset} is not \code{NULL}, each row of the above matrices refers to a point in the subset, in the same order as supplied in \code{subset}.
-
-If \code{get.index="transposed"}, the \code{index} matrix is transposed, i.e., the rows are the neighbors while the columns are the points.
-Similarly, if \code{get.distance="transposed"}, the \code{distance} matrix is transposed.
 }
 \description{
 Find the nearest neighbors of each point in a dataset, using a variety of algorithms.
