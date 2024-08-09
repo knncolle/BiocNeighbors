@@ -15,11 +15,12 @@
 #' The exact type of the index is not defined, but users should assume that the index is not serializable, i.e., cannot be saved or transferred between processes.
 #'
 #' @details
-#' The type and structure of the index object returned by \code{buildIndex} methods is arbitrary and left to the discretion of the developer.
+#' The type and structure of the index object returned by \code{buildIndex} methods is arbitrary and left to the discretion of the method developer.
 #' However, there are a few constraints:
 #' \itemize{
 #' \item It should not be a matrix, as this interferes with dispatch for methods like \code{\link{findKNN}} when \code{X} is just the data matrix.
-#' \item If it is an external pointer, it should refer to a BiocNeighborsPrebuilt object (see \code{system.file("include", "BiocNeighbors.h", package="BiocNeighbors")}.
+#' \item If it is an external pointer, it should refer to a \code{BiocNeighbors::Prebuilt} object
+#' (see definition in \code{system.file("include", "BiocNeighbors.h", package="BiocNeighbors")}).
 #' This allows it to be directly used in methods like \code{\link{findKNN}}.
 #' }
 #' 

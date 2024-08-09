@@ -19,8 +19,11 @@ Pointer to a builder instance that can be used to construct a prebuilt index in 
 Define a builder object that can construct indices for nearest-neighbor searching with different algorithms.
 }
 \details{
-The pointer should refer to a \code{BiocNeighbors::Builder} object (see \code{system.file("include", "BiocNeighbors.h", package="BiocNeighbors")}.
-This allows it to be directly used in \code{\link{buildIndex}}.
+Methods for this generic should return a pointer that refers to a \code{BiocNeighbors::Builder} object,
+see definition in \code{system.file("include", "BiocNeighbors.h", package="BiocNeighbors")} for details.
+
+Note that the pointer returned by \code{defineBuilder} should \emph{not} be used in \code{\link{findKNN}}, \code{\link{queryKNN}}, etc.
+Those methods instead accept the pointer returned by \code{\link{buildIndex}}.
 }
 \examples{
 (out <- defineBuilder())
