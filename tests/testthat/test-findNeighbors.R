@@ -10,10 +10,10 @@ test_that("findNeighbors works with basic options", {
     ref <- refFindNeighbors(Y, threshold=d)
     expect_equal(out, ref)
 
-#    d <- median(findKNN(Y, k=8, get.index=FALSE, BNPARAM=KmknnParam(distance="Manhattan"))$distance[,8])
-#    out <- findNeighbors(Y, threshold=d, BNPARAM=KmknnParam(distance="Manhattan"))
-#    ref <- refFindNeighbors(Y, threshold=d, type="manhattan")
-#    expect_equal(out, ref)
+    d <- median(findKNN(Y, k=8, get.index=FALSE, BNPARAM=KmknnParam(distance="Manhattan"))$distance[,8])
+    out <- findNeighbors(Y, threshold=d, BNPARAM=KmknnParam(distance="Manhattan"))
+    ref <- refFindNeighbors(Y, threshold=d, type="manhattan")
+    expect_equal(out, ref)
 
     d <- median(findKNN(Y, k=8, get.index=FALSE, BNPARAM=KmknnParam(distance="Cosine"))$distance[,8])
     out <- findNeighbors(Y, threshold=d, BNPARAM=KmknnParam(distance="Cosine"))

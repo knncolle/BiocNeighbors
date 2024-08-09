@@ -11,10 +11,10 @@ test_that("queryNeighbors works with basic options", {
     ref <- refQueryNeighbors(Y, Z, threshold=d)
     expect_equal(out, ref)
 
-#    d <- median(queryKNN(Y, Z, k=8, get.index=FALSE, BNPARAM=KmknnParam(distance="Manhattan"))$distance[,8])
-#    out <- queryNeighbors(Y, Z, threshold=d, BNPARAM=KmknnParam(distance="Manhattan"))
-#    ref <- refQueryNeighbors(Y, Z, threshold=d, type="manhattan")
-#    expect_equal(out, ref)
+    d <- median(queryKNN(Y, Z, k=8, get.index=FALSE, BNPARAM=KmknnParam(distance="Manhattan"))$distance[,8])
+    out <- queryNeighbors(Y, Z, threshold=d, BNPARAM=KmknnParam(distance="Manhattan"))
+    ref <- refQueryNeighbors(Y, Z, threshold=d, type="manhattan")
+    expect_equal(out, ref)
 })
 
 test_that("queryNeighbors works in parallel", {
