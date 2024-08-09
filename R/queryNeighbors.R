@@ -71,7 +71,6 @@ setMethod("queryNeighbors", c("matrix", "ANY"), function(X, query, threshold, ge
 #' @export
 setMethod("queryNeighbors", c("externalptr", "ANY"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
     if (!is.null(BPPARAM)) {
-        .Deprecated(old="BPPARAM=", new="num.threads=")
         num.threads <- BiocParallel::bpnworkers(BPPARAM)
     }
 
@@ -97,6 +96,5 @@ setMethod("queryNeighbors", c("externalptr", "ANY"), function(X, query, threshol
 
 #' @export
 setMethod("queryNeighbors", c("missing", "ANY"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BNINDEX=NULL, BNPARAM=NULL) {
-    .Deprecated(old="BNINDEX=", new="X=")
     callGeneric(BNINDEX, query=query, threshold=threshold, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, transposed=transposed, ..., BNPARAM=BNPARAM)
 })

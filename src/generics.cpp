@@ -56,7 +56,11 @@ std::vector<Value_>* prepare_buffer(std::vector<Value_>& buffer, bool report, in
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_find_knn(SEXP prebuilt_ptr, int k, int num_threads, bool report_index, bool report_distance) {
-    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr));
+    BiocNeighbors::PrebuiltPointer cast(prebuilt_ptr); 
+    if (!R_ExternalPtrAddr(SEXP(cast))) {
+        throw std::runtime_error("null pointer to a prebuilt index");
+    }
+    const auto& prebuilt = *cast;
     int nobs = prebuilt.num_observations();
 
     k = sanitize_k(k, nobs);
@@ -115,7 +119,11 @@ SEXP generic_find_knn(SEXP prebuilt_ptr, int k, int num_threads, bool report_ind
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_find_knn_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, int k, int num_threads, bool report_index, bool report_distance) {
-    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr));
+    BiocNeighbors::PrebuiltPointer cast(prebuilt_ptr); 
+    if (!R_ExternalPtrAddr(SEXP(cast))) {
+        throw std::runtime_error("null pointer to a prebuilt index");
+    }
+    const auto& prebuilt = *cast;
     int nobs = prebuilt.num_observations();
 
     k = sanitize_k(k, nobs);
@@ -178,7 +186,11 @@ SEXP generic_find_knn_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, int 
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_query_knn(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, int k, int num_threads, bool report_index, bool report_distance) {
-    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr));
+    BiocNeighbors::PrebuiltPointer cast(prebuilt_ptr); 
+    if (!R_ExternalPtrAddr(SEXP(cast))) {
+        throw std::runtime_error("null pointer to a prebuilt index");
+    }
+    const auto& prebuilt = *cast;
     int nobs = prebuilt.num_observations();
     size_t ndim = prebuilt.num_dimensions();
 
@@ -263,7 +275,11 @@ Rcpp::List format_range_output(const std::vector<std::vector<Value_> >& results)
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_find_all(SEXP prebuilt_ptr, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance) {
-    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr));
+    BiocNeighbors::PrebuiltPointer cast(prebuilt_ptr); 
+    if (!R_ExternalPtrAddr(SEXP(cast))) {
+        throw std::runtime_error("null pointer to a prebuilt index");
+    }
+    const auto& prebuilt = *cast;
     int nobs = prebuilt.num_observations();
 
     std::vector<std::vector<double> > out_d(report_distance ? nobs : 0);
@@ -346,7 +362,11 @@ SEXP generic_find_all(SEXP prebuilt_ptr, Rcpp::NumericVector thresholds, int num
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance) {
-    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr));
+    BiocNeighbors::PrebuiltPointer cast(prebuilt_ptr); 
+    if (!R_ExternalPtrAddr(SEXP(cast))) {
+        throw std::runtime_error("null pointer to a prebuilt index");
+    }
+    const auto& prebuilt = *cast;
 
     const int* chosen_ptr = chosen.begin();
     int nchosen = chosen.size();
@@ -431,7 +451,11 @@ SEXP generic_find_all_subset(SEXP prebuilt_ptr, Rcpp::IntegerVector chosen, Rcpp
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_query_all(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance) {
-    const auto& prebuilt = *(BiocNeighbors::PrebuiltPointer(prebuilt_ptr));
+    BiocNeighbors::PrebuiltPointer cast(prebuilt_ptr); 
+    if (!R_ExternalPtrAddr(SEXP(cast))) {
+        throw std::runtime_error("null pointer to a prebuilt index");
+    }
+    const auto& prebuilt = *cast;
     size_t ndim = prebuilt.num_dimensions();
 
     int nquery = query.ncol();

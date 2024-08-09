@@ -92,6 +92,5 @@ setMethod("findNeighbors", c("externalptr", "ANY"), function(X, threshold, get.i
 
 #' @export
 setMethod("findNeighbors", c("missing", "ANY"), function(X, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BNINDEX=NULL, BNPARAM=NULL) {
-    .Deprecated(old="BNINDEX=", new="X=")
     callGeneric(BNINDEX, threshold=threshold, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, ..., BNINDEX=BNINDEX)
 })

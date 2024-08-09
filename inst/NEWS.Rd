@@ -10,7 +10,8 @@ This greatly streamlines the internals and allows downstream packages to re-use 
 This avoids the overhead of forking or starting new processes via \pkg{BiocParallel}.
 
 \item All \code{*Index} classes have been removed. 
-The output of \code{buildIndex()} is no longer guaranteed to be serializable, e.g., external pointers to C++-owned objects.
+The output of \code{buildIndex()} is no longer guaranteed to be serializable, e.g., external pointers to C++-owned objects;
+attempting to do so will raise a \dQuote{null pointer to prebuilt index} error for all methods implemented in this package.
 The removal of this guarantee makes it easier to extend \pkg{BiocNeighbors} to new methods where the index structure does not have an obvious R representation.
 
 \item All functions (\code{findKNN()}, \code{queryNeighbors()}, etc.) will no longer coerce `X` to a matrix, to avoid the headache of S4 dispatch ambiguity.

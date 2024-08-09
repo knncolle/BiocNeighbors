@@ -75,7 +75,6 @@ setMethod("findKNN", c("matrix", "ANY"), function(X, k, get.index=TRUE, get.dist
 #' @export
 setMethod("findKNN", c("externalptr", "ANY"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
     if (!is.null(BPPARAM)) {
-        .Deprecated(old="BPPARAM=", new="num.threads=")
         num.threads <- BiocParallel::bpnworkers(BPPARAM)
     }
 
@@ -93,6 +92,5 @@ setMethod("findKNN", c("externalptr", "ANY"), function(X, k, get.index=TRUE, get
 
 #' @export
 setMethod("findKNN", c("missing", "ANY"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BNINDEX=NULL, BNPARAM=NULL) {
-    .Deprecated(old="BNINDEX=", new="X=")
     callGeneric(BNINDEX, k=k, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, ..., BNPARAM=BNPARAM) 
 })

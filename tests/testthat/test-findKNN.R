@@ -55,6 +55,11 @@ test_that("findKNN works with prebuilt indices", {
     # Unaffected by BNPARAM settings at this point.
     preout <- findKNN(built, k=8, BNPARAM=AnnoyParam())
     expect_identical(out, preout)
+
+    # Throws an error for deserialized prebuilt indices.
+    tmp <- tempfile(fileext=".rds")
+    saveRDS(preout, tmp)
+    expect_error(findKNN(readRDS(tmp)), "null pointer")
 })
 
 test_that("findKNN works with variable outputs", {
