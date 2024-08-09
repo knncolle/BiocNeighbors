@@ -4,8 +4,10 @@
 \alias{queryKNN}
 \alias{queryKNN,matrix,ANY-method}
 \alias{queryKNN,externalptr,ANY-method}
+\alias{queryKNN,missing,ANY-method}
 \alias{queryKNN,matrix-method}
 \alias{queryKNN,externalptr-method}
+\alias{queryKNN,missing-method}
 \title{Query nearest neighbors}
 \usage{
 queryKNN(

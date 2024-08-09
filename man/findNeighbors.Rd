@@ -4,8 +4,10 @@
 \alias{findNeighbors}
 \alias{findNeighbors,matrix,ANY-method}
 \alias{findNeighbors,externalptr,ANY-method}
+\alias{findNeighbors,missing,ANY-method}
 \alias{findNeighbors,matrix-method}
 \alias{findNeighbors,externalptr-method}
+\alias{findNeighbors,missing-method}
 \title{Find all neighbors in range}
 \usage{
 findNeighbors(

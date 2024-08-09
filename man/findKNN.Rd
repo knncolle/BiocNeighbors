@@ -4,8 +4,10 @@
 \alias{findKNN}
 \alias{findKNN,matrix,ANY-method}
 \alias{findKNN,externalptr,ANY-method}
+\alias{findKNN,missing,ANY-method}
 \alias{findKNN,matrix-method}
 \alias{findKNN,externalptr-method}
+\alias{findKNN,missing-method}
 \title{Find nearest neighbors}
 \usage{
 findKNN(

@@ -4,8 +4,10 @@
 \alias{queryNeighbors}
 \alias{queryNeighbors,matrix,ANY-method}
 \alias{queryNeighbors,externalptr,ANY-method}
+\alias{queryNeighbors,missing,ANY-method}
 \alias{queryNeighbors,matrix-method}
 \alias{queryNeighbors,externalptr-method}
+\alias{queryNeighbors,missing-method}
 \title{Query neighbors in range}
 \usage{
 queryNeighbors(
