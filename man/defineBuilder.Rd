@@ -19,11 +19,14 @@ Pointer to a builder instance that can be used to construct a prebuilt index in 
 Define a builder object that can construct indices for nearest-neighbor searching with different algorithms.
 }
 \details{
-Methods for this generic should return a pointer that refers to a \code{BiocNeighbors::Builder} object,
+Methods for this generic should return an external pointer that refers to a \code{BiocNeighbors::Builder} object,
 see definition in \code{system.file("include", "BiocNeighbors.h", package="BiocNeighbors")} for details.
 
 Note that the pointer returned by \code{defineBuilder} should \emph{not} be used in \code{\link{findKNN}}, \code{\link{queryKNN}}, etc.
 Those methods instead accept the pointer returned by \code{\link{buildIndex}}.
+
+Needless to say, users should not attempt to serialize the external pointer returned by this generic.
+Attempting to use a deserialized pointer in \code{\link{buildIndex}} will cause the R session to crash.
 }
 \examples{
 (out <- defineBuilder())
