@@ -13,7 +13,7 @@
 #' @details
 #' This function identifies all points in \code{X} that within \code{threshold} of each point in \code{query}.
 #' For Euclidean distances, this is equivalent to identifying all points in a hypersphere centered around the point of interest.
-#' Note all implementations support this search mode, but we can use \link{KmknnParam} and \linkS4class{VptreeParam}.
+#' Not all implementations support this search mode, but we can use \link{KmknnParam} and \linkS4class{VptreeParam}.
 #' 
 #' If \code{threshold} is a vector, each entry is assumed to specify a (possibly different) threshold for each point in \code{query}.
 #' If \code{subset} is also specified, each entry is assumed to specify a threshold for each point in \code{subset}.
