@@ -63,6 +63,7 @@ List containing \code{index} (if \code{get.index} is not \code{FALSE}) and \code
 If \code{get.index=TRUE} or \code{"normal"} and \code{k} is an integer scalar,
 \code{index} is an integer matrix with \code{k} columns where each row corresponds to a point (denoted here as \eqn{i}) in \code{X}.
 The \eqn{i}-th row contains the indices of points in \code{X} that are the nearest neighbors to point \eqn{i}, sorted by increasing distance from \eqn{i}.
+\eqn{i} will \emph{not} be included in its own set of nearest neighbors.
 
 If \code{get.index=FALSE} or \code{"transposed"} and \code{k} is an integer scalar,
 \code{index} is as described above but transposed, i.e., the \code{i}-th column contains the indices of neighboring points in \code{X}. 

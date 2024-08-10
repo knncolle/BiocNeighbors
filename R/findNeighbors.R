@@ -26,7 +26,7 @@
 #' \item \code{index}, if \code{get.index=TRUE}.
 #' This is a list of integer vectors where each entry corresponds to a point (denoted here as \eqn{i}) in \code{X}.
 #' The vector for \eqn{i} contains the set of row indices of all points in \code{X} that lie within \code{threshold} of point \eqn{i}.
-#' Points in each vector are not ordered, and \eqn{i} will always be included in its own set.
+#' Neighbors for \eqn{i} are sorted by increasing distance.
 #' \item \code{distance}, if \code{get.distance=TRUE}.
 #' This is a list of numeric vectors where each entry corresponds to a point (as above) and contains the distances of the neighbors from \eqn{i}.
 #' Elements of each vector in \code{distance} match to elements of the corresponding vector in \code{index}.

@@ -14,11 +14,14 @@ The output of \code{buildIndex()} is no longer guaranteed to be serializable, e.
 attempting to do so will raise a \dQuote{null pointer to prebuilt index} error for all methods implemented in this package.
 The removal of this guarantee makes it easier to extend \pkg{BiocNeighbors} to new methods where the index structure does not have an obvious R representation.
 
-\item All functions (\code{findKNN()}, \code{queryNeighbors()}, etc.) will no longer coerce `X` to a matrix, to avoid the headache of S4 dispatch ambiguity.
+\item All functions (\code{findKNN()}, \code{queryNeighbors()}, etc.) will no longer coerce \code{X} to a matrix, to avoid the headache of S4 dispatch ambiguity.
 Users should coerce their data into matrix format before supplying it to these functions.
 
 \item The \code{last=} option in \code{findKNN()} and \code{queryKNN()} has been replaced by the \code{findDistance()} and \code{queryDistance()} functions instead.
 This provides a much more intuitive method for the typical use of \code{last=}, i.e., to obtain the distance to the k-th nearest neighbor.
+
+\item \code{findNeighbors()} no longer reports each point as its own neighbor.
+Also, all neighbors are now sorted by increasing distance in \code{findNeighbors()} and \code{queryNeighbors()}.
 }}
 
 \section{Version 1.10.0}{\itemize{
