@@ -8,7 +8,7 @@
 \alias{findKNN,matrix-method}
 \alias{findKNN,externalptr-method}
 \alias{findKNN,missing-method}
-\title{Find nearest neighbors}
+\title{Find k-nearest neighbors}
 \usage{
 findKNN(
   X,
@@ -86,7 +86,7 @@ The \eqn{i}-th vector contains the distances of neighboring points in \code{X} t
 }
 }
 \description{
-Find the nearest neighbors of each point in a dataset, using a variety of algorithms.
+Find the k-nearest neighbors of each point in a dataset, using a variety of algorithms.
 }
 \details{
 If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} with \code{\link{buildIndex}}.

@@ -37,3 +37,15 @@ setGeneric("findNeighbors", signature=c("X", "BNPARAM"), function(X, threshold, 
 setGeneric("queryNeighbors", signature=c("X", "BNPARAM"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BNPARAM=NULL) {
     standardGeneric("queryNeighbors")
 })
+
+#' @export
+#' @rdname findDistance
+setGeneric("findDistance", signature=c("X", "BNPARAM"), function(X, k, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
+    standardGeneric("findDistance")
+})
+
+#' @export
+#' @rdname queryDistance
+setGeneric("queryDistance", signature=c("X", "BNPARAM"), function(X, query, k, num.threads=1, subset=NULL, transposed=FALSE, ..., BNPARAM=NULL) {
+    standardGeneric("queryDistance")
+})

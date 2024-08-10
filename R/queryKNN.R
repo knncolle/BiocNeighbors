@@ -1,6 +1,6 @@
-#' Query nearest neighbors
+#' Query for the k-nearest neighbors
 #'
-#' Query a dataset for nearest neighbors of points in another dataset, using a variety of algorithms.
+#' Query a dataset for the k-nearest neighbors of points in another dataset, using a variety of algorithms.
 #' 
 #' @inheritParams findKNN
 #' @param k A positive integer scalar specifying the number of nearest neighbors to retrieve.

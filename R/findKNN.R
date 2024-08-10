@@ -1,6 +1,6 @@
-#' Find nearest neighbors
+#' Find k-nearest neighbors
 #' 
-#' Find the nearest neighbors of each point in a dataset, using a variety of algorithms.
+#' Find the k-nearest neighbors of each point in a dataset, using a variety of algorithms.
 #' 
 #' @param X A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
 #' Alternatively, a prebuilt index from \code{\link{buildIndex}}.
