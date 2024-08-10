@@ -1,4 +1,4 @@
-#' Find the distance to the k-th nearest neighbors
+#' Find the distance to the k-th nearest neighbor
 #' 
 #' Find the distance to the k-th nearest neighbor for each point in a dataset, using a variety of algorithms.
 #' 

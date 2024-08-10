@@ -6,7 +6,7 @@
 \alias{findDistance,externalptr,ANY-method}
 \alias{findDistance,matrix-method}
 \alias{findDistance,externalptr-method}
-\title{Find the distance to the k-th nearest neighbors}
+\title{Find the distance to the k-th nearest neighbor}
 \usage{
 findDistance(X, k, num.threads = 1, subset = NULL, ..., BNPARAM = NULL)
 }
