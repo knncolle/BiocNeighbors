@@ -1,6 +1,6 @@
-#' Find all neighbors in range
+#' Find neighbors within a threshold distance
 #'
-#' Find all neighboring data points within a certain distance of each point.
+#' Find all neighbors within a threshold distance of each point of a dataset.
 #'
 #' @inheritParams findKNN
 #' @param threshold A positive numeric scalar specifying the maximum distance at which a point is considered a neighbor.

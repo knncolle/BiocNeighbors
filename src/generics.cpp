@@ -41,7 +41,16 @@ Rcpp::List format_range_output(const std::vector<std::vector<Value_> >& results)
 }
 
 //[[Rcpp::export(rng=false)]]
-SEXP generic_find_knn(SEXP prebuilt_ptr, Rcpp::IntegerVector num_neighbors, Rcpp::Nullable<Rcpp::IntegerVector> chosen, int num_threads, bool last_distance_only, bool report_index, bool report_distance) {
+SEXP generic_find_knn(
+    SEXP prebuilt_ptr,
+    Rcpp::IntegerVector num_neighbors,
+    bool force_variable_neighbors,
+    Rcpp::Nullable<Rcpp::IntegerVector> chosen,
+    int num_threads,
+    bool last_distance_only,
+    bool report_index,
+    bool report_distance)
+{
     BiocNeighbors::PrebuiltPointer cast(prebuilt_ptr); 
     if (!R_ExternalPtrAddr(SEXP(cast))) {
         throw std::runtime_error("null pointer to a prebuilt index");
@@ -81,7 +90,7 @@ SEXP generic_find_knn(SEXP prebuilt_ptr, Rcpp::IntegerVector num_neighbors, Rcpp
     bool is_k_variable = false;
     int const_k = 0;
     std::vector<double> variable_k;
-    if (num_neighbors.size() != 1) {
+    if (num_neighbors.size() != 1 || force_variable_neighbors) {
         is_k_variable = true;
         if (static_cast<int>(num_neighbors.size()) != num_output) {
             throw std::runtime_error("length of 'k' must be equal to the number of points in the index or 'subset'");
@@ -196,7 +205,16 @@ SEXP generic_find_knn(SEXP prebuilt_ptr, Rcpp::IntegerVector num_neighbors, Rcpp
 } 
 
 //[[Rcpp::export(rng=false)]]
-SEXP generic_query_knn(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::IntegerVector num_neighbors, int num_threads, bool last_distance_only, bool report_index, bool report_distance) {
+SEXP generic_query_knn(
+    SEXP prebuilt_ptr,
+    Rcpp::NumericMatrix query,
+    Rcpp::IntegerVector num_neighbors,
+    bool force_variable_neighbors,
+    int num_threads,
+    bool last_distance_only,
+    bool report_index,
+    bool report_distance)
+{
     BiocNeighbors::PrebuiltPointer cast(prebuilt_ptr); 
     if (!R_ExternalPtrAddr(SEXP(cast))) {
         throw std::runtime_error("null pointer to a prebuilt index");
@@ -223,7 +241,7 @@ SEXP generic_query_knn(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::Integ
     bool is_k_variable = false;
     int const_k = 0;
     std::vector<double> variable_k;
-    if (num_neighbors.size() != 1) {
+    if (num_neighbors.size() != 1 || force_variable_neighbors) {
         is_k_variable = true;
         if (static_cast<int>(num_neighbors.size()) != nquery) {
             throw std::runtime_error("length of 'k' must be equal to the number of points in the index or 'subset'");

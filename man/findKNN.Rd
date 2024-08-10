@@ -29,6 +29,7 @@ Alternatively, a prebuilt index from \code{\link{buildIndex}}.}
 
 Alternatively, an integer vector of length equal to the number of points in \code{X}, specifying the number of neighbors to identify for each point.
 If \code{subset} is provided, this should have length equal to the length of \code{subset}.
+Users should wrap this vector in an \link{AsIs} class to distinguish length-1 vectors from integer scalars.
 
 All \code{k} should be less than or equal to the number of points in \code{X} minus 1, otherwise the former will be capped at the latter with a warning.}
 
@@ -86,7 +87,7 @@ The \eqn{i}-th vector contains the distances of neighboring points in \code{X} t
 }
 }
 \description{
-Find the k-nearest neighbors of each point in a dataset, using a variety of algorithms.
+Find the k-nearest neighbors of each point in a dataset.
 }
 \details{
 If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} with \code{\link{buildIndex}}.
@@ -101,6 +102,8 @@ head(out$distance)
 }
 \seealso{
 \code{\link{buildIndex}}, to build an index ahead of time.
+
+\code{\link{findDistance}}, to efficiently obtain the distance to the k-th nearest neighbor.
 }
 \author{
 Aaron Lun

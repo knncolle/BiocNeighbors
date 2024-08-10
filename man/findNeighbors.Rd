@@ -8,7 +8,7 @@
 \alias{findNeighbors,matrix-method}
 \alias{findNeighbors,externalptr-method}
 \alias{findNeighbors,missing-method}
-\title{Find all neighbors in range}
+\title{Find neighbors within a threshold distance}
 \usage{
 findNeighbors(
   X,
@@ -61,7 +61,7 @@ The \code{i}-th entry contains the number of neighbors of \eqn{i} within \code{t
 If \code{subset} is not \code{NULL}, each entry of the above vector/lists corresponds to a point in the subset, in the same order as supplied in \code{subset}.
 }
 \description{
-Find all neighboring data points within a certain distance of each point.
+Find all neighbors within a threshold distance of each point of a dataset.
 }
 \details{
 This function identifies all points in \code{X} that within \code{threshold} of each point in \code{X}.

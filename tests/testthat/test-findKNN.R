@@ -59,6 +59,12 @@ test_that("findKNN works with variable k", {
     ref <- findKNN(Y, k=10)
     expect_identical(do.call(rbind, out$index[keep]), ref$index[keep,])
     expect_identical(do.call(rbind, out$distance[keep]), ref$distance[keep,])
+
+    # The AsIs forced variable works.
+    out <- findKNN(Y, k=I(10), subset=1)
+    ref <- findKNN(Y, k=10, subset=1)
+    expect_identical(out$index[[1]], ref$index[1,])
+    expect_identical(out$distance[[1]], ref$distance[1,])
 })
 
 test_that("findKNN works with prebuilt indices", {

@@ -1,12 +1,16 @@
-#' Query for the k-nearest neighbors
+#' Query k-nearest neighbors
 #'
-#' Query a dataset for the k-nearest neighbors of points in another dataset, using a variety of algorithms.
+#' Query a reference dataset for the k-nearest neighbors of each point in a query dataset.
 #' 
+#' @param X The reference dataset to be queried.
+#' This should be a numeric matrix where rows correspond to reference points and columns correspond to variables (i.e., dimensions).
+#' Alternatively, a prebuilt index from \code{\link{buildIndex}}.
 #' @inheritParams findKNN
 #' @param k A positive integer scalar specifying the number of nearest neighbors to retrieve.
 #'
 #' Alternatively, an integer vector of length equal to the number of points in \code{query}, specifying the number of neighbors to identify for each point.
 #' If \code{subset} is provided, this should have length equal to the length of \code{subset}.
+#' Users should wrap this vector in an \link{AsIs} class to distinguish length-1 vectors from integer scalars.
 #'
 #' All \code{k} should be less than or equal to the number of points in \code{X}, otherwise the former will be capped at the latter with a warning.
 #' @param query A numeric matrix of query points, containing the same number of columns as \code{X}.
@@ -53,6 +57,8 @@
 #' 
 #' @seealso
 #' \code{\link{buildIndex}}, to build an index ahead of time.
+#'
+#' \code{\link{queryDistance}}, to obtain the distance from each query point to its k-th nearest neighbor.
 #' 
 #' @aliases
 #' queryKNN,matrix,ANY-method
@@ -92,7 +98,8 @@ setMethod("queryKNN", c("externalptr", "ANY"), function(X, query, k, get.index=T
     output <- generic_query_knn(
         X,
         query=query,
-        num_neighbors=k,
+        num_neighbors=as.integer(k),
+        force_variable_neighbors=is(k, "AsIs"),
         num_threads=num.threads,
         last_distance_only=FALSE,
         report_index=!isFALSE(get.index),

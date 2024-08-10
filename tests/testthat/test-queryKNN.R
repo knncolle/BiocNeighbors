@@ -44,8 +44,8 @@ test_that("queryKNN works with subsets", {
     expect_equal(out, sout)
 
     expect_warning(out <- queryKNN(Y[0,,drop=FALSE], Z, k=8), "capped")
-    expect_identical(ncol(out$index), 0L)
-    expect_identical(ncol(out$distance), 0L)
+    expect_identical(dim(out$index), c(nrow(Z), 0L))
+    expect_identical(dim(out$distance), c(nrow(Z), 0L))
 })
 
 test_that("queryKNN works with variable k", {
@@ -64,6 +64,12 @@ test_that("queryKNN works with variable k", {
     ref <- queryKNN(Y, Z, k=10)
     expect_identical(do.call(rbind, out$index[keep]), ref$index[keep,])
     expect_identical(do.call(rbind, out$distance[keep]), ref$distance[keep,])
+
+    # The AsIs forced variable works.
+    out <- queryKNN(Y, Z, k=I(10), subset=1)
+    ref <- queryKNN(Y, Z, k=10, subset=1)
+    expect_identical(out$index[[1]], ref$index[1,])
+    expect_identical(out$distance[[1]], ref$distance[1,])
 })
 
 test_that("queryKNN works with prebuilt indices", {

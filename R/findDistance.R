@@ -1,6 +1,6 @@
-#' Find the distance to the k-th nearest neighbor
+#' Distance to the k-th nearest neighbor
 #' 
-#' Find the distance to the k-th nearest neighbor for each point in a dataset, using a variety of algorithms.
+#' Find the distance to the k-th nearest neighbor for each point in a dataset.
 #' 
 #' @inheritParams findKNN
 #' 
@@ -11,7 +11,7 @@
 #' @return
 #' Numeric vector of length equal to the number of points in \code{X} (or \code{subset}, if provided),
 #' containing the distance from each point to its \code{k}-th nearest neighbor.
-#' This is equivalent to but faster than taking the last distance of the output from \code{\link{findKNN}}.
+#' This is equivalent to but more memory efficient than using \code{\link{findKNN}} and subsetting to the last distance.
 #'
 #' @author
 #' Aaron Lun
@@ -34,16 +34,17 @@
 NULL
 
 #' @export
-setMethod("findDistance", c("matrix", "ANY"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
+setMethod("findDistance", c("matrix", "ANY"), function(X, k, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
     ptr <- buildIndex(X, ..., BNPARAM=BNPARAM)
-    callGeneric(ptr, k=k, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, ...)
+    callGeneric(ptr, k=k, num.threads=num.threads, subset=subset, ...)
 })
 
 #' @export
-setMethod("findDistance", c("externalptr", "ANY"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
+setMethod("findDistance", c("externalptr", "ANY"), function(X, k, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
     generic_find_knn(
         X, 
-        num_neighbors=k, 
+        num_neighbors=as.integer(k), 
+        force_variable_neighbors=is(k, "AsIs"),
         chosen=subset, 
         num_threads=num.threads, 
         last_distance_only=TRUE,

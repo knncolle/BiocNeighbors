@@ -1,14 +1,12 @@
-#' Query neighbors in range
+#' Query neighbors within a threshold distance
 #' 
-#' Find all neighboring data points within a certain distance of a query point.
+#' Find all points in a reference dataset that lie within a threshold distance of each point in a query dataset.
 #' 
-#' @inheritParams findKNN 
-#' @param query A numeric matrix of query points, containing the same number of columns as \code{X}.
+#' @inheritParams queryKNN
 #' @param threshold A positive numeric scalar specifying the maximum distance at which a point is considered a neighbor.
 #' Alternatively, a vector containing a different distance threshold for each query point.
-#' @param transposed A logical scalar indicating whether \code{X} and \code{query} are transposed, 
-#' in which case both matrices are assumed to contain dimensions in the rows and data points in the columns.
-#' @param subset An integer, logical or character vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the neighbors should be identified.
+#' @param get.index A logical scalar indicating whether the indices of the neighbors should be recorded.
+#' @param get.distance A logical scalar indicating whether distances to the neighbors should be recorded.
 #' 
 #' @details
 #' This function identifies all points in \code{X} that within \code{threshold} of each point in \code{query}.

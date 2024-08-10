@@ -8,7 +8,7 @@
 \alias{queryKNN,matrix-method}
 \alias{queryKNN,externalptr-method}
 \alias{queryKNN,missing-method}
-\title{Query for the k-nearest neighbors}
+\title{Query k-nearest neighbors}
 \usage{
 queryKNN(
   X,
@@ -24,7 +24,8 @@ queryKNN(
 )
 }
 \arguments{
-\item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
+\item{X}{The reference dataset to be queried.
+This should be a numeric matrix where rows correspond to reference points and columns correspond to variables (i.e., dimensions).
 Alternatively, a prebuilt index from \code{\link{buildIndex}}.}
 
 \item{query}{A numeric matrix of query points, containing the same number of columns as \code{X}.}
@@ -33,6 +34,7 @@ Alternatively, a prebuilt index from \code{\link{buildIndex}}.}
 
 Alternatively, an integer vector of length equal to the number of points in \code{query}, specifying the number of neighbors to identify for each point.
 If \code{subset} is provided, this should have length equal to the length of \code{subset}.
+Users should wrap this vector in an \link{AsIs} class to distinguish length-1 vectors from integer scalars.
 
 All \code{k} should be less than or equal to the number of points in \code{X}, otherwise the former will be capped at the latter with a warning.}
 
@@ -92,7 +94,7 @@ The \eqn{i}-th vector contains the distances of neighboring points in \code{X} t
 }
 }
 \description{
-Query a dataset for the k-nearest neighbors of points in another dataset, using a variety of algorithms.
+Query a reference dataset for the k-nearest neighbors of each point in a query dataset.
 }
 \details{
 If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} with \code{\link{buildIndex}}.
@@ -108,6 +110,8 @@ head(out$distance)
 }
 \seealso{
 \code{\link{buildIndex}}, to build an index ahead of time.
+
+\code{\link{queryDistance}}, to obtain the distance from each query point to its k-th nearest neighbor.
 }
 \author{
 Aaron Lun

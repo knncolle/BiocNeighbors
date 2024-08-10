@@ -8,7 +8,7 @@
 \alias{queryNeighbors,matrix-method}
 \alias{queryNeighbors,externalptr-method}
 \alias{queryNeighbors,missing-method}
-\title{Query neighbors in range}
+\title{Query neighbors within a threshold distance}
 \usage{
 queryNeighbors(
   X,
@@ -24,7 +24,8 @@ queryNeighbors(
 )
 }
 \arguments{
-\item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
+\item{X}{The reference dataset to be queried.
+This should be a numeric matrix where rows correspond to reference points and columns correspond to variables (i.e., dimensions).
 Alternatively, a prebuilt index from \code{\link{buildIndex}}.}
 
 \item{query}{A numeric matrix of query points, containing the same number of columns as \code{X}.}
@@ -32,21 +33,13 @@ Alternatively, a prebuilt index from \code{\link{buildIndex}}.}
 \item{threshold}{A positive numeric scalar specifying the maximum distance at which a point is considered a neighbor.
 Alternatively, a vector containing a different distance threshold for each query point.}
 
-\item{get.index}{A logical scalar indicating whether the indices of the nearest neighbors should be recorded.
-Setting this to \code{FALSE} improves efficiency if the indices are not of interest.
+\item{get.index}{A logical scalar indicating whether the indices of the neighbors should be recorded.}
 
-Alternatively, if \code{k} is an integer scalar, this may be a string containing \code{"normal"} or \code{"transposed"}.
-The former is the same as \code{TRUE}, while the latter returns the index matrix in transposed format.}
-
-\item{get.distance}{A logical scalar indicating whether distances to the nearest neighbors should be recorded.
-Setting this to \code{FALSE} improves efficiency if the distances are not of interest.
-
-Alternatively, if \code{k} is an integer scalar, this may be a string containing \code{"normal"} or \code{"transposed"}.
-The former is the same as \code{TRUE}, while the latter returns the distance matrix in transposed format.}
+\item{get.distance}{A logical scalar indicating whether distances to the neighbors should be recorded.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use for the search.}
 
-\item{subset}{An integer, logical or character vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the neighbors should be identified.}
+\item{subset}{An integer, logical or character vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the nearest neighbors should be identified.}
 
 \item{transposed}{A logical scalar indicating whether \code{X} and \code{query} are transposed, 
 in which case both matrices are assumed to contain dimensions in the rows and data points in the columns.}
@@ -75,7 +68,7 @@ The \code{i}-th entry contains the number of neighbors of \eqn{i} within \code{t
 If \code{subset} is not \code{NULL}, each entry of the above vector/lists refers to a point in the subset, in the same order as supplied in \code{subset}.
 }
 \description{
-Find all neighboring data points within a certain distance of a query point.
+Find all points in a reference dataset that lie within a threshold distance of each point in a query dataset.
 }
 \details{
 This function identifies all points in \code{X} that within \code{threshold} of each point in \code{query}.

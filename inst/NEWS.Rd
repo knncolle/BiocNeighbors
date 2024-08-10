@@ -16,6 +16,9 @@ The removal of this guarantee makes it easier to extend \pkg{BiocNeighbors} to n
 
 \item All functions (\code{findKNN()}, \code{queryNeighbors()}, etc.) will no longer coerce `X` to a matrix, to avoid the headache of S4 dispatch ambiguity.
 Users should coerce their data into matrix format before supplying it to these functions.
+
+\item The \code{last=} option in \code{findKNN()} and \code{queryKNN()} has been replaced by the \code{findDistance()} and \code{queryDistance()} functions instead.
+This provides a much more intuitive method for the typical use of \code{last=}, i.e., to obtain the distance to the k-th nearest neighbor.
 }}
 
 \section{Version 1.10.0}{\itemize{

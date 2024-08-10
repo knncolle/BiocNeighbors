@@ -75,6 +75,19 @@ vout <- findKNN(data, k=10, BNPARAM=VptreeParam(distance="Manhattan"))
 str(vout)
 ```
 
+If the number of neighbors differs for each point, we can supply an integer vector to `k=` instead.
+This yields a list of vectors containing the neighbors and their distances to each point.
+
+```{r}
+var.k <- sample(10, nrow(data), replace=TRUE)
+
+# use I() to distinguish between scalar and length-1 vectors.
+var.out <- findKNN(data, k=I(var.k))
+
+head(var.out$index)
+head(var.out$distance)
+```
+
 `queryKNN()` is a related function that will find the `k`-nearest neighbors in one dataset based on query points in another dataset.
 Here, the rows of the output matrices correspond to rows of our `query` matrix.
 

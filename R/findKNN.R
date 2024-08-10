@@ -1,6 +1,6 @@
 #' Find k-nearest neighbors
 #' 
-#' Find the k-nearest neighbors of each point in a dataset, using a variety of algorithms.
+#' Find the k-nearest neighbors of each point in a dataset.
 #' 
 #' @param X A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
 #' Alternatively, a prebuilt index from \code{\link{buildIndex}}.
@@ -8,6 +8,7 @@
 #'
 #' Alternatively, an integer vector of length equal to the number of points in \code{X}, specifying the number of neighbors to identify for each point.
 #' If \code{subset} is provided, this should have length equal to the length of \code{subset}.
+#' Users should wrap this vector in an \link{AsIs} class to distinguish length-1 vectors from integer scalars.
 #'
 #' All \code{k} should be less than or equal to the number of points in \code{X} minus 1, otherwise the former will be capped at the latter with a warning.
 #' @param get.index A logical scalar indicating whether the indices of the nearest neighbors should be recorded.
@@ -68,6 +69,8 @@
 #' @seealso
 #' \code{\link{buildIndex}}, to build an index ahead of time.
 #'
+#' \code{\link{findDistance}}, to efficiently obtain the distance to the k-th nearest neighbor.
+#'
 #' @aliases
 #' findKNN,matrix,ANY-method
 #' findKNN,externalptr,ANY-method
@@ -99,7 +102,8 @@ setMethod("findKNN", c("externalptr", "ANY"), function(X, k, get.index=TRUE, get
 
     output <- generic_find_knn(
         X, 
-        num_neighbors=k, 
+        num_neighbors=as.integer(k), 
+        force_variable_neighbors=is(k, "AsIs"),
         chosen=subset, 
         num_threads=num.threads, 
         last_distance_only=FALSE,

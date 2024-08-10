@@ -6,7 +6,7 @@
 \alias{findDistance,externalptr,ANY-method}
 \alias{findDistance,matrix-method}
 \alias{findDistance,externalptr-method}
-\title{Find the distance to the k-th nearest neighbor}
+\title{Distance to the k-th nearest neighbor}
 \usage{
 findDistance(X, k, num.threads = 1, subset = NULL, ..., BNPARAM = NULL)
 }
@@ -18,6 +18,7 @@ Alternatively, a prebuilt index from \code{\link{buildIndex}}.}
 
 Alternatively, an integer vector of length equal to the number of points in \code{X}, specifying the number of neighbors to identify for each point.
 If \code{subset} is provided, this should have length equal to the length of \code{subset}.
+Users should wrap this vector in an \link{AsIs} class to distinguish length-1 vectors from integer scalars.
 
 All \code{k} should be less than or equal to the number of points in \code{X} minus 1, otherwise the former will be capped at the latter with a warning.}
 
@@ -35,10 +36,10 @@ Ignored if \code{x} contains a prebuilt index.}
 \value{
 Numeric vector of length equal to the number of points in \code{X} (or \code{subset}, if provided),
 containing the distance from each point to its \code{k}-th nearest neighbor.
-This is equivalent to but faster than taking the last distance of the output from \code{\link{findKNN}}.
+This is equivalent to but more memory efficient than using \code{\link{findKNN}} and subsetting to the last distance.
 }
 \description{
-Find the distance to the k-th nearest neighbor for each point in a dataset, using a variety of algorithms.
+Find the distance to the k-th nearest neighbor for each point in a dataset.
 }
 \details{
 If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} with \code{\link{buildIndex}}.

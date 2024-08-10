@@ -1,6 +1,6 @@
-#' Query for the distance to the k-th nearest neighbor
+#' Distance to the k-th nearest neighbor to query points
 #'
-#' Query a dataset to determine the distance to the k-th nearest neighbor of each point in another dataset, using a variety of algorithms.
+#' Query a reference dataset to determine the distance to the k-th nearest neighbor of each point in a query dataset.
 #' 
 #' @inheritParams queryKNN
 #' 
@@ -11,7 +11,7 @@
 #' @return
 #' Numeric vector of length equal to the number of points in \code{query} (or \code{subset}, if provided),
 #' containing the distance from each point to its \code{k}-th nearest neighbor.
-#' This is equivalent to but faster than taking the last distance of the output of \code{\link{queryKNN}}.
+#' This is equivalent to but more memory efficient than using \code{\link{queryKNN}} and subsetting to the last distance.
 #'
 #' @author
 #' Aaron Lun
@@ -37,7 +37,7 @@ NULL
 #' @export
 setMethod("queryDistance", c("matrix", "ANY"), function(X, query, k, num.threads=1, subset=NULL, transposed=FALSE, ..., BNPARAM=NULL) {
     ptr <- buildIndex(X, transposed=transposed, ..., BNPARAM=BNPARAM)
-    callGeneric(ptr, query=query, k=k, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, transposed=transposed, ...)
+    callGeneric(ptr, query=query, k=k, num.threads=num.threads, subset=subset, transposed=transposed, ...)
 })
 
 #' @export
@@ -50,7 +50,8 @@ setMethod("queryDistance", c("externalptr", "ANY"), function(X, query, k, num.th
     generic_query_knn(
         X,
         query=query,
-        num_neighbors=k,
+        num_neighbors=as.integer(k), 
+        force_variable_neighbors=is(k, "AsIs"),
         num_threads=num.threads,
         last_distance_only=TRUE,
         report_index=FALSE,
