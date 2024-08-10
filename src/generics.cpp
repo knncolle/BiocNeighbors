@@ -31,16 +31,6 @@ Value_* prepare_output(Matrix_& mat, bool report, int k, int nobs) {
     }
 }
 
-template<typename Value_>
-std::vector<Value_>* prepare_buffer(std::vector<Value_>& buffer, bool report, int k) {
-    if (report) {
-        buffer.reserve(k);
-        return &buffer;
-    } else {
-        return NULL;
-    }
-}
-
 template<typename Vector_, typename Value_>
 Rcpp::List format_range_output(const std::vector<std::vector<Value_> >& results) {
     Rcpp::List output(results.size());
