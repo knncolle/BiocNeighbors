@@ -89,7 +89,7 @@ SEXP generic_find_knn(
 
     bool is_k_variable = false;
     int const_k = 0;
-    std::vector<double> variable_k;
+    std::vector<int> variable_k;
     if (num_neighbors.size() != 1 || force_variable_neighbors) {
         is_k_variable = true;
         if (static_cast<int>(num_neighbors.size()) != num_output) {
@@ -240,7 +240,7 @@ SEXP generic_query_knn(
 
     bool is_k_variable = false;
     int const_k = 0;
-    std::vector<double> variable_k;
+    std::vector<int> variable_k;
     if (num_neighbors.size() != 1 || force_variable_neighbors) {
         is_k_variable = true;
         if (static_cast<int>(num_neighbors.size()) != nquery) {
@@ -248,7 +248,6 @@ SEXP generic_query_knn(
         }
         variable_k.resize(nquery);
         for (int o = 0; o < nquery; ++o) {
-            auto k = num_neighbors[o];
             variable_k[o] = sanitize_k(num_neighbors[o]);
         }
     } else {
