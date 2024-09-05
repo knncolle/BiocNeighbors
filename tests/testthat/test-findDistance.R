@@ -19,7 +19,7 @@ test_that("findDistance works in parallel", {
 
     out <- findDistance(Y, k=8)
     dist <- findDistance(Y, k=8, num.threads=2)
-    expect_identical(out[,8], dist)
+    expect_identical(out, dist)
 })
 
 test_that("findDistance works with subsets", {
