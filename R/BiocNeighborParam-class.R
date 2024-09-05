@@ -4,12 +4,13 @@
 #' 
 #' @details
 #' The BiocNeighborParam class is a virtual base class on which other parameter objects are built.
-#' There are currently 4 concrete subclasses:
+#' There are currently 5 concrete subclasses in \pkg{BiocNeighbors}:
 #' \describe{
-#'     \item{}{\code{\link{KmknnParam}}: exact nearest-neighbor search with the KMKNN algorithm.}
-#'     \item{}{\code{\link{VptreeParam}}: exact nearest-neighbor search with the VP tree algorithm.}
-#'     \item{}{\code{\link{AnnoyParam}}: approximate nearest-neighbor search with the Annoy algorithm.}
-#'     \item{}{\code{\link{HnswParam}}: approximate nearest-neighbor search with the HNSW algorithm.}
+#' \item{\code{\link{KmknnParam}}:}{Exact nearest-neighbor search with the KMKNN algorithm.}
+#' \item{\code{\link{VptreeParam}}:}{Exact nearest-neighbor search with the tree algorithm.}
+#' \item{\code{\link{ExhaustiveParam}}:}{Exact nearest-neighbor search via brute-force.}
+#' \item{\code{\link{AnnoyParam}}:}{Approximate nearest-neighbor search with the Annoy algorithm.}
+#' \item{\code{\link{HnswParam}}:}{Approximate nearest-neighbor search with the HNSW algorithm.}
 #' }
 #' 
 #' These objects hold parameters specifying how each algorithm should be run on an arbitrary data set.
@@ -24,7 +25,7 @@
 #' \item{\code{x[[i]]}:}{Return the value of slot \code{i}, as used in the constructor for \code{x}.}
 #' \item{\code{x[[i]] <- value}:}{Set slot \code{i} to the specified \code{value}.}
 #' }
-#' 
+#'
 #' @seealso
 #' \code{\link{KmknnParam}},
 #' \code{\link{VptreeParam}},
@@ -39,7 +40,7 @@
 #' @aliases
 #' BiocNeighborParam-class
 #' show,BiocNeighborParam-method
-#' bndistance,BiocNeighborParam-method
+#' bndistance
 #' [[,BiocNeighborParam-method
 #' [[<-,BiocNeighborParam-method
 #'
@@ -54,10 +55,9 @@ setMethod("show", "BiocNeighborParam", function(object) {
 })
 
 #' @export
-setMethod("bndistance", "BiocNeighborParam", function(x) x@distance)
+bndistance <- function(x) x@distance
 
-#' @importFrom S4Vectors setValidity2
-setValidity2("BiocNeighborParam", function(object) {
+setValidity("BiocNeighborParam", function(object) {
     msg <- character(0) 
 
     if (length(bndistance(object))!=1L) {

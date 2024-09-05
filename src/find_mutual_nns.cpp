@@ -1,38 +1,62 @@
 #include "Rcpp.h"
 #include <algorithm>
+#include <vector>
 
 //[[Rcpp::export(rng=false)]]
 Rcpp::List find_mutual_nns (Rcpp::IntegerMatrix left, Rcpp::IntegerMatrix right) {
-    const int nnR=right.ncol();
-    std::vector<int> sortedR(right.size());
-    std::deque<int> mutualL, mutualR;
+    size_t right_obs = right.ncol();
+    size_t right_k = right.nrow();
+    std::vector<int> sortedR(right.begin(), right.end());
 
     // Sorting the elements on the right.
-    auto sIt=sortedR.begin();
-    for (int r=0; r<right.nrow(); ++r) {
-        const auto currow=right.row(r);
-        std::copy(currow.begin(), currow.end(), sIt);
-        std::sort(sIt, sIt+nnR);
-        sIt+=nnR;
+    auto sIt = sortedR.begin();
+    for (size_t r = 0; r < right_obs; ++r) {
+        auto sEnd = sIt;
+        for (size_t i = 0; i < right_k; ++i) {
+            --(*sEnd); // make it 0-indexed.
+            ++sEnd;
+        }
+        std::sort(sIt, sEnd);
+        sIt = sEnd;
     }
 
-    // Running through the elements on the left, and doing a binary search.
-    for (int l=0; l<left.nrow(); ++l) {
-        const auto currow=left.row(l);
-        const int tocheck=l+1;
+    std::vector<int> mutualL, mutualR;
+    size_t left_obs = left.ncol();
+    std::vector<size_t> unsearched_offset(right_obs);
 
-        for (const auto& curval : currow) {
-            auto startIt=sortedR.begin() + nnR*(curval-1); // 1-indexed.
-            auto endIt=startIt+nnR;
-            auto closest=std::lower_bound(startIt, endIt, tocheck);
+    // Running through the elements on the left, and doing a binary search for
+    // the presence of the left neighbor in each of its right neighbor's
+    // nearest lists.
+    for (size_t l = 0; l < left_obs ; ++l) {
+        auto curcol = left.column(l);
 
-            if (closest!=endIt && *closest==tocheck) { 
-                mutualL.push_back(tocheck);
-                mutualR.push_back(curval);
+        for (auto curval0 : curcol) {
+            int curval = curval0 - 1; // make it 0-indexed.
+            size_t& already_searched = unsearched_offset[curval];
+            if (already_searched == right_k) {
+                continue;
             }
+
+            auto startIt = sortedR.begin() + right_k * static_cast<size_t>(curval); // cast to size_t to avoid overflow.
+            auto endIt = startIt + right_k;
+            auto closest = std::lower_bound(startIt + already_searched, endIt, l); // '+ already_searched' allows us to skip the neighbors processed by earlier 'l'.
+
+            if (closest != endIt && *closest == l) { 
+                mutualL.push_back(l + 1); // restoring to 1-indexing for output.
+                mutualR.push_back(curval0);
+            }
+
+            // Note that we can always move 'unsearched_offset' forward because
+            // each right neighbor's list is sorted (as above) and we're also
+            // iterating through the left matrix in order; we'll never be
+            // searching for a lower 'l' again, because we already did that in
+            // a previous iteration of the outer loop.
+            already_searched = closest - startIt;
         }
     }
 
-    return Rcpp::List::create(Rcpp::IntegerVector(mutualL.begin(), mutualL.end()),
-                              Rcpp::IntegerVector(mutualR.begin(), mutualR.end()));
+    return Rcpp::List::create(
+        Rcpp::IntegerVector(mutualL.begin(), mutualL.end()),
+        Rcpp::IntegerVector(mutualR.begin(), mutualR.end())
+    );
 }

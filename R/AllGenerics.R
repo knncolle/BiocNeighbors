@@ -1,46 +1,51 @@
 #' @export
 #' @rdname buildIndex
-setGeneric("buildIndex", signature=c("BNPARAM"), 
-    function(X, ..., BNPARAM) 
-        standardGeneric("buildIndex")
-)
+setGeneric("buildIndex", signature=c("X", "BNPARAM"), function(X, transposed=FALSE, ..., BNPARAM=NULL) standardGeneric("buildIndex"))
 
 #' @export
-#' @rdname findKNN-methods
-setGeneric("findKNN", signature=c("BNINDEX", "BNPARAM"), 
-    function(X, k, ..., BNINDEX, BNPARAM) 
-        standardGeneric("findKNN")
-)
+#' @rdname defineBuilder 
+setGeneric("defineBuilder", signature="BNPARAM", function(BNPARAM) standardGeneric("defineBuilder"))
+
+# This is explicitly a S4 generic so that developers can extend it at the R
+# level, not at the C++ level. We need to support dispatch on both X and
+# BNPARAM as X could be an arbitrary index structure (i.e., not an external
+# pointer). If we only dispatched on BNPARAM, a user could call the method with
+# a prebuilt X that doesn't match the BNPARAM. This means that the developer of
+# the BNPARAM method would be responsible for figuring out what to do with a X
+# that they don't know anything about, which is pretty weird.
 
 #' @export
-#' @rdname queryKNN-methods
-setGeneric("queryKNN", signature=c("BNINDEX", "BNPARAM"), 
-    function(X, query, k, ..., BNINDEX, BNPARAM) 
-        standardGeneric("queryKNN")
-)
+#' @rdname findKNN
+setGeneric("findKNN", signature=c("X", "BNPARAM"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
+    standardGeneric("findKNN")
+})
 
 #' @export
-#' @rdname findNeighbors-methods
-setGeneric("findNeighbors", signature=c("BNINDEX", "BNPARAM"), 
-    function(X, threshold, ..., BNINDEX, BNPARAM)
-        standardGeneric("findNeighbors")
-)
+#' @rdname queryKNN
+setGeneric("queryKNN", signature=c("X", "BNPARAM"), function(X, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BNPARAM=NULL) {
+    standardGeneric("queryKNN")
+})
 
 #' @export
-#' @rdname queryNeighbors-methods
-setGeneric("queryNeighbors", signature=c("BNINDEX", "BNPARAM"), 
-    function(X, query, threshold, ..., BNINDEX, BNPARAM)
-        standardGeneric("queryNeighbors")
-)
+#' @rdname findNeighbors
+setGeneric("findNeighbors", signature=c("X", "BNPARAM"), function(X, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
+    standardGeneric("findNeighbors")
+})
 
 #' @export
-setGeneric("bnorder", function(x) standardGeneric("bnorder"))
+#' @rdname queryNeighbors
+setGeneric("queryNeighbors", signature=c("X", "BNPARAM"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BNPARAM=NULL) {
+    standardGeneric("queryNeighbors")
+})
 
 #' @export
-setGeneric("bndata", function(x) standardGeneric("bndata"))
+#' @rdname findDistance
+setGeneric("findDistance", signature=c("X", "BNPARAM"), function(X, k, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
+    standardGeneric("findDistance")
+})
 
 #' @export
-setGeneric("bndistance", function(x) standardGeneric("bndistance"))
-
-# Generic purely for internal use, to help in defining other S4 methods.
-setGeneric("spill_args", function(x) standardGeneric("spill_args"))
+#' @rdname queryDistance
+setGeneric("queryDistance", signature=c("X", "BNPARAM"), function(X, query, k, num.threads=1, subset=NULL, transposed=FALSE, ..., BNPARAM=NULL) {
+    standardGeneric("queryDistance")
+})

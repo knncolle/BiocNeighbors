@@ -3,31 +3,29 @@
 #' Build indices for nearest-neighbor searching with different algorithms.
 #' 
 #' @param X A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
+#' @param transposed Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.
 #' @param ... Further arguments to be passed to individual methods.
-#' This is guaranteed to include \code{transposed}.
 #' @param BNPARAM A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.
-#' This defaults to a \linkS4class{KmknnParam} object if no argument is supplied.
+#' If \code{NULL}, this defaults to a \linkS4class{KmknnParam} object. 
 #' 
-#' @details
-#' Supplying a \linkS4class{KmknnParam} object as \code{BNPARAM} will dispatch to \code{\link{buildKmknn}}.
-#' 
-#' Supplying a \linkS4class{VptreeParam} object as \code{BNPARAM} will dispatch to \code{\link{buildVptree}}.
-#' 
-#' Supplying an \linkS4class{AnnoyParam} object as \code{BNPARAM} will dispatch to \code{\link{buildAnnoy}}.
-#' 
-#' Supplying an \linkS4class{HnswParam} object as \code{BNPARAM} will dispatch to \code{\link{buildHnsw}}.
+#' Alternatively, this may be an external pointer constructed by \code{\link{defineBuilder}}.
 #' 
 #' @return
-#' An instance of a \linkS4class{BiocNeighborIndex} subclass, containing indexing structures for the specified algorithm.
+#' A prebuilt index that can be used in \code{\link{findKNN}} and related functions as the \code{X=} argument.
+#' The exact type of the index is not defined, but users should assume that the index is not serializable, i.e., cannot be saved or transferred between processes.
+#'
+#' @details
+#' The type and structure of the index object returned by \code{buildIndex} methods is arbitrary and left to the discretion of the method developer.
+#' However, there are a few constraints:
+#' \itemize{
+#' \item It should not be a matrix, as this interferes with dispatch for methods like \code{\link{findKNN}} when \code{X} is just the data matrix.
+#' \item If it is an external pointer, it should refer to a \code{BiocNeighbors::Prebuilt} object
+#' (see definition in \code{system.file("include", "BiocNeighbors.h", package="BiocNeighbors")}).
+#' This allows it to be directly used in methods like \code{\link{findKNN}}.
+#' }
 #' 
 #' @author
 #' Aaron Lun
-#' 
-#' @seealso
-#' \code{\link{buildKmknn}},
-#' \code{\link{buildVptree}},
-#' \code{\link{buildAnnoy}} 
-#' and \code{\link{buildHnsw}} for specific methods. 
 #' 
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)
@@ -35,35 +33,25 @@
 #' (a.out <- buildIndex(Y, BNPARAM=AnnoyParam()))
 #'
 #' @aliases
-#' buildIndex,missing-method
-#' buildIndex,KmknnParam-method
-#' buildIndex,VptreeParam-method
-#' buildIndex,AnnoyParam-method
-#' buildIndex,HnswParam-method
+#' buildIndex,matrix,NULL-method
+#' buildIndex,matrix,missing-method
+#' buildIndex,matrix,BiocNeighborParam-method
+#' buildIndex,matrix,externalptr-method
 #'
 #' @name buildIndex
 NULL
 
-.BUILDINDEX_GENERATOR <- function(FUN, ARGS=spill_args) {
-    function(X, transposed=FALSE, ..., BNPARAM) {    
-        do.call(FUN, c(list(X=X, transposed=transposed, ...), ARGS(BNPARAM)))
-    }
-}
+#' @export
+setMethod("buildIndex", c("matrix", "missing"), function(X, transposed=FALSE, ..., BNPARAM) callGeneric(X, transposed=transposed, ..., BNPARAM=NULL))
 
 #' @export
-setMethod("buildIndex", "missing", .BUILDINDEX_GENERATOR(buildIndex, .default_param))
+setMethod("buildIndex", c("matrix", "NULL"), function(X, transposed=FALSE, ..., BNPARAM) callGeneric(X, transposed=transposed, ..., BNPARAM=KmknnParam()))
 
 #' @export
-setMethod("buildIndex", "KmknnParam", .BUILDINDEX_GENERATOR(buildKmknn))
+setMethod("buildIndex", c("matrix", "BiocNeighborParam"), function(X, transposed=FALSE, ..., BNPARAM) callGeneric(X, transposed=transposed, ..., BNPARAM=defineBuilder(BNPARAM)))
 
 #' @export
-setMethod("buildIndex", "VptreeParam", .BUILDINDEX_GENERATOR(buildVptree))
-
-#' @export
-setMethod("buildIndex", "AnnoyParam", .BUILDINDEX_GENERATOR(buildAnnoy))
-
-#' @export
-setMethod("buildIndex", "HnswParam", .BUILDINDEX_GENERATOR(buildHnsw))
-
-#' @export
-setMethod("buildIndex", "ExhaustiveParam", .BUILDINDEX_GENERATOR(buildExhaustive))
+setMethod("buildIndex", c("matrix", "externalptr"), function(X, transposed=FALSE, ..., BNPARAM) {
+    X <- .coerce_matrix_build(X, transposed)
+    generic_build(BNPARAM, X)
+})
