@@ -6,7 +6,7 @@
 \item Switched to the new \pkg{knncolle} C++ libaries for all implementations.
 This greatly streamlines the internals and allows downstream packages to re-use the search indices in their own C++ code.
 
-\item Parallelization is now performed using OpenMP (where available) and the standard \code{<thread>} library (otherwise).
+\item Parallelization is now performed using the standard \code{<thread>} library. 
 This avoids the overhead of forking or starting new processes via \pkg{BiocParallel}.
 
 \item All \code{*Index} classes have been removed. 
