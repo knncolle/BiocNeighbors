@@ -28,7 +28,7 @@
 #' @seealso
 #' \linkS4class{BiocNeighborParam}, for the parent class and its available methods.
 #'
-#' \url{http://stevehanov.ca/blog/index.php?id=130}, for a description of the algorithm.
+#' \url{https://stevehanov.ca/blog/index.php?id=130}, for a description of the algorithm.
 #'
 #' @references 
 #' Yianilos PN (1993).

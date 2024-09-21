@@ -48,7 +48,7 @@ Data structures and algorithms for nearest neighbor search in general metric spa
 \seealso{
 \linkS4class{BiocNeighborParam}, for the parent class and its available methods.
 
-\url{http://stevehanov.ca/blog/index.php?id=130}, for a description of the algorithm.
+\url{https://stevehanov.ca/blog/index.php?id=130}, for a description of the algorithm.
 }
 \author{
 Aaron Lun
