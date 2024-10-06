@@ -3,10 +3,10 @@
 \name{findNeighbors}
 \alias{findNeighbors}
 \alias{findNeighbors,matrix,ANY-method}
-\alias{findNeighbors,externalptr,ANY-method}
+\alias{findNeighbors,BiocNeighborIndex,ANY-method}
 \alias{findNeighbors,missing,ANY-method}
 \alias{findNeighbors,matrix-method}
-\alias{findNeighbors,externalptr-method}
+\alias{findNeighbors,BiocNeighborIndex-method}
 \alias{findNeighbors,missing-method}
 \title{Find neighbors within a threshold distance}
 \usage{

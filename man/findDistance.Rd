@@ -3,9 +3,9 @@
 \name{findDistance}
 \alias{findDistance}
 \alias{findDistance,matrix,ANY-method}
-\alias{findDistance,externalptr,ANY-method}
+\alias{findDistance,BiocNeighborIndex,ANY-method}
 \alias{findDistance,matrix-method}
-\alias{findDistance,externalptr-method}
+\alias{findDistance,BiocNeighborIndex-method}
 \title{Distance to the k-th nearest neighbor}
 \usage{
 findDistance(X, k, num.threads = 1, subset = NULL, ..., BNPARAM = NULL)

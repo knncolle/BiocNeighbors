@@ -3,9 +3,9 @@
 \name{queryDistance}
 \alias{queryDistance}
 \alias{queryDistance,matrix,ANY-method}
-\alias{queryDistance,externalptr,ANY-method}
+\alias{queryDistance,BiocNeighborIndex,ANY-method}
 \alias{queryDistance,matrix-method}
-\alias{queryDistance,externalptr-method}
+\alias{queryDistance,BiocNeighborIndex-method}
 \title{Distance to the k-th nearest neighbor to query points}
 \usage{
 queryDistance(

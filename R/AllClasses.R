@@ -17,3 +17,21 @@ setClass("AnnoyParam", contains="BiocNeighborParam", slots=c(ntrees="integer", s
 
 #' @export
 setClass("HnswParam", contains="BiocNeighborParam", slots=c(nlinks="integer", ef.construction="integer", ef.search="integer")) 
+
+#' @export
+setClass("BiocNeighborIndex", contains="VIRTUAL")
+
+#' @export
+setClass("ExhaustiveIndex", contains="BiocNeighborIndex", slots=c(ptr="externalptr"))
+
+#' @export
+setClass("KmknnIndex", contains="BiocNeighborIndex", slots=c(ptr="externalptr"))
+
+#' @export
+setClass("VptreeIndex", contains="BiocNeighborIndex", slots=c(ptr="externalptr"))
+
+#' @export
+setClass("AnnoyIndex", contains="BiocNeighborIndex", slots=c(ptr="externalptr"))
+
+#' @export
+setClass("HnswIndex", contains="BiocNeighborIndex", slots=c(ptr="externalptr"))

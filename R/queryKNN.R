@@ -62,10 +62,10 @@
 #' 
 #' @aliases
 #' queryKNN,matrix,ANY-method
-#' queryKNN,externalptr,ANY-method
+#' queryKNN,BiocNeighborIndex,ANY-method
 #' queryKNN,missing,ANY-method
 #' queryKNN,matrix-method
-#' queryKNN,externalptr-method
+#' queryKNN,BiocNeighborIndex-method
 #' queryKNN,missing-method
 #'
 #' @examples
@@ -85,7 +85,7 @@ setMethod("queryKNN", c("matrix", "ANY"), function(X, query, k, get.index=TRUE, 
 })
 
 #' @export
-setMethod("queryKNN", c("externalptr", "ANY"), function(X, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
+setMethod("queryKNN", c("BiocNeighborIndex", "ANY"), function(X, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
     if (!is.null(BPPARAM)) {
         num.threads <- BiocParallel::bpnworkers(BPPARAM)
     }
@@ -96,7 +96,7 @@ setMethod("queryKNN", c("externalptr", "ANY"), function(X, query, k, get.index=T
     }
 
     output <- generic_query_knn(
-        X,
+        X@ptr,
         query=query,
         num_neighbors=as.integer(k),
         force_variable_neighbors=is(k, "AsIs"),

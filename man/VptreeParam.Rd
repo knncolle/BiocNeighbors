@@ -3,6 +3,8 @@
 \name{VptreeParam}
 \alias{VptreeParam}
 \alias{VptreeParam-class}
+\alias{VptreeIndex}
+\alias{VptreeIndex-class}
 \alias{defineBuilder,VptreeParam-method}
 \title{The VptreeParam class}
 \usage{

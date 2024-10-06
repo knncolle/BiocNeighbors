@@ -21,9 +21,9 @@
 #'
 #' @aliases
 #' findDistance,matrix,ANY-method
-#' findDistance,externalptr,ANY-method
+#' findDistance,BiocNeighborIndex,ANY-method
 #' findDistance,matrix-method
-#' findDistance,externalptr-method
+#' findDistance,BiocNeighborIndex-method
 #' 
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)
@@ -40,9 +40,9 @@ setMethod("findDistance", c("matrix", "ANY"), function(X, k, num.threads=1, subs
 })
 
 #' @export
-setMethod("findDistance", c("externalptr", "ANY"), function(X, k, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
+setMethod("findDistance", c("BiocNeighborIndex", "ANY"), function(X, k, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
     generic_find_knn(
-        X, 
+        X@ptr, 
         num_neighbors=as.integer(k), 
         force_variable_neighbors=is(k, "AsIs"),
         chosen=subset, 

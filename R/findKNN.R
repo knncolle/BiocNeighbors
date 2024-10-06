@@ -74,10 +74,10 @@
 #'
 #' @aliases
 #' findKNN,matrix,ANY-method
-#' findKNN,externalptr,ANY-method
+#' findKNN,BiocNeighborIndex,ANY-method
 #' findKNN,missing,ANY-method
 #' findKNN,matrix-method
-#' findKNN,externalptr-method
+#' findKNN,BiocNeighborIndex-method
 #' findKNN,missing-method
 #' 
 #' @examples
@@ -96,13 +96,13 @@ setMethod("findKNN", c("matrix", "ANY"), function(X, k, get.index=TRUE, get.dist
 })
 
 #' @export
-setMethod("findKNN", c("externalptr", "ANY"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
+setMethod("findKNN", c("BiocNeighborIndex", "ANY"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
     if (!is.null(BPPARAM)) {
         num.threads <- BiocParallel::bpnworkers(BPPARAM)
     }
 
     output <- generic_find_knn(
-        X, 
+        X@ptr, 
         num_neighbors=as.integer(k), 
         force_variable_neighbors=is(k, "AsIs"),
         chosen=subset, 

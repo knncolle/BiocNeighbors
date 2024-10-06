@@ -3,10 +3,10 @@
 \name{queryKNN}
 \alias{queryKNN}
 \alias{queryKNN,matrix,ANY-method}
-\alias{queryKNN,externalptr,ANY-method}
+\alias{queryKNN,BiocNeighborIndex,ANY-method}
 \alias{queryKNN,missing,ANY-method}
 \alias{queryKNN,matrix-method}
-\alias{queryKNN,externalptr-method}
+\alias{queryKNN,BiocNeighborIndex-method}
 \alias{queryKNN,missing-method}
 \title{Query k-nearest neighbors}
 \usage{

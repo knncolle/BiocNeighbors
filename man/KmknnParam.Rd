@@ -4,6 +4,8 @@
 \name{KmknnParam}
 \alias{KmknnParam}
 \alias{KmknnParam-class}
+\alias{KmknnIndex}
+\alias{KmknnIndex-class}
 \alias{defineBuilder,KmknnParam-method}
 \title{The KmknnParam class}
 \usage{
@@ -22,7 +24,7 @@ Cosine distances are implemented as Euclidean distances on L2-normalized coordin
 \value{
 The \code{KmknnParam} constructor returns an instance of the KmknnParam class.
 
-The \code{\link{defineBuilder}} method returns an external pointer that can be used in \code{\link{buildIndex}} to construct a KMKNN index.
+The \code{\link{defineBuilder}} method returns a list that can be used in \code{\link{buildIndex}} to construct a KMKNN index.
 }
 \description{
 A class to hold parameters for the k-means k-nearest-neighbors (KMKNN) algorithm for exact nearest neighbor identification.

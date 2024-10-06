@@ -29,7 +29,11 @@
 #' @examples
 #' (out <- ExhaustiveParam())
 #'
-#' @aliases ExhaustiveParam-class
+#' @aliases
+#' ExhaustiveParam-class
+#' ExhaustiveIndex
+#' ExhaustiveIndex-class
+#' 
 #' @docType class
 #' 
 #' @export
@@ -39,5 +43,15 @@ ExhaustiveParam <- function(distance=c("Euclidean", "Manhattan", "Cosine")) {
 }
 
 #' @export
+ExhaustiveIndex <- function(ptr) {
+    new("ExhaustiveIndex", ptr=ptr)
+}
+
+#' @export
 #' @rdname ExhaustiveParam
-setMethod("defineBuilder", "ExhaustiveParam", function(BNPARAM) exhaustive_builder(distance=BNPARAM@distance))
+setMethod("defineBuilder", "ExhaustiveParam", function(BNPARAM) {
+    list(
+        builder=exhaustive_builder(distance=BNPARAM@distance),
+        class=ExhaustiveIndex
+    )
+})

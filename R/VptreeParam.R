@@ -40,6 +40,8 @@
 #'
 #' @aliases
 #' VptreeParam-class
+#' VptreeIndex
+#' VptreeIndex-class
 #'
 #' @export
 #' @importFrom methods new
@@ -48,5 +50,15 @@ VptreeParam <- function(distance=c("Euclidean", "Manhattan", "Cosine")) {
 }
 
 #' @export
+VptreeIndex <- function(ptr) {
+    new("VptreeIndex", ptr=ptr)
+}
+
+#' @export
 #' @rdname VptreeParam
-setMethod("defineBuilder", "VptreeParam", function(BNPARAM) vptree_builder(BNPARAM@distance))
+setMethod("defineBuilder", "VptreeParam", function(BNPARAM) {
+    list(
+        builder=vptree_builder(BNPARAM@distance),
+        class=VptreeIndex
+    )
+})

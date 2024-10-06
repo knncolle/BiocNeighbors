@@ -4,6 +4,8 @@
 \name{ExhaustiveParam}
 \alias{ExhaustiveParam}
 \alias{ExhaustiveParam-class}
+\alias{ExhaustiveIndex}
+\alias{ExhaustiveIndex-class}
 \alias{defineBuilder,ExhaustiveParam-method}
 \title{The ExhaustiveParam class}
 \usage{

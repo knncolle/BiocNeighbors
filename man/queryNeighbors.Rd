@@ -3,10 +3,10 @@
 \name{queryNeighbors}
 \alias{queryNeighbors}
 \alias{queryNeighbors,matrix,ANY-method}
-\alias{queryNeighbors,externalptr,ANY-method}
+\alias{queryNeighbors,BiocNeighborIndex,ANY-method}
 \alias{queryNeighbors,missing,ANY-method}
 \alias{queryNeighbors,matrix-method}
-\alias{queryNeighbors,externalptr-method}
+\alias{queryNeighbors,BiocNeighborIndex-method}
 \alias{queryNeighbors,missing-method}
 \title{Query neighbors within a threshold distance}
 \usage{

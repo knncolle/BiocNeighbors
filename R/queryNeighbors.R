@@ -51,10 +51,10 @@
 #' 
 #' @aliases
 #' queryNeighbors,matrix,ANY-method
-#' queryNeighbors,externalptr,ANY-method
+#' queryNeighbors,BiocNeighborIndex,ANY-method
 #' queryNeighbors,missing,ANY-method
 #' queryNeighbors,matrix-method
-#' queryNeighbors,externalptr-method
+#' queryNeighbors,BiocNeighborIndex-method
 #' queryNeighbors,missing-method
 #'
 #' @name queryNeighbors
@@ -67,7 +67,7 @@ setMethod("queryNeighbors", c("matrix", "ANY"), function(X, query, threshold, ge
 })
 
 #' @export
-setMethod("queryNeighbors", c("externalptr", "ANY"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
+setMethod("queryNeighbors", c("BiocNeighborIndex", "ANY"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
     if (!is.null(BPPARAM)) {
         num.threads <- BiocParallel::bpnworkers(BPPARAM)
     }
@@ -77,7 +77,7 @@ setMethod("queryNeighbors", c("externalptr", "ANY"), function(X, query, threshol
         query <- query[,subset,drop=FALSE] # could move into C++ to avoid a copy but can't be bothered right now.
     }
 
-    output <- generic_query_all(X, query=query, thresholds=threshold, num_threads=num.threads, report_index=get.index, report_distance=get.distance)
+    output <- generic_query_all(X@ptr, query=query, thresholds=threshold, num_threads=num.threads, report_index=get.index, report_distance=get.distance)
 
     if (!get.index && !get.distance) {
         return(output)

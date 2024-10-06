@@ -5,7 +5,7 @@
 \alias{buildIndex,matrix,NULL-method}
 \alias{buildIndex,matrix,missing-method}
 \alias{buildIndex,matrix,BiocNeighborParam-method}
-\alias{buildIndex,matrix,externalptr-method}
+\alias{buildIndex,matrix,list-method}
 \title{Build a nearest-neighbor index}
 \usage{
 buildIndex(X, transposed = FALSE, ..., BNPARAM = NULL)
@@ -20,24 +20,22 @@ buildIndex(X, transposed = FALSE, ..., BNPARAM = NULL)
 \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.
 If \code{NULL}, this defaults to a \linkS4class{KmknnParam} object. 
 
-Alternatively, this may be an external pointer constructed by \code{\link{defineBuilder}}.}
+Alternatively, this may be a list returned by \code{\link{defineBuilder}}.}
 }
 \value{
-A prebuilt index that can be used in \code{\link{findKNN}} and related functions as the \code{X=} argument.
-The exact type of the index is not defined, but users should assume that the index is not serializable, i.e., cannot be saved or transferred between processes.
+A \linkS4class{BiocNeighborIndex} object can be used in \code{\link{findKNN}} and related functions as the \code{X=} argument.
+Users should assume that the index is not serializable, i.e., cannot be saved or transferred between processes.
 }
 \description{
 Build indices for nearest-neighbor searching with different algorithms.
 }
 \details{
-The type and structure of the index object returned by \code{buildIndex} methods is arbitrary and left to the discretion of the method developer.
-However, there are a few constraints:
-\itemize{
-\item It should not be a matrix, as this interferes with dispatch for methods like \code{\link{findKNN}} when \code{X} is just the data matrix.
-\item If it is an external pointer, it should refer to a \code{BiocNeighbors::Prebuilt} object
+Each \code{buildIndex} method is expected to return an instance of a \linkS4class{BiocNeighborIndex} subclass.
+The structure of this subclass is arbitrary and left to the discretion of the method developer.
+Developers are also responsible for defining methods for their subclass in each of the relevant functions (e.g., \code{\link{findKNN}}, \code{\link{queryKNN}}).
+The exception is if the subclass contains a \code{ptr} slot that refers to a \code{BiocNeighbors::Prebuilt} object
 (see definition in \code{system.file("include", "BiocNeighbors.h", package="BiocNeighbors")}).
-This allows it to be directly used in methods like \code{\link{findKNN}}.
-}
+This allows it to be directly used with the existing default methods for \code{\link{findKNN}}, etc.
 }
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)

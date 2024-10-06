@@ -47,6 +47,9 @@
 #' @aliases
 #' HnswParam-class
 #' show,HnswParam-method
+#' HnswIndex
+#' HnswIndex-class
+#'
 #' @docType class
 #'
 #' @export
@@ -86,7 +89,15 @@ setMethod("show", "HnswParam", function(object) {
 })
 
 #' @export
+HnswIndex <- function(ptr) {
+    new("HnswIndex", ptr=ptr)
+}
+
+#' @export
 #' @rdname HnswParam
 setMethod("defineBuilder", "HnswParam", function(BNPARAM) {
-    hnsw_builder(nlinks=BNPARAM@nlinks, ef_construct=BNPARAM@ef.construction, ef_search=BNPARAM@ef.search, distance=BNPARAM@distance)
+    list(
+        builder=hnsw_builder(nlinks=BNPARAM@nlinks, ef_construct=BNPARAM@ef.construction, ef_search=BNPARAM@ef.search, distance=BNPARAM@distance),
+        class=HnswIndex
+    )
 })

@@ -5,6 +5,8 @@
 \alias{AnnoyParam}
 \alias{AnnoyParam-class}
 \alias{show,AnnoyParam-method}
+\alias{AnnoyIndex}
+\alias{AnnoyIndex-class}
 \alias{defineBuilder,AnnoyParam-method}
 \title{The AnnoyParam class}
 \usage{
@@ -29,7 +31,7 @@ Cosine distances are implemented as Euclidean distances on L2-normalized coordin
 \value{
 The \code{AnnoyParam} constructor returns an instance of the AnnoyParam class.
 
-The \code{\link{defineBuilder}} method returns an external pointer that can be used in \code{\link{buildIndex}} to construct an Annoy index.
+The \code{\link{defineBuilder}} method returns a list that can be used in \code{\link{buildIndex}} to construct an Annoy index.
 }
 \description{
 A class to hold parameters for the Annoy algorithm for approximate nearest neighbor identification.

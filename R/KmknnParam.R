@@ -20,7 +20,7 @@
 #' @return
 #' The \code{KmknnParam} constructor returns an instance of the KmknnParam class.
 #'
-#' The \code{\link{defineBuilder}} method returns an external pointer that can be used in \code{\link{buildIndex}} to construct a KMKNN index.
+#' The \code{\link{defineBuilder}} method returns a list that can be used in \code{\link{buildIndex}} to construct a KMKNN index.
 #' 
 #' @author
 #' Aaron Lun, using code from the \pkg{cydar} package. 
@@ -39,6 +39,8 @@
 #' @docType class
 #' @aliases
 #' KmknnParam-class
+#' KmknnIndex
+#' KmknnIndex-class
 #'
 #' @export
 #' @importFrom methods new
@@ -47,5 +49,15 @@ KmknnParam <- function(..., distance=c("Euclidean", "Manhattan", "Cosine")) {
 }
 
 #' @export
+KmknnIndex <- function(ptr) {
+    new("KmknnIndex", ptr=ptr)
+}
+
+#' @export
 #' @rdname KmknnParam
-setMethod("defineBuilder", "KmknnParam", function(BNPARAM) kmknn_builder(distance=BNPARAM@distance))
+setMethod("defineBuilder", "KmknnParam", function(BNPARAM) {
+    list(
+        builder=kmknn_builder(distance=BNPARAM@distance),
+        class=KmknnIndex
+    )
+})

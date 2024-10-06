@@ -3,10 +3,10 @@
 \name{findKNN}
 \alias{findKNN}
 \alias{findKNN,matrix,ANY-method}
-\alias{findKNN,externalptr,ANY-method}
+\alias{findKNN,BiocNeighborIndex,ANY-method}
 \alias{findKNN,missing,ANY-method}
 \alias{findKNN,matrix-method}
-\alias{findKNN,externalptr-method}
+\alias{findKNN,BiocNeighborIndex-method}
 \alias{findKNN,missing-method}
 \title{Find k-nearest neighbors}
 \usage{

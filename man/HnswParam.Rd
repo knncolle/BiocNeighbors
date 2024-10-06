@@ -5,6 +5,8 @@
 \alias{HnswParam}
 \alias{HnswParam-class}
 \alias{show,HnswParam-method}
+\alias{HnswIndex}
+\alias{HnswIndex-class}
 \alias{defineBuilder,HnswParam-method}
 \title{The HnswParam class}
 \usage{
