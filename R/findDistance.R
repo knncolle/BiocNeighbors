@@ -45,7 +45,7 @@ setMethod("findDistance", c("BiocNeighborIndex", "ANY"), function(X, k, num.thre
         X@ptr, 
         num_neighbors=as.integer(k), 
         force_variable_neighbors=is(k, "AsIs"),
-        chosen=subset, 
+        chosen=.integerize_subset(X, subset), 
         num_threads=num.threads, 
         last_distance_only=TRUE,
         report_index=FALSE,

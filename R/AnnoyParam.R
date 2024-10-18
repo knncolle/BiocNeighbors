@@ -86,8 +86,8 @@ setMethod("show", "AnnoyParam", function(object) {
 })
 
 #' @export
-AnnoyIndex <- function(ptr) {
-    new("AnnoyIndex", ptr=ptr)
+AnnoyIndex <- function(ptr, names) {
+    new("AnnoyIndex", ptr=ptr, names=names)
 }
 
 #' @export

@@ -17,6 +17,10 @@ generic_build <- function(builder, data) {
     .Call('_BiocNeighbors_generic_build', PACKAGE = 'BiocNeighbors', builder, data)
 }
 
+generic_num_obs <- function(prebuilt_ptr) {
+    .Call('_BiocNeighbors_generic_num_obs', PACKAGE = 'BiocNeighbors', prebuilt_ptr)
+}
+
 generic_find_knn <- function(prebuilt_ptr, num_neighbors, force_variable_neighbors, chosen, num_threads, last_distance_only, report_index, report_distance) {
     .Call('_BiocNeighbors_generic_find_knn', PACKAGE = 'BiocNeighbors', prebuilt_ptr, num_neighbors, force_variable_neighbors, chosen, num_threads, last_distance_only, report_index, report_distance)
 }

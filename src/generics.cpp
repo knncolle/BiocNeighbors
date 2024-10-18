@@ -17,6 +17,16 @@ SEXP generic_build(SEXP builder, Rcpp::NumericMatrix data) {
     return BiocNeighbors::PrebuiltPointer(out->build_raw(BiocNeighbors::SimpleMatrix(data.rows(), data.cols(), data.begin())));
 }
 
+//[[Rcpp::export(rng=false)]]
+int generic_num_obs(SEXP prebuilt_ptr) {
+    BiocNeighbors::PrebuiltPointer cast(prebuilt_ptr); 
+    if (!R_ExternalPtrAddr(SEXP(cast))) {
+        throw std::runtime_error("null pointer to a prebuilt index");
+    }
+    const auto& prebuilt = *cast;
+    return prebuilt.num_observations();
+}
+
 /*********************************
  ********* KNN functions *********
  *********************************/

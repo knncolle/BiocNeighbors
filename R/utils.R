@@ -1,20 +1,15 @@
-.subset_to_index <- function(subset, x, byrow=TRUE) 
-# Converts an arbitary subset into an integer vector.
-{
-    if (byrow) {
-        dummy <- seq_len(nrow(x))
-        names(dummy) <- rownames(x)
+.integerize_subset <- function(index, subset) {
+    if (is.null(subset)) {
+        subset
+    } else if (!is.numeric(subset)) {
+        dummy <- seq_len(generic_num_obs(index@ptr))
+        names(dummy) <- index@names
+        dummy[subset]
+    } else if (!is.integer(subset)) {
+        as.integer(subset)
     } else {
-        dummy <- seq_len(ncol(x))
-        names(dummy) <- colnames(x) 
+        subset
     }
-
-    out <- unname(dummy[subset])
-    if (any(is.na(out))) {
-        stop("'subset' indices out of range of 'x'")
-    }
-
-    out
 }
 
 .coerce_matrix_build <- function(X, transposed) {

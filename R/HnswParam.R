@@ -89,8 +89,8 @@ setMethod("show", "HnswParam", function(object) {
 })
 
 #' @export
-HnswIndex <- function(ptr) {
-    new("HnswIndex", ptr=ptr)
+HnswIndex <- function(ptr, names) {
+    new("HnswIndex", ptr=ptr, names=names)
 }
 
 #' @export

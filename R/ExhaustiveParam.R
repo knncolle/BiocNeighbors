@@ -43,8 +43,8 @@ ExhaustiveParam <- function(distance=c("Euclidean", "Manhattan", "Cosine")) {
 }
 
 #' @export
-ExhaustiveIndex <- function(ptr) {
-    new("ExhaustiveIndex", ptr=ptr)
+ExhaustiveIndex <- function(ptr, names) {
+    new("ExhaustiveIndex", ptr=ptr, names=names)
 }
 
 #' @export

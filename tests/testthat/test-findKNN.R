@@ -32,9 +32,10 @@ test_that("findKNN works in parallel", {
 
 test_that("findKNN works with subsets", {
     Y <- matrix(rnorm(10000), ncol=20)
+    full <- findKNN(Y, k=8)
 
-    out <- findKNN(Y, k=8)
     sout <- findKNN(Y, subset=1:10, k=8)
+    out <- full
     out$index <- out$index[1:10,]
     out$distance <- out$distance[1:10,]
     expect_identical(out, sout)
@@ -42,6 +43,23 @@ test_that("findKNN works with subsets", {
     expect_warning(out <- findKNN(Y[0,,drop=FALSE], k=8), "capped")
     expect_identical(ncol(out$index), 0L)
     expect_identical(ncol(out$distance), 0L)
+
+    # Works with non-integer options.
+    keep <- rbinom(nrow(Y), 1, 0.5) == 1
+    sout <- findKNN(Y, subset=keep, k=8)
+    out <- full
+    out$index <- out$index[keep,]
+    out$distance <- out$distance[keep,]
+    expect_identical(out, sout)
+
+    Z <- Y
+    rownames(Z) <- seq_len(nrow(Z))
+    keep <- sample(rownames(Z), nrow(Z) / 2)
+    sout <- findKNN(Z, subset=keep, k=8)
+    out <- full
+    out$index <- out$index[as.integer(keep),]
+    out$distance <- out$distance[as.integer(keep),]
+    expect_identical(out, sout)
 })
 
 test_that("findKNN works with variable k", {

@@ -51,5 +51,5 @@ setMethod("buildIndex", c("matrix", "BiocNeighborParam"), function(X, transposed
 #' @export
 setMethod("buildIndex", c("matrix", "list"), function(X, transposed=FALSE, ..., BNPARAM) {
     X <- .coerce_matrix_build(X, transposed)
-    BNPARAM$class(generic_build(BNPARAM$builder, X))
+    BNPARAM$class(ptr=generic_build(BNPARAM$builder, X), names=colnames(X))
 })

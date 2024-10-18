@@ -25,12 +25,23 @@ test_that("findDistance works in parallel", {
 test_that("findDistance works with subsets", {
     Y <- matrix(rnorm(10000), ncol=20)
 
-    out <- findDistance(Y, k=8)
+    full <- findDistance(Y, k=8)
     dist <- findDistance(Y, k=8, subset=1:10)
-    expect_identical(out[1:10], dist)
+    expect_identical(full[1:10], dist)
 
     expect_warning(dist <- findDistance(Y[0,,drop=FALSE], k=8), "capped")
     expect_identical(length(dist), 0L)
+
+    # Works with non-integer options.
+    keep <- rbinom(nrow(Y), 1, 0.5) == 1
+    sout <- findDistance(Y, subset=keep, k=8)
+    expect_identical(full[keep], sout)
+
+    Z <- Y
+    rownames(Z) <- seq_len(nrow(Z))
+    keep <- sample(rownames(Z), nrow(Z) / 2)
+    sout <- findDistance(Z, subset=keep, k=8)
+    expect_identical(full[as.integer(keep)], sout)
 })
 
 test_that("findDistance works with variable k", {

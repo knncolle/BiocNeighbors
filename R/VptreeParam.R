@@ -50,8 +50,8 @@ VptreeParam <- function(distance=c("Euclidean", "Manhattan", "Cosine")) {
 }
 
 #' @export
-VptreeIndex <- function(ptr) {
-    new("VptreeIndex", ptr=ptr)
+VptreeIndex <- function(ptr, names) {
+    new("VptreeIndex", ptr=ptr, names=names)
 }
 
 #' @export

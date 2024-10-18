@@ -49,8 +49,8 @@ KmknnParam <- function(..., distance=c("Euclidean", "Manhattan", "Cosine")) {
 }
 
 #' @export
-KmknnIndex <- function(ptr) {
-    new("KmknnIndex", ptr=ptr)
+KmknnIndex <- function(ptr, names) {
+    new("KmknnIndex", ptr=ptr, names=names)
 }
 
 #' @export

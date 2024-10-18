@@ -55,6 +55,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// generic_num_obs
+int generic_num_obs(SEXP prebuilt_ptr);
+RcppExport SEXP _BiocNeighbors_generic_num_obs(SEXP prebuilt_ptrSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type prebuilt_ptr(prebuilt_ptrSEXP);
+    rcpp_result_gen = Rcpp::wrap(generic_num_obs(prebuilt_ptr));
+    return rcpp_result_gen;
+END_RCPP
+}
 // generic_find_knn
 SEXP generic_find_knn(SEXP prebuilt_ptr, Rcpp::IntegerVector num_neighbors, bool force_variable_neighbors, Rcpp::Nullable<Rcpp::IntegerVector> chosen, int num_threads, bool last_distance_only, bool report_index, bool report_distance);
 RcppExport SEXP _BiocNeighbors_generic_find_knn(SEXP prebuilt_ptrSEXP, SEXP num_neighborsSEXP, SEXP force_variable_neighborsSEXP, SEXP chosenSEXP, SEXP num_threadsSEXP, SEXP last_distance_onlySEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
@@ -158,6 +168,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BiocNeighbors_exhaustive_builder", (DL_FUNC) &_BiocNeighbors_exhaustive_builder, 1},
     {"_BiocNeighbors_find_mutual_nns", (DL_FUNC) &_BiocNeighbors_find_mutual_nns, 2},
     {"_BiocNeighbors_generic_build", (DL_FUNC) &_BiocNeighbors_generic_build, 2},
+    {"_BiocNeighbors_generic_num_obs", (DL_FUNC) &_BiocNeighbors_generic_num_obs, 1},
     {"_BiocNeighbors_generic_find_knn", (DL_FUNC) &_BiocNeighbors_generic_find_knn, 8},
     {"_BiocNeighbors_generic_query_knn", (DL_FUNC) &_BiocNeighbors_generic_query_knn, 8},
     {"_BiocNeighbors_generic_find_all", (DL_FUNC) &_BiocNeighbors_generic_find_all, 6},

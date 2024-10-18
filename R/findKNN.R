@@ -105,7 +105,7 @@ setMethod("findKNN", c("BiocNeighborIndex", "ANY"), function(X, k, get.index=TRU
         X@ptr, 
         num_neighbors=as.integer(k), 
         force_variable_neighbors=is(k, "AsIs"),
-        chosen=subset, 
+        chosen=.integerize_subset(X, subset), 
         num_threads=num.threads, 
         last_distance_only=FALSE,
         report_index=!isFALSE(get.index), 

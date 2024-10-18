@@ -38,8 +38,9 @@ test_that("findNeighbors works with subsets", {
     Y <- matrix(rnorm(10000), ncol=20)
     d <- median(findKNN(Y, k=3, get.index=FALSE)$distance[,3])
 
-    out <- findNeighbors(Y, threshold=d)
+    full <- findNeighbors(Y, threshold=d)
     sout <- findNeighbors(Y, subset=1:10, threshold=d)
+    out <- full
     out$index <- out$index[1:10]
     out$distance <- out$distance[1:10]
     expect_identical(out, sout)
@@ -47,6 +48,23 @@ test_that("findNeighbors works with subsets", {
     out <- findNeighbors(Y[0,,drop=FALSE], threshold=d)
     expect_identical(length(out$index), 0L)
     expect_identical(length(out$distance), 0L)
+
+    # Works with non-integer options.
+    keep <- rbinom(nrow(Y), 1, 0.5) == 1
+    sout <- findNeighbors(Y, subset=keep, threshold=d)
+    out <- full
+    out$index <- out$index[keep]
+    out$distance <- out$distance[keep]
+    expect_identical(out, sout)
+
+    Z <- Y
+    rownames(Z) <- seq_len(nrow(Z))
+    keep <- sample(rownames(Z), nrow(Z) / 2)
+    sout <- findNeighbors(Z, subset=keep, threshold=d)
+    out <- full
+    out$index <- out$index[as.integer(keep)]
+    out$distance <- out$distance[as.integer(keep)]
+    expect_identical(out, sout)
 })
 
 test_that("findNeighbors works with prebuilt indices", {

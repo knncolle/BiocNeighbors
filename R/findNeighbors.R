@@ -74,7 +74,7 @@ setMethod("findNeighbors", c("BiocNeighborIndex", "ANY"), function(X, threshold,
     output <- generic_find_all(
        X@ptr,
        thresholds=threshold, 
-       chosen=subset,
+       chosen=.integerize_subset(X, subset),
        num_threads=num.threads,
        report_index=get.index,
        report_distance=get.distance
