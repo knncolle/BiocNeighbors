@@ -4,7 +4,7 @@
 #' 
 #' @param X The reference dataset to be queried.
 #' This should be a numeric matrix where rows correspond to reference points and columns correspond to variables (i.e., dimensions).
-#' Alternatively, a prebuilt index from \code{\link{buildIndex}}.
+#' Alternatively, a prebuilt \linkS4class{BiocNeighborIndex} object from \code{\link{buildIndex}}.
 #' @inheritParams findKNN
 #' @param k A positive integer scalar specifying the number of nearest neighbors to retrieve.
 #'
@@ -62,10 +62,10 @@
 #' 
 #' @aliases
 #' queryKNN,matrix,ANY-method
-#' queryKNN,BiocNeighborIndex,ANY-method
+#' queryKNN,BiocNeighborGenericIndex,ANY-method
 #' queryKNN,missing,ANY-method
 #' queryKNN,matrix-method
-#' queryKNN,BiocNeighborIndex-method
+#' queryKNN,BiocNeighborGenericIndex-method
 #' queryKNN,missing-method
 #'
 #' @examples
@@ -85,7 +85,7 @@ setMethod("queryKNN", c("matrix", "ANY"), function(X, query, k, get.index=TRUE, 
 })
 
 #' @export
-setMethod("queryKNN", c("BiocNeighborIndex", "ANY"), function(X, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
+setMethod("queryKNN", c("BiocNeighborGenericIndex", "ANY"), function(X, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
     if (!is.null(BPPARAM)) {
         num.threads <- BiocParallel::bpnworkers(BPPARAM)
     }

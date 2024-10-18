@@ -3,16 +3,16 @@
 \name{findDistance}
 \alias{findDistance}
 \alias{findDistance,matrix,ANY-method}
-\alias{findDistance,BiocNeighborIndex,ANY-method}
+\alias{findDistance,BiocNeighborGenericIndex,ANY-method}
 \alias{findDistance,matrix-method}
-\alias{findDistance,BiocNeighborIndex-method}
+\alias{findDistance,BiocNeighborGenericIndex-method}
 \title{Distance to the k-th nearest neighbor}
 \usage{
 findDistance(X, k, num.threads = 1, subset = NULL, ..., BNPARAM = NULL)
 }
 \arguments{
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
-Alternatively, a prebuilt index from \code{\link{buildIndex}}.}
+Alternatively, a prebuilt \linkS4class{BiocNeighborIndex} object from \code{\link{buildIndex}}.}
 
 \item{k}{A positive integer scalar specifying the number of nearest neighbors to retrieve.
 

@@ -3,10 +3,10 @@
 \name{findKNN}
 \alias{findKNN}
 \alias{findKNN,matrix,ANY-method}
-\alias{findKNN,BiocNeighborIndex,ANY-method}
+\alias{findKNN,BiocNeighborGenericIndex,ANY-method}
 \alias{findKNN,missing,ANY-method}
 \alias{findKNN,matrix-method}
-\alias{findKNN,BiocNeighborIndex-method}
+\alias{findKNN,BiocNeighborGenericIndex-method}
 \alias{findKNN,missing-method}
 \title{Find k-nearest neighbors}
 \usage{
@@ -23,7 +23,7 @@ findKNN(
 }
 \arguments{
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
-Alternatively, a prebuilt index from \code{\link{buildIndex}}.}
+Alternatively, a prebuilt \linkS4class{BiocNeighborIndex} object from \code{\link{buildIndex}}.}
 
 \item{k}{A positive integer scalar specifying the number of nearest neighbors to retrieve.
 

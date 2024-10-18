@@ -18,9 +18,8 @@
 #' Each \code{buildIndex} method is expected to return an instance of a \linkS4class{BiocNeighborIndex} subclass.
 #' The structure of this subclass is arbitrary and left to the discretion of the method developer.
 #' Developers are also responsible for defining methods for their subclass in each of the relevant functions (e.g., \code{\link{findKNN}}, \code{\link{queryKNN}}).
-#' The exception is if the subclass contains a \code{ptr} slot that refers to a \code{BiocNeighbors::Prebuilt} object
-#' (see definition in \code{system.file("include", "BiocNeighbors.h", package="BiocNeighbors")}).
-#' This allows it to be directly used with the existing default methods for \code{\link{findKNN}}, etc.
+#' The exception is if the method returns an instance of a \linkS4class{BiocNeighborGenericIndex} subclass,
+#' which can be used with the existing methods for \code{\link{findKNN}}, etc. without further effort.
 #' 
 #' @author
 #' Aaron Lun

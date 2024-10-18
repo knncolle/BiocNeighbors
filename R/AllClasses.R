@@ -22,16 +22,19 @@ setClass("HnswParam", contains="BiocNeighborParam", slots=c(nlinks="integer", ef
 setClass("BiocNeighborIndex", contains="VIRTUAL")
 
 #' @export
-setClass("ExhaustiveIndex", contains="BiocNeighborIndex", slots=c(ptr="externalptr", names="ANY"))
+setClass("BiocNeighborGenericIndex", contains=c("VIRTUAL", "BiocNeighborIndex"), slots=c(ptr="externalptr", names="ANY"))
 
 #' @export
-setClass("KmknnIndex", contains="BiocNeighborIndex", slots=c(ptr="externalptr", names="ANY"))
+setClass("ExhaustiveIndex", contains="BiocNeighborGenericIndex")
 
 #' @export
-setClass("VptreeIndex", contains="BiocNeighborIndex", slots=c(ptr="externalptr", names="ANY"))
+setClass("KmknnIndex", contains="BiocNeighborGenericIndex")
 
 #' @export
-setClass("AnnoyIndex", contains="BiocNeighborIndex", slots=c(ptr="externalptr", names="ANY"))
+setClass("VptreeIndex", contains="BiocNeighborGenericIndex")
 
 #' @export
-setClass("HnswIndex", contains="BiocNeighborIndex", slots=c(ptr="externalptr", names="ANY"))
+setClass("AnnoyIndex", contains="BiocNeighborGenericIndex")
+
+#' @export
+setClass("HnswIndex", contains="BiocNeighborGenericIndex")

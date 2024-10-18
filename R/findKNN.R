@@ -3,7 +3,7 @@
 #' Find the k-nearest neighbors of each point in a dataset.
 #' 
 #' @param X A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
-#' Alternatively, a prebuilt index from \code{\link{buildIndex}}.
+#' Alternatively, a prebuilt \linkS4class{BiocNeighborIndex} object from \code{\link{buildIndex}}.
 #' @param k A positive integer scalar specifying the number of nearest neighbors to retrieve.
 #'
 #' Alternatively, an integer vector of length equal to the number of points in \code{X}, specifying the number of neighbors to identify for each point.
@@ -74,10 +74,10 @@
 #'
 #' @aliases
 #' findKNN,matrix,ANY-method
-#' findKNN,BiocNeighborIndex,ANY-method
+#' findKNN,BiocNeighborGenericIndex,ANY-method
 #' findKNN,missing,ANY-method
 #' findKNN,matrix-method
-#' findKNN,BiocNeighborIndex-method
+#' findKNN,BiocNeighborGenericIndex-method
 #' findKNN,missing-method
 #' 
 #' @examples
@@ -96,7 +96,7 @@ setMethod("findKNN", c("matrix", "ANY"), function(X, k, get.index=TRUE, get.dist
 })
 
 #' @export
-setMethod("findKNN", c("BiocNeighborIndex", "ANY"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
+setMethod("findKNN", c("BiocNeighborGenericIndex", "ANY"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
     if (!is.null(BPPARAM)) {
         num.threads <- BiocParallel::bpnworkers(BPPARAM)
     }

@@ -51,10 +51,10 @@
 #' 
 #' @aliases
 #' queryNeighbors,matrix,ANY-method
-#' queryNeighbors,BiocNeighborIndex,ANY-method
+#' queryNeighbors,BiocNeighborGenericIndex,ANY-method
 #' queryNeighbors,missing,ANY-method
 #' queryNeighbors,matrix-method
-#' queryNeighbors,BiocNeighborIndex-method
+#' queryNeighbors,BiocNeighborGenericIndex-method
 #' queryNeighbors,missing-method
 #'
 #' @name queryNeighbors
@@ -67,7 +67,7 @@ setMethod("queryNeighbors", c("matrix", "ANY"), function(X, query, threshold, ge
 })
 
 #' @export
-setMethod("queryNeighbors", c("BiocNeighborIndex", "ANY"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
+setMethod("queryNeighbors", c("BiocNeighborGenericIndex", "ANY"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
     if (!is.null(BPPARAM)) {
         num.threads <- BiocParallel::bpnworkers(BPPARAM)
     }

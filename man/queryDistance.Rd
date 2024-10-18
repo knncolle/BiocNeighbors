@@ -3,9 +3,9 @@
 \name{queryDistance}
 \alias{queryDistance}
 \alias{queryDistance,matrix,ANY-method}
-\alias{queryDistance,BiocNeighborIndex,ANY-method}
+\alias{queryDistance,BiocNeighborGenericIndex,ANY-method}
 \alias{queryDistance,matrix-method}
-\alias{queryDistance,BiocNeighborIndex-method}
+\alias{queryDistance,BiocNeighborGenericIndex-method}
 \title{Distance to the k-th nearest neighbor to query points}
 \usage{
 queryDistance(
@@ -22,7 +22,7 @@ queryDistance(
 \arguments{
 \item{X}{The reference dataset to be queried.
 This should be a numeric matrix where rows correspond to reference points and columns correspond to variables (i.e., dimensions).
-Alternatively, a prebuilt index from \code{\link{buildIndex}}.}
+Alternatively, a prebuilt \linkS4class{BiocNeighborIndex} object from \code{\link{buildIndex}}.}
 
 \item{query}{A numeric matrix of query points, containing the same number of columns as \code{X}.}
 

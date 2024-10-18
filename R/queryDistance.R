@@ -21,9 +21,9 @@
 #' 
 #' @aliases
 #' queryDistance,matrix,ANY-method
-#' queryDistance,BiocNeighborIndex,ANY-method
+#' queryDistance,BiocNeighborGenericIndex,ANY-method
 #' queryDistance,matrix-method
-#' queryDistance,BiocNeighborIndex-method
+#' queryDistance,BiocNeighborGenericIndex-method
 #'
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)
@@ -41,7 +41,7 @@ setMethod("queryDistance", c("matrix", "ANY"), function(X, query, k, num.threads
 })
 
 #' @export
-setMethod("queryDistance", c("BiocNeighborIndex", "ANY"), function(X, query, k, num.threads=1, subset=NULL, transposed=FALSE, ..., BNPARAM=NULL) {
+setMethod("queryDistance", c("BiocNeighborGenericIndex", "ANY"), function(X, query, k, num.threads=1, subset=NULL, transposed=FALSE, ..., BNPARAM=NULL) {
     query <- .coerce_matrix_build(query, transposed)
     if (!is.null(subset)) {
         query <- query[,subset,drop=FALSE] # could move into C++ for efficiency but can't be bothered for now.

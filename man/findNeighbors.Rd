@@ -3,10 +3,10 @@
 \name{findNeighbors}
 \alias{findNeighbors}
 \alias{findNeighbors,matrix,ANY-method}
-\alias{findNeighbors,BiocNeighborIndex,ANY-method}
+\alias{findNeighbors,BiocNeighborGenericIndex,ANY-method}
 \alias{findNeighbors,missing,ANY-method}
 \alias{findNeighbors,matrix-method}
-\alias{findNeighbors,BiocNeighborIndex-method}
+\alias{findNeighbors,BiocNeighborGenericIndex-method}
 \alias{findNeighbors,missing-method}
 \title{Find neighbors within a threshold distance}
 \usage{
@@ -23,7 +23,7 @@ findNeighbors(
 }
 \arguments{
 \item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
-Alternatively, a prebuilt index from \code{\link{buildIndex}}.}
+Alternatively, a prebuilt \linkS4class{BiocNeighborIndex} object from \code{\link{buildIndex}}.}
 
 \item{threshold}{A positive numeric scalar specifying the maximum distance at which a point is considered a neighbor.
 Alternatively, a vector containing a different distance threshold for each point.}

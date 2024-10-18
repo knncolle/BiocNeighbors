@@ -3,10 +3,10 @@
 \name{queryNeighbors}
 \alias{queryNeighbors}
 \alias{queryNeighbors,matrix,ANY-method}
-\alias{queryNeighbors,BiocNeighborIndex,ANY-method}
+\alias{queryNeighbors,BiocNeighborGenericIndex,ANY-method}
 \alias{queryNeighbors,missing,ANY-method}
 \alias{queryNeighbors,matrix-method}
-\alias{queryNeighbors,BiocNeighborIndex-method}
+\alias{queryNeighbors,BiocNeighborGenericIndex-method}
 \alias{queryNeighbors,missing-method}
 \title{Query neighbors within a threshold distance}
 \usage{
@@ -26,7 +26,7 @@ queryNeighbors(
 \arguments{
 \item{X}{The reference dataset to be queried.
 This should be a numeric matrix where rows correspond to reference points and columns correspond to variables (i.e., dimensions).
-Alternatively, a prebuilt index from \code{\link{buildIndex}}.}
+Alternatively, a prebuilt \linkS4class{BiocNeighborIndex} object from \code{\link{buildIndex}}.}
 
 \item{query}{A numeric matrix of query points, containing the same number of columns as \code{X}.}
 

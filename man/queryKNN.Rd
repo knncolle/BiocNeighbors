@@ -3,10 +3,10 @@
 \name{queryKNN}
 \alias{queryKNN}
 \alias{queryKNN,matrix,ANY-method}
-\alias{queryKNN,BiocNeighborIndex,ANY-method}
+\alias{queryKNN,BiocNeighborGenericIndex,ANY-method}
 \alias{queryKNN,missing,ANY-method}
 \alias{queryKNN,matrix-method}
-\alias{queryKNN,BiocNeighborIndex-method}
+\alias{queryKNN,BiocNeighborGenericIndex-method}
 \alias{queryKNN,missing-method}
 \title{Query k-nearest neighbors}
 \usage{
@@ -26,7 +26,7 @@ queryKNN(
 \arguments{
 \item{X}{The reference dataset to be queried.
 This should be a numeric matrix where rows correspond to reference points and columns correspond to variables (i.e., dimensions).
-Alternatively, a prebuilt index from \code{\link{buildIndex}}.}
+Alternatively, a prebuilt \linkS4class{BiocNeighborIndex} object from \code{\link{buildIndex}}.}
 
 \item{query}{A numeric matrix of query points, containing the same number of columns as \code{X}.}
 
