@@ -39,8 +39,7 @@ SEXP hnsw_builder(int nlinks, int ef_construct, int ef_search, std::string dista
                     knncolle::L2NormalizedMatrix<BiocNeighbors::SimpleMatrix>,
                     double
                 >(opt)
-            ),
-            true
+            )
         );
 
     } else {

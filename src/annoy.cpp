@@ -21,10 +21,10 @@ SEXP annoy_builder(int num_trees, double search_mult, std::string distance) {
     opt.search_mult = search_mult;
 
     if (distance == "Manhattan") {
-        return BiocNeighbors::BuilderPointer(new knncolle_annoy::AnnoyBuilder<Annoy::Manhattan, BiocNeighbors::SimpleMatrix, double>(opt), true);
+        return BiocNeighbors::BuilderPointer(new knncolle_annoy::AnnoyBuilder<Annoy::Manhattan, BiocNeighbors::SimpleMatrix, double>(opt));
 
     } else if (distance == "Euclidean") {
-        return BiocNeighbors::BuilderPointer(new knncolle_annoy::AnnoyBuilder<Annoy::Euclidean, BiocNeighbors::SimpleMatrix, double>(opt), true);
+        return BiocNeighbors::BuilderPointer(new knncolle_annoy::AnnoyBuilder<Annoy::Euclidean, BiocNeighbors::SimpleMatrix, double>(opt));
 
     } else if (distance == "Cosine") {
         return BiocNeighbors::BuilderPointer(
@@ -34,8 +34,7 @@ SEXP annoy_builder(int num_trees, double search_mult, std::string distance) {
                     knncolle::L2NormalizedMatrix<BiocNeighbors::SimpleMatrix>,
                     double
                 >(opt)
-            ),
-            true
+            )
         );
 
     } else {

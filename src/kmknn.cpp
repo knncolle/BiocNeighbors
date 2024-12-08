@@ -5,10 +5,10 @@
 //[[Rcpp::export(rng=false)]]
 SEXP kmknn_builder(std::string distance) {
     if (distance == "Manhattan") {
-        return BiocNeighbors::BuilderPointer(new knncolle::KmknnBuilder<knncolle::ManhattanDistance, BiocNeighbors::SimpleMatrix, double>, true);
+        return BiocNeighbors::BuilderPointer(new knncolle::KmknnBuilder<knncolle::ManhattanDistance, BiocNeighbors::SimpleMatrix, double>);
 
     } else if (distance == "Euclidean") {
-        return BiocNeighbors::BuilderPointer(new knncolle::KmknnBuilder<knncolle::EuclideanDistance, BiocNeighbors::SimpleMatrix, double>, true);
+        return BiocNeighbors::BuilderPointer(new knncolle::KmknnBuilder<knncolle::EuclideanDistance, BiocNeighbors::SimpleMatrix, double>);
 
     } else if (distance == "Cosine") {
         return BiocNeighbors::BuilderPointer(
@@ -18,8 +18,7 @@ SEXP kmknn_builder(std::string distance) {
                     knncolle::L2NormalizedMatrix<BiocNeighbors::SimpleMatrix>,
                     double
                 >
-            ),
-            true
+            )
         );
 
     } else {

@@ -18,8 +18,7 @@ SEXP exhaustive_builder(std::string distance) {
                     knncolle::L2NormalizedMatrix<BiocNeighbors::SimpleMatrix>,
                     double
                 >
-            ),
-            true
+            )
         );
 
     } else {
