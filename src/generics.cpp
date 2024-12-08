@@ -2,14 +2,8 @@
 #include "BiocNeighbors.h"
 #include "knncolle/knncolle.hpp"
 
-#include "parallel.h"
-
 #include <algorithm>
 #include <vector>
-
-#ifdef _OPENMP
-#include "omp.h"
-#endif
 
 //[[Rcpp::export(rng=false)]]
 SEXP generic_build(SEXP builder, Rcpp::NumericMatrix data) {
@@ -141,24 +135,12 @@ SEXP generic_find_knn(
         out_d_ptr = prepare_output<double>(const_d, report_distance, const_k, num_output);
     }
 
-#ifdef _OPENMP
-    #pragma omp parallel num_threads(num_threads)
-    {
-#else
-    generic_parallelize(num_output, num_threads, [&](int start, int length) {
-#endif
-
+    knncolle::parallelize(num_threads, num_output, [&](int, int start, int length) {
         auto searcher = prebuilt.initialize();
         std::vector<int> tmp_i;
         std::vector<double> tmp_d;
 
-#ifdef _OPENMP
-        #pragma omp for
-        for (int o = 0; o < num_output; ++o) {
-#else
         for (int o = start, end = start + length; o < end; ++o) {
-#endif
-
             searcher->search(
                 (subset_ptr != NULL ? subset_ptr[o] - 1 : o), // get subsets to 0-based indexing
                 (is_k_variable ? variable_k[o] : const_k),
@@ -188,14 +170,8 @@ SEXP generic_find_knn(
                     std::copy_n(tmp_d.begin(), const_k, out_d_ptr + out_offset); 
                 }
             }
-
-#ifdef _OPENMP
-        }
-    }
-#else
         }
     });
-#endif
 
     if (last_distance_only) {
         return last_d;
@@ -292,26 +268,13 @@ SEXP generic_query_knn(
         out_d_ptr = prepare_output<double>(const_d, report_distance, const_k, nquery);
     }
 
-#ifdef _OPENMP
-    #pragma omp parallel num_threads(num_threads)
-    {
-#else
-    generic_parallelize(nquery, num_threads, [&](int start, int length) {
-#endif
-
+    knncolle::parallelize(num_threads, nquery, [&](int, int start, int length) {
         auto searcher = prebuilt.initialize();
         std::vector<int> tmp_i;
         std::vector<double> tmp_d;
 
-#ifdef _OPENMP
-        #pragma omp for
-        for (int o = 0; o < nquery; ++o) {
-            size_t query_offset = static_cast<size_t>(o) * ndim; // using size_t to avoid overflow.
-#else
         size_t query_offset = static_cast<size_t>(start) * ndim; // using size_t to avoid overflow.
         for (int o = start, end = start + length; o < end; ++o, query_offset += ndim) {
-#endif
-
             searcher->search(
                 query_ptr + query_offset,
                 (is_k_variable ? variable_k[o] : const_k),
@@ -341,14 +304,8 @@ SEXP generic_query_knn(
                     std::copy_n(tmp_d.begin(), const_k, out_d_ptr + out_offset); 
                 }
             }
-
-#ifdef _OPENMP
-        }
-    }
-#else
         }
     });
-#endif
 
     if (last_distance_only) {
         return last_d;
@@ -409,54 +366,32 @@ SEXP generic_find_all(SEXP prebuilt_ptr, Rcpp::Nullable<Rcpp::IntegerVector> cho
     const double* threshold_ptr = thresholds.begin();
 
     bool no_support = false;
-
-#ifdef _OPENMP
-    #pragma omp parallel num_threads(num_threads)
-    {
-#else
-    generic_parallelize(num_output, num_threads, [&](int start, int length) {
-#endif
-
+    knncolle::parallelize(num_threads, num_output, [&](int tid, int start, int length) {
         auto searcher = prebuilt.initialize();
         if (!searcher->can_search_all()) {
             // Make sure only the first thread edits the failure variable.
-#ifdef _OPENMP
-            if (omp_get_thread_num() == 0) {
-#else
-            if (start == 0) {
-#endif
+            if (tid == 0) {
                 no_support = true;
             }
+            return;
+        }
 
-        } else {
-#ifdef _OPENMP
-            #pragma omp for
-            for (int o = 0; o < num_output; ++o) {
-#else
-            for (int o = start, end = start + length; o < end; ++o) {
-#endif
-
-                auto count = searcher->search_all(
-                    (subset_ptr != NULL ? subset_ptr[o] - 1 : o), // get subsets to 0-based indexing.
-                    threshold_ptr[multiple_thresholds ? o : 0],
-                    (report_index ? &out_i[o] : NULL),
-                    (report_distance ? &out_d[o] : NULL)
-                ); 
-                if (store_count) {
-                    counts_ptr[o] = count;
-                } else if (report_index) {
-                    for (auto& i : out_i[o]) {
-                        ++i; // get back to 1-based indexing.
-                    }
+        for (int o = start, end = start + length; o < end; ++o) {
+            auto count = searcher->search_all(
+                (subset_ptr != NULL ? subset_ptr[o] - 1 : o), // get subsets to 0-based indexing.
+                threshold_ptr[multiple_thresholds ? o : 0],
+                (report_index ? &out_i[o] : NULL),
+                (report_distance ? &out_d[o] : NULL)
+            ); 
+            if (store_count) {
+                counts_ptr[o] = count;
+            } else if (report_index) {
+                for (auto& i : out_i[o]) {
+                    ++i; // get back to 1-based indexing.
                 }
             }
         }
-
-#ifdef _OPENMP
-    }
-#else
     });
-#endif
 
     if (no_support) {
         throw std::runtime_error("algorithm does not support search by distance");
@@ -502,58 +437,35 @@ SEXP generic_query_all(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::Numer
     const double* threshold_ptr = thresholds.begin();
 
     bool no_support = false;
-
-#ifdef _OPENMP
-    #pragma omp parallel num_threads(num_threads)
-    {
-#else
-    generic_parallelize(nquery, num_threads, [&](int start, int length) {
-#endif
-
+    knncolle::parallelize(num_threads, nquery, [&](int tid, int start, int length) {
         auto searcher = prebuilt.initialize();
         if (!searcher->can_search_all()) {
             // Make sure only the first thread edits the failure variable.
-#ifdef _OPENMP
-            if (omp_get_thread_num() == 0) {
-#else
-            if (start == 0) {
-#endif
+            if (tid == 0) {
                 no_support = true;
             }
+            return;
+        }
 
-        } else {
-#ifdef _OPENMP
-            #pragma omp for
-            for (int o = 0; o < nquery; ++o) {
-                size_t query_offset = static_cast<size_t>(o) * ndim; // using size_t to avoid overflow.
-#else
-            size_t query_offset = static_cast<size_t>(start) * ndim; // using size_t to avoid overflow.
-            for (int o = start, end = start + length; o < end; ++o, query_offset += ndim) {
-#endif
+        size_t query_offset = static_cast<size_t>(start) * ndim; // using size_t to avoid overflow.
+        for (int o = start, end = start + length; o < end; ++o, query_offset += ndim) {
+            auto current_ptr = query_ptr + query_offset;
+            auto count = searcher->search_all(
+                current_ptr,
+                threshold_ptr[multiple_thresholds ? o : 0],
+                (report_index ? &out_i[o] : NULL),
+                (report_distance ? &out_d[o] : NULL)
+            ); 
 
-                auto current_ptr = query_ptr + query_offset;
-                auto count = searcher->search_all(
-                    current_ptr,
-                    threshold_ptr[multiple_thresholds ? o : 0],
-                    (report_index ? &out_i[o] : NULL),
-                    (report_distance ? &out_d[o] : NULL)
-                ); 
-
-                if (store_count) {
-                    counts_ptr[o] = count;
-                } else if (report_index) {
-                    for (auto& i : out_i[o]) {
-                        ++i; // get back to 1-based indexing.
-                    }
+            if (store_count) {
+                counts_ptr[o] = count;
+            } else if (report_index) {
+                for (auto& i : out_i[o]) {
+                    ++i; // get back to 1-based indexing.
                 }
             }
         }
-
-#ifdef _OPENMP
-    }
-#else
     });
-#endif
 
     if (no_support) {
         throw std::runtime_error("algorithm does not support search by distance");
