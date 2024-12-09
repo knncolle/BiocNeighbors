@@ -13,6 +13,8 @@ test_that("queryDistance works with basic options", {
     # Respects alternative methods.
     adist <- queryDistance(Y, Z, k=8, BNPARAM=AnnoyParam())
     expect_false(identical(dist, adist))
+
+    expect_error(queryDistance(Y, Z[,0], k=8), "mismatch")
 })
 
 test_that("queryDistance works in parallel", {
@@ -32,6 +34,7 @@ test_that("queryDistance works with subsets", {
     sout <- queryDistance(Y, Z, subset=1:10, k=8)
     expect_equal(out[1:10], sout)
 
+    expect_error(queryDistance(Y, Z, k=8, subset=100000), "out of bounds")
     expect_warning(out <- queryDistance(Y[0,,drop=FALSE], Z, k=8), "capped")
     expect_identical(out, numeric(nrow(Z)))
 })
@@ -55,6 +58,8 @@ test_that("queryDistance works with variable k", {
     out <- queryDistance(Y, Z, k=10, subset=1)
     ref <- queryDistance(Y, Z, k=I(10), subset=1)
     expect_identical(out, ref)
+
+    expect_error(queryDistance(Y, Z, k=1:10), "must be equal")
 })
 
 test_that("queryDistance works with prebuilt indices", {

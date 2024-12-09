@@ -19,6 +19,8 @@ test_that("queryKNN works with basic options", {
     Z1 <- Z/sqrt(rowSums(Z^2))
     ref <- queryKNN(Y1, Z1, k=8)
     expect_equal(out, ref)
+
+    expect_error(queryKNN(Y, Z[,0], k=8), "mismatch")
 })
 
 test_that("queryKNN works in parallel", {
@@ -43,6 +45,7 @@ test_that("queryKNN works with subsets", {
     out$distance <- out$distance[1:10,]
     expect_equal(out, sout)
 
+    expect_error(queryKNN(Y, Z, k=8, subset=100000), "out of bounds")
     expect_warning(out <- queryKNN(Y[0,,drop=FALSE], Z, k=8), "capped")
     expect_identical(dim(out$index), c(nrow(Z), 0L))
     expect_identical(dim(out$distance), c(nrow(Z), 0L))
@@ -70,6 +73,8 @@ test_that("queryKNN works with variable k", {
     ref <- queryKNN(Y, Z, k=10, subset=1)
     expect_identical(out$index[[1]], ref$index[1,])
     expect_identical(out$distance[[1]], ref$distance[1,])
+
+    expect_error(queryKNN(Y, Z, k=1:10), "must be equal")
 })
 
 test_that("queryKNN works with prebuilt indices", {

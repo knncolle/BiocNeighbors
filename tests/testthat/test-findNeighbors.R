@@ -4,18 +4,18 @@ set.seed(999999)
 
 test_that("findNeighbors works with basic options", {
     Y <- matrix(rnorm(10000), ncol=20)
-    d <- median(findKNN(Y, k=8, get.index=FALSE)$distance[,8])
+    d <- median(findDistance(Y, k=8))
 
     out <- findNeighbors(Y, threshold=d)
     ref <- refFindNeighbors(Y, threshold=d)
     expect_equal(out, ref)
 
-    d <- median(findKNN(Y, k=8, get.index=FALSE, BNPARAM=KmknnParam(distance="Manhattan"))$distance[,8])
+    d <- median(findDistance(Y, k=8, BNPARAM=KmknnParam(distance="Manhattan")))
     out <- findNeighbors(Y, threshold=d, BNPARAM=KmknnParam(distance="Manhattan"))
     ref <- refFindNeighbors(Y, threshold=d, type="manhattan")
     expect_equal(out, ref)
 
-    d <- median(findKNN(Y, k=8, get.index=FALSE, BNPARAM=KmknnParam(distance="Cosine"))$distance[,8])
+    d <- median(findDistance(Y, k=8, BNPARAM=KmknnParam(distance="Cosine")))
     out <- findNeighbors(Y, threshold=d, BNPARAM=KmknnParam(distance="Cosine"))
     Y1 <- Y/sqrt(rowSums(Y^2))
     ref <- findNeighbors(Y1, threshold=d) 
@@ -24,7 +24,7 @@ test_that("findNeighbors works with basic options", {
 
 test_that("findNeighbors works in parallel", {
     Y <- matrix(rnorm(10000), ncol=20)
-    d <- median(findKNN(Y, k=5, get.index=FALSE)$distance[,5])
+    d <- median(findDistance(Y, k=5))
 
     out <- findNeighbors(Y, threshold=d)
     pout <- findNeighbors(Y, threshold=d, num.threads=2)
@@ -36,7 +36,7 @@ test_that("findNeighbors works in parallel", {
 
 test_that("findNeighbors works with subsets", {
     Y <- matrix(rnorm(10000), ncol=20)
-    d <- median(findKNN(Y, k=3, get.index=FALSE)$distance[,3])
+    d <- median(findDistance(Y, k=3))
 
     full <- findNeighbors(Y, threshold=d)
     sout <- findNeighbors(Y, subset=1:10, threshold=d)
@@ -45,6 +45,7 @@ test_that("findNeighbors works with subsets", {
     out$distance <- out$distance[1:10]
     expect_identical(out, sout)
 
+    expect_error(findNeighbors(Y, threshold=d, subset=100000), "out-of-range")
     out <- findNeighbors(Y[0,,drop=FALSE], threshold=d)
     expect_identical(length(out$index), 0L)
     expect_identical(length(out$distance), 0L)
@@ -69,7 +70,7 @@ test_that("findNeighbors works with subsets", {
 
 test_that("findNeighbors works with prebuilt indices", {
     Y <- matrix(rnorm(10000), ncol=20)
-    d <- median(findKNN(Y, k=3, get.index=FALSE)$distance[,3])
+    d <- median(findDistance(Y, k=3))
 
     built <- buildIndex(Y, threshold=d)
     out <- findNeighbors(Y, threshold=d)
@@ -86,9 +87,30 @@ test_that("findNeighbors works with prebuilt indices", {
     expect_error(findNeighbors(readRDS(tmp), threshold=d), "null pointer")
 })
 
+test_that("findNeighbors works with variable thresholds", {
+    Y <- matrix(rnorm(10000), ncol=20)
+    d4 <- median(findDistance(Y, k=4))
+    d10 <- median(findDistance(Y, k=10))
+
+    th <- rep(c(d4, d10), length.out=nrow(Y))
+    out <- findNeighbors(Y, threshold=th)
+
+    keep <- th == d4
+    ref <- findNeighbors(Y, threshold=d4)
+    expect_identical(out$index[keep], ref$index[keep])
+    expect_identical(out$distance[keep], ref$distance[keep])
+
+    keep <- th == d10
+    ref <- findNeighbors(Y, threshold=d10)
+    expect_identical(out$index[keep], ref$index[keep])
+    expect_identical(out$distance[keep], ref$distance[keep])
+
+    expect_error(findNeighbors(Y, threshold=1:10), "length equal")
+})
+
 test_that("findNeighbors works with variable outputs", {
     Y <- matrix(rnorm(10000), ncol=20)
-    d <- median(findKNN(Y, k=8, get.index=FALSE)$distance[,8])
+    d <- median(findDistance(Y, k=8))
 
     out <- findNeighbors(Y, threshold=d)
 

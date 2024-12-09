@@ -40,6 +40,7 @@ test_that("findKNN works with subsets", {
     out$distance <- out$distance[1:10,]
     expect_identical(out, sout)
 
+    expect_error(findKNN(Y, k=8, subset=100000), "out-of-range")
     expect_warning(out <- findKNN(Y[0,,drop=FALSE], k=8), "capped")
     expect_identical(ncol(out$index), 0L)
     expect_identical(ncol(out$distance), 0L)
@@ -83,6 +84,8 @@ test_that("findKNN works with variable k", {
     ref <- findKNN(Y, k=10, subset=1)
     expect_identical(out$index[[1]], ref$index[1,])
     expect_identical(out$distance[[1]], ref$distance[1,])
+
+    expect_error(findKNN(Y, k=1:10), "must be equal")
 })
 
 test_that("findKNN works with prebuilt indices", {

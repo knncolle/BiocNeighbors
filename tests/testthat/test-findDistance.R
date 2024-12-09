@@ -29,6 +29,7 @@ test_that("findDistance works with subsets", {
     dist <- findDistance(Y, k=8, subset=1:10)
     expect_identical(full[1:10], dist)
 
+    expect_error(findDistance(Y, k=8, subset=100000), "out-of-range")
     expect_warning(dist <- findDistance(Y[0,,drop=FALSE], k=8), "capped")
     expect_identical(length(dist), 0L)
 
@@ -62,6 +63,8 @@ test_that("findDistance works with variable k", {
     out <- findDistance(Y, k=I(10), subset=1)
     ref <- findDistance(Y, k=10, subset=1)
     expect_identical(out, ref)
+
+    expect_error(findDistance(Y, k=1:10), "must be equal")
 })
 
 test_that("findDistance works with prebuilt indices", {
