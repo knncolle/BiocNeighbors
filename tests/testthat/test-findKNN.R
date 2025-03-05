@@ -123,3 +123,12 @@ test_that("findKNN works with variable outputs", {
     expect_identical(t(tout$distance), out$distance)
     expect_identical(t(tout$index), out$index)
 })
+
+test_that("findKNN doesn't work with NA values", {
+    Y <- matrix(NA_real_, 10, 2)
+    expect_error(findKNN(Y, k=8), "NA values")
+    Y <- matrix(NaN, 10, 2)
+    expect_error(findKNN(Y, k=8), "NA values")
+    Y <- matrix(LETTERS, ncol=13)
+    expect_error(suppressWarnings(findKNN(Y, k=8)), "NA values")
+})

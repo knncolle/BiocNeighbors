@@ -24,6 +24,9 @@
     if (!is.double(X)) {
         storage.mode(X) <- "double"
     }
+    if (anyNA(X)) {
+        stop("NA values are not supported")
+    }
 
     X
 }
