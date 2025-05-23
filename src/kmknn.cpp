@@ -1,23 +1,24 @@
 #include "Rcpp.h"
 #include "BiocNeighbors.h"
-#include "knncolle/knncolle.hpp"
+#include "knncolle_kmknn/knncolle_kmknn.hpp"
 
 //[[Rcpp::export(rng=false)]]
 SEXP kmknn_builder(std::string distance) {
+    knncolle_kmknn::KmknnOptions<int, double, double> opt;
+
     if (distance == "Manhattan") {
-        return BiocNeighbors::BuilderPointer(new knncolle::KmknnBuilder<knncolle::ManhattanDistance, BiocNeighbors::SimpleMatrix, double>);
+        auto distfun = std::make_shared<knncolle_kmknn::ManhattanDistance<double, double> >();
+        return BiocNeighbors::BuilderPointer(new knncolle_kmknn::KmknnBuilder<int, double, double>(std::move(distfun), opt));
 
     } else if (distance == "Euclidean") {
-        return BiocNeighbors::BuilderPointer(new knncolle::KmknnBuilder<knncolle::EuclideanDistance, BiocNeighbors::SimpleMatrix, double>);
+        auto distfun = std::make_shared<knncolle_kmknn::EuclideanDistance<double, double> >();
+        return BiocNeighbors::BuilderPointer(new knncolle_kmknn::KmknnBuilder<int, double, double>(std::move(distfun), opt));
 
     } else if (distance == "Cosine") {
+        auto distfun = std::make_shared<knncolle_kmknn::EuclideanDistance<double, double> >();
         return BiocNeighbors::BuilderPointer(
-            new knncolle::L2NormalizedBuilder<BiocNeighbors::SimpleMatrix, double>(
-                new knncolle::KmknnBuilder<
-                    knncolle::EuclideanDistance, 
-                    knncolle::L2NormalizedMatrix<BiocNeighbors::SimpleMatrix>,
-                    double
-                >
+            new knncolle::L2NormalizedBuilder<int, double, double, double>(
+                std::make_shared<knncolle_kmknn::KmknnBuilder<int, double, double> >(std::move(distfun), opt)
             )
         );
 

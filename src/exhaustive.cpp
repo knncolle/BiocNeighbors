@@ -5,19 +5,18 @@
 //[[Rcpp::export(rng=false)]]
 SEXP exhaustive_builder(std::string distance) {
     if (distance == "Manhattan") {
-        return BiocNeighbors::BuilderPointer(new knncolle::BruteforceBuilder<knncolle::ManhattanDistance, BiocNeighbors::SimpleMatrix, double>);
+        auto distfun = std::make_shared<knncolle::ManhattanDistance<double, double> >();
+        return BiocNeighbors::BuilderPointer(new knncolle::BruteforceBuilder<int, double, double>(std::move(distfun)));
 
     } else if (distance == "Euclidean") {
-        return BiocNeighbors::BuilderPointer(new knncolle::BruteforceBuilder<knncolle::EuclideanDistance, BiocNeighbors::SimpleMatrix, double>);
+        auto distfun = std::make_shared<knncolle::EuclideanDistance<double, double> >();
+        return BiocNeighbors::BuilderPointer(new knncolle::BruteforceBuilder<int, double, double>(std::move(distfun)));
 
     } else if (distance == "Cosine") {
+        auto distfun = std::make_shared<knncolle::EuclideanDistance<double, double> >();
         return BiocNeighbors::BuilderPointer(
-            new knncolle::L2NormalizedBuilder(
-                new knncolle::BruteforceBuilder<
-                    knncolle::EuclideanDistance,
-                    knncolle::L2NormalizedMatrix<BiocNeighbors::SimpleMatrix>,
-                    double
-                >
+            new knncolle::L2NormalizedBuilder<int, double, double, double>(
+                std::make_shared<knncolle::BruteforceBuilder<int, double, double> >(std::move(distfun))
             )
         );
 

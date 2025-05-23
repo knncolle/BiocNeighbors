@@ -18,14 +18,14 @@
 namespace BiocNeighbors {
 
 /**
- * Type alias for a `knncolle::SimpleMatrix` instance with typical R types.
+ * Type alias for a `knncolle::Matrix` instance with typical R types.
  */
-typedef knncolle::SimpleMatrix<int, int, double> SimpleMatrix;
+typedef knncolle::Matrix<int, double> Matrix;
 
 /**
  * Type alias for a `knncolle::Builder` instance with typical R types.
  */
-typedef knncolle::Builder<SimpleMatrix, double> Builder;
+typedef knncolle::Builder<int, double, double> Builder;
 
 /**
  * Type alias for an external pointer to a `knncolle::Builder` instance,
@@ -36,7 +36,7 @@ typedef Rcpp::XPtr<Builder> BuilderPointer;
 /**
  * Type alias for a `knncolle::Prebuilt` instance with typical R types.
  */
-typedef knncolle::Prebuilt<int, int, double> Prebuilt;
+typedef knncolle::Prebuilt<int, double, double> Prebuilt;
 
 /**
  * Type alias for the external pointer to a `knncolle::Prebuilt` instance,

@@ -8,7 +8,7 @@
 //[[Rcpp::export(rng=false)]]
 SEXP generic_build(SEXP builder, Rcpp::NumericMatrix data) {
     auto out = BiocNeighbors::BuilderPointer(builder);
-    return BiocNeighbors::PrebuiltPointer(out->build_raw(BiocNeighbors::SimpleMatrix(data.rows(), data.cols(), data.begin())));
+    return BiocNeighbors::PrebuiltPointer(out->build_raw(knncolle::SimpleMatrix<int, double>(data.rows(), data.cols(), data.begin())));
 }
 
 //[[Rcpp::export(rng=false)]]

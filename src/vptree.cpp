@@ -5,19 +5,18 @@
 //[[Rcpp::export(rng=false)]]
 SEXP vptree_builder(std::string distance) {
     if (distance == "Manhattan") {
-        return BiocNeighbors::BuilderPointer(new knncolle::VptreeBuilder<knncolle::ManhattanDistance, BiocNeighbors::SimpleMatrix, double>);
+        auto distfun = std::make_shared<knncolle::ManhattanDistance<double, double> >();
+        return BiocNeighbors::BuilderPointer(new knncolle::VptreeBuilder<int, double, double>(std::move(distfun)));
 
     } else if (distance == "Euclidean") {
-        return BiocNeighbors::BuilderPointer(new knncolle::VptreeBuilder<knncolle::EuclideanDistance, BiocNeighbors::SimpleMatrix, double>);
+        auto distfun = std::make_shared<knncolle::EuclideanDistance<double, double> >();
+        return BiocNeighbors::BuilderPointer(new knncolle::VptreeBuilder<int, double, double>(std::move(distfun)));
 
     } else if (distance == "Cosine") {
+        auto distfun = std::make_shared<knncolle::EuclideanDistance<double, double> >();
         return BiocNeighbors::BuilderPointer(
-            new knncolle::L2NormalizedBuilder(
-                new knncolle::VptreeBuilder<
-                    knncolle::EuclideanDistance,
-                    knncolle::L2NormalizedMatrix<BiocNeighbors::SimpleMatrix>,
-                    double
-                >
+            new knncolle::L2NormalizedBuilder<int, double, double, double>(
+                std::make_shared<knncolle::VptreeBuilder<int, double, double> >(std::move(distfun))
             )
         );
 
