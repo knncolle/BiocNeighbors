@@ -2,7 +2,15 @@
 \title{BiocNeighbors News}
 \encoding{UTF-8}
 
-\section{Version 1.99.0}{\itemize{
+\section{Version 2.4.0}{\itemize{
+\item Updated the C++ interfaces to match updates to the underlying \pkg{knncolle} libraries.
+}}
+
+\section{Version 2.2.0}{\itemize{
+\item Throw an error when \code{NA} values are present in the input matrices.
+}}
+
+\section{Version 2.0.0}{\itemize{
 \item Switched to the new \pkg{knncolle} C++ libaries for all implementations.
 This greatly streamlines the internals and allows downstream packages to re-use the search indices in their own C++ code.
 
