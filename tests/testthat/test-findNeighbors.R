@@ -4,18 +4,22 @@ set.seed(999999)
 
 test_that("findNeighbors works with basic options", {
     Y <- matrix(rnorm(10000), ncol=20)
-    d <- median(findDistance(Y, k=8))
+
+    # Slightly increase distance to avoid a direct comparison to the median.
+    # Otherwise, we'd have one distance that is equal to the median,
+    # and that equality might be broken by floating-point imprecision.
+    d <- median(findDistance(Y, k=8)) * 1.000001
 
     out <- findNeighbors(Y, threshold=d)
     ref <- refFindNeighbors(Y, threshold=d)
     expect_equal(out, ref)
 
-    d <- median(findDistance(Y, k=8, BNPARAM=KmknnParam(distance="Manhattan")))
+    d <- median(findDistance(Y, k=8, BNPARAM=KmknnParam(distance="Manhattan"))) * 1.000001
     out <- findNeighbors(Y, threshold=d, BNPARAM=KmknnParam(distance="Manhattan"))
     ref <- refFindNeighbors(Y, threshold=d, type="manhattan")
     expect_equal(out, ref)
 
-    d <- median(findDistance(Y, k=8, BNPARAM=KmknnParam(distance="Cosine")))
+    d <- median(findDistance(Y, k=8, BNPARAM=KmknnParam(distance="Cosine"))) * 1.000001
     out <- findNeighbors(Y, threshold=d, BNPARAM=KmknnParam(distance="Cosine"))
     Y1 <- Y/sqrt(rowSums(Y^2))
     ref <- findNeighbors(Y1, threshold=d) 
@@ -24,7 +28,7 @@ test_that("findNeighbors works with basic options", {
 
 test_that("findNeighbors works in parallel", {
     Y <- matrix(rnorm(10000), ncol=20)
-    d <- median(findDistance(Y, k=5))
+    d <- median(findDistance(Y, k=5)) * 1.000001
 
     out <- findNeighbors(Y, threshold=d)
     pout <- findNeighbors(Y, threshold=d, num.threads=2)
@@ -36,7 +40,7 @@ test_that("findNeighbors works in parallel", {
 
 test_that("findNeighbors works with subsets", {
     Y <- matrix(rnorm(10000), ncol=20)
-    d <- median(findDistance(Y, k=3))
+    d <- median(findDistance(Y, k=3)) * 1.000001
 
     full <- findNeighbors(Y, threshold=d)
     sout <- findNeighbors(Y, subset=1:10, threshold=d)
@@ -70,7 +74,7 @@ test_that("findNeighbors works with subsets", {
 
 test_that("findNeighbors works with prebuilt indices", {
     Y <- matrix(rnorm(10000), ncol=20)
-    d <- median(findDistance(Y, k=3))
+    d <- median(findDistance(Y, k=3)) * 1.000001
 
     built <- buildIndex(Y, threshold=d)
     out <- findNeighbors(Y, threshold=d)
@@ -89,8 +93,8 @@ test_that("findNeighbors works with prebuilt indices", {
 
 test_that("findNeighbors works with variable thresholds", {
     Y <- matrix(rnorm(10000), ncol=20)
-    d4 <- median(findDistance(Y, k=4))
-    d10 <- median(findDistance(Y, k=10))
+    d4 <- median(findDistance(Y, k=4)) * 1.000001
+    d10 <- median(findDistance(Y, k=10)) * 1.000001
 
     th <- rep(c(d4, d10), length.out=nrow(Y))
     out <- findNeighbors(Y, threshold=th)
@@ -110,7 +114,7 @@ test_that("findNeighbors works with variable thresholds", {
 
 test_that("findNeighbors works with variable outputs", {
     Y <- matrix(rnorm(10000), ncol=20)
-    d <- median(findDistance(Y, k=8))
+    d <- median(findDistance(Y, k=8)) * 1.000001
 
     out <- findNeighbors(Y, threshold=d)
 

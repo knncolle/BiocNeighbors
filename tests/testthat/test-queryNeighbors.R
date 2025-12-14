@@ -5,13 +5,17 @@ set.seed(999999)
 test_that("queryNeighbors works with basic options", {
     Y <- matrix(rnorm(10000), ncol=20)
     Z <- matrix(rnorm(2000), ncol=20)
-    d <- median(queryDistance(Y, Z, k=8))
+
+    # Slightly increase distance to avoid a direct comparison to the median.
+    # Otherwise, we'd have one distance that is equal to the median,
+    # and that equality might be broken by floating-point imprecision.
+    d <- median(queryDistance(Y, Z, k=8)) * 1.000001
 
     out <- queryNeighbors(Y, Z, threshold=d)
     ref <- refQueryNeighbors(Y, Z, threshold=d)
     expect_equal(out, ref)
 
-    d <- median(queryDistance(Y, Z, k=8, BNPARAM=KmknnParam(distance="Manhattan")))
+    d <- median(queryDistance(Y, Z, k=8, BNPARAM=KmknnParam(distance="Manhattan"))) * 1.000001
     out <- queryNeighbors(Y, Z, threshold=d, BNPARAM=KmknnParam(distance="Manhattan"))
     ref <- refQueryNeighbors(Y, Z, threshold=d, type="manhattan")
     expect_equal(out, ref)
@@ -22,7 +26,7 @@ test_that("queryNeighbors works with basic options", {
 test_that("queryNeighbors works in parallel", {
     Y <- matrix(rnorm(10000), ncol=20)
     Z <- matrix(rnorm(2000), ncol=20)
-    d <- median(queryDistance(Y, Z, k=5))
+    d <- median(queryDistance(Y, Z, k=5)) * 1.000001
 
     out <- queryNeighbors(Y, Z, threshold=d)
     pout <- queryNeighbors(Y, Z, threshold=d, num.threads=2)
@@ -35,7 +39,7 @@ test_that("queryNeighbors works in parallel", {
 test_that("queryNeighbors works with subsets", {
     Y <- matrix(rnorm(10000), ncol=20)
     Z <- matrix(rnorm(2000), ncol=20)
-    d <- median(queryDistance(Y, Z, k=3))
+    d <- median(queryDistance(Y, Z, k=3)) * 1.000001
 
     out <- queryNeighbors(Y, Z, threshold=d)
     sout <- queryNeighbors(Y, Z, subset=1:10, threshold=d)
@@ -52,7 +56,7 @@ test_that("queryNeighbors works with subsets", {
 test_that("queryNeighbors works with prebuilt indices", {
     Y <- matrix(rnorm(10000), ncol=20)
     Z <- matrix(rnorm(2000), ncol=20)
-    d <- median(queryDistance(Y, Z, k=3))
+    d <- median(queryDistance(Y, Z, k=3)) * 1.000001
 
     built <- buildIndex(Y, threshold=d)
     out <- queryNeighbors(Y, Z, threshold=d)
@@ -72,7 +76,7 @@ test_that("queryNeighbors works with prebuilt indices", {
 test_that("queryNeighbors works when inputs are transposed", {
     Y <- matrix(rnorm(10000), ncol=20)
     Z <- matrix(rnorm(2000), ncol=20)
-    d <- median(queryDistance(Y, Z, k=3))
+    d <- median(queryDistance(Y, Z, k=3)) * 1.000001
 
     out <- queryNeighbors(Y, Z, threshold=d)
     tout <- queryNeighbors(t(Y), t(Z), threshold=d, transposed=TRUE)
@@ -82,8 +86,8 @@ test_that("queryNeighbors works when inputs are transposed", {
 test_that("queryNeighbors works with variable thresholds", {
     Y <- matrix(rnorm(10000), ncol=20)
     Z <- matrix(rnorm(2000), ncol=20)
-    d4 <- median(queryDistance(Y, Z, k=4))
-    d10 <- median(queryDistance(Y, Z, k=10))
+    d4 <- median(queryDistance(Y, Z, k=4)) * 1.000001
+    d10 <- median(queryDistance(Y, Z, k=10)) * 1.000001
 
     th <- rep(c(d4, d10), length.out=nrow(Z))
     out <- queryNeighbors(Y, Z, threshold=th)
@@ -104,7 +108,7 @@ test_that("queryNeighbors works with variable thresholds", {
 test_that("queryNeighbors works with variable outputs", {
     Y <- matrix(rnorm(10000), ncol=20)
     Z <- matrix(rnorm(2000), ncol=20)
-    d <- median(queryDistance(Y, Z, k=8))
+    d <- median(queryDistance(Y, Z, k=8)) * 1.000001
 
     out <- queryNeighbors(Y, Z, threshold=d)
 
