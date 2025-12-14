@@ -2,6 +2,12 @@
 \title{BiocNeighbors News}
 \encoding{UTF-8}
 
+\section{Version 2.6.0}{\itemize{
+\item Enable manual vectorization for Annoy and HNSW, if supported by the compiler.
+This improves speed at the cost of exact reproducibility across different toolchains/architectures.
+We consider this trade-off to be acceptable given that many other floating-point calculations already have non-identical precision across machines.
+}}
+
 \section{Version 2.4.0}{\itemize{
 \item Updated the C++ interfaces to match updates to the underlying \pkg{knncolle} libraries.
 }}

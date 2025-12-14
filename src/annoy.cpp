@@ -5,10 +5,6 @@
 #include <memory>
 #include <stdexcept>
 
-// Turn off manual vectorization always, to avoid small inconsistencies in
-// distance calculations across otherwise-compliant machines. 
-#define NO_MANUAL_VECTORIZATION 1
-
 // Copied from RcppAnnoy's RcppAnnoy.h:
 #if defined(__MINGW32__)
 #undef Realloc

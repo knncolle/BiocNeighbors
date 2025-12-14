@@ -8,10 +8,6 @@
 // define R's REprintf as the 'local' error print method. 
 #define __ERROR_PRINTER_OVERRIDE__  REprintf
 
-// Turn off manual vectorization always, to avoid small inconsistencies in
-// distance calculations across otherwise-compliant machines. 
-#define NO_MANUAL_VECTORIZATION
-
 // Avoid CRAN problems with std::cerr.
 #define HNSWLIB_ERR_OVERRIDE Rcpp::Rcerr
 
