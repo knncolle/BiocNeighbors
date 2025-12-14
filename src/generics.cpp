@@ -2,6 +2,8 @@
 #include "BiocNeighbors.h"
 #include "knncolle/knncolle.hpp"
 
+#include <stdexcept>
+#include <string>
 #include <algorithm>
 #include <vector>
 

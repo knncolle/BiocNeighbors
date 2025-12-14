@@ -1,6 +1,10 @@
 #include "Rcpp.h"
 #include "BiocNeighbors.h"
 
+#include <string>
+#include <memory>
+#include <stdexcept>
+
 // define R's REprintf as the 'local' error print method. 
 #define __ERROR_PRINTER_OVERRIDE__  REprintf
 
@@ -24,7 +28,7 @@ SEXP hnsw_builder(int nlinks, int ef_construct, int ef_search, std::string dista
     opt.ef_search = ef_search;
 
     if (distance == "Manhattan") {
-        return BiocNeighbors::BuilderPointer(static_cast<BiocNeighbors::Builder*>(new knncolle_hnsw::HnswBuilder<int, double, double>(knncolle_hnsw::makeManhattanDistanceConfig(), opt)));
+        return BiocNeighbors::BuilderPointer(new knncolle_hnsw::HnswBuilder<int, double, double>(knncolle_hnsw::makeManhattanDistanceConfig(), opt));
 
     } else if (distance == "Euclidean") {
         return BiocNeighbors::BuilderPointer(new knncolle_hnsw::HnswBuilder<int, double, double>(knncolle_hnsw::makeEuclideanDistanceConfig(), opt));

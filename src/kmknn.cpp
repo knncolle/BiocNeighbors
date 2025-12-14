@@ -1,5 +1,10 @@
 #include "Rcpp.h"
 #include "BiocNeighbors.h"
+
+#include <string>
+#include <memory>
+#include <stdexcept>
+
 #include "knncolle_kmknn/knncolle_kmknn.hpp"
 
 //[[Rcpp::export(rng=false)]]
