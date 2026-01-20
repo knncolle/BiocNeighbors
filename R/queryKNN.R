@@ -2,8 +2,9 @@
 #'
 #' Query a reference dataset for the k-nearest neighbors of each point in a query dataset.
 #' 
+#' @param BNINDEX A \linkS4class{BiocNeighborIndex} object, typically created by \code{\link{buildIndex}}.
 #' @param X The reference dataset to be queried.
-#' This should be a numeric matrix where rows correspond to reference points and columns correspond to variables (i.e., dimensions).
+#' This should be a numeric matrix or matrix-like object where rows correspond to reference points and columns correspond to variables (i.e., dimensions).
 #' Alternatively, a prebuilt \linkS4class{BiocNeighborIndex} object from \code{\link{buildIndex}}.
 #' @inheritParams findKNN
 #' @param k A positive integer scalar specifying the number of nearest neighbors to retrieve.
@@ -13,9 +14,9 @@
 #' Users should wrap this vector in an \link{AsIs} class to distinguish length-1 vectors from integer scalars.
 #'
 #' All \code{k} should be less than or equal to the number of points in \code{X}, otherwise the former will be capped at the latter with a warning.
-#' @param query A numeric matrix of query points, containing the same number of columns as \code{X}.
-#' @param transposed A logical scalar indicating whether \code{X} and \code{query} are transposed, 
-#' in which case both matrices are assumed to contain dimensions in the rows and data points in the columns.
+#' @param query A numeric matrix or matrix-like object of query points, containing the same number of columns as \code{X}.
+#' @param transposed A logical scalar indicating whether \code{query} is transposed, in which case it contains dimensions in the rows and data points in the columns.
+#' For \code{queryKNN}, settting \code{transposed=TRUE} also indicates that \code{X} is also transposed.
 #' @param subset An integer, logical or character vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the nearest neighbors should be identified.
 #' 
 #' @details
@@ -79,24 +80,15 @@
 NULL
 
 #' @export
-setMethod("queryKNN", c("matrix", "ANY"), function(X, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
-    ptr <- buildIndex(X, transposed=transposed, ..., BNPARAM=BNPARAM)
-    callGeneric(ptr, query=query, k=k, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, transposed=transposed, ..., BPPARAM=BPPARAM)
-})
-
-#' @export
-setMethod("queryKNN", c("BiocNeighborGenericIndex", "ANY"), function(X, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
-    if (!is.null(BPPARAM)) {
-        num.threads <- BiocParallel::bpnworkers(BPPARAM)
-    }
-
-    query <- .coerce_matrix_build(query, transposed)
-    if (!is.null(subset)) {
-        query <- query[,subset,drop=FALSE] # could move into C++ for efficiency but can't be bothered for now.
+#' @rdname queryKNN
+setMethod("queryKnnFromIndex", "BiocNeighborGenericIndex", function(BNINDEX, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ...) {
+    query <- .transpose_and_subset(query, transposed, subset=subset)
+    if (!is.matrix(query)) {
+        query <- beachmat::initializeCpp(query)
     }
 
     output <- generic_query_knn(
-        X@ptr,
+        BNINDEX@ptr,
         query=query,
         num_neighbors=as.integer(k),
         force_variable_neighbors=is(k, "AsIs"),
@@ -115,6 +107,24 @@ setMethod("queryKNN", c("BiocNeighborGenericIndex", "ANY"), function(X, query, k
 })
 
 #' @export
-setMethod("queryKNN", c("missing", "ANY"), function(X, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BNINDEX=NULL, BNPARAM=NULL) {
-    callGeneric(BNINDEX, query=query, k=k, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, transposed=transposed, ..., BNPARAM=BNPARAM)
-})
+#' @rdname queryKNN
+queryKNN <- function(X, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
+    if (!is.null(BPPARAM)) {
+        num.threads <- BiocParallel::bpnworkers(BPPARAM)
+    }
+    if (!is(X, "BiocNeighborIndex")) {
+        X <- buildIndex(X, transposed=transposed, ..., BNPARAM=BNPARAM)
+    }
+
+    queryKnnFromIndex(
+        X,
+        query=query,
+        k=k,
+        get.index=get.index,
+        get.distance=get.distance,
+        num.threads=num.threads,
+        subset=subset,
+        transposed=transposed,
+        ...
+    )
+}

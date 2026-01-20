@@ -45,12 +45,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // generic_build
-SEXP generic_build(SEXP builder, Rcpp::NumericMatrix data);
+SEXP generic_build(SEXP builder, SEXP data);
 RcppExport SEXP _BiocNeighbors_generic_build(SEXP builderSEXP, SEXP dataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type builder(builderSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type data(dataSEXP);
     rcpp_result_gen = Rcpp::wrap(generic_build(builder, data));
     return rcpp_result_gen;
 END_RCPP
@@ -83,12 +83,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // generic_query_knn
-SEXP generic_query_knn(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::IntegerVector num_neighbors, bool force_variable_neighbors, int num_threads, bool last_distance_only, bool report_index, bool report_distance);
+SEXP generic_query_knn(SEXP prebuilt_ptr, SEXP query, Rcpp::IntegerVector num_neighbors, bool force_variable_neighbors, int num_threads, bool last_distance_only, bool report_index, bool report_distance);
 RcppExport SEXP _BiocNeighbors_generic_query_knn(SEXP prebuilt_ptrSEXP, SEXP querySEXP, SEXP num_neighborsSEXP, SEXP force_variable_neighborsSEXP, SEXP num_threadsSEXP, SEXP last_distance_onlySEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type prebuilt_ptr(prebuilt_ptrSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type query(querySEXP);
+    Rcpp::traits::input_parameter< SEXP >::type query(querySEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type num_neighbors(num_neighborsSEXP);
     Rcpp::traits::input_parameter< bool >::type force_variable_neighbors(force_variable_neighborsSEXP);
     Rcpp::traits::input_parameter< int >::type num_threads(num_threadsSEXP);
@@ -115,12 +115,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // generic_query_all
-SEXP generic_query_all(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance);
+SEXP generic_query_all(SEXP prebuilt_ptr, SEXP query, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance);
 RcppExport SEXP _BiocNeighbors_generic_query_all(SEXP prebuilt_ptrSEXP, SEXP querySEXP, SEXP thresholdsSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type prebuilt_ptr(prebuilt_ptrSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type query(querySEXP);
+    Rcpp::traits::input_parameter< SEXP >::type query(querySEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type thresholds(thresholdsSEXP);
     Rcpp::traits::input_parameter< int >::type num_threads(num_threadsSEXP);
     Rcpp::traits::input_parameter< bool >::type report_index(report_indexSEXP);

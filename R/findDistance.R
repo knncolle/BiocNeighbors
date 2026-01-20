@@ -20,10 +20,7 @@
 #' \code{\link{buildIndex}}, to build an index ahead of time.
 #'
 #' @aliases
-#' findDistance,matrix,ANY-method
-#' findDistance,BiocNeighborGenericIndex,ANY-method
-#' findDistance,matrix-method
-#' findDistance,BiocNeighborGenericIndex-method
+#' findDistanceFromIndex,BiocNeighborGenericIndex-method
 #' 
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)
@@ -34,21 +31,31 @@
 NULL
 
 #' @export
-setMethod("findDistance", c("matrix", "ANY"), function(X, k, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
-    ptr <- buildIndex(X, ..., BNPARAM=BNPARAM)
-    callGeneric(ptr, k=k, num.threads=num.threads, subset=subset, ...)
-})
-
-#' @export
-setMethod("findDistance", c("BiocNeighborGenericIndex", "ANY"), function(X, k, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
+setMethod("findDistanceFromIndex", "BiocNeighborGenericIndex", function(BNINDEX, k, num.threads=1, subset=NULL, ...) {
     generic_find_knn(
-        X@ptr, 
+        BNINDEX@ptr, 
         num_neighbors=as.integer(k), 
         force_variable_neighbors=is(k, "AsIs"),
-        chosen=.integerize_subset(X, subset), 
+        chosen=.integerize_subset(BNINDEX, subset), 
         num_threads=num.threads, 
         last_distance_only=TRUE,
         report_index=FALSE,
         report_distance=FALSE
     )
 })
+
+#' @export
+#' @rdname findDistance
+findDistance <- function(X, k, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
+    if (!is(X, "BiocNeighborIndex")) {
+        X <- buildIndex(X, ..., BNPARAM=BNPARAM)
+    }
+
+    findDistanceFromIndex(
+        X,
+        k=k,
+        num.threads=num.threads,
+        subset=subset,
+        ...
+    )
+}

@@ -1,6 +1,6 @@
 #' @export
 #' @rdname buildIndex
-setGeneric("buildIndex", signature=c("X", "BNPARAM"), function(X, transposed=FALSE, ..., BNPARAM=NULL) standardGeneric("buildIndex"))
+setGeneric("buildIndex", signature="BNPARAM", function(X, transposed=FALSE, ..., BNPARAM=NULL) standardGeneric("buildIndex"))
 
 #' @export
 #' @rdname defineBuilder 
@@ -16,36 +16,36 @@ setGeneric("defineBuilder", signature="BNPARAM", function(BNPARAM) standardGener
 
 #' @export
 #' @rdname findKNN
-setGeneric("findKNN", signature=c("X", "BNPARAM"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
-    standardGeneric("findKNN")
+setGeneric("findKnnFromIndex", signature="BNINDEX", function(BNINDEX, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ...) {
+    standardGeneric("findKnnFromIndex")
 })
 
 #' @export
 #' @rdname queryKNN
-setGeneric("queryKNN", signature=c("X", "BNPARAM"), function(X, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BNPARAM=NULL) {
-    standardGeneric("queryKNN")
+setGeneric("queryKnnFromIndex", signature="BNINDEX", function(BNINDEX, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ...) {
+    standardGeneric("queryKnnFromIndex")
 })
 
 #' @export
 #' @rdname findNeighbors
-setGeneric("findNeighbors", signature=c("X", "BNPARAM"), function(X, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
-    standardGeneric("findNeighbors")
+setGeneric("findNeighborsFromIndex", signature="BNINDEX", function(BNINDEX, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ...) {
+    standardGeneric("findNeighborsFromIndex")
 })
 
 #' @export
 #' @rdname queryNeighbors
-setGeneric("queryNeighbors", signature=c("X", "BNPARAM"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BNPARAM=NULL) {
-    standardGeneric("queryNeighbors")
+setGeneric("queryNeighborsFromIndex", signature="BNINDEX", function(BNINDEX, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ...) {
+    standardGeneric("queryNeighborsFromIndex")
 })
 
 #' @export
 #' @rdname findDistance
-setGeneric("findDistance", signature=c("X", "BNPARAM"), function(X, k, num.threads=1, subset=NULL, ..., BNPARAM=NULL) {
-    standardGeneric("findDistance")
+setGeneric("findDistanceFromIndex", signature="BNINDEX", function(BNINDEX, k, num.threads=1, subset=NULL, ...) {
+    standardGeneric("findDistanceFromIndex")
 })
 
 #' @export
 #' @rdname queryDistance
-setGeneric("queryDistance", signature=c("X", "BNPARAM"), function(X, query, k, num.threads=1, subset=NULL, transposed=FALSE, ..., BNPARAM=NULL) {
-    standardGeneric("queryDistance")
+setGeneric("queryDistanceFromIndex", signature="BNINDEX", function(BNINDEX, query, k, num.threads=1, subset=NULL, transposed=FALSE, ...) {
+    standardGeneric("queryDistanceFromIndex")
 })

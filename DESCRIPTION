@@ -1,6 +1,6 @@
 Package: BiocNeighbors
-Version: 2.5.0
-Date: 2025-05-22
+Version: 2.5.1
+Date: 2026-01-21
 Title: Nearest Neighbor Detection for Bioconductor Packages
 Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
     email="infinite.monkeys.with.keyboards@gmail.com"))
@@ -8,6 +8,9 @@ Imports:
     Rcpp, 
     methods
 Suggests: 
+    Matrix,
+    DelayedArray,
+    beachmat,
     BiocParallel, 
     testthat, 
     BiocStyle, 
@@ -25,8 +28,9 @@ Description: Implements exact and approximate methods for nearest neighbor
 License: GPL-3
 LinkingTo:
     Rcpp, 
-    assorthead
+    assorthead,
+    beachmat
 VignetteBuilder: knitr
 SystemRequirements: C++17
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Encoding: UTF-8

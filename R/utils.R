@@ -12,25 +12,6 @@
     }
 }
 
-.coerce_matrix_build <- function(X, transposed) {
-    if (!is.matrix(X)) {
-        X <- as.matrix(X)
-    }    
-
-    if (!transposed) {
-        X <- t(X)
-    }
-
-    if (!is.double(X)) {
-        storage.mode(X) <- "double"
-    }
-    if (anyNA(X)) {
-        stop("NA values are not supported")
-    }
-
-    X
-}
-
 .format_output <- function(output, name, to.get) {
     if (isFALSE(to.get)) {
         output[[name]] <- NULL
@@ -44,4 +25,29 @@
         stop("unsupported option '", to.get, "'")
     }
     output
+}
+
+.transpose_and_subset <- function(x, transposed, subset) {
+    if (is.matrix(x)) {
+        # For back-compatibility, and to avoid loading beachmat and Matrix,
+        # we just apply these operations directly if a matrix is provided.
+        if (!transposed) {
+            x <- t(x)
+        }
+    } else {
+        x <- DelayedArray::DelayedArray(x)
+        if (!transposed) {
+            x <- Matrix::t(x)
+        }
+    }
+
+    if (!is.null(subset)) {
+        x <- x[,subset,drop=FALSE]
+    }
+
+    if (anyNA(x)) {
+        stop("NA values are not supported")
+    }
+
+    x
 }

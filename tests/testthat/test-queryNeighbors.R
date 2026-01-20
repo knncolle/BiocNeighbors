@@ -36,6 +36,20 @@ test_that("queryNeighbors works in parallel", {
     expect_identical(out, pout)
 })
 
+library(DelayedArray)
+test_that("queryNeighbors works with non-matrix inputs", {
+    Y <- matrix(rnorm(10000), ncol=20)
+    Z <- matrix(rnorm(2000), ncol=20)
+    d <- median(queryDistance(Y, Z, k=5)) * 1.000001
+
+    out <- queryNeighbors(Y, Z, threshold=d)
+    dout <- queryNeighbors(DelayedArray(Y), DelayedArray(Z), threshold=d)
+    expect_identical(out, dout)
+
+    pdout <- queryNeighbors(DelayedArray(Y), DelayedArray(Z), threshold=d, num.threads=2)
+    expect_identical(out, pdout)
+})
+
 test_that("queryNeighbors works with subsets", {
     Y <- matrix(rnorm(10000), ncol=20)
     Z <- matrix(rnorm(2000), ncol=20)

@@ -61,23 +61,21 @@
 NULL
 
 #' @export
-setMethod("queryNeighbors", c("matrix", "ANY"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
-    ptr <- buildIndex(X, transposed=transposed, ..., BNPARAM=BNPARAM)
-    callGeneric(ptr, query=query, threshold=threshold, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, transposed=transposed, ..., BPPARAM=BPPARAM)
-})
-
-#' @export
-setMethod("queryNeighbors", c("BiocNeighborGenericIndex", "ANY"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
-    if (!is.null(BPPARAM)) {
-        num.threads <- BiocParallel::bpnworkers(BPPARAM)
+#' @rdname queryNeighbors
+setMethod("queryNeighborsFromIndex", "BiocNeighborGenericIndex", function(BNINDEX, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ...) {
+    query <- .transpose_and_subset(query, transposed, subset=subset)
+    if (!is.matrix(query)) {
+        query <- beachmat::initializeCpp(query)
     }
 
-    query <- .coerce_matrix_build(query, transposed)
-    if (!is.null(subset)) {
-        query <- query[,subset,drop=FALSE] # could move into C++ to avoid a copy but can't be bothered right now.
-    }
-
-    output <- generic_query_all(X@ptr, query=query, thresholds=threshold, num_threads=num.threads, report_index=get.index, report_distance=get.distance)
+    output <- generic_query_all(
+        BNINDEX@ptr,
+        query=query,
+        thresholds=threshold,
+        num_threads=num.threads,
+        report_index=get.index,
+        report_distance=get.distance
+    )
 
     if (!get.index && !get.distance) {
         return(output)
@@ -93,6 +91,24 @@ setMethod("queryNeighbors", c("BiocNeighborGenericIndex", "ANY"), function(X, qu
 })
 
 #' @export
-setMethod("queryNeighbors", c("missing", "ANY"), function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BNINDEX=NULL, BNPARAM=NULL) {
-    callGeneric(BNINDEX, query=query, threshold=threshold, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, transposed=transposed, ..., BNPARAM=BNPARAM)
-})
+#' @rdname queryNeighbors
+queryNeighbors <- function(X, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ..., BPPARAM=NULL, BNPARAM=NULL) {
+    if (!is.null(BPPARAM)) {
+        num.threads <- BiocParallel::bpnworkers(BPPARAM)
+    }
+    if (!is(X, "BiocNeighborIndex")) {
+        X <- buildIndex(X, transposed=transposed, ..., BNPARAM=BNPARAM)
+    }
+
+    queryNeighborsFromIndex(
+        X,
+        query,
+        threshold=threshold,
+        get.index=get.index,
+        get.distance=get.distance,
+        num.threads=num.threads,
+        subset=subset,
+        transposed=transposed,
+        ...
+    )
+}

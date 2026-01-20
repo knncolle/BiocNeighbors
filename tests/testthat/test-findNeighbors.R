@@ -38,6 +38,19 @@ test_that("findNeighbors works in parallel", {
     expect_identical(out, pout)
 })
 
+library(DelayedArray)
+test_that("findNeighbors works with non-matrix inputs", {
+    Y <- matrix(rnorm(10000), ncol=20)
+    d <- median(findDistance(Y, k=5)) * 1.000001
+
+    out <- findNeighbors(Y, threshold=d)
+    dout <- findNeighbors(DelayedArray(Y), threshold=d) 
+    expect_identical(out, dout)
+
+    pdout <- findNeighbors(DelayedArray(Y), threshold=d, num.threads=2) 
+    expect_identical(out, pdout)
+})
+
 test_that("findNeighbors works with subsets", {
     Y <- matrix(rnorm(10000), ncol=20)
     d <- median(findDistance(Y, k=3)) * 1.000001

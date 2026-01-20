@@ -6,6 +6,9 @@
 \item Enable manual vectorization for Annoy and HNSW, if supported by the compiler.
 This improves speed at the cost of exact reproducibility across different toolchains/architectures.
 We consider this trade-off to be acceptable given that many other floating-point calculations already have non-identical precision across machines.
+
+\item Accept non-ordinary matrices in \code{X=} and \code{query=} arguments for all functions.
+This requires \pkg{beachmat} to be installed.
 }}
 
 \section{Version 2.4.0}{\itemize{

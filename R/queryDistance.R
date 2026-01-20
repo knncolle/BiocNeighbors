@@ -35,20 +35,15 @@
 NULL
 
 #' @export
-setMethod("queryDistance", c("matrix", "ANY"), function(X, query, k, num.threads=1, subset=NULL, transposed=FALSE, ..., BNPARAM=NULL) {
-    ptr <- buildIndex(X, transposed=transposed, ..., BNPARAM=BNPARAM)
-    callGeneric(ptr, query=query, k=k, num.threads=num.threads, subset=subset, transposed=transposed, ...)
-})
-
-#' @export
-setMethod("queryDistance", c("BiocNeighborGenericIndex", "ANY"), function(X, query, k, num.threads=1, subset=NULL, transposed=FALSE, ..., BNPARAM=NULL) {
-    query <- .coerce_matrix_build(query, transposed)
-    if (!is.null(subset)) {
-        query <- query[,subset,drop=FALSE] # could move into C++ for efficiency but can't be bothered for now.
+#' @rdname queryDistance
+setMethod("queryDistanceFromIndex", "BiocNeighborGenericIndex", function(BNINDEX, query, k, num.threads=1, subset=NULL, transposed=FALSE, ...) {
+    query <- .transpose_and_subset(query, transposed, subset=subset)
+    if (!is.matrix(query)) {
+        query <- beachmat::initializeCpp(query)
     }
 
     generic_query_knn(
-        X@ptr,
+        BNINDEX@ptr,
         query=query,
         num_neighbors=as.integer(k), 
         force_variable_neighbors=is(k, "AsIs"),
@@ -58,3 +53,20 @@ setMethod("queryDistance", c("BiocNeighborGenericIndex", "ANY"), function(X, que
         report_distance=FALSE
     )
 })
+
+#' @export
+queryDistance <- function(X, query, k, num.threads=1, ..., subset=NULL, transposed=FALSE, BNPARAM=NULL) {
+    if (!is(X, "BiocNeighborIndex")) {
+        X <- buildIndex(X, transposed=transposed, ..., BNPARAM=BNPARAM)
+    }
+
+    queryDistanceFromIndex(
+        X,
+        query,
+        k=k,
+        num.threads=num.threads,
+        subset=subset,
+        transposed=transposed,
+        ...
+    )
+}

@@ -26,6 +26,19 @@ test_that("queryDistance works in parallel", {
     expect_equal(out, pout)
 })
 
+library(DelayedArray)
+test_that("queryDistance works with non-matrix inputs", {
+    Y <- matrix(rnorm(10000), ncol=20)
+    Z <- matrix(rnorm(2000), ncol=20)
+
+    out <- queryDistance(Y, Z, k=8)
+    dout <- queryDistance(DelayedArray(Y), DelayedArray(Z), k=8)
+    expect_identical(out, dout)
+
+    pdout <- queryDistance(DelayedArray(Y), DelayedArray(Z), k=8, num.threads=2)
+    expect_identical(out, pdout)
+})
+
 test_that("queryDistance works with subsets", {
     Y <- matrix(rnorm(10000), ncol=20)
     Z <- matrix(rnorm(2000), ncol=20)

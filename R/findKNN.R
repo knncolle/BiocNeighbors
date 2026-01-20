@@ -2,7 +2,8 @@
 #' 
 #' Find the k-nearest neighbors of each point in a dataset.
 #' 
-#' @param X A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
+#' @param BNINDEX A \linkS4class{BiocNeighborIndex} object, typically created by \code{\link{buildIndex}}.
+#' @param X A numeric matrix or matrix-like object where rows correspond to data points and columns correspond to variables (i.e., dimensions).
 #' Alternatively, a prebuilt \linkS4class{BiocNeighborIndex} object from \code{\link{buildIndex}}.
 #' @param k A positive integer scalar specifying the number of nearest neighbors to retrieve.
 #'
@@ -25,13 +26,10 @@
 #' @param subset An integer, logical or character vector specifying the indices of points in \code{X} for which the nearest neighbors should be identified.
 #' This yields the same result as (but is more efficient than) subsetting the output matrices after computing neighbors for all points. 
 #' @param ... Further arguments to pass to \code{\link{buildIndex}} when \code{X} is not an external pointer.
+#' @param BPPARAM Soft-deprecated, use \code{num.threads} instead.
 #' @param BNPARAM A \linkS4class{BiocNeighborParam} object specifying how the index should be constructed.
 #' If \code{NULL}, this defaults to a \linkS4class{KmknnParam}.
-#' Ignored if \code{x} contains a prebuilt index.
-#' 
-#' @details
-#' If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} with \code{\link{buildIndex}}.
-#' The resulting pointer object can be supplied as \code{X} to multiple \code{findKNN} calls, avoiding the need to repeat index construction in each call.
+#' Ignored if \code{X} contains a prebuilt index.
 #' 
 #' @return
 #' List containing \code{index} (if \code{get.index} is not \code{FALSE}) and \code{distance} (if \code{get.distance} is not \code{FALSE}).
@@ -69,16 +67,11 @@
 #' 
 #' @seealso
 #' \code{\link{buildIndex}}, to build an index ahead of time.
-#'
+#' 
 #' \code{\link{findDistance}}, to efficiently obtain the distance to the k-th nearest neighbor.
 #'
 #' @aliases
-#' findKNN,matrix,ANY-method
-#' findKNN,BiocNeighborGenericIndex,ANY-method
-#' findKNN,missing,ANY-method
-#' findKNN,matrix-method
-#' findKNN,BiocNeighborGenericIndex-method
-#' findKNN,missing-method
+#' findKnnFromIndex,BiocNeighborGenericIndex-method
 #' 
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)
@@ -90,25 +83,15 @@
 NULL
 
 #' @export
-setMethod("findKNN", c("matrix", "ANY"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
-    ptr <- buildIndex(X, ..., BNPARAM=BNPARAM)
-    callGeneric(ptr, k=k, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, ..., BPPARAM=BPPARAM) 
-})
-
-#' @export
-setMethod("findKNN", c("BiocNeighborGenericIndex", "ANY"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
-    if (!is.null(BPPARAM)) {
-        num.threads <- BiocParallel::bpnworkers(BPPARAM)
-    }
-
+setMethod("findKnnFromIndex", "BiocNeighborGenericIndex", function(BNINDEX, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ...) {
     output <- generic_find_knn(
-        X@ptr, 
+        BNINDEX@ptr, 
         num_neighbors=as.integer(k), 
         force_variable_neighbors=is(k, "AsIs"),
-        chosen=.integerize_subset(X, subset), 
+        chosen=.integerize_subset(BNINDEX, subset), 
         num_threads=num.threads, 
         last_distance_only=FALSE,
-        report_index=!isFALSE(get.index), 
+        report_index=!isFALSE(get.index),
         report_distance=!isFALSE(get.distance)
     )
 
@@ -118,6 +101,23 @@ setMethod("findKNN", c("BiocNeighborGenericIndex", "ANY"), function(X, k, get.in
 })
 
 #' @export
-setMethod("findKNN", c("missing", "ANY"), function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BNINDEX=NULL, BNPARAM=NULL) {
-    callGeneric(BNINDEX, k=k, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, ..., BNPARAM=BNPARAM) 
-})
+#' @rdname findKNN
+findKNN <- function(X, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
+    if (!is.null(BPPARAM)) {
+        num.threads <- BiocParallel::bpnworkers(BPPARAM)
+    }
+    if (!is(X, "BiocNeighborIndex")) {
+        X <- buildIndex(X, ..., BNPARAM=BNPARAM)
+    }
+
+    findKnnFromIndex(
+        X,
+        k=k,
+        get.index=get.index,
+        get.distance=get.distance,
+        num.threads=num.threads,
+        subset=subset,
+        ...,
+        BPPARAM=BPPARAM
+    )
+}

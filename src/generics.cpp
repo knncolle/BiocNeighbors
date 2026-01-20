@@ -1,16 +1,32 @@
 #include "Rcpp.h"
 #include "BiocNeighbors.h"
+#include "Rtatami.h"
+
 #include "knncolle/knncolle.hpp"
+#include "knncolle_tatami/knncolle_tatami.hpp"
 
 #include <stdexcept>
 #include <string>
 #include <algorithm>
 #include <vector>
+#include <optional>
 
 //[[Rcpp::export(rng=false)]]
-SEXP generic_build(SEXP builder, Rcpp::NumericMatrix data) {
+SEXP generic_build(SEXP builder, SEXP data) {
+    std::optional<Rcpp::NumericMatrix> mat;
+    std::unique_ptr<knncolle::Matrix<int, double> > matptr;
+
+    if (TYPEOF(data) == REALSXP) {
+        mat = Rcpp::NumericMatrix(data);
+        matptr.reset(new knncolle::SimpleMatrix<int, double>(mat->rows(), mat->cols(), mat->begin()));
+    } else if (TYPEOF(data) == EXTPTRSXP) {
+        matptr.reset(new knncolle_tatami::Matrix<int, double, double, int, const tatami::NumericMatrix*>(Rtatami::BoundNumericPointer(data)->get(), false));
+    } else {
+        throw std::runtime_error("unknown type for 'data'");
+    }
+
     auto out = BiocNeighbors::BuilderPointer(builder);
-    return BiocNeighbors::PrebuiltPointer(out->build_raw(knncolle::SimpleMatrix<int, double>(data.rows(), data.cols(), data.begin())));
+    return BiocNeighbors::PrebuiltPointer(out->build_raw(*matptr));
 }
 
 //[[Rcpp::export(rng=false)]]
@@ -192,10 +208,58 @@ SEXP generic_find_knn(
     }
 } 
 
+struct QueryInfo {
+    QueryInfo(SEXP data) {
+        if (TYPEOF(data) == REALSXP) {
+            mat = Rcpp::NumericMatrix(data);
+            data_ptr = mat->begin();
+            nobs = mat->ncol();
+            ndim = mat->nrow();
+
+        } else if (TYPEOF(data) == EXTPTRSXP) {
+            tatami_ptr = Rtatami::BoundNumericPointer(data)->get();
+            nobs = tatami_ptr->ncol();
+            ndim = tatami_ptr->nrow();
+
+        } else {
+            throw std::runtime_error("unknown type for 'data'");
+        }
+    }
+
+    int nobs = 0;
+    std::size_t ndim = 0;
+    std::optional<Rcpp::NumericMatrix> mat;
+    const double* data_ptr = NULL;
+    const tatami::NumericMatrix* tatami_ptr = NULL;
+};
+
+class QueryWorkspace {
+public:
+    QueryWorkspace(const QueryInfo& qinfo, int start, int length) : my_qinfo(qinfo) {
+        if (!qinfo.mat.has_value()) {
+            my_buffer.resize(qinfo.ndim);
+            my_ext = tatami::consecutive_extractor<false, double, int>(*(qinfo.tatami_ptr), false, start, length);
+        }
+    }
+
+    const double* get(int i) {
+        if (my_qinfo.mat.has_value()) {
+            return my_qinfo.data_ptr + static_cast<std::size_t>(i) * my_qinfo.ndim;
+        } else {
+            return my_ext->fetch(my_buffer.data());
+        }
+    }
+
+private:
+    const QueryInfo& my_qinfo;
+    std::vector<double> my_buffer;
+    std::unique_ptr<tatami::OracularDenseExtractor<double, int> > my_ext;
+};
+
 //[[Rcpp::export(rng=false)]]
 SEXP generic_query_knn(
     SEXP prebuilt_ptr,
-    Rcpp::NumericMatrix query,
+    SEXP query,
     Rcpp::IntegerVector num_neighbors,
     bool force_variable_neighbors,
     int num_threads,
@@ -211,9 +275,9 @@ SEXP generic_query_knn(
     int nobs = prebuilt.num_observations();
     size_t ndim = prebuilt.num_dimensions();
 
-    int nquery = query.ncol();
-    const double* query_ptr = query.begin();
-    if (static_cast<size_t>(query.nrow()) != ndim) {
+    QueryInfo qinfo(query);
+    const auto nquery = qinfo.nobs;
+    if (qinfo.ndim != ndim) {
         throw std::runtime_error("mismatch in dimensionality between index and 'query'");
     }
 
@@ -275,10 +339,10 @@ SEXP generic_query_knn(
         std::vector<int> tmp_i;
         std::vector<double> tmp_d;
 
-        size_t query_offset = static_cast<size_t>(start) * ndim; // using size_t to avoid overflow.
-        for (int o = start, end = start + length; o < end; ++o, query_offset += ndim) {
+        QueryWorkspace qwork(qinfo, start, length);
+        for (int o = start, end = start + length; o < end; ++o) {
             searcher->search(
-                query_ptr + query_offset,
+                qwork.get(o),
                 (is_k_variable ? variable_k[o] : const_k),
                 (report_index ? &tmp_i : NULL),
                 (report_distance ? &tmp_d : NULL)
@@ -410,7 +474,7 @@ SEXP generic_find_all(SEXP prebuilt_ptr, Rcpp::Nullable<Rcpp::IntegerVector> cho
 } 
 
 //[[Rcpp::export(rng=false)]]
-SEXP generic_query_all(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance) {
+SEXP generic_query_all(SEXP prebuilt_ptr, SEXP query, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance) {
     BiocNeighbors::PrebuiltPointer cast(prebuilt_ptr); 
     if (!R_ExternalPtrAddr(SEXP(cast))) {
         throw std::runtime_error("null pointer to a prebuilt index");
@@ -418,9 +482,9 @@ SEXP generic_query_all(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::Numer
     const auto& prebuilt = *cast;
     size_t ndim = prebuilt.num_dimensions();
 
-    int nquery = query.ncol();
-    const double* query_ptr = query.begin();
-    if (static_cast<size_t>(query.nrow()) != ndim) {
+    QueryInfo qinfo(query);
+    const auto nquery = qinfo.nobs;
+    if (qinfo.ndim != ndim) {
         throw std::runtime_error("mismatch in dimensionality between index and 'query'");
     }
 
@@ -449,11 +513,10 @@ SEXP generic_query_all(SEXP prebuilt_ptr, Rcpp::NumericMatrix query, Rcpp::Numer
             return;
         }
 
-        size_t query_offset = static_cast<size_t>(start) * ndim; // using size_t to avoid overflow.
-        for (int o = start, end = start + length; o < end; ++o, query_offset += ndim) {
-            auto current_ptr = query_ptr + query_offset;
+        QueryWorkspace qwork(qinfo, start, length);
+        for (int o = start, end = start + length; o < end; ++o) {
             auto count = searcher->search_all(
-                current_ptr,
+                qwork.get(o),
                 threshold_ptr[multiple_thresholds ? o : 0],
                 (report_index ? &out_i[o] : NULL),
                 (report_distance ? &out_d[o] : NULL)

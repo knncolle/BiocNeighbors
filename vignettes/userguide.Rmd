@@ -226,9 +226,8 @@ Each extension package should:
 - Implement a `SomeNewIndex` S4 class that inherits from `BiocNeighborIndex` and contains an arbitrary index structure.
 - Implement a `buildIndex()` S4 method, dispatching on a `matrix` type for `X=` and a `SomeNewParam` type for `BNPARAM=`.
   This should return an instance of `SomeNewIndex`.
-- Implement two methods for each of `findKNN()` and `queryKNN()` (and optionally `findNeighbors()` `queryNeighbors()`).
-  One method should dispatch on a `matrix` type for `X=` and a `SomeNewParam` type for `BNPARAM=`. 
-  The other method should dispatch on a prebuilt `SomeNewIndex` type for `X=` and an `ANY` type for `BNPARAM=` (as the `BNPARAM=` is ignored for prebuilt indices).
+- Implement methods for `findKnnFromIndex()`, `findDistanceFromIndex()`, `queryKnnFromIndex()` and `queryDistanceFromIndex()`.
+  Optionally methods can be implemented for `findNeighborsFromIndex()` and `queryNeighborsFromIndex()`.
 
 ## In C++
 
@@ -244,7 +243,7 @@ Alternatively, each extension package should:
   an external pointer to an instance of a `BiocNeighbors::Builder` (see definition in `BiocNeighbors.h`);
   and `class`, the constructor for the new `SomeNewIndex` class.
 
-No new methods are required for `findKNN()`, `queryNeighbors()`, etc. as a `BiocNeighborGeneric` method is already available for each generic.
+No new methods are required for `findKnnFromIndex()`, `queryNeighborsFromIndex()`, etc. as a `BiocNeighborGenericIndex` method is already available for each generic.
 This approach also allows the new method to be used in C++ code of downstream packages that accept a `BiocNeighbors::Prebuilt` instance.
 
 # Session information {-}

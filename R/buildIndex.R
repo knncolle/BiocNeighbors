@@ -2,11 +2,11 @@
 #'
 #' Build indices for nearest-neighbor searching with different algorithms.
 #' 
-#' @param X A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).
-#' @param transposed Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.
+#' @param X A numeric matrix or matrix-like object where rows correspond to data points and columns correspond to variables (i.e., dimensions).
 #' @param ... Further arguments to be passed to individual methods.
+#' @param transposed Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.
 #' @param BNPARAM A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.
-#' If \code{NULL}, this defaults to a \linkS4class{KmknnParam} object. 
+#' If \code{NULL} or missing, this defaults to a \linkS4class{KmknnParam} object. 
 #' 
 #' Alternatively, this may be a list returned by \code{\link{defineBuilder}}.
 #' 
@@ -30,25 +30,29 @@
 #' (a.out <- buildIndex(Y, BNPARAM=AnnoyParam()))
 #'
 #' @aliases
-#' buildIndex,matrix,NULL-method
-#' buildIndex,matrix,missing-method
-#' buildIndex,matrix,BiocNeighborParam-method
-#' buildIndex,matrix,list-method
+#' buildIndex,NULL-method
+#' buildIndex,missing-method
+#' buildIndex,BiocNeighborParam-method
+#' buildIndex,list-method
 #'
 #' @name buildIndex
 NULL
 
 #' @export
-setMethod("buildIndex", c("matrix", "missing"), function(X, transposed=FALSE, ..., BNPARAM) callGeneric(X, transposed=transposed, ..., BNPARAM=NULL))
+setMethod("buildIndex", "missing", function(X, transposed=FALSE, ..., BNPARAM) callGeneric(X, transposed=transposed, ..., BNPARAM=NULL))
 
 #' @export
-setMethod("buildIndex", c("matrix", "NULL"), function(X, transposed=FALSE, ..., BNPARAM) callGeneric(X, transposed=transposed, ..., BNPARAM=KmknnParam()))
+setMethod("buildIndex", "NULL", function(X, transposed=FALSE, ..., BNPARAM) callGeneric(X, transposed=transposed, ..., BNPARAM=KmknnParam()))
 
 #' @export
-setMethod("buildIndex", c("matrix", "BiocNeighborParam"), function(X, transposed=FALSE, ..., BNPARAM) callGeneric(X, transposed=transposed, ..., BNPARAM=defineBuilder(BNPARAM)))
+setMethod("buildIndex", "BiocNeighborParam", function(X, transposed=FALSE, ..., BNPARAM) callGeneric(X, transposed=transposed, ..., BNPARAM=defineBuilder(BNPARAM)))
 
 #' @export
-setMethod("buildIndex", c("matrix", "list"), function(X, transposed=FALSE, ..., BNPARAM) {
-    X <- .coerce_matrix_build(X, transposed)
-    BNPARAM$class(ptr=generic_build(BNPARAM$builder, X), names=colnames(X))
+setMethod("buildIndex", "list", function(X, transposed=FALSE, ..., BNPARAM) {
+    X <- .transpose_and_subset(X, transposed, subset=NULL)
+    cn <- colnames(X)
+    if (!is.matrix(X)) {
+        X <- beachmat::initializeCpp(X)
+    }
+    BNPARAM$class(ptr=generic_build(BNPARAM$builder, X), names=cn)
 })

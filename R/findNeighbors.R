@@ -49,32 +49,17 @@
 #' summary(lengths(out$index))
 #'
 #' @aliases
-#' findNeighbors,matrix,ANY-method
-#' findNeighbors,BiocNeighborGenericIndex,ANY-method
-#' findNeighbors,missing,ANY-method
-#' findNeighbors,matrix-method
-#' findNeighbors,BiocNeighborGenericIndex-method
-#' findNeighbors,missing-method
+#' findNeighborsFromIndex,BiocNeighborGenericIndex-method
 #'
 #' @name findNeighbors
 NULL
 
 #' @export
-setMethod("findNeighbors", c("matrix", "ANY"), function(X, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
-    ptr <- buildIndex(X, ..., BNPARAM=BNPARAM)
-    callGeneric(ptr, threshold=threshold, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, ..., BPPARAM=BPPARAM)
-})
-
-#' @export
-setMethod("findNeighbors", c("BiocNeighborGenericIndex", "ANY"), function(X, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
-    if (!is.null(BPPARAM)) {
-        num.threads <- BiocParallel::bpnworkers(BPPARAM)
-    }
-
+setMethod("findNeighborsFromIndex", "BiocNeighborGenericIndex", function(BNINDEX, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ...) {
     output <- generic_find_all(
-       X@ptr,
+       BNINDEX@ptr,
        thresholds=threshold, 
-       chosen=.integerize_subset(X, subset),
+       chosen=.integerize_subset(BNINDEX, subset),
        num_threads=num.threads,
        report_index=get.index,
        report_distance=get.distance
@@ -94,6 +79,22 @@ setMethod("findNeighbors", c("BiocNeighborGenericIndex", "ANY"), function(X, thr
 })
 
 #' @export
-setMethod("findNeighbors", c("missing", "ANY"), function(X, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BNINDEX=NULL, BNPARAM=NULL) {
-    callGeneric(BNINDEX, threshold=threshold, get.index=get.index, get.distance=get.distance, num.threads=num.threads, subset=subset, ..., BNINDEX=BNINDEX)
-})
+#' @rdname findNeighbors
+findNeighbors <- function(X, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ..., BPPARAM=NULL, BNPARAM=NULL) {
+    if (!is.null(BPPARAM)) {
+        num.threads <- BiocParallel::bpnworkers(BPPARAM)
+    }
+    if (!is(X, "BiocNeighborIndex")) {
+        X <- buildIndex(X, ..., BNPARAM=BNPARAM)
+    }
+
+    findNeighborsFromIndex(
+        X,
+        threshold=threshold,
+        get.index=get.index,
+        get.distance=get.distance,
+        num.threads=num.threads,
+        subset=subset,
+        ...
+    )
+}

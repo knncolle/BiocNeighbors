@@ -2,23 +2,23 @@
 % Please edit documentation in R/AllGenerics.R, R/buildIndex.R
 \name{buildIndex}
 \alias{buildIndex}
-\alias{buildIndex,matrix,NULL-method}
-\alias{buildIndex,matrix,missing-method}
-\alias{buildIndex,matrix,BiocNeighborParam-method}
-\alias{buildIndex,matrix,list-method}
+\alias{buildIndex,NULL-method}
+\alias{buildIndex,missing-method}
+\alias{buildIndex,BiocNeighborParam-method}
+\alias{buildIndex,list-method}
 \title{Build a nearest-neighbor index}
 \usage{
 buildIndex(X, transposed = FALSE, ..., BNPARAM = NULL)
 }
 \arguments{
-\item{X}{A numeric matrix where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
+\item{X}{A numeric matrix or matrix-like object where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
 
 \item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
 
 \item{...}{Further arguments to be passed to individual methods.}
 
 \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.
-If \code{NULL}, this defaults to a \linkS4class{KmknnParam} object. 
+If \code{NULL} or missing, this defaults to a \linkS4class{KmknnParam} object. 
 
 Alternatively, this may be a list returned by \code{\link{defineBuilder}}.}
 }
