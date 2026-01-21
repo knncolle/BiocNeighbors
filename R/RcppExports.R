@@ -13,8 +13,8 @@ find_mutual_nns <- function(left, right) {
     .Call('_BiocNeighbors_find_mutual_nns', PACKAGE = 'BiocNeighbors', left, right)
 }
 
-generic_build <- function(builder, data) {
-    .Call('_BiocNeighbors_generic_build', PACKAGE = 'BiocNeighbors', builder, data)
+generic_build <- function(builder, data, fail_nonfinite) {
+    .Call('_BiocNeighbors_generic_build', PACKAGE = 'BiocNeighbors', builder, data, fail_nonfinite)
 }
 
 generic_num_obs <- function(prebuilt_ptr) {
@@ -25,16 +25,16 @@ generic_find_knn <- function(prebuilt_ptr, num_neighbors, force_variable_neighbo
     .Call('_BiocNeighbors_generic_find_knn', PACKAGE = 'BiocNeighbors', prebuilt_ptr, num_neighbors, force_variable_neighbors, chosen, num_threads, last_distance_only, report_index, report_distance)
 }
 
-generic_query_knn <- function(prebuilt_ptr, query, num_neighbors, force_variable_neighbors, num_threads, last_distance_only, report_index, report_distance) {
-    .Call('_BiocNeighbors_generic_query_knn', PACKAGE = 'BiocNeighbors', prebuilt_ptr, query, num_neighbors, force_variable_neighbors, num_threads, last_distance_only, report_index, report_distance)
+generic_query_knn <- function(prebuilt_ptr, query, num_neighbors, force_variable_neighbors, num_threads, last_distance_only, report_index, report_distance, fail_nonfinite) {
+    .Call('_BiocNeighbors_generic_query_knn', PACKAGE = 'BiocNeighbors', prebuilt_ptr, query, num_neighbors, force_variable_neighbors, num_threads, last_distance_only, report_index, report_distance, fail_nonfinite)
 }
 
 generic_find_all <- function(prebuilt_ptr, chosen, thresholds, num_threads, report_index, report_distance) {
     .Call('_BiocNeighbors_generic_find_all', PACKAGE = 'BiocNeighbors', prebuilt_ptr, chosen, thresholds, num_threads, report_index, report_distance)
 }
 
-generic_query_all <- function(prebuilt_ptr, query, thresholds, num_threads, report_index, report_distance) {
-    .Call('_BiocNeighbors_generic_query_all', PACKAGE = 'BiocNeighbors', prebuilt_ptr, query, thresholds, num_threads, report_index, report_distance)
+generic_query_all <- function(prebuilt_ptr, query, thresholds, num_threads, report_index, report_distance, fail_nonfinite) {
+    .Call('_BiocNeighbors_generic_query_all', PACKAGE = 'BiocNeighbors', prebuilt_ptr, query, thresholds, num_threads, report_index, report_distance, fail_nonfinite)
 }
 
 hnsw_builder <- function(nlinks, ef_construct, ef_search, distance) {

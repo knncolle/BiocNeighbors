@@ -7,6 +7,11 @@
 #' Alternatively, a vector containing a different distance threshold for each point.
 #' @param get.index A logical scalar indicating whether the indices of the neighbors should be recorded.
 #' @param get.distance A logical scalar indicating whether distances to the neighbors should be recorded.
+#' @param ... For \code{findNeighborsFromIndex}, further arguments to pass to individual methods.
+#' If a method accepts arguments here, it should prefix these arguments with the algorithm name to avoid conflicts, e.g., \code{vptree.foo.bar}.
+#' 
+#' For \code{findNeighbors}, further arguments to pass to \code{findNeighborsFromIndex}.
+#' These are also passed to \code{\link{buildIndex}} when \code{X} is not an external pointer.
 #'
 #' @details
 #' This function identifies all points in \code{X} that within \code{threshold} of each point in \code{X}.
@@ -55,6 +60,7 @@
 NULL
 
 #' @export
+#' @rdname findNeighbors
 setMethod("findNeighborsFromIndex", "BiocNeighborGenericIndex", function(BNINDEX, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ...) {
     output <- generic_find_all(
        BNINDEX@ptr,

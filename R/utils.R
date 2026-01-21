@@ -45,9 +45,5 @@
         x <- x[,subset,drop=FALSE]
     }
 
-    if (anyNA(x)) {
-        stop("NA values are not supported")
-    }
-
     x
 }

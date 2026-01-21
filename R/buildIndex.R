@@ -4,6 +4,11 @@
 #' 
 #' @param X A numeric matrix or matrix-like object where rows correspond to data points and columns correspond to variables (i.e., dimensions).
 #' @param ... Further arguments to be passed to individual methods.
+#' This includes:
+#' \itemize{
+#' \item \code{.check.nonfinite}, a boolean indicating whether to check for non-finite values in \code{X}.
+#' }
+#' If a method accepts arguments here, it should prefix these arguments with the algorithm name to avoid conflicts, e.g., \code{vptree.foo.bar}.
 #' @param transposed Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.
 #' @param BNPARAM A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.
 #' If \code{NULL} or missing, this defaults to a \linkS4class{KmknnParam} object. 
@@ -48,11 +53,11 @@ setMethod("buildIndex", "NULL", function(X, transposed=FALSE, ..., BNPARAM) call
 setMethod("buildIndex", "BiocNeighborParam", function(X, transposed=FALSE, ..., BNPARAM) callGeneric(X, transposed=transposed, ..., BNPARAM=defineBuilder(BNPARAM)))
 
 #' @export
-setMethod("buildIndex", "list", function(X, transposed=FALSE, ..., BNPARAM) {
+setMethod("buildIndex", "list", function(X, transposed=FALSE, ..., .check.nonfinite=TRUE, BNPARAM) {
     X <- .transpose_and_subset(X, transposed, subset=NULL)
     cn <- colnames(X)
     if (!is.matrix(X)) {
         X <- beachmat::initializeCpp(X)
     }
-    BNPARAM$class(ptr=generic_build(BNPARAM$builder, X), names=cn)
+    BNPARAM$class(ptr=generic_build(BNPARAM$builder, X, .check.nonfinite), names=cn)
 })

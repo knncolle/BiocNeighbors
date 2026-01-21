@@ -27,7 +27,19 @@ queryDistanceFromIndex(
   num.threads = 1,
   subset = NULL,
   transposed = FALSE,
-  ...
+  ...,
+  .check.nonfinite = TRUE
+)
+
+queryDistance(
+  X,
+  query,
+  k,
+  num.threads = 1,
+  ...,
+  subset = NULL,
+  transposed = FALSE,
+  BNPARAM = NULL
 )
 }
 \arguments{
@@ -50,7 +62,22 @@ All \code{k} should be less than or equal to the number of points in \code{X}, o
 \item{transposed}{A logical scalar indicating whether \code{query} is transposed, in which case it contains dimensions in the rows and data points in the columns.
 For \code{queryKNN}, settting \code{transposed=TRUE} also indicates that \code{X} is also transposed.}
 
-\item{...}{Further arguments to pass to \code{\link{buildIndex}} when \code{X} is not an external pointer.}
+\item{...}{For \code{queryDistanceFromIndex}, further arguments to pass to individual methods.
+If a method accepts arguments here, it should prefix these arguments with the algorithm name to avoid conflicts, e.g., \code{vptree.foo.bar}.
+
+For \code{queryDistance}, further arguments to pass to \code{queryDistanceFromIndex}.
+These are also passed to \code{\link{buildIndex}} when \code{X} is not an external pointer.}
+
+\item{.check.nonfinite}{Boolean indicating whether to check for non-finite values in \code{query}.
+This can be set to \code{FALSE} for greater efficiency.}
+
+\item{X}{The reference dataset to be queried.
+This should be a numeric matrix or matrix-like object where rows correspond to reference points and columns correspond to variables (i.e., dimensions).
+Alternatively, a prebuilt \linkS4class{BiocNeighborIndex} object from \code{\link{buildIndex}}.}
+
+\item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying how the index should be constructed.
+If \code{NULL}, this defaults to a \linkS4class{KmknnParam}.
+Ignored if \code{X} contains a prebuilt index.}
 }
 \value{
 Numeric vector of length equal to the number of points in \code{query} (or \code{subset}, if provided),

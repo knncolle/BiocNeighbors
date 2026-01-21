@@ -15,6 +15,10 @@ test_that("queryNeighbors works with basic options", {
     ref <- refQueryNeighbors(Y, Z, threshold=d)
     expect_equal(out, ref)
 
+    # Works when we disable the non-finite checker.
+    out <- queryNeighbors(Y, Z, threshold=d, .check.nonfinite=FALSE)
+    expect_equal(out, ref)
+
     d <- median(queryDistance(Y, Z, k=8, BNPARAM=KmknnParam(distance="Manhattan"))) * 1.000001
     out <- queryNeighbors(Y, Z, threshold=d, BNPARAM=KmknnParam(distance="Manhattan"))
     ref <- refQueryNeighbors(Y, Z, threshold=d, type="manhattan")
@@ -144,4 +148,13 @@ test_that("queryNeighbors works with variable outputs", {
 
     count <- queryNeighbors(Y, Z, threshold=d, get.index=FALSE, get.distance=FALSE)
     expect_identical(count, lengths(out$index))
+})
+
+test_that("queryNeighbors doesn't work with NA values", {
+    Y <- matrix(NA_real_, 10, 2)
+    expect_error(queryNeighbors(Y, Y, threshold=1), "non-finite values")
+    Y <- matrix(NaN, 10, 2)
+    expect_error(queryNeighbors(Y, Y, threshold=1), "non-finite values")
+    Y <- matrix(LETTERS, ncol=13)
+    expect_error(suppressWarnings(queryNeighbors(Y, Y, threshold=1)), "unknown type")
 })

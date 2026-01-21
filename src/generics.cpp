@@ -10,9 +10,60 @@
 #include <algorithm>
 #include <vector>
 #include <optional>
+#include <cmath>
+
+void check_nonfinite(const double* ptr, std::size_t n) {
+    std::size_t count = 0; 
+    for (std::size_t i = 0; i < n; ++i) {
+        count += !std::isfinite(ptr[i]);
+    }
+    if (count) { // checking once at the end, to allow vectorization of the loop. 
+        throw std::runtime_error("non-finite values are not supported");
+    }
+}
+
+class NonfiniteMatrixExtractor final : public knncolle::MatrixExtractor<double> {
+public:
+    NonfiniteMatrixExtractor(std::unique_ptr<knncolle::MatrixExtractor<double> > ptr, std::size_t ndim) :
+        my_ptr(std::move(ptr)),
+        my_ndim(ndim)
+    {}
+
+private:
+    std::unique_ptr<knncolle::MatrixExtractor<double> > my_ptr;
+    std::size_t my_ndim;
+
+public:
+    const double* next() {
+        const auto output = my_ptr->next();
+        check_nonfinite(output, my_ndim);
+        return output;
+    }
+};
+
+class NonfiniteChecker final : public knncolle::Matrix<int, double> {
+public:
+    NonfiniteChecker(std::unique_ptr<knncolle::Matrix<int, double> > ptr) : my_ptr(std::move(ptr)) {}
+
+private:
+    std::unique_ptr<knncolle::Matrix<int, double> > my_ptr;
+
+public:
+    int num_observations() const {
+        return my_ptr->num_observations();
+    }
+
+    std::size_t num_dimensions() const {
+        return my_ptr->num_dimensions();
+    }
+
+    std::unique_ptr<knncolle::MatrixExtractor<double> > new_extractor() const {
+        return std::make_unique<NonfiniteMatrixExtractor>(my_ptr->new_extractor(), my_ptr->num_dimensions());
+    }
+};
 
 //[[Rcpp::export(rng=false)]]
-SEXP generic_build(SEXP builder, SEXP data) {
+SEXP generic_build(SEXP builder, SEXP data, bool fail_nonfinite) {
     std::optional<Rcpp::NumericMatrix> mat;
     std::unique_ptr<knncolle::Matrix<int, double> > matptr;
 
@@ -26,6 +77,11 @@ SEXP generic_build(SEXP builder, SEXP data) {
             break;
         default:
             throw std::runtime_error("unknown type for 'data'");
+    }
+
+    if (fail_nonfinite) {
+        auto newmat = std::make_unique<NonfiniteChecker>(std::move(matptr));
+        matptr = std::move(newmat);
     }
 
     auto out = BiocNeighbors::BuilderPointer(builder);
@@ -269,8 +325,9 @@ SEXP generic_query_knn(
     int num_threads,
     bool last_distance_only,
     bool report_index,
-    bool report_distance)
-{
+    bool report_distance,
+    bool fail_nonfinite
+) {
     BiocNeighbors::PrebuiltPointer cast(prebuilt_ptr); 
     if (!R_ExternalPtrAddr(SEXP(cast))) {
         throw std::runtime_error("null pointer to a prebuilt index");
@@ -345,8 +402,13 @@ SEXP generic_query_knn(
 
         QueryWorkspace qwork(qinfo, start, length);
         for (int o = start, end = start + length; o < end; ++o) {
+            const auto qptr = qwork.get(o);
+            if (fail_nonfinite) {
+                check_nonfinite(qptr, ndim);
+            }
+
             searcher->search(
-                qwork.get(o),
+                qptr,
                 (is_k_variable ? variable_k[o] : const_k),
                 (report_index ? &tmp_i : NULL),
                 (report_distance ? &tmp_d : NULL)
@@ -478,7 +540,7 @@ SEXP generic_find_all(SEXP prebuilt_ptr, Rcpp::Nullable<Rcpp::IntegerVector> cho
 } 
 
 //[[Rcpp::export(rng=false)]]
-SEXP generic_query_all(SEXP prebuilt_ptr, SEXP query, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance) {
+SEXP generic_query_all(SEXP prebuilt_ptr, SEXP query, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance, bool fail_nonfinite) {
     BiocNeighbors::PrebuiltPointer cast(prebuilt_ptr); 
     if (!R_ExternalPtrAddr(SEXP(cast))) {
         throw std::runtime_error("null pointer to a prebuilt index");
@@ -519,8 +581,13 @@ SEXP generic_query_all(SEXP prebuilt_ptr, SEXP query, Rcpp::NumericVector thresh
 
         QueryWorkspace qwork(qinfo, start, length);
         for (int o = start, end = start + length; o < end; ++o) {
+            const auto qptr = qwork.get(o);
+            if (fail_nonfinite) {
+                check_nonfinite(qptr, ndim);
+            }
+
             auto count = searcher->search_all(
-                qwork.get(o),
+                qptr,
                 threshold_ptr[multiple_thresholds ? o : 0],
                 (report_index ? &out_i[o] : NULL),
                 (report_distance ? &out_d[o] : NULL)

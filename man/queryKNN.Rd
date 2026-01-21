@@ -33,7 +33,8 @@ queryKnnFromIndex(
   num.threads = 1,
   subset = NULL,
   transposed = FALSE,
-  ...
+  ...,
+  .check.nonfinite = TRUE
 )
 
 queryKNN(
@@ -82,7 +83,14 @@ The former is the same as \code{TRUE}, while the latter returns the distance mat
 \item{transposed}{A logical scalar indicating whether \code{query} is transposed, in which case it contains dimensions in the rows and data points in the columns.
 For \code{queryKNN}, settting \code{transposed=TRUE} also indicates that \code{X} is also transposed.}
 
-\item{...}{Further arguments to pass to \code{\link{buildIndex}} when \code{X} is not an external pointer.}
+\item{...}{For \code{queryKnnFromIndex}, further arguments to pass to individual methods.
+If a method accepts arguments here, it should prefix these arguments with the algorithm name to avoid conflicts, e.g., \code{vptree.foo.bar}.
+
+For \code{queryKNN}, further arguments to pass to \code{queryKnnFromIndex}.
+These are also passed to \code{\link{buildIndex}} when \code{X} is not an external pointer.}
+
+\item{.check.nonfinite}{Boolean indicating whether to check for non-finite values in \code{query}.
+This can be set to \code{FALSE} for greater efficiency.}
 
 \item{X}{The reference dataset to be queried.
 This should be a numeric matrix or matrix-like object where rows correspond to reference points and columns correspond to variables (i.e., dimensions).

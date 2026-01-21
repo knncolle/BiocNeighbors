@@ -10,6 +10,10 @@ test_that("queryKNN works with basic options", {
     ref <- refQueryKNN(Y, Z, k=8)
     expect_equal(out, ref)
 
+    # Works when we disable the non-finite checker.
+    out <- queryKNN(Y, Z, k=8, .check.nonfinite=FALSE)
+    expect_equal(out, ref)
+
     out <- queryKNN(Y, Z, k=8, BNPARAM=KmknnParam(distance="Manhattan"))
     ref <- refQueryKNN(Y, Z, k=8, type="manhattan")
     expect_equal(out, ref)
@@ -143,4 +147,13 @@ test_that("queryKNN works with variable outputs", {
     tout <- queryKNN(Y, Z, k=8, get.index="transposed", get.distance="transposed")
     expect_identical(t(tout$distance), out$distance)
     expect_identical(t(tout$index), out$index)
+})
+
+test_that("queryKNN doesn't work with NA values", {
+    Y <- matrix(NA_real_, 10, 2)
+    expect_error(queryKNN(Y, Y, k=8), "non-finite values")
+    Y <- matrix(NaN, 10, 2)
+    expect_error(queryKNN(Y, Y, k=8), "non-finite values")
+    Y <- matrix(LETTERS, ncol=13)
+    expect_error(suppressWarnings(queryKNN(Y, Y, k=8)), "unknown type")
 })

@@ -16,6 +16,16 @@ findNeighborsFromIndex(
   ...
 )
 
+\S4method{findNeighborsFromIndex}{BiocNeighborGenericIndex}(
+  BNINDEX,
+  threshold,
+  get.index = TRUE,
+  get.distance = TRUE,
+  num.threads = 1,
+  subset = NULL,
+  ...
+)
+
 findNeighbors(
   X,
   threshold,
@@ -43,7 +53,11 @@ Alternatively, a vector containing a different distance threshold for each point
 \item{subset}{An integer, logical or character vector specifying the indices of points in \code{X} for which the nearest neighbors should be identified.
 This yields the same result as (but is more efficient than) subsetting the output matrices after computing neighbors for all points.}
 
-\item{...}{Further arguments to pass to \code{\link{buildIndex}} when \code{X} is not an external pointer.}
+\item{...}{For \code{findNeighborsFromIndex}, further arguments to pass to individual methods.
+If a method accepts arguments here, it should prefix these arguments with the algorithm name to avoid conflicts, e.g., \code{vptree.foo.bar}.
+
+For \code{findNeighbors}, further arguments to pass to \code{findNeighborsFromIndex}.
+These are also passed to \code{\link{buildIndex}} when \code{X} is not an external pointer.}
 
 \item{X}{A numeric matrix or matrix-like object where rows correspond to data points and columns correspond to variables (i.e., dimensions).
 Alternatively, a prebuilt \linkS4class{BiocNeighborIndex} object from \code{\link{buildIndex}}.}

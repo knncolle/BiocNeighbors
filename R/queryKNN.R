@@ -18,6 +18,13 @@
 #' @param transposed A logical scalar indicating whether \code{query} is transposed, in which case it contains dimensions in the rows and data points in the columns.
 #' For \code{queryKNN}, settting \code{transposed=TRUE} also indicates that \code{X} is also transposed.
 #' @param subset An integer, logical or character vector indicating the rows of \code{query} (or columns, if \code{transposed=TRUE}) for which the nearest neighbors should be identified.
+#' @param .check.nonfinite Boolean indicating whether to check for non-finite values in \code{query}.
+#' This can be set to \code{FALSE} for greater efficiency.
+#' @param ... For \code{queryKnnFromIndex}, further arguments to pass to individual methods.
+#' If a method accepts arguments here, it should prefix these arguments with the algorithm name to avoid conflicts, e.g., \code{vptree.foo.bar}.
+#'
+#' For \code{queryKNN}, further arguments to pass to \code{queryKnnFromIndex}.
+#' These are also passed to \code{\link{buildIndex}} when \code{X} is not an external pointer.
 #' 
 #' @details
 #' If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} with \code{\link{buildIndex}}.
@@ -81,7 +88,18 @@ NULL
 
 #' @export
 #' @rdname queryKNN
-setMethod("queryKnnFromIndex", "BiocNeighborGenericIndex", function(BNINDEX, query, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ...) {
+setMethod("queryKnnFromIndex", "BiocNeighborGenericIndex", function(
+    BNINDEX,
+    query,
+    k,
+    get.index=TRUE,
+    get.distance=TRUE,
+    num.threads=1,
+    subset=NULL,
+    transposed=FALSE,
+    ...,
+    .check.nonfinite=TRUE
+) {
     query <- .transpose_and_subset(query, transposed, subset=subset)
     if (!is.matrix(query)) {
         query <- beachmat::initializeCpp(query)
@@ -95,7 +113,8 @@ setMethod("queryKnnFromIndex", "BiocNeighborGenericIndex", function(BNINDEX, que
         num_threads=num.threads,
         last_distance_only=FALSE,
         report_index=!isFALSE(get.index),
-        report_distance=!isFALSE(get.distance)
+        report_distance=!isFALSE(get.distance),
+        fail_nonfinite=.check.nonfinite
     )
 
     if (length(k) == 1L) {

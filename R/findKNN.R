@@ -25,7 +25,11 @@
 #' @param num.threads Integer scalar specifying the number of threads to use for the search.
 #' @param subset An integer, logical or character vector specifying the indices of points in \code{X} for which the nearest neighbors should be identified.
 #' This yields the same result as (but is more efficient than) subsetting the output matrices after computing neighbors for all points. 
-#' @param ... Further arguments to pass to \code{\link{buildIndex}} when \code{X} is not an external pointer.
+#' @param ... For \code{findKnnFromIndex}, further arguments to pass to individual methods.
+#' If a method accepts arguments here, it should prefix these arguments with the algorithm name to avoid conflicts, e.g., \code{vptree.foo.bar}.
+#' 
+#' For \code{findKNN}, further arguments to pass to \code{findKnnFromIndex}.
+#' These are also passed to \code{\link{buildIndex}} when \code{X} is not an external pointer.
 #' @param BPPARAM Soft-deprecated, use \code{num.threads} instead.
 #' @param BNPARAM A \linkS4class{BiocNeighborParam} object specifying how the index should be constructed.
 #' If \code{NULL}, this defaults to a \linkS4class{KmknnParam}.
@@ -83,6 +87,7 @@
 NULL
 
 #' @export
+#' @rdname findKNN
 setMethod("findKnnFromIndex", "BiocNeighborGenericIndex", function(BNINDEX, k, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, ...) {
     output <- generic_find_knn(
         BNINDEX@ptr, 

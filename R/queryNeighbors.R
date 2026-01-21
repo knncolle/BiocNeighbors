@@ -7,6 +7,11 @@
 #' Alternatively, a vector containing a different distance threshold for each query point.
 #' @param get.index A logical scalar indicating whether the indices of the neighbors should be recorded.
 #' @param get.distance A logical scalar indicating whether distances to the neighbors should be recorded.
+#' @param ... For \code{queryNeighborsFromIndex}, further arguments to pass to individual methods.
+#' If a method accepts arguments here, it should prefix these arguments with the algorithm name to avoid conflicts, e.g., \code{vptree.foo.bar}.
+#'
+#' For \code{queryNeighbors}, further arguments to pass to \code{queryNeighborsFromIndex}.
+#' These are also passed to \code{\link{buildIndex}} when \code{X} is not an external pointer.
 #' 
 #' @details
 #' This function identifies all points in \code{X} that within \code{threshold} of each point in \code{query}.
@@ -62,7 +67,18 @@ NULL
 
 #' @export
 #' @rdname queryNeighbors
-setMethod("queryNeighborsFromIndex", "BiocNeighborGenericIndex", function(BNINDEX, query, threshold, get.index=TRUE, get.distance=TRUE, num.threads=1, subset=NULL, transposed=FALSE, ...) {
+setMethod("queryNeighborsFromIndex", "BiocNeighborGenericIndex", function(
+    BNINDEX,
+    query,
+    threshold,
+    get.index=TRUE,
+    get.distance=TRUE,
+    num.threads=1,
+    subset=NULL,
+    transposed=FALSE,
+    ...,
+    .check.nonfinite=TRUE
+) {
     query <- .transpose_and_subset(query, transposed, subset=subset)
     if (!is.matrix(query)) {
         query <- beachmat::initializeCpp(query)
@@ -74,7 +90,8 @@ setMethod("queryNeighborsFromIndex", "BiocNeighborGenericIndex", function(BNINDE
         thresholds=threshold,
         num_threads=num.threads,
         report_index=get.index,
-        report_distance=get.distance
+        report_distance=get.distance,
+        fail_nonfinite=.check.nonfinite
     )
 
     if (!get.index && !get.distance) {

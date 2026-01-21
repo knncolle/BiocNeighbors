@@ -3,6 +3,11 @@
 #' Query a reference dataset to determine the distance to the k-th nearest neighbor of each point in a query dataset.
 #' 
 #' @inheritParams queryKNN
+#' @param ... For \code{queryDistanceFromIndex}, further arguments to pass to individual methods.
+#' If a method accepts arguments here, it should prefix these arguments with the algorithm name to avoid conflicts, e.g., \code{vptree.foo.bar}.
+#'
+#' For \code{queryDistance}, further arguments to pass to \code{queryDistanceFromIndex}.
+#' These are also passed to \code{\link{buildIndex}} when \code{X} is not an external pointer.
 #' 
 #' @details
 #' If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} with \code{\link{buildIndex}}.
@@ -36,7 +41,16 @@ NULL
 
 #' @export
 #' @rdname queryDistance
-setMethod("queryDistanceFromIndex", "BiocNeighborGenericIndex", function(BNINDEX, query, k, num.threads=1, subset=NULL, transposed=FALSE, ...) {
+setMethod("queryDistanceFromIndex", "BiocNeighborGenericIndex", function(
+    BNINDEX,
+    query,
+    k,
+    num.threads=1,
+    subset=NULL,
+    transposed=FALSE,
+    ...,
+    .check.nonfinite=TRUE
+) {
     query <- .transpose_and_subset(query, transposed, subset=subset)
     if (!is.matrix(query)) {
         query <- beachmat::initializeCpp(query)
@@ -50,11 +64,13 @@ setMethod("queryDistanceFromIndex", "BiocNeighborGenericIndex", function(BNINDEX
         num_threads=num.threads,
         last_distance_only=TRUE,
         report_index=FALSE,
-        report_distance=FALSE
+        report_distance=FALSE,
+        fail_nonfinite=.check.nonfinite
     )
 })
 
 #' @export
+#' @rdname queryDistance
 queryDistance <- function(X, query, k, num.threads=1, ..., subset=NULL, transposed=FALSE, BNPARAM=NULL) {
     if (!is(X, "BiocNeighborIndex")) {
         X <- buildIndex(X, transposed=transposed, ..., BNPARAM=BNPARAM)

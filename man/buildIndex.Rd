@@ -15,7 +15,12 @@ buildIndex(X, transposed = FALSE, ..., BNPARAM = NULL)
 
 \item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
 
-\item{...}{Further arguments to be passed to individual methods.}
+\item{...}{Further arguments to be passed to individual methods.
+This includes:
+\itemize{
+\item \code{.check.nonfinite}, a boolean indicating whether to check for non-finite values in \code{X}.
+}
+If a method accepts arguments here, it should prefix these arguments with the algorithm name to avoid conflicts, e.g., \code{vptree.foo.bar}.}
 
 \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.
 If \code{NULL} or missing, this defaults to a \linkS4class{KmknnParam} object. 

@@ -3,6 +3,11 @@
 #' Find the distance to the k-th nearest neighbor for each point in a dataset.
 #' 
 #' @inheritParams findKNN
+#' @param ... For \code{findDistanceFromIndex}, further arguments to pass to individual methods.
+#' If a method accepts arguments here, it should prefix these arguments with the algorithm name to avoid conflicts, e.g., \code{vptree.foo.bar}.
+#' 
+#' For \code{findDistance}, further arguments to pass to \code{findDistanceFromIndex}.
+#' These are also passed to \code{\link{buildIndex}} when \code{X} is not an external pointer.
 #' 
 #' @details
 #' If multiple queries are to be performed to the same \code{X}, it may be beneficial to build the index from \code{X} with \code{\link{buildIndex}}.
@@ -31,6 +36,7 @@
 NULL
 
 #' @export
+#' @rdname findDistance
 setMethod("findDistanceFromIndex", "BiocNeighborGenericIndex", function(BNINDEX, k, num.threads=1, subset=NULL, ...) {
     generic_find_knn(
         BNINDEX@ptr, 

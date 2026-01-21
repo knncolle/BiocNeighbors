@@ -45,13 +45,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // generic_build
-SEXP generic_build(SEXP builder, SEXP data);
-RcppExport SEXP _BiocNeighbors_generic_build(SEXP builderSEXP, SEXP dataSEXP) {
+SEXP generic_build(SEXP builder, SEXP data, bool fail_nonfinite);
+RcppExport SEXP _BiocNeighbors_generic_build(SEXP builderSEXP, SEXP dataSEXP, SEXP fail_nonfiniteSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type builder(builderSEXP);
     Rcpp::traits::input_parameter< SEXP >::type data(dataSEXP);
-    rcpp_result_gen = Rcpp::wrap(generic_build(builder, data));
+    Rcpp::traits::input_parameter< bool >::type fail_nonfinite(fail_nonfiniteSEXP);
+    rcpp_result_gen = Rcpp::wrap(generic_build(builder, data, fail_nonfinite));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -83,8 +84,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // generic_query_knn
-SEXP generic_query_knn(SEXP prebuilt_ptr, SEXP query, Rcpp::IntegerVector num_neighbors, bool force_variable_neighbors, int num_threads, bool last_distance_only, bool report_index, bool report_distance);
-RcppExport SEXP _BiocNeighbors_generic_query_knn(SEXP prebuilt_ptrSEXP, SEXP querySEXP, SEXP num_neighborsSEXP, SEXP force_variable_neighborsSEXP, SEXP num_threadsSEXP, SEXP last_distance_onlySEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
+SEXP generic_query_knn(SEXP prebuilt_ptr, SEXP query, Rcpp::IntegerVector num_neighbors, bool force_variable_neighbors, int num_threads, bool last_distance_only, bool report_index, bool report_distance, bool fail_nonfinite);
+RcppExport SEXP _BiocNeighbors_generic_query_knn(SEXP prebuilt_ptrSEXP, SEXP querySEXP, SEXP num_neighborsSEXP, SEXP force_variable_neighborsSEXP, SEXP num_threadsSEXP, SEXP last_distance_onlySEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP, SEXP fail_nonfiniteSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type prebuilt_ptr(prebuilt_ptrSEXP);
@@ -95,7 +96,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type last_distance_only(last_distance_onlySEXP);
     Rcpp::traits::input_parameter< bool >::type report_index(report_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type report_distance(report_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(generic_query_knn(prebuilt_ptr, query, num_neighbors, force_variable_neighbors, num_threads, last_distance_only, report_index, report_distance));
+    Rcpp::traits::input_parameter< bool >::type fail_nonfinite(fail_nonfiniteSEXP);
+    rcpp_result_gen = Rcpp::wrap(generic_query_knn(prebuilt_ptr, query, num_neighbors, force_variable_neighbors, num_threads, last_distance_only, report_index, report_distance, fail_nonfinite));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -115,8 +117,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // generic_query_all
-SEXP generic_query_all(SEXP prebuilt_ptr, SEXP query, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance);
-RcppExport SEXP _BiocNeighbors_generic_query_all(SEXP prebuilt_ptrSEXP, SEXP querySEXP, SEXP thresholdsSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP) {
+SEXP generic_query_all(SEXP prebuilt_ptr, SEXP query, Rcpp::NumericVector thresholds, int num_threads, bool report_index, bool report_distance, bool fail_nonfinite);
+RcppExport SEXP _BiocNeighbors_generic_query_all(SEXP prebuilt_ptrSEXP, SEXP querySEXP, SEXP thresholdsSEXP, SEXP num_threadsSEXP, SEXP report_indexSEXP, SEXP report_distanceSEXP, SEXP fail_nonfiniteSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type prebuilt_ptr(prebuilt_ptrSEXP);
@@ -125,7 +127,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type num_threads(num_threadsSEXP);
     Rcpp::traits::input_parameter< bool >::type report_index(report_indexSEXP);
     Rcpp::traits::input_parameter< bool >::type report_distance(report_distanceSEXP);
-    rcpp_result_gen = Rcpp::wrap(generic_query_all(prebuilt_ptr, query, thresholds, num_threads, report_index, report_distance));
+    Rcpp::traits::input_parameter< bool >::type fail_nonfinite(fail_nonfiniteSEXP);
+    rcpp_result_gen = Rcpp::wrap(generic_query_all(prebuilt_ptr, query, thresholds, num_threads, report_index, report_distance, fail_nonfinite));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -167,12 +170,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BiocNeighbors_annoy_builder", (DL_FUNC) &_BiocNeighbors_annoy_builder, 3},
     {"_BiocNeighbors_exhaustive_builder", (DL_FUNC) &_BiocNeighbors_exhaustive_builder, 1},
     {"_BiocNeighbors_find_mutual_nns", (DL_FUNC) &_BiocNeighbors_find_mutual_nns, 2},
-    {"_BiocNeighbors_generic_build", (DL_FUNC) &_BiocNeighbors_generic_build, 2},
+    {"_BiocNeighbors_generic_build", (DL_FUNC) &_BiocNeighbors_generic_build, 3},
     {"_BiocNeighbors_generic_num_obs", (DL_FUNC) &_BiocNeighbors_generic_num_obs, 1},
     {"_BiocNeighbors_generic_find_knn", (DL_FUNC) &_BiocNeighbors_generic_find_knn, 8},
-    {"_BiocNeighbors_generic_query_knn", (DL_FUNC) &_BiocNeighbors_generic_query_knn, 8},
+    {"_BiocNeighbors_generic_query_knn", (DL_FUNC) &_BiocNeighbors_generic_query_knn, 9},
     {"_BiocNeighbors_generic_find_all", (DL_FUNC) &_BiocNeighbors_generic_find_all, 6},
-    {"_BiocNeighbors_generic_query_all", (DL_FUNC) &_BiocNeighbors_generic_query_all, 6},
+    {"_BiocNeighbors_generic_query_all", (DL_FUNC) &_BiocNeighbors_generic_query_all, 7},
     {"_BiocNeighbors_hnsw_builder", (DL_FUNC) &_BiocNeighbors_hnsw_builder, 4},
     {"_BiocNeighbors_kmknn_builder", (DL_FUNC) &_BiocNeighbors_kmknn_builder, 1},
     {"_BiocNeighbors_vptree_builder", (DL_FUNC) &_BiocNeighbors_vptree_builder, 1},

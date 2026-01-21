@@ -9,6 +9,10 @@ test_that("findKNN works with basic options", {
     ref <- refFindKNN(Y, k=8)
     expect_equal(out, ref)
 
+    # Works when we disable the non-finite checker.
+    out <- findKNN(Y, k=8, .check.nonfinite=FALSE)
+    expect_equal(out, ref)
+
     out <- findKNN(Y, k=8, BNPARAM=KmknnParam(distance="Manhattan"))
     ref <- refFindKNN(Y, k=8, type="manhattan")
     expect_equal(out, ref)
@@ -141,11 +145,11 @@ test_that("findKNN works with variable outputs", {
     expect_identical(t(tout$index), out$index)
 })
 
-test_that("findKNN doesn't work with NA values", {
+test_that("findKNN doesn't work with non-finite values", {
     Y <- matrix(NA_real_, 10, 2)
-    expect_error(findKNN(Y, k=8), "NA values")
+    expect_error(findKNN(Y, k=8), "non-finite values")
     Y <- matrix(NaN, 10, 2)
-    expect_error(findKNN(Y, k=8), "NA values")
+    expect_error(findKNN(Y, k=8), "non-finite values")
     Y <- matrix(LETTERS, ncol=13)
     expect_error(suppressWarnings(findKNN(Y, k=8)), "unknown type")
 })
