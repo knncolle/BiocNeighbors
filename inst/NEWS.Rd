@@ -9,6 +9,12 @@ We consider this trade-off to be acceptable given that many other floating-point
 
 \item Accept non-ordinary matrices in \code{X=} and \code{query=} arguments for all functions.
 This requires \pkg{beachmat} to be installed.
+
+\item Added \code{.check.nonfinite=} option to skip checks for non-finite values in all functions.
+This is useful when the user can guarantee that missing or infinite values are not present.
+
+\item Moved the \code{BNPARAM=} argument closer to the front of the argument list of \code{buildIndex()}.
+This is more intuitive when examining the generic arguments.
 }}
 
 \section{Version 2.4.0}{\itemize{
