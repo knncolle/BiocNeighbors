@@ -48,6 +48,14 @@ test_that("queryNeighbors works with non-matrix inputs", {
 
     pdout <- queryNeighbors(DelayedArray(Y), DelayedArray(Z), threshold=d, num.threads=2)
     expect_identical(out, pdout)
+
+    I <- round(Y * 100)
+    Ii <- I
+    storage.mode(Ii) <- "integer"
+    J <- round(Z * 100)
+    Ji <- J
+    storage.mode(Ji) <- "integer"
+    expect_identical(queryNeighbors(I, J, threshold=d), queryNeighbors(Ii, Ji, threshold=d))
 })
 
 test_that("queryNeighbors works with subsets", {

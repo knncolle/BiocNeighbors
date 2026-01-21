@@ -40,6 +40,11 @@ test_that("findKNN works with non-matrix inputs", {
 
     pdout <- findKNN(DelayedArray(Y), k=8, num.threads=2)
     expect_identical(out, pdout)
+
+    I <- round(Y * 100)
+    Ii <- I
+    storage.mode(Ii) <- "integer"
+    expect_identical(findKNN(I, k=5), findKNN(Ii, k=5))
 })
 
 test_that("findKNN works with subsets", {

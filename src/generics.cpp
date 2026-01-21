@@ -16,13 +16,16 @@ SEXP generic_build(SEXP builder, SEXP data) {
     std::optional<Rcpp::NumericMatrix> mat;
     std::unique_ptr<knncolle::Matrix<int, double> > matptr;
 
-    if (TYPEOF(data) == REALSXP) {
-        mat = Rcpp::NumericMatrix(data);
-        matptr.reset(new knncolle::SimpleMatrix<int, double>(mat->rows(), mat->cols(), mat->begin()));
-    } else if (TYPEOF(data) == EXTPTRSXP) {
-        matptr.reset(new knncolle_tatami::Matrix<int, double, double, int, const tatami::NumericMatrix*>(Rtatami::BoundNumericPointer(data)->get(), false));
-    } else {
-        throw std::runtime_error("unknown type for 'data'");
+    switch (TYPEOF(data)) {
+        case REALSXP: case INTSXP: case LGLSXP: // allow any coercible-to-double type, for back-compatibility.
+            mat = Rcpp::NumericMatrix(data);
+            matptr.reset(new knncolle::SimpleMatrix<int, double>(mat->rows(), mat->cols(), mat->begin()));
+            break;
+        case EXTPTRSXP:
+            matptr.reset(new knncolle_tatami::Matrix<int, double, double, int, const tatami::NumericMatrix*>(Rtatami::BoundNumericPointer(data)->get(), false));
+            break;
+        default:
+            throw std::runtime_error("unknown type for 'data'");
     }
 
     auto out = BiocNeighbors::BuilderPointer(builder);
@@ -210,19 +213,20 @@ SEXP generic_find_knn(
 
 struct QueryInfo {
     QueryInfo(SEXP data) {
-        if (TYPEOF(data) == REALSXP) {
-            mat = Rcpp::NumericMatrix(data);
-            data_ptr = mat->begin();
-            nobs = mat->ncol();
-            ndim = mat->nrow();
-
-        } else if (TYPEOF(data) == EXTPTRSXP) {
-            tatami_ptr = Rtatami::BoundNumericPointer(data)->get();
-            nobs = tatami_ptr->ncol();
-            ndim = tatami_ptr->nrow();
-
-        } else {
-            throw std::runtime_error("unknown type for 'data'");
+        switch (TYPEOF(data)) {
+            case REALSXP: case INTSXP: case LGLSXP: // allow any coercible-to-double type, for back-compatibility.
+                mat = Rcpp::NumericMatrix(data);
+                data_ptr = mat->begin();
+                nobs = mat->ncol();
+                ndim = mat->nrow();
+                break;
+            case EXTPTRSXP:
+                tatami_ptr = Rtatami::BoundNumericPointer(data)->get();
+                nobs = tatami_ptr->ncol();
+                ndim = tatami_ptr->nrow();
+                break;
+            default:
+                throw std::runtime_error("unknown type for 'data'");
         }
     }
 

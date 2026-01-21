@@ -32,6 +32,11 @@ test_that("findDistance works with non-matrix inputs", {
 
     pdout <- findDistance(DelayedArray(Y), k=8, num.threads=2) 
     expect_identical(out, pdout)
+
+    I <- round(Y * 100)
+    Ii <- I
+    storage.mode(Ii) <- "integer"
+    expect_identical(findDistance(I, k=5), findDistance(Ii, k=5))
 })
 
 test_that("findDistance works with subsets", {

@@ -49,6 +49,11 @@ test_that("findNeighbors works with non-matrix inputs", {
 
     pdout <- findNeighbors(DelayedArray(Y), threshold=d, num.threads=2) 
     expect_identical(out, pdout)
+
+    I <- round(Y * 100)
+    Ii <- I
+    storage.mode(Ii) <- "integer"
+    expect_identical(findNeighbors(I, threshold=d), findNeighbors(Ii, threshold=d))
 })
 
 test_that("findNeighbors works with subsets", {

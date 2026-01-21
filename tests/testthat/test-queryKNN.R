@@ -46,6 +46,14 @@ test_that("queryKNN works with non-matrix inputs", {
 
     pdout <- queryKNN(DelayedArray(Y), DelayedArray(Z), k=8, num.threads=2)
     expect_identical(out, pdout)
+
+    I <- round(Y * 100)
+    Ii <- I
+    storage.mode(Ii) <- "integer"
+    J <- round(Z * 100)
+    Ji <- J
+    storage.mode(Ji) <- "integer"
+    expect_identical(queryKNN(I, J, k=10), queryKNN(Ii, Ji, k=10))
 })
 
 test_that("queryKNN works with subsets", {
