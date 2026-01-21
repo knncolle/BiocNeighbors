@@ -8,24 +8,30 @@
 \alias{buildIndex,list-method}
 \title{Build a nearest-neighbor index}
 \usage{
-buildIndex(X, transposed = FALSE, ..., BNPARAM = NULL)
+buildIndex(X, BNPARAM, transposed = FALSE, ...)
+
+\S4method{buildIndex}{missing}(X, BNPARAM, transposed = FALSE, ...)
+
+\S4method{buildIndex}{NULL}(X, BNPARAM, transposed = FALSE, ...)
+
+\S4method{buildIndex}{BiocNeighborParam}(X, BNPARAM, transposed = FALSE, ...)
+
+\S4method{buildIndex}{list}(X, BNPARAM, transposed = FALSE, ..., .check.nonfinite = TRUE)
 }
 \arguments{
 \item{X}{A numeric matrix or matrix-like object where rows correspond to data points and columns correspond to variables (i.e., dimensions).}
 
+\item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.
+If \code{NULL} or missing, this defaults to a \linkS4class{KmknnParam} object. 
+Alternatively, this may be a list returned by \code{\link{defineBuilder}}.}
+
 \item{transposed}{Logical scalar indicating whether \code{X} is transposed, i.e., rows are variables and columns are data points.}
 
 \item{...}{Further arguments to be passed to individual methods.
-This includes:
-\itemize{
-\item \code{.check.nonfinite}, a boolean indicating whether to check for non-finite values in \code{X}.
-}
 If a method accepts arguments here, it should prefix these arguments with the algorithm name to avoid conflicts, e.g., \code{vptree.foo.bar}.}
 
-\item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.
-If \code{NULL} or missing, this defaults to a \linkS4class{KmknnParam} object. 
-
-Alternatively, this may be a list returned by \code{\link{defineBuilder}}.}
+\item{.check.nonfinite}{Boolean indicating whether to check for non-finite values in \code{X}.
+This can be set to \code{FALSE} for greater efficiency.}
 }
 \value{
 A \linkS4class{BiocNeighborIndex} object can be used in \code{\link{findKNN}} and related functions as the \code{X=} argument.
