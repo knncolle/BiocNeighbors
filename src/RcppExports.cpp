@@ -132,6 +132,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// generic_save_index
+SEXP generic_save_index(SEXP prebuilt_ptr, std::string prefix);
+RcppExport SEXP _BiocNeighbors_generic_save_index(SEXP prebuilt_ptrSEXP, SEXP prefixSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type prebuilt_ptr(prebuilt_ptrSEXP);
+    Rcpp::traits::input_parameter< std::string >::type prefix(prefixSEXP);
+    rcpp_result_gen = Rcpp::wrap(generic_save_index(prebuilt_ptr, prefix));
+    return rcpp_result_gen;
+END_RCPP
+}
 // hnsw_builder
 SEXP hnsw_builder(int nlinks, int ef_construct, int ef_search, std::string distance);
 RcppExport SEXP _BiocNeighbors_hnsw_builder(SEXP nlinksSEXP, SEXP ef_constructSEXP, SEXP ef_searchSEXP, SEXP distanceSEXP) {
@@ -152,6 +163,34 @@ BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< std::string >::type distance(distanceSEXP);
     rcpp_result_gen = Rcpp::wrap(kmknn_builder(distance));
+    return rcpp_result_gen;
+END_RCPP
+}
+// load_index
+SEXP load_index(std::string prefix);
+RcppExport SEXP _BiocNeighbors_load_index(SEXP prefixSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< std::string >::type prefix(prefixSEXP);
+    rcpp_result_gen = Rcpp::wrap(load_index(prefix));
+    return rcpp_result_gen;
+END_RCPP
+}
+// initialize_load_index_registry
+SEXP initialize_load_index_registry();
+RcppExport SEXP _BiocNeighbors_initialize_load_index_registry() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    rcpp_result_gen = Rcpp::wrap(initialize_load_index_registry());
+    return rcpp_result_gen;
+END_RCPP
+}
+// get_load_index_registry
+SEXP get_load_index_registry();
+RcppExport SEXP _BiocNeighbors_get_load_index_registry() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    rcpp_result_gen = Rcpp::wrap(get_load_index_registry());
     return rcpp_result_gen;
 END_RCPP
 }
@@ -176,8 +215,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BiocNeighbors_generic_query_knn", (DL_FUNC) &_BiocNeighbors_generic_query_knn, 9},
     {"_BiocNeighbors_generic_find_all", (DL_FUNC) &_BiocNeighbors_generic_find_all, 6},
     {"_BiocNeighbors_generic_query_all", (DL_FUNC) &_BiocNeighbors_generic_query_all, 7},
+    {"_BiocNeighbors_generic_save_index", (DL_FUNC) &_BiocNeighbors_generic_save_index, 2},
     {"_BiocNeighbors_hnsw_builder", (DL_FUNC) &_BiocNeighbors_hnsw_builder, 4},
     {"_BiocNeighbors_kmknn_builder", (DL_FUNC) &_BiocNeighbors_kmknn_builder, 1},
+    {"_BiocNeighbors_load_index", (DL_FUNC) &_BiocNeighbors_load_index, 1},
+    {"_BiocNeighbors_initialize_load_index_registry", (DL_FUNC) &_BiocNeighbors_initialize_load_index_registry, 0},
+    {"_BiocNeighbors_get_load_index_registry", (DL_FUNC) &_BiocNeighbors_get_load_index_registry, 0},
     {"_BiocNeighbors_vptree_builder", (DL_FUNC) &_BiocNeighbors_vptree_builder, 1},
     {NULL, NULL, 0}
 };

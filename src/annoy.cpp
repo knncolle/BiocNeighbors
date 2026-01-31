@@ -5,14 +5,7 @@
 #include <memory>
 #include <stdexcept>
 
-// Copied from RcppAnnoy's RcppAnnoy.h:
-#if defined(__MINGW32__)
-#undef Realloc
-#undef Free
-#endif
-#define __ERROR_PRINTER_OVERRIDE__  REprintf
-
-#include "knncolle_annoy/knncolle_annoy.hpp"
+#include "annoy.h"
 
 //[[Rcpp::export(rng=false)]]
 SEXP annoy_builder(int num_trees, double search_mult, std::string distance) {

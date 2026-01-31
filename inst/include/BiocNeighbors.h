@@ -3,6 +3,8 @@
 
 #include <memory>
 #include <stdexcept>
+#include <type_traits>
+
 #include "knncolle/knncolle.hpp"
 #include "Rcpp.h"
 
@@ -43,6 +45,11 @@ typedef knncolle::Prebuilt<int, double, double> Prebuilt;
  * as returned by **BiocNeighbors**'s `buildIndex()` function.
  */
 typedef Rcpp::XPtr<Prebuilt> PrebuiltPointer;
+
+/**
+ * Type alias for the external pointer to the registry from `knncolle::load_prebuilt_registry()`.
+ */
+typedef Rcpp::XPtr<std::remove_reference_t<decltype(knncolle::load_prebuilt_registry<int, double, double>())> > LoadPrebuiltRegistryPointer;
 
 }
 

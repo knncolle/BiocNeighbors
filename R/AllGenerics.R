@@ -49,3 +49,9 @@ setGeneric("findDistanceFromIndex", signature="BNINDEX", function(BNINDEX, k, nu
 setGeneric("queryDistanceFromIndex", signature="BNINDEX", function(BNINDEX, query, k, num.threads=1, subset=NULL, transposed=FALSE, ...) {
     standardGeneric("queryDistanceFromIndex")
 })
+
+#' @export
+#' @rdname saveIndex
+setGeneric("saveIndex", signature="BNINDEX", function(BNINDEX, dir, ...) {
+    standardGeneric("saveIndex");
+})

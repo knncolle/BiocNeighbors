@@ -616,3 +616,19 @@ SEXP generic_query_all(SEXP prebuilt_ptr, SEXP query, Rcpp::NumericVector thresh
         );
     }
 } 
+
+/**************************
+ ********* Saving *********
+ **************************/
+
+//[[Rcpp::export(rng=false)]]
+SEXP generic_save_index(SEXP prebuilt_ptr, std::string prefix) {
+    BiocNeighbors::PrebuiltPointer cast(prebuilt_ptr); 
+    if (!R_ExternalPtrAddr(SEXP(cast))) {
+        throw std::runtime_error("null pointer to a prebuilt index");
+    }
+
+    const auto& prebuilt = *cast;
+    prebuilt.save(prefix);
+    return R_NilValue;
+}

@@ -24,15 +24,15 @@ SEXP hnsw_builder(int nlinks, int ef_construct, int ef_search, std::string dista
     opt.ef_search = ef_search;
 
     if (distance == "Manhattan") {
-        return BiocNeighbors::BuilderPointer(new knncolle_hnsw::HnswBuilder<int, double, double>(knncolle_hnsw::makeManhattanDistanceConfig(), opt));
+        return BiocNeighbors::BuilderPointer(new knncolle_hnsw::HnswBuilder<int, double, double>(knncolle_hnsw::configure_manhattan_distance<double>(), opt));
 
     } else if (distance == "Euclidean") {
-        return BiocNeighbors::BuilderPointer(new knncolle_hnsw::HnswBuilder<int, double, double>(knncolle_hnsw::makeEuclideanDistanceConfig(), opt));
+        return BiocNeighbors::BuilderPointer(new knncolle_hnsw::HnswBuilder<int, double, double>(knncolle_hnsw::configure_euclidean_distance<double>(), opt));
 
     } else if (distance == "Cosine") {
         return BiocNeighbors::BuilderPointer(
             new knncolle::L2NormalizedBuilder<int, double, double, double>(
-                std::make_shared<knncolle_hnsw::HnswBuilder<int, double, double> >(knncolle_hnsw::makeEuclideanDistanceConfig(), opt)
+                std::make_shared<knncolle_hnsw::HnswBuilder<int, double, double> >(knncolle_hnsw::configure_euclidean_distance<double>(), opt)
             )
         );
 

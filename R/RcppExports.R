@@ -37,12 +37,28 @@ generic_query_all <- function(prebuilt_ptr, query, thresholds, num_threads, repo
     .Call('_BiocNeighbors_generic_query_all', PACKAGE = 'BiocNeighbors', prebuilt_ptr, query, thresholds, num_threads, report_index, report_distance, fail_nonfinite)
 }
 
+generic_save_index <- function(prebuilt_ptr, prefix) {
+    .Call('_BiocNeighbors_generic_save_index', PACKAGE = 'BiocNeighbors', prebuilt_ptr, prefix)
+}
+
 hnsw_builder <- function(nlinks, ef_construct, ef_search, distance) {
     .Call('_BiocNeighbors_hnsw_builder', PACKAGE = 'BiocNeighbors', nlinks, ef_construct, ef_search, distance)
 }
 
 kmknn_builder <- function(distance) {
     .Call('_BiocNeighbors_kmknn_builder', PACKAGE = 'BiocNeighbors', distance)
+}
+
+load_index <- function(prefix) {
+    .Call('_BiocNeighbors_load_index', PACKAGE = 'BiocNeighbors', prefix)
+}
+
+initialize_load_index_registry <- function() {
+    .Call('_BiocNeighbors_initialize_load_index_registry', PACKAGE = 'BiocNeighbors')
+}
+
+get_load_index_registry <- function() {
+    .Call('_BiocNeighbors_get_load_index_registry', PACKAGE = 'BiocNeighbors')
 }
 
 vptree_builder <- function(distance) {
