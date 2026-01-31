@@ -7,6 +7,10 @@
 \title{Define an index builder}
 \usage{
 defineBuilder(BNPARAM)
+
+\S4method{defineBuilder}{NULL}(BNPARAM)
+
+\S4method{defineBuilder}{missing}(BNPARAM)
 }
 \arguments{
 \item{BNPARAM}{A \linkS4class{BiocNeighborParam} object specifying the type of index to be constructed.

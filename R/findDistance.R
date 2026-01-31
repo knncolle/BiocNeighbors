@@ -24,9 +24,6 @@
 #' @seealso
 #' \code{\link{buildIndex}}, to build an index ahead of time.
 #'
-#' @aliases
-#' findDistanceFromIndex,BiocNeighborGenericIndex-method
-#' 
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)
 #' out <- findDistance(Y, k=8)

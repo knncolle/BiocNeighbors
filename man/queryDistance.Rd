@@ -3,10 +3,6 @@
 \name{queryDistanceFromIndex}
 \alias{queryDistanceFromIndex}
 \alias{queryDistance}
-\alias{queryDistance,matrix,ANY-method}
-\alias{queryDistance,BiocNeighborGenericIndex,ANY-method}
-\alias{queryDistance,matrix-method}
-\alias{queryDistance,BiocNeighborGenericIndex-method}
 \alias{queryDistanceFromIndex,BiocNeighborGenericIndex-method}
 \title{Distance to the k-th nearest neighbor to query points}
 \usage{

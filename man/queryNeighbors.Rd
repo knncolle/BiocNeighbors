@@ -3,12 +3,6 @@
 \name{queryNeighborsFromIndex}
 \alias{queryNeighborsFromIndex}
 \alias{queryNeighbors}
-\alias{queryNeighbors,matrix,ANY-method}
-\alias{queryNeighbors,BiocNeighborGenericIndex,ANY-method}
-\alias{queryNeighbors,missing,ANY-method}
-\alias{queryNeighbors,matrix-method}
-\alias{queryNeighbors,BiocNeighborGenericIndex-method}
-\alias{queryNeighbors,missing-method}
 \alias{queryNeighborsFromIndex,BiocNeighborGenericIndex-method}
 \title{Query neighbors within a threshold distance}
 \usage{

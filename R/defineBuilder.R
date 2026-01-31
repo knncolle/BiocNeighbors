@@ -39,14 +39,13 @@
 #' (out <- defineBuilder())
 #' (out2 <- defineBuilder(AnnoyParam()))
 #'
-#' @aliases
-#' defineBuilder,NULL-method
-#' defineBuilder,missing-method
 #' @name defineBuilder 
 NULL
 
 #' @export
+#' @rdname defineBuilder 
 setMethod("defineBuilder", "NULL", function(BNPARAM) callGeneric(KmknnParam()))
 
 #' @export
+#' @rdname defineBuilder 
 setMethod("defineBuilder", "missing", function(BNPARAM) callGeneric(NULL))

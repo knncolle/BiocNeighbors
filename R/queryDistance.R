@@ -24,12 +24,6 @@
 #' @seealso
 #' \code{\link{buildIndex}}, to build an index ahead of time.
 #' 
-#' @aliases
-#' queryDistance,matrix,ANY-method
-#' queryDistance,BiocNeighborGenericIndex,ANY-method
-#' queryDistance,matrix-method
-#' queryDistance,BiocNeighborGenericIndex-method
-#'
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)
 #' Z <- matrix(rnorm(20000), ncol=20)

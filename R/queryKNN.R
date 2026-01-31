@@ -68,14 +68,6 @@
 #'
 #' \code{\link{queryDistance}}, to obtain the distance from each query point to its k-th nearest neighbor.
 #' 
-#' @aliases
-#' queryKNN,matrix,ANY-method
-#' queryKNN,BiocNeighborGenericIndex,ANY-method
-#' queryKNN,missing,ANY-method
-#' queryKNN,matrix-method
-#' queryKNN,BiocNeighborGenericIndex-method
-#' queryKNN,missing-method
-#'
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)
 #' Z <- matrix(rnorm(20000), ncol=20)

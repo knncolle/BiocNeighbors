@@ -74,9 +74,6 @@
 #' 
 #' \code{\link{findDistance}}, to efficiently obtain the distance to the k-th nearest neighbor.
 #'
-#' @aliases
-#' findKnnFromIndex,BiocNeighborGenericIndex-method
-#' 
 #' @examples
 #' Y <- matrix(rnorm(100000), ncol=20)
 #' out <- findKNN(Y, k=8)

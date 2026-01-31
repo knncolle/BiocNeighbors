@@ -53,9 +53,6 @@
 #' out <- findNeighbors(Y, threshold=1)
 #' summary(lengths(out$index))
 #'
-#' @aliases
-#' findNeighborsFromIndex,BiocNeighborGenericIndex-method
-#'
 #' @name findNeighbors
 NULL
 

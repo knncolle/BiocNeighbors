@@ -2,8 +2,8 @@
 % Please edit documentation in R/AllGenerics.R, R/buildIndex.R
 \name{buildIndex}
 \alias{buildIndex}
-\alias{buildIndex,NULL-method}
 \alias{buildIndex,missing-method}
+\alias{buildIndex,NULL-method}
 \alias{buildIndex,BiocNeighborParam-method}
 \alias{buildIndex,list-method}
 \title{Build a nearest-neighbor index}
@@ -34,8 +34,8 @@ If a method accepts arguments here, it should prefix these arguments with the al
 This can be set to \code{FALSE} for greater efficiency.}
 }
 \value{
-A \linkS4class{BiocNeighborIndex} object can be used in \code{\link{findKNN}} and related functions as the \code{X=} argument.
-Users should assume that the index is not serializable, i.e., cannot be saved or transferred between processes.
+A \linkS4class{BiocNeighborIndex} object can be used in \code{\link{findKNN}} and related functions as the \code{X=} argument,
+or in \code{\link{findKnnFromIndex}} and related generics as the \code{BNINDEX=} argument.
 }
 \description{
 Build indices for nearest-neighbor searching with different algorithms.
@@ -43,9 +43,13 @@ Build indices for nearest-neighbor searching with different algorithms.
 \details{
 Each \code{buildIndex} method is expected to return an instance of a \linkS4class{BiocNeighborIndex} subclass.
 The structure of this subclass is arbitrary and left to the discretion of the method developer.
-Developers are also responsible for defining methods for their subclass in each of the relevant functions (e.g., \code{\link{findKNN}}, \code{\link{queryKNN}}).
-The exception is if the method returns an instance of a \linkS4class{BiocNeighborGenericIndex} subclass,
-which can be used with the existing methods for \code{\link{findKNN}}, etc. without further effort.
+
+If a \code{buildIndex} method returns a \linkS4class{BiocNeighborGenericIndex} subclass,
+the index can be used with the existing methods for \code{\link{findKnnFromIndex}}, etc. without further effort.
+Otherwise, developers are responsible for defining methods for their subclass in each of the relevant generics.
+
+Users should assume that the index is not serializable (i.e., saved or transferred between processes) via R's usual mechanisms.
+If the index must be saved to disk, consider using \code{\link{saveIndex}} instead.
 }
 \examples{
 Y <- matrix(rnorm(100000), ncol=20)

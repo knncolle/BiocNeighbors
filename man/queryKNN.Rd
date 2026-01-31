@@ -3,12 +3,6 @@
 \name{queryKnnFromIndex}
 \alias{queryKnnFromIndex}
 \alias{queryKNN}
-\alias{queryKNN,matrix,ANY-method}
-\alias{queryKNN,BiocNeighborGenericIndex,ANY-method}
-\alias{queryKNN,missing,ANY-method}
-\alias{queryKNN,matrix-method}
-\alias{queryKNN,BiocNeighborGenericIndex-method}
-\alias{queryKNN,missing-method}
 \alias{queryKnnFromIndex,BiocNeighborGenericIndex-method}
 \title{Query k-nearest neighbors}
 \usage{

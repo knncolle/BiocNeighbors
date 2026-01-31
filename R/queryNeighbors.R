@@ -54,14 +54,6 @@
 #' out <- queryNeighbors(Y, query=Z, threshold=3)
 #' summary(lengths(out$index))
 #' 
-#' @aliases
-#' queryNeighbors,matrix,ANY-method
-#' queryNeighbors,BiocNeighborGenericIndex,ANY-method
-#' queryNeighbors,missing,ANY-method
-#' queryNeighbors,matrix-method
-#' queryNeighbors,BiocNeighborGenericIndex-method
-#' queryNeighbors,missing-method
-#'
 #' @name queryNeighbors
 NULL
 
