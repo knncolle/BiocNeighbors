@@ -15,6 +15,8 @@ This is useful when the user can guarantee that missing or infinite values are n
 
 \item Moved the \code{BNPARAM=} argument closer to the front of the argument list of \code{buildIndex()}.
 This is more intuitive when examining the generic arguments.
+
+\item Added \code{saveIndex()} and \code{loadIndex()} functions to save and load indices from disk.
 }}
 
 \section{Version 2.4.0}{\itemize{
