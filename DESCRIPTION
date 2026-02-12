@@ -1,9 +1,8 @@
 Package: BiocNeighbors
-Version: 2.5.3
-Date: 2026-01-31
+Version: 2.5.4
+Date: 2026-02-13
 Title: Nearest Neighbor Detection for Bioconductor Packages
-Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
-    email="infinite.monkeys.with.keyboards@gmail.com"))
+Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"), email="infinite.monkeys.with.keyboards@gmail.com"))
 Imports: 
     Rcpp, 
     methods
