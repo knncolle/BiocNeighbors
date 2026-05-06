@@ -1,6 +1,6 @@
 Package: BiocNeighbors
-Version: 2.7.0
-Date: 2026-02-13
+Version: 2.7.1
+Date: 2026-05-06
 Title: Nearest Neighbor Detection for Bioconductor Packages
 Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"), email="infinite.monkeys.with.keyboards@gmail.com"))
 Imports: 
