@@ -20,10 +20,9 @@
 #' @author
 #' Aaron Lun
 #'
-#' @aliases
-#' BiocNeighborIndex-class
-#' show,BiocNeighborIndex-method
-#' BiocNeighborGenericIndex-class
+#' @aliases BiocNeighborIndex-class
+#' @aliases show,BiocNeighborIndex-method
+#' @aliases BiocNeighborGenericIndex-class
 #' @name BiocNeighborIndex
 NULL
 

@@ -38,10 +38,9 @@
 #' @examples
 #' (out <- VptreeParam())
 #'
-#' @aliases
-#' VptreeParam-class
-#' VptreeIndex
-#' VptreeIndex-class
+#' @aliases VptreeParam-class
+#' @aliases VptreeIndex
+#' @aliases VptreeIndex-class
 #'
 #' @export
 #' @importFrom methods new

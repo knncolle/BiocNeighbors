@@ -29,10 +29,9 @@
 #' @examples
 #' (out <- ExhaustiveParam())
 #'
-#' @aliases
-#' ExhaustiveParam-class
-#' ExhaustiveIndex
-#' ExhaustiveIndex-class
+#' @aliases ExhaustiveParam-class
+#' @aliases ExhaustiveIndex
+#' @aliases ExhaustiveIndex-class
 #' 
 #' @docType class
 #' 

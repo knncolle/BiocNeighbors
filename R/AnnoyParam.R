@@ -47,11 +47,10 @@
 #' out[['ntrees']] <- 20L
 #' out
 #'
-#' @aliases
-#' AnnoyParam-class
-#' show,AnnoyParam-method
-#' AnnoyIndex
-#' AnnoyIndex-class
+#' @aliases AnnoyParam-class
+#' @aliases show,AnnoyParam-method
+#' @aliases AnnoyIndex
+#' @aliases AnnoyIndex-class
 #'
 #' @docType class
 #' 

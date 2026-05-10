@@ -37,10 +37,9 @@
 #' (out <- KmknnParam(iter.max=100))
 #'
 #' @docType class
-#' @aliases
-#' KmknnParam-class
-#' KmknnIndex
-#' KmknnIndex-class
+#' @aliases KmknnParam-class
+#' @aliases KmknnIndex
+#' @aliases KmknnIndex-class
 #'
 #' @export
 #' @importFrom methods new

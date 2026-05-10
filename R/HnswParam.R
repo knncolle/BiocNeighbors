@@ -44,11 +44,10 @@
 #' out[['nlinks']] <- 20L
 #' out
 #'
-#' @aliases
-#' HnswParam-class
-#' show,HnswParam-method
-#' HnswIndex
-#' HnswIndex-class
+#' @aliases HnswParam-class
+#' @aliases show,HnswParam-method
+#' @aliases HnswIndex
+#' @aliases HnswIndex-class
 #'
 #' @docType class
 #'

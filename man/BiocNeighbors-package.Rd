@@ -8,7 +8,20 @@
 \description{
 Implements exact and approximate methods for nearest neighbor detection, in a framework that allows them to be easily switched within Bioconductor packages or workflows. Exact searches can be performed using the k-means for k-nearest neighbors algorithm, vantage point trees, or an exhaustive search. Approximate searches can be performed using the Annoy or HNSW libraries. Each search can be performed with a variety of different distance metrics, parallelization, and variable numbers of neighbors. Range-based searches (to find all neighbors within a certain distance) are also supported.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/knncolle/BiocNeighbors}
+  \item Report bugs at \url{https://github.com/knncolle/BiocNeighbors/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Aaron Lun \email{infinite.monkeys.with.keyboards@gmail.com} [copyright holder]
+
+Authors:
+\itemize{
+  \item Aaron Lun \email{infinite.monkeys.with.keyboards@gmail.com} [copyright holder]
+}
 
 }

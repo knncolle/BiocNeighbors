@@ -37,12 +37,11 @@
 #' @author
 #' Aaron Lun
 #' 
-#' @aliases
-#' BiocNeighborParam-class
-#' show,BiocNeighborParam-method
-#' bndistance
-#' [[,BiocNeighborParam-method
-#' [[<-,BiocNeighborParam-method
+#' @aliases BiocNeighborParam-class
+#' @aliases show,BiocNeighborParam-method
+#' @aliases bndistance
+#' @aliases [[,BiocNeighborParam-method
+#' @aliases [[<-,BiocNeighborParam-method
 #'
 #' @name BiocNeighborParam
 NULL
