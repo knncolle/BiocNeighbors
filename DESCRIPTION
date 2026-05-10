@@ -13,6 +13,7 @@ Suggests:
     BiocParallel, 
     testthat, 
     BiocStyle, 
+    S4Vectors,
     knitr, 
     rmarkdown
 biocViews: Clustering, Classification
