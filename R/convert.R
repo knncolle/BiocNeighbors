@@ -1,54 +1,55 @@
-#' Converts a `findKNN` list to a alternative representations
+#' Converts \code{findKNN} output to alternative representations 
 #' 
-#' @description These functions are for conveniently inserting the output of 
-#' `findKNN` into the `colPair` slot of a `SingleCellExperiment`.
+#' Convert the output of \code{\link{findKNN}} to alternative representations for more convenient downstream use.
 #' 
-#' @param knn A named list. The output from `findKNN`, a list of length 2 holding
-#' two matrices, `index` and `distance`.
+#' @param knn Named list containing the output from \code{\link{findKNN}}.
+#' This list should have the \code{index} and \code{distance} matrices.
+#' @param repr String specifing the type of sparse matrix, see \code{?\link[Matrix]{sparseMatrix}} for more details.
 #' 
-#' @returns For `convertToSparseMatrix`, a `sparseMatrix` and for `convertToSelfHits`, 
-#' a `SelfHits` object. 
+#' @return
+#' For \code{convertToSparseMatrix}, a floating-point sparse matrix from the \pkg{Matrix} package.
+#' Each row corresponds to an observation and the columns with non-zero entries represent the neighbors.
+#' The value of each non-zero entry contains the distance to that neighbor.
+#'
+#' For \code{convertToSelfHits}, a \link[S4Vectors]{SelfHits} object where \code{from} contains the observations and \code{to} contains the identities of the neighbors.
+#' The \code{distance} metadata field contains the distance from each observation to each of its neighbors.
 #' 
-#' #' @examples
+#' @examples
 #' X <- matrix(rnorm(10000), ncol=20)
 #' out <- findKNN(X, k=5)
 #' 
 #' sm <- convertToSparseMatrix(out)
-#' class(sm)
+#' str(sm)
 #' 
 #' sh <- convertToSelfHits(out)
-#' class(sh)
-#' 
-#' @rdname converters
+#' sh
+#'
+#' @seealso
+#' The \code{colPairs} slot of the SingleCellExperiment class, from the \pkg{SingleCellExperiment} package.
 #' 
 #' @export
-convertToSparseMatrix <- function(knn){
-    # expect named list of length 2
+#' @name convert
+convertToSparseMatrix <- function(knn, repr = "C") {
     stopifnot(identical(names(knn), c("index", "distance")))
-    stopifnot(is.list(knn) && length(knn) == 2)
-    nr <- nrow(knn$index)
-    sm <- Matrix::sparseMatrix(
-        i = rep(seq_len(nr), length.out = length(knn$index)), 
+    n <- nrow(knn$index)
+    Matrix::sparseMatrix(
+        i = rep(seq_len(n), length.out = length(knn$index)), 
         j = as.vector(knn$index), 
         x = as.vector(knn$distance), 
-        dims = c(nr, nr)
+        dims = c(n, n),
+        repr = repr 
     )
-    return(sm)
 }
 
 #' @export
-#' @rdname converters
+#' @rdname convert
 convertToSelfHits <- function(knn){
-    # expect named list of length 2
     stopifnot(identical(names(knn), c("index", "distance")))
-    stopifnot(is.list(knn) && length(knn) == 2)
-    nr <- nrow(knn$index)
-    sh <- S4Vectors::SelfHits(
-        from = rep(seq_len(nr), length.out = length(knn$index)),
+    n <- nrow(knn$index)
+    S4Vectors::SelfHits(
+        from = rep(seq_len(n), length.out = length(knn$index)),
         to = as.vector(knn$index),
-        x = as.vector(knn$distance),
-        nnode = nr
+        distance = as.vector(knn$distance),
+        nnode = n
     )
-    return(sh)
 }
-
