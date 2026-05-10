@@ -2,6 +2,11 @@
 \title{BiocNeighbors News}
 \encoding{UTF-8}
 
+\section{Version 2.8.0}{\itemize{
+\item Added \code{findResultsToMatrix()}, \code{findResultsToHits()}, \code{queryResultsToMatrix()} and \code{queryResultsToHits()},
+which convert the results of \code{findKNN()} to more amenable formats.
+}}
+
 \section{Version 2.6.0}{\itemize{
 \item Enable manual vectorization for Annoy and HNSW, if supported by the compiler.
 This improves speed at the cost of exact reproducibility across different toolchains/architectures.
