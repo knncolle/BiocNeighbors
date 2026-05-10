@@ -1,6 +1,6 @@
 Package: BiocNeighbors
-Version: 2.7.1
-Date: 2026-05-06
+Version: 2.7.2
+Date: 2026-05-10
 Title: Nearest Neighbor Detection for Bioconductor Packages
 Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"), email="infinite.monkeys.with.keyboards@gmail.com"))
 Imports: 
@@ -28,6 +28,8 @@ LinkingTo:
     Rcpp, 
     assorthead,
     beachmat
+URL: https://github.com/knncolle/BiocNeighbors
+BugReports: https://github.com/knncolle/BiocNeighbors/issues
 VignetteBuilder: knitr
 SystemRequirements: C++17
 Encoding: UTF-8
